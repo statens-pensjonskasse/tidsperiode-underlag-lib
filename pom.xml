@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>no.spk.felles</groupId>
+        <artifactId>felles-pom</artifactId>
+        <version>100.0.2</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>no.spk.pensjon.faktura</groupId>
+    <artifactId>faktura-prognose-tidsserie</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <description>
+        Domenemodell for generering av tidsseriar brukt ved prognostisering av maskinelt grunnlag.
+    </description>
+    <scm>
+        <connection>scm:git:http://git.spk.no/scm/ff/faktura-prognose-tidsserie.git</connection>
+        <developerConnection>scm:git:ssh://git@git.spk.no:7999/ff/faktura-prognose-tidsserie.git</developerConnection>
+        <url>http://git.spk.no/projects/FF/repos/faktura-prognose-tidsserie/browse</url>
+    </scm>
+</project>
