@@ -4,7 +4,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static java.util.Optional.empty;
 import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode}
@@ -14,6 +16,31 @@ import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
 public class UnderlagsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+
+    /**
+     * Verifiserer at oppslag av påkrevde annotasjonar via
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)} feilar med
+     * ein exception dersom perioda ikkje er annotert med den ønska typen annotasjon.
+     */
+    @Test
+    public void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
+        e.expect(PaakrevdAnnotasjonManglarException.class);
+        e.expectMessage("Underlagsperioda frå 2005-01-01 til 2005-12-31 manglar påkrevd annotasjon av type");
+        e.expectMessage(Integer.class.getSimpleName());
+
+        create("2005.01.01", "2005.12.31").annotasjonFor(Integer.class);
+    }
+
+    /**
+     * Verifiserer at oppslag av valgfrie annotasjonar via
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#valgfriAnnotasjonFor(Class)} ikkje
+     * feilar og returnerer ein tom verdi dersom perioda ikkje er annotert med den ønska typen annotasjon.
+     */
+    @Test
+    public void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
+        assertThat(create("2005.02.02", "2005.03.03").valgfriAnnotasjonFor(Long.class)).isEqualTo(empty());
+    }
 
     @Test
     public void skalIkkjeKunneOpprettUnderlagsPerioderMedFraOgMedDatoLikNull() {
