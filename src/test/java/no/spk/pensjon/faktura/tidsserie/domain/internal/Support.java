@@ -1,0 +1,13 @@
+package no.spk.pensjon.faktura.tidsserie.domain.internal;
+
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
+import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+
+class Support {
+    static UnderlagsperiodeBuilder periode(final String fra, final String til) {
+        return new UnderlagsperiodeBuilder()
+                .fraOgMed(dato(fra))
+                .tilOgMed(dato(til));
+    }
+}
