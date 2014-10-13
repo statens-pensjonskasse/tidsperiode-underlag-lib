@@ -48,6 +48,18 @@ public class Underlagsperiode {
     }
 
     /**
+     * Slår opp ein beregningsregel av ei bestemt type og brukar den for å gjere ei bestemt type beregning
+     * ut frå underlagsperiodas annoterte fakta.
+     *
+     * @param regelType kva type beregningsregel som skal brukast
+     * @return resultatet frå beregningsregelen basert på underlagsperiodas tilstand
+     * @throws PaakrevdAnnotasjonManglarException dersom perioda ikkje er annotert med ein regel av den angitte typen
+     */
+    public <T> T beregn(final Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException {
+        return annotasjonFor(regelType).beregn(this);
+    }
+
+    /**
      * Slår opp verdien av den påkrevde annotasjonen med den angitte typen frå perioda.
      * <p>
      * Dersom perioda ikkje har ein annotasjon av den angitte typen blir det kasta ein feil sidan annotasjonen blir
