@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public class AntallDagar {
-    private int antall;
+    private final int antall;
 
     /**
      * Konstruerer eit nytt verdiobjekt som representerer lengde på ei tidsperiode i antall dagar.
@@ -26,6 +26,15 @@ public class AntallDagar {
             throw new IllegalArgumentException("antall dagar kan ikkje vere kortare enn 1 dag, men var " + antall + " dagar");
         }
         this.antall = antall;
+    }
+
+    /**
+     * Returnerer lengda i antall dagar.
+     *
+     * @return antall dagar
+     */
+    public int verdi() {
+        return antall;
     }
 
     /**
@@ -74,6 +83,6 @@ public class AntallDagar {
 
     @Override
     public String toString() {
-        return Integer.toString(antall);
+        return Integer.toString(antall) + " dagar";
     }
 }

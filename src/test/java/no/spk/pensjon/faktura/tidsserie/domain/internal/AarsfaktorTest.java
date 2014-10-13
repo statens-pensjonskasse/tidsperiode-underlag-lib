@@ -16,21 +16,21 @@ public class AarsfaktorTest {
     @Test
     public void skalIkkjeKunneVereStoerreEnn1() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("Årsfaktor må vere mindre enn eller lik 1, men var 2");
+        e.expectMessage("årsfaktor må vere mindre enn eller lik 1, men var 2");
         new Aarsfaktor(2d);
     }
 
     @Test
     public void skalIkkjeKunneVereLik0() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("Årsfaktor må vere større enn 0, men var 0");
+        e.expectMessage("årsfaktor må vere større enn 0, men var 0");
         new Aarsfaktor(0d);
     }
 
     @Test
     public void skalIkkjeKunneVereNegativ() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("Årsfaktor må vere større enn 0, men var -2");
+        e.expectMessage("årsfaktor må vere større enn 0, men var -2");
         new Aarsfaktor(-2d);
     }
 }

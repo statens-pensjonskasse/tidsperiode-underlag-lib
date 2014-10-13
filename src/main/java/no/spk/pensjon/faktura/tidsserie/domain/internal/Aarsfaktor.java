@@ -22,10 +22,10 @@ public class Aarsfaktor {
      */
     public Aarsfaktor(final double verdi) throws IllegalArgumentException {
         if (verdi <= 0d) {
-            throw new IllegalArgumentException("Årsfaktor må vere større enn 0, men var " + verdi);
+            throw new IllegalArgumentException("årsfaktor må vere større enn 0, men var " + verdi);
         }
         if (verdi > 1d) {
-            throw new IllegalArgumentException("Årsfaktor må vere mindre enn eller lik 1, men var " + verdi);
+            throw new IllegalArgumentException("årsfaktor må vere mindre enn eller lik 1, men var " + verdi);
         }
         this.verdi = verdi;
     }
@@ -35,5 +35,14 @@ public class Aarsfaktor {
         NumberFormat format = NumberFormat.getNumberInstance();
         format.setMaximumFractionDigits(4);
         return format.format(verdi);
+    }
+
+    /**
+     * Returnerer verdien som representerer årsfaktoren.
+     *
+     * @return årsfaktor-verdien
+     */
+    double verdi() {
+        return verdi;
     }
 }
