@@ -7,6 +7,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
  * @author Tarjei Skorgenes
  */
 public class Stillingsprosent {
+    public final Prosent prosent;
+
     /**
      * Konstruerer ein ny stillingsprosent.
      *
@@ -14,5 +16,11 @@ public class Stillingsprosent {
      * @throws NullPointerException viss <code>verdi</code> er <code>null</code>
      */
     public Stillingsprosent(final Prosent verdi) throws NullPointerException {
+        prosent = verdi;
+    }
+
+    @Override
+    public String toString() {
+        return prosent + " stilling";
     }
 }

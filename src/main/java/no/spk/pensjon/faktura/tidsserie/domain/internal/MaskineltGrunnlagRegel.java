@@ -1,6 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -29,7 +28,7 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
                 .beregn(AarsfaktorRegel.class)
                 .multiply(
                         periode
-                                .annotasjonFor(DeltidsjustertLoenn.class)
+                                .beregn(DeltidsjustertLoennRegel.class)
                                 .beloep
                 );
     }

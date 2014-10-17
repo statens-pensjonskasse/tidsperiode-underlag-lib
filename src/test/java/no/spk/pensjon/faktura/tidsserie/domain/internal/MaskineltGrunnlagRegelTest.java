@@ -5,9 +5,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractComparableAssert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +20,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 public class MaskineltGrunnlagRegelTest {
+    @Rule
+    public final ExpectedException e = ExpectedException.none();
+
+    @Test
+    public void skalBeregneDeltidsjustertLoennViaAnnanRegel() {
+        e.expect(PaakrevdAnnotasjonManglarException.class);
+        e.expectMessage(DeltidsjustertLoennRegel.class.getSimpleName());
+
+        beregn(
+                periode("2013.01.01", "2013.12.31")
+                        .med(new Aarstall(2013))
+                        .uten(DeltidsjustertLoennRegel.class)
+        ).multiply(0d);
+    }
+
     @Test
     public void skalBeregneMaskineltGrunnlagLikDeltidsjustertLoennUtenAaTaHensynTilMinstegrense() {
         assertMaskineltGrunnlag(
@@ -51,11 +69,16 @@ public class MaskineltGrunnlagRegelTest {
                 .med(new AarsLengdeRegel())
                 .med(new AntallDagarRegel())
                 .med(new AarsfaktorRegel())
+                .med(new DeltidsjustertLoennRegel())
                 .med(new Stillingsprosent(new Prosent("100%")));
     }
 
     private AbstractComparableAssert<?, Kroner> assertMaskineltGrunnlag(final UnderlagsperiodeBuilder periode) {
-        return assertThat(periode.bygg().beregn(MaskineltGrunnlagRegel.class));
+        return assertThat(beregn(periode));
+    }
+
+    private Kroner beregn(final UnderlagsperiodeBuilder periode) {
+        return periode.bygg().beregn(MaskineltGrunnlagRegel.class);
     }
 
 }

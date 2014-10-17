@@ -43,6 +43,17 @@ public final class Kroner implements Comparable<Kroner> {
     }
 
     /**
+     * Multipliserer opp beløpet med <code>prosent</code>
+     * og returnerer det nye beløpet.
+     *
+     * @param prosent prosentsatsen beløpet skal gangast med
+     * @return eit nytt kronebeløp med resultatet av multiplikasjonen
+     */
+    public Kroner multiply(final Prosent prosent) {
+        return multiply(prosent.toDouble());
+    }
+
+    /**
      * Samanliknar dei avrunda kronebeløpa numerisk.
      * <br>
      * Merk at samanlikninga blir gjort basert på avrunda kronebeløp, to beløp med forskjellige desimalverdiar men
