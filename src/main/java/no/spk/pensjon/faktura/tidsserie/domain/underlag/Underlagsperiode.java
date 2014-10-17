@@ -124,4 +124,9 @@ public class Underlagsperiode {
     public Optional<LocalDate> tilOgMed() {
         return tilOgMed;
     }
+
+    @Override
+    public String toString() {
+        return "UP[" + fraOgMed + "->" + tilOgMed.map(d -> d.toString()).orElse("") + "]";
+    }
 }
