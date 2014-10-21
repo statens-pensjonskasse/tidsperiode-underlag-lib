@@ -100,6 +100,13 @@ public class KronerTest {
         assertCompareTo(-1.51d, -1.5d).isLessThan(0);;
     }
 
+    @Test
+    public void skalViseProsentsatsFormatertViaToStringForEnklareLoggingOgDebugging() {
+        assertThat(new Kroner(100d).toString()).isEqualTo("kr 100");
+        assertThat(new Kroner(1_000_000d).toString()).isEqualTo("kr 1000000");
+        assertThat(new Kroner(-200.49d).toString()).isEqualTo("kr -200");
+    }
+
     private AbstractIntegerAssert<?> assertCompareTo(double a, double b) {
         final Kroner x = new Kroner(a);
         final Kroner y = new Kroner(b);

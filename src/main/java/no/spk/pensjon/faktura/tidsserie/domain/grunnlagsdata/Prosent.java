@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 import static java.lang.Double.parseDouble;
@@ -76,7 +77,7 @@ public class Prosent {
      */
     @Override
     public String toString() {
-        final NumberFormat format = NumberFormat.getPercentInstance();
+        final NumberFormat format = NumberFormat.getPercentInstance(new Locale("no", "NO"));
         format.setMaximumFractionDigits(3);
         format.setGroupingUsed(false);
         return format.format(verdi);

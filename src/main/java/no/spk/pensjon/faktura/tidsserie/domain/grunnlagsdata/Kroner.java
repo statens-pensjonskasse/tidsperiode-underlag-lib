@@ -1,8 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -99,7 +101,7 @@ public final class Kroner implements Comparable<Kroner> {
      */
     @Override
     public String toString() {
-        final NumberFormat format = NumberFormat.getCurrencyInstance();
+        final NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("no", "NO"));
         format.setMaximumFractionDigits(0);
         format.setGroupingUsed(false);
         return format.format(beloep);
