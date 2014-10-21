@@ -74,6 +74,11 @@ public class UnderlagsperiodeTest {
         create(null, "2007.12.31");
     }
 
+    /**
+     * Verifiserer at underlagsperiodene handhevar at til og med-dato ikkje kan vere løpande, dette for å sikre
+     * at post-conditionen til oppbygginga av underlaget (som seier at eit underlag alltid skal representere ei lukka
+     * tidsperiode) blir handheva.
+     */
     @Test
     public void skalIkkjeKunneOpprettUnderlagsPerioderMedTilOgMedDatoLikNull() {
         e.expect(NullPointerException.class);
