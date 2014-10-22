@@ -89,8 +89,7 @@ public class Underlag implements Iterable<Underlagsperiode> {
      * @param perioder underlagsperiodene som underlaget er bygd opp av
      */
     public Underlag(final Stream<Underlagsperiode> perioder) {
-        perioder
-                .collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
+        perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
     }
 
     /**

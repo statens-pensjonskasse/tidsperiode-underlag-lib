@@ -93,8 +93,8 @@ public class UnderlagFactory {
                         .map(UnderlagFactory::nesteDag)
         )
                 .flatMap(perioder -> perioder)
-                .map(d -> d.isBefore(grenser.fraOgMed()) ? grenser.fraOgMed() : d)
-                .map(d -> d.isAfter(grenser.tilOgMed().get()) ? nesteDag(grenser.tilOgMed().get()) : d)
+                .map(d -> avgrensTilNedreGrense(d))
+                .map(d -> avgrensTilOevreGrense(d))
                 .distinct()
                 .sorted(LocalDate::compareTo)
                 .collect(toList());
@@ -111,6 +111,40 @@ public class UnderlagFactory {
                 nyePerioder
                         .stream()
         );
+    }
+
+    /**
+     * Avgrensar <code>dato</code> til å ligge innanfor observasjonsperioda til og med-dato.
+     * <p>
+     * Intensjonen her er å sikre at underlaget ikkje blir periodisert på ein slik måte at ei eller fleire av
+     * underlagsperiodene blir liggande utanfor observasjonsperioda, sidan den representerer ei hard,
+     * ytre begrensing for første fra og med- og siste til og med-dato til underlagperiodene til underlaget.
+     * <p>
+     * Dersom <code>dato</code> ligg utanfor observasjonsperioda blir den sett bort frå og dagen etter
+     * observasjonsperiodas siste dag, blir returnert.
+     *
+     * @param dato ein dato som muligens ligg etter observasjonsperiodas til og med-dato
+     * @return returnerer <code>dato</code> viss <code>dato</code> overlappar observasjonsperioda,
+     * ellers blir dagen etter observasjonsperiodas til og med-dato returnert
+     */
+    private LocalDate avgrensTilOevreGrense(final LocalDate dato) {
+        return dato.isAfter(grenser.tilOgMed().get()) ? nesteDag(grenser.tilOgMed().get()) : dato;
+    }
+
+    /**
+     * Avgrensar <code>dato</code> til å ligge innanfor observasjonsperioda.
+     * <p>
+     * Intensjonen her er å sikre at underlaget ikkje blir periodisert på ein slik måte at ei eller fleire av
+     * underlagsperiodene har ein frå og med-dato som ligg utanfor observasjonsperioda, sidan den representerer ei hard,
+     * ytre begrensing for første fra og med- og siste til og med-dato til underlagperiodene til underlaget.
+     *
+     * @param dato ein dato som muligens ligg utanfor observasjonsperioda
+     * @return returnerer <code>dato</code> viss <code>dato</code> overlappar observasjonsperioda,
+     * ellers blir observasjonsperiodas fra og med-dato returnert
+     */
+
+    private LocalDate avgrensTilNedreGrense(final LocalDate dato) {
+        return dato.isBefore(grenser.fraOgMed()) ? grenser.fraOgMed() : dato;
     }
 
     /**

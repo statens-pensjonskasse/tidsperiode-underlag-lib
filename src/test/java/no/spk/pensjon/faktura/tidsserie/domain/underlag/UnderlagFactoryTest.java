@@ -178,10 +178,48 @@ public class UnderlagFactoryTest {
         final String expected = "2008.02.28";
 
         final Underlag underlag = create("2004.01.01", expected)
-                .addPerioder(new StillingsforholdPeriode(dato("2004.02.29"), of(dato("2012.06.01"))))
+                .addPerioder(
+                        new StillingsforholdPeriode(dato("2004.02.29"), of(dato("2012.06.01")))
+                )
                 .periodiser();
         assertThat(underlag).hasSize(1);
         assertTilOgMed(underlag, 0).isEqualTo(of(dato(expected)));
+    }
+
+    /**
+     * Verifiserer at vi ikkje har nokon ekle +/- 1 dag feil i handtering av øvre grense for dato i underlaget.
+     * <p>
+     * Dersom vi har ei periode som har til og med-dato lik observasjonsperiodas til og med-dato og ei underlagsperiode
+     * som startar dagen etter så skal det ikkje genererast meir enn ei periode i underlaget.
+     * <p>
+     * Dersom vi har ei periode som har frå og med-dato lik observasjonsperiodas til og med-dato så skal underlaget
+     * splittast på denne dagen så ein endar opp med ei en-dag lang underlagsperiode som siste periode i underlaget.
+     */
+    @Test
+    public void skalHandtereGrenseverdiarVedAvgrensingAvOevredatoGrenseKorrekt() {
+        final String expected = "2008.02.28";
+
+        final Underlag underlag = create("2004.01.01", expected)
+                .addPerioder(
+                        new StillingsforholdPeriode(dato("2004.02.29"), of(dato("2008.02.28"))),
+                        new StillingsforholdPeriode(dato("2008.03.01"), of(dato("2012.06.01")))
+                )
+                .periodiser();
+        assertThat(underlag).hasSize(1);
+        assertFraOgMed(underlag, 0).isEqualTo(dato("2004.02.29"));
+        assertTilOgMed(underlag, 0).isEqualTo(of(dato(expected)));
+
+        final Underlag underlag2 = create("2004.01.01", expected)
+                .addPerioder(
+                        new StillingsforholdPeriode(dato("2004.02.29"), of(dato("2008.02.27"))),
+                        new StillingsforholdPeriode(dato("2008.02.28"), of(dato("2012.06.01")))
+                )
+                .periodiser();
+        assertThat(underlag2).hasSize(2);
+        assertFraOgMed(underlag2, 0).isEqualTo(dato("2004.02.29"));
+        assertTilOgMed(underlag2, 0).isEqualTo(of(dato(expected).minusDays(1)));
+        assertFraOgMed(underlag2, 1).isEqualTo(dato(expected));
+        assertTilOgMed(underlag2, 1).isEqualTo(of(dato(expected)));
     }
 
     /**
