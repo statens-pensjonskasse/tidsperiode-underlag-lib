@@ -121,4 +121,12 @@ public class Underlag implements Iterable<Underlagsperiode> {
     public List<Underlagsperiode> toList() {
         return Collections.unmodifiableList(perioder);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "U" + perioder;
+    }
 }

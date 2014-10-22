@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +23,8 @@ import static java.util.Optional.ofNullable;
  *
  * @author Tarjei Skorgenes
  */
-public class Underlagsperiode {
+public class Underlagsperiode extends GenerellTidsperiode {
     private final Map<Object, Object> annotasjonar = new HashMap<>();
-
-    private final LocalDate fraOgMed;
-
-    private final Optional<LocalDate> tilOgMed;
 
     /**
      * Konstruerer ei ny underlagsperiode som har ein frå og med- og ein til og med-dato ulik <code>null</code>.
@@ -38,15 +36,7 @@ public class Underlagsperiode {
      * @throws IllegalArgumentException dersom fra og med-dato er etter til og med-dato
      */
     public Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        requireNonNull(fraOgMed, () -> "fra og med-dato er påkrevd, men var null");
-        requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null");
-        if (fraOgMed.isAfter(tilOgMed)) {
-            throw new IllegalArgumentException("fra og med-dato kan ikkje vere etter til og med-dato, men "
-                    + fraOgMed + " er etter " + tilOgMed
-            );
-        }
-        this.fraOgMed = fraOgMed;
-        this.tilOgMed = of(tilOgMed);
+        super(fraOgMed, of(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
     }
 
     /**

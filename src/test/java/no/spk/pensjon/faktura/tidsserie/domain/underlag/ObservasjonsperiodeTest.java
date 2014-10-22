@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -7,7 +8,7 @@ import org.junit.rules.ExpectedException;
 import static java.time.LocalDate.now;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode}.
  *
  * @author Tarjei Skorgenes
  */

@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 
 import java.time.LocalDate;
@@ -66,17 +67,30 @@ public class UnderlagFactory {
      * Konstruerer eit nytt underlag, populert med underlagsperioder mellom alle datoar der input periodene
      * endrar tilstand.
      *
-     * @return eit nytt underlag med underlagsperioder i kronologisk rekkefølge mellom alle endringsdatoar i input-periodene som ligg frå og med observasjonsperiodas start og slutt
+     * @return eit nytt underlag med underlagsperioder i kronologisk rekkefølge mellom alle endringsdatoar i
+     * input-periodene som ligg frå og med observasjonsperiodas start og slutt
+     * @throws java.lang.IllegalStateException dersom ingen input-perioder har blitt lagt til på factoryen før denne
+     *                                         metoda blir kalla
+     * @see #addPerioder(java.util.stream.Stream)
      */
     public Underlag periodiser() {
-        final ArrayList<Underlagsperiode> nyePerioder = new ArrayList<>();
+        if (perioder.isEmpty()) {
+            throw new IllegalStateException(
+                    "Periodisering av underlag krever minst ei tidsperiode som input, " +
+                            "men fabrikken er satt opp uten nokon tidsperioder."
+            );
+        }
+        final List<StillingsforholdPeriode> input = perioder
+                .stream()
+                .filter(p -> p.overlapper(grenser))
+                .collect(toList());
 
         List<LocalDate> endringsdatoar = Stream.of(
-                perioder
+                input
                         .stream()
                         .map(StillingsforholdPeriode::fraOgMed)
                 ,
-                perioder.stream()
+                input.stream()
                         .map(StillingsforholdPeriode::tilOgMed)
                         .map(o -> o.orElse(grenser.tilOgMed().get()))
                         .map(UnderlagFactory::nesteDag)
@@ -88,6 +102,7 @@ public class UnderlagFactory {
                 .sorted(LocalDate::compareTo)
                 .collect(toList());
 
+        final ArrayList<Underlagsperiode> nyePerioder = new ArrayList<>();
         Optional<LocalDate> fraOgMed = Optional.empty();
         for (final LocalDate nextDate : endringsdatoar) {
             fraOgMed.ifPresent(dato -> {

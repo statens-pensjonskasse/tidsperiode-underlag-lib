@@ -12,10 +12,7 @@ import java.util.Optional;
  *
  * @author Tarjei Skorgenes
  */
-public class StillingsforholdPeriode {
-    private final LocalDate fraOgMed;
-    private final Optional<LocalDate> tilOgMed;
-
+public class StillingsforholdPeriode extends GenerellTidsperiode {
     /**
      * Konstruerer ei ny periode for eit stillingsforhold.
      *
@@ -24,15 +21,6 @@ public class StillingsforholdPeriode {
      *                 viss perioda representerer siste periode stillingsforholdet er aktivt før det blir sluttmeldt
      */
     public StillingsforholdPeriode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
-        this.fraOgMed = fraOgMed;
-        this.tilOgMed = tilOgMed;
-    }
-
-    public LocalDate fraOgMed() {
-        return fraOgMed;
-    }
-
-    public Optional<LocalDate> tilOgMed() {
-        return tilOgMed;
+        super(fraOgMed, tilOgMed);
     }
 }

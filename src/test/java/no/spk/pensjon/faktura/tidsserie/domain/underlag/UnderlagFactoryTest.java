@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,6 +32,52 @@ public class UnderlagFactoryTest {
     @Before
     public void _before() {
         grenser = new Observasjonsperiode(dato("1970.01.01"), now().with(lastDayOfYear()));
+    }
+
+    /**
+     * Verifiserer at dersom ingen av tidsperiodene som blir brukt som input til periodiseringa av underlag
+     * ovarlappar observasjonsperioda så blir eit tom underlag generert, dvs det er ein normal
+     * situasjon som ikkje skal medføre nokon exception.
+     */
+    @Test
+    public void skalIkkjeFeileVissAllePerioderLiggUtanforObservasjonsperioda() {
+        final Underlag underlag = create("2014.01.01", "2014.12.31")
+                .addPerioder(
+                        new StillingsforholdPeriode(dato("2005.08.15"), of(dato("2012.06.30"))),
+                        new StillingsforholdPeriode(dato("2015.01.01"), empty())
+                )
+                .periodiser();
+        assertThat(underlag).hasSize(0);
+    }
+
+    /**
+     * Verifiserer at perioder som ligg utanfor observasjonsperioda, dvs ikkje oerlappar den med minst ein dag,
+     * ikkje får sine frå og med- og til og med-datoar brukt i forbindelse med periodiseringa av underlaget.
+     */
+    @Test
+    public void skalIkkjeSplittePaaInputPerioderSomLiggUtanforObservasjonsperioda() {
+        final Underlag underlag = create("2014.01.01", "2014.12.31")
+                .addPerioder(
+                        new StillingsforholdPeriode(dato("2005.08.15"), of(dato("2012.06.30"))),
+                        new StillingsforholdPeriode(dato("2012.07.01"), of(dato("2014.10.31"))),
+                        new StillingsforholdPeriode(dato("2015.01.01"), empty())
+                )
+                .periodiser();
+        assertThat(underlag).hasSize(1);
+        assertFraOgMed(underlag, 0).isEqualTo(dato("2014.01.01"));
+        assertTilOgMed(underlag, 0).isEqualTo(of(dato("2014.10.31")));
+    }
+
+    /**
+     * Verifiserer at det blir betrakta som ein feil å ikkje legge til nokon tidsperioder som input
+     * før konstruksjon av nytt underlag for blir forsøkt utført.
+     */
+    @Test
+    public void skalFeileDersomIngenPerioderErLagtTilFoerPeriodiseringBlirForsoektUtfoert() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Periodisering av underlag krever minst ei tidsperiode som input");
+        e.expectMessage("fabrikken er satt opp uten nokon tidsperioder");
+        create().periodiser();
     }
 
     /**

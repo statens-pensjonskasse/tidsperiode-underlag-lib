@@ -87,15 +87,6 @@ public class UnderlagsperiodeTest {
         create("2007.12.31", null);
     }
 
-    @Test
-    public void skalIkkjeKunneOpprettUnderlagsperiodeMedFraOgMedDatoEtterTilOgMedDato() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("fra og med-dato kan ikkje vere etter til og med-dato");
-        e.expectMessage("2005-12-30 er etter 2005-01-01");
-
-        create("2005.12.30", "2005.01.01");
-    }
-
     private Underlagsperiode create(final String fra, final String til) {
         return new Underlagsperiode(dato(fra), dato(til));
     }
