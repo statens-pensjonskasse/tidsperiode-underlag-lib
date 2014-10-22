@@ -14,17 +14,17 @@ import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar
  *
  * @author Tarjei Skorgenes
  */
-public class GenerellTidsperiode {
+public class GenerellTidsperiode implements Tidsperiode {
     protected final LocalDate fraOgMed;
     protected final Optional<LocalDate> tilOgMed;
 
     /**
      * Konstruerer ei ny tidsperiode som har ein frå og med-dato og som kan ha
-     * ein sluttdato eller som kan vere løpande.
+     * ein til og med-dato, eller som kan vere løpande og dermed har ein tom til og med-dato
      *
      * @param fraOgMed første dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
-     *                 indikerer det at tidsperioda ikkje er avslutta, også kalla løpande
+     *                 indikerer det at tidsperioda ikkje er avslutta, dvs løpande
      */
     public GenerellTidsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         requireNonNull(fraOgMed, FRA_OG_MED_PAAKREVD);
@@ -36,43 +36,22 @@ public class GenerellTidsperiode {
         this.fraOgMed = fraOgMed;
     }
 
-    /**
-     * Første dag i tidsperioda.
-     *
-     * @return periodas frå og med-dato
-     */
+    @Override
     public LocalDate fraOgMed() {
         return fraOgMed;
     }
 
-    /**
-     * Siste dag i tidsperioda viss den ikkje er løpande.
-     *
-     * @return siste dag i tidsperioda viss den ikkje er løpande,
-     * ellers {@link java.util.Optional#empty()} for å indikere at den er løpande
-     */
-
+    @Override
     public Optional<LocalDate> tilOgMed() {
         return tilOgMed;
     }
 
-    /**
-     * Overlappar dei to periodene kvarandre?
-     *
-     * @param other den andre perioda som vi skal sjekke om vi overlappar
-     * @return <code>true</code> dersom dei to periodene har minst ein felles dato som begge overlappar,
-     * <code>false</code> ellers
-     */
-    public boolean overlapper(final GenerellTidsperiode other) {
+    @Override
+    public boolean overlapper(final Tidsperiode other) {
         return overlapper(other.fraOgMed()) || other.overlapper(fraOgMed());
     }
 
-    /**
-     * Sjekkar om datoen er lik eller er mellom periodas frå og med- og til og med-datoar.
-     *
-     * @param dato datoen som skal sjekkast om ligg innanfor perioda
-     * @return <code>true</code> dersom datoen ligg innanfor perioda
-     */
+    @Override
     public boolean overlapper(final LocalDate dato) {
         return !(dato.isBefore(fraOgMed()) || dato.isAfter(tilOgMed().orElse(MAX)));
     }

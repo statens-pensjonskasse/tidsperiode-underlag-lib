@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractObjectAssert;
 
@@ -16,23 +16,23 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public final class Assertions {
     /**
-     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode#tilOgMed()}.
+     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode#tilOgMed()}.
      *
      * @param periode underlagsperioda som til og med-dato skal hentast frå
      * @return ein ny asserter for til og med-datoen til perioda
      */
-    public static AbstractObjectAssert<?, Optional<LocalDate>> assertTilOgMed(final Underlagsperiode periode) {
+    public static AbstractObjectAssert<?, Optional<LocalDate>> assertTilOgMed(final Tidsperiode periode) {
         return assertThat(periode.tilOgMed()).as("til og med-dato for underlagsperiode " + periode);
     }
 
     /**
-     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode#fraOgMed()}.
+     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode#fraOgMed()}.
      *
      * @param periode underlagsperioda som fra og med-dato skal hentast frå
      * @return ein ny asserter for fra og med-datoen til perioda
      */
-    public static AbstractComparableAssert<?, LocalDate> assertFraOgMed(final Underlagsperiode periode) {
-        return assertThat(periode.fraOgMed()).as("fra og med-dato for underlagsperiode " + periode);
+    public static AbstractComparableAssert<?, LocalDate> assertFraOgMed(final Tidsperiode periode) {
+        return assertThat(periode.fraOgMed()).as("fra og med-dato for tidsperiode " + periode);
     }
 
     /**
@@ -59,6 +59,4 @@ public final class Assertions {
     public static AbstractComparableAssert<?, LocalDate> assertFraOgMed(Underlag underlag, int index) {
         return assertFraOgMed(underlag.toList().get(index));
     }
-
-
 }

@@ -26,7 +26,7 @@ public class GenerellTidsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
-    protected BiFunction<LocalDate, Optional<LocalDate>, GenerellTidsperiode> factory;
+    protected BiFunction<LocalDate, Optional<LocalDate>, Tidsperiode> factory;
 
     public GenerellTidsperiodeTest() {
         this.factory = (fraOgMed, tilOgMed) -> new GenerellTidsperiode(fraOgMed, tilOgMed);
@@ -69,8 +69,8 @@ public class GenerellTidsperiodeTest {
 
     @Test
     public void skalOverlapperPerioderSomOverlapparITid() {
-        GenerellTidsperiode primaer = create("2001.01.01", "2001.12.31");
-        List<GenerellTidsperiode> skalOverlappe = asList(
+        Tidsperiode primaer = create("2001.01.01", "2001.12.31");
+        List<Tidsperiode> skalOverlappe = asList(
                 create("2000.01.01", "2001.06.30"),
                 create("2001.02.01", "2001.06.30"),
                 create("2001.07.01", "2002.12.31"),
@@ -85,8 +85,8 @@ public class GenerellTidsperiodeTest {
 
     @Test
     public void skalIkkjeOverlapperPerioderSomIkkjeOverlapparITid() {
-        GenerellTidsperiode primaer = create("2001.01.01", "2001.12.31");
-        List<GenerellTidsperiode> skalIkkjeOverlappe = asList(
+        Tidsperiode primaer = create("2001.01.01", "2001.12.31");
+        List<Tidsperiode> skalIkkjeOverlappe = asList(
                 create("2000.01.01", "2000.12.31"),
                 create("2002.01.01", "2002.12.31"),
                 create("2002.01.01", null)
@@ -96,15 +96,15 @@ public class GenerellTidsperiodeTest {
         skalIkkjeOverlappe.forEach(p -> assertOverlapper(primaer, p).isFalse());
     }
 
-    public AbstractBooleanAssert<?> assertOverlapper(GenerellTidsperiode a, GenerellTidsperiode b) {
+    public AbstractBooleanAssert<?> assertOverlapper(Tidsperiode a, Tidsperiode b) {
         return assertThat(a.overlapper(b)).as("overlapper " + a + " med " + b + "?");
     }
 
-    protected GenerellTidsperiode create(final String fraOgMed, final String tilOgMed) {
+    protected Tidsperiode create(final String fraOgMed, final String tilOgMed) {
         return factory.apply(dato(fraOgMed), ofNullable(dato(tilOgMed)));
     }
 
-    protected GenerellTidsperiode create(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
+    protected Tidsperiode create(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         return factory.apply(fraOgMed, tilOgMed);
     }
 }

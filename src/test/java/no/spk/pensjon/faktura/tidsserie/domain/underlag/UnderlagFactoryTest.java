@@ -1,13 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
@@ -43,8 +45,8 @@ public class UnderlagFactoryTest {
     public void skalIkkjeFeileVissAllePerioderLiggUtanforObservasjonsperioda() {
         final Underlag underlag = create("2014.01.01", "2014.12.31")
                 .addPerioder(
-                        new StillingsforholdPeriode(dato("2005.08.15"), of(dato("2012.06.30"))),
-                        new StillingsforholdPeriode(dato("2015.01.01"), empty())
+                        periode(dato("2005.08.15"), of(dato("2012.06.30"))),
+                        periode(dato("2015.01.01"), empty())
                 )
                 .periodiser();
         assertThat(underlag).hasSize(0);
@@ -58,9 +60,9 @@ public class UnderlagFactoryTest {
     public void skalIkkjeSplittePaaInputPerioderSomLiggUtanforObservasjonsperioda() {
         final Underlag underlag = create("2014.01.01", "2014.12.31")
                 .addPerioder(
-                        new StillingsforholdPeriode(dato("2005.08.15"), of(dato("2012.06.30"))),
-                        new StillingsforholdPeriode(dato("2012.07.01"), of(dato("2014.10.31"))),
-                        new StillingsforholdPeriode(dato("2015.01.01"), empty())
+                        periode(dato("2005.08.15"), of(dato("2012.06.30"))),
+                        periode(dato("2012.07.01"), of(dato("2014.10.31"))),
+                        periode(dato("2015.01.01"), empty())
                 )
                 .periodiser();
         assertThat(underlag).hasSize(1);
@@ -88,8 +90,8 @@ public class UnderlagFactoryTest {
     public void skalLageUnderlagsperiodeForKvarStillingsendring() {
         final Underlag underlag = create()
                 .addPerioder(
-                        new StillingsforholdPeriode(dato("2005.01.01"), of(dato("2011.12.31"))),
-                        new StillingsforholdPeriode(dato("2012.01.01"), of(dato("2012.06.30")))
+                        periode(dato("2005.01.01"), of(dato("2011.12.31"))),
+                        periode(dato("2012.01.01"), of(dato("2012.06.30")))
                 ).periodiser();
         assertThat(underlag).hasSize(2);
 
@@ -111,8 +113,8 @@ public class UnderlagFactoryTest {
         LocalDate duplisertDato = dato("2001.01.01");
         Underlag underlag = create()
                 .addPerioder(
-                        new StillingsforholdPeriode(duplisertDato, empty()),
-                        new StillingsforholdPeriode(duplisertDato, empty())
+                        periode(duplisertDato, empty()),
+                        periode(duplisertDato, empty())
                 ).periodiser();
         assertThat(underlag).hasSize(1);
         assertFraOgMed(underlag, 0).isEqualTo(dato("2001.01.01"));
@@ -127,8 +129,8 @@ public class UnderlagFactoryTest {
     public void skalByggeOppUnderlagsperiodeneIKronologiskRekkefoelgeSjoelvOmInputPeriodeneKanVereIAnnaRekkefoelge() {
         Underlag underlag = create()
                 .addPerioder(
-                        new StillingsforholdPeriode(dato("2010.01.01"), of(dato("2012.06.30"))),
-                        new StillingsforholdPeriode(dato("2003.07.13"), of(dato("2009.12.31")))
+                        periode(dato("2010.01.01"), of(dato("2012.06.30"))),
+                        periode(dato("2003.07.13"), of(dato("2009.12.31")))
                 )
                 .periodiser();
         assertThat(underlag).hasSize(2);
@@ -141,7 +143,7 @@ public class UnderlagFactoryTest {
         final LocalDate expected = dato("2001.01.01");
         final Underlag underlag = create()
                 .addPerioder(
-                        new StillingsforholdPeriode(expected, of(expected))
+                        periode(expected, of(expected))
                 )
                 .periodiser();
         assertThat(underlag).hasSize(1);
@@ -157,7 +159,9 @@ public class UnderlagFactoryTest {
     public void skalAvslutteSisteUnderlagsperiodaPaaSisteDagIObservasjonsperiodaVissSisteTidsperiodeErLoepande() {
         final String expected = "2004.03.31";
         Underlag underlag = create("2004.01.01", expected)
-                .addPerioder(new StillingsforholdPeriode(dato("2004.02.29"), empty()))
+                .addPerioder(
+                        periode(dato("2004.02.29"), empty())
+                )
                 .periodiser();
         assertThat(underlag).hasSize(1);
         assertTilOgMed(underlag, 0).isEqualTo(of(dato(expected)));
@@ -179,7 +183,7 @@ public class UnderlagFactoryTest {
 
         final Underlag underlag = create("2004.01.01", expected)
                 .addPerioder(
-                        new StillingsforholdPeriode(dato("2004.02.29"), of(dato("2012.06.01")))
+                        periode(dato("2004.02.29"), of(dato("2012.06.01")))
                 )
                 .periodiser();
         assertThat(underlag).hasSize(1);
@@ -201,8 +205,8 @@ public class UnderlagFactoryTest {
 
         final Underlag underlag = create("2004.01.01", expected)
                 .addPerioder(
-                        new StillingsforholdPeriode(dato("2004.02.29"), of(dato("2008.02.28"))),
-                        new StillingsforholdPeriode(dato("2008.03.01"), of(dato("2012.06.01")))
+                        periode(dato("2004.02.29"), of(dato("2008.02.28"))),
+                        periode(dato("2008.03.01"), of(dato("2012.06.01")))
                 )
                 .periodiser();
         assertThat(underlag).hasSize(1);
@@ -211,8 +215,8 @@ public class UnderlagFactoryTest {
 
         final Underlag underlag2 = create("2004.01.01", expected)
                 .addPerioder(
-                        new StillingsforholdPeriode(dato("2004.02.29"), of(dato("2008.02.27"))),
-                        new StillingsforholdPeriode(dato("2008.02.28"), of(dato("2012.06.01")))
+                        periode(dato("2004.02.29"), of(dato("2008.02.27"))),
+                        periode(dato("2008.02.28"), of(dato("2012.06.01")))
                 )
                 .periodiser();
         assertThat(underlag2).hasSize(2);
@@ -236,7 +240,7 @@ public class UnderlagFactoryTest {
     public void skalStartFoersteUnderlagsperiodaPaaFoersteDagIObservasjonsperiodaVissFoersteTidsperiodesStartarTidligare() {
         final String expected = "2004.01.01";
         final Underlag underlag = create(expected, "2008.02.28")
-                .addPerioder(new StillingsforholdPeriode(dato("2000.02.29"), of(dato("2007.06.01"))))
+                .addPerioder(periode(dato("2000.02.29"), of(dato("2007.06.01"))))
                 .periodiser();
         assertThat(underlag).hasSize(1);
         assertFraOgMed(underlag, 0).isEqualTo(dato(expected));
@@ -252,7 +256,7 @@ public class UnderlagFactoryTest {
     @Test
     public void skalKonstruereUnderlagMedKunEiUnderlagsperiodeVissInputPeriodeneOverlapparMenFraOgMedOgTilOgMedDatoaneAlleLiggUtanforObservasjonsperioda() {
         Underlag underlag = create("2001.01.01", "2001.12.31")
-                .addPerioder(new StillingsforholdPeriode(dato("2000.01.01"), of(dato("2002.01.01"))))
+                .addPerioder(periode(dato("2000.01.01"), of(dato("2002.01.01"))))
                 .periodiser();
         assertThat(underlag).hasSize(1);
         assertFraOgMed(underlag, 0).isEqualTo(dato("2001.01.01"));
@@ -282,5 +286,9 @@ public class UnderlagFactoryTest {
 
     private UnderlagFactory create() {
         return new UnderlagFactory(grenser);
+    }
+
+    private Tidsperiode periode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
+        return new GenerellTidsperiode(fraOgMed, tilOgMed);
     }
 }

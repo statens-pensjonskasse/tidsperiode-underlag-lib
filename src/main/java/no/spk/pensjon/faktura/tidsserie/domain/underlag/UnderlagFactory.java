@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import static java.util.stream.StreamSupport.stream;
  * @author Tarjei Skorgenes
  */
 public class UnderlagFactory {
-    private final ArrayList<StillingsforholdPeriode> perioder = new ArrayList<>();
+    private final ArrayList<Tidsperiode> perioder = new ArrayList<>();
     private final Observasjonsperiode grenser;
 
     /**
@@ -42,14 +42,14 @@ public class UnderlagFactory {
     /**
      * @see #addPerioder(java.util.stream.Stream)
      */
-    public UnderlagFactory addPerioder(final StillingsforholdPeriode... perioder) {
+    public UnderlagFactory addPerioder(final Tidsperiode... perioder) {
         return addPerioder(asList(perioder));
     }
 
     /**
      * @see #addPerioder(java.util.stream.Stream)
      */
-    public UnderlagFactory addPerioder(final Iterable<StillingsforholdPeriode> perioder) {
+    public UnderlagFactory addPerioder(final Iterable<Tidsperiode> perioder) {
         return addPerioder(stream(perioder.spliterator(), false));
     }
 
@@ -60,7 +60,7 @@ public class UnderlagFactory {
      * @param perioder input-perioder som skal leggast til for seinare å brukast ved periodisering av og konstruksjon av nye underlag
      * @return <code>this</code>
      */
-    public UnderlagFactory addPerioder(Stream<StillingsforholdPeriode> perioder) {
+    public UnderlagFactory addPerioder(Stream<Tidsperiode> perioder) {
         perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
         return this;
     }
@@ -82,7 +82,7 @@ public class UnderlagFactory {
                             "men fabrikken er satt opp uten nokon tidsperioder."
             );
         }
-        final List<StillingsforholdPeriode> input = finnObserverbarePerioder();
+        final List<Tidsperiode> input = finnObserverbarePerioder();
         return new Underlag(
                 byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(input))
         );
@@ -162,14 +162,14 @@ public class UnderlagFactory {
      * @param input ei liste som inneheld alle tidsperioder som underlagets potensielt sett skal måtte periodiserast frå
      * @return ei kronologisk sortert samling av unike datoar som underlaget sine underlagsperioder skal splittast på
      */
-    private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<StillingsforholdPeriode> input) {
+    private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<Tidsperiode> input) {
         return Stream.of(
                 input
                         .stream()
-                        .map(StillingsforholdPeriode::fraOgMed)
+                        .map(Tidsperiode::fraOgMed)
                 ,
                 input.stream()
-                        .map(StillingsforholdPeriode::tilOgMed)
+                        .map(Tidsperiode::tilOgMed)
                         .map(o -> o.orElse(grenser.tilOgMed().get()))
                         .map(UnderlagFactory::nesteDag)
         )
@@ -223,7 +223,7 @@ public class UnderlagFactory {
      *
      * @return ei liste som kun inneheld perioder som overlappar observasjonsperioda
      */
-    private List<StillingsforholdPeriode> finnObserverbarePerioder() {
+    private List<Tidsperiode> finnObserverbarePerioder() {
         return perioder
                 .stream()
                 .filter(p -> p.overlapper(grenser))
