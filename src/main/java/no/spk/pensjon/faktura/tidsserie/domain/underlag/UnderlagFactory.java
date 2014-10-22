@@ -80,10 +80,7 @@ public class UnderlagFactory {
                             "men fabrikken er satt opp uten nokon tidsperioder."
             );
         }
-        final List<StillingsforholdPeriode> input = perioder
-                .stream()
-                .filter(p -> p.overlapper(grenser))
-                .collect(toList());
+        final List<StillingsforholdPeriode> input = finnObserverbarePerioder();
 
         List<LocalDate> endringsdatoar = Stream.of(
                 input
@@ -114,6 +111,21 @@ public class UnderlagFactory {
                 nyePerioder
                         .stream()
         );
+    }
+
+    /**
+     * Filtrerer vekk alle input-perioder som ikkje overlappar observasjonsperioda.
+     * <p>
+     * Intensjonen her er å hindre at underlaget kan bli påvirka og periodisert basert på data frå perioder som ein
+     * ikkje skal ta hensyn til.
+     *
+     * @return ei liste som kun inneheld perioder som overlappar observasjonsperioda
+     */
+    private List<StillingsforholdPeriode> finnObserverbarePerioder() {
+        return perioder
+                .stream()
+                .filter(p -> p.overlapper(grenser))
+                .collect(toList());
     }
 
     /**
