@@ -83,19 +83,33 @@ public class UnderlagFactory {
             );
         }
         final List<StillingsforholdPeriode> input = finnObserverbarePerioder();
+        return new Underlag(
+                byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(input))
+        );
+    }
 
+    /**
+     * Bygger opp ein kronologisk sortert straum av underlagsperioder for endringsdatoane.
+     * <p>
+     * For kvar dato i <code>endringsdatoer</code> blir det generert ei ny underlagsperiode som har den aktuelle
+     * datoen som sin frå og med-dato og neste endringsdato, minus 1 dag, som sin til og med-dato.
+     * <p>
+     * Siste endringsdato må derfor vere dagen etter at siste underlagsperiode skal bli avslutta for å sikre at
+     * periodiseringa blir som forventa.
+     *
+     * @param endringsdatoer ei kronologisk sortert samling datoar der det skal starte ei ny underlagsperiode
+     * @return ein kronologisk sortert straum av underlagsperioder
+     */
+    private Stream<Underlagsperiode> byggUnderlagsperioder(final SortedSet<LocalDate> endringsdatoer) {
         final ArrayList<Underlagsperiode> nyePerioder = new ArrayList<>();
         Optional<LocalDate> fraOgMed = Optional.empty();
-        for (final LocalDate nextDate : alleDatoerUnderlagesPerioderSkalSplittesPaa(input)) {
+        for (final LocalDate nextDate : endringsdatoer) {
             fraOgMed.ifPresent(dato -> {
                 nyePerioder.add(new Underlagsperiode(dato, nextDate.minusDays(1)));
             });
             fraOgMed = of(nextDate);
         }
-        return new Underlag(
-                nyePerioder
-                        .stream()
-        );
+        return nyePerioder.stream();
     }
 
     /**
