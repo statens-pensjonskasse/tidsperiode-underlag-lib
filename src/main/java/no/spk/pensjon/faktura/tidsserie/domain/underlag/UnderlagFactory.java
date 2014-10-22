@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -82,7 +84,72 @@ public class UnderlagFactory {
         }
         final List<StillingsforholdPeriode> input = finnObserverbarePerioder();
 
-        List<LocalDate> endringsdatoar = Stream.of(
+        final ArrayList<Underlagsperiode> nyePerioder = new ArrayList<>();
+        Optional<LocalDate> fraOgMed = Optional.empty();
+        for (final LocalDate nextDate : alleDatoerUnderlagesPerioderSkalSplittesPaa(input)) {
+            fraOgMed.ifPresent(dato -> {
+                nyePerioder.add(new Underlagsperiode(dato, nextDate.minusDays(1)));
+            });
+            fraOgMed = of(nextDate);
+        }
+        return new Underlag(
+                nyePerioder
+                        .stream()
+        );
+    }
+
+    /**
+     * Hentar ut alle datoar som underlagets underlagsperioder skal splittast på fordi ei eller fleire av tidsperiodene
+     * i <code>input</code> har sin frå og med- eller til og med-dato på den aktuelle dagen.
+     * <h4>Split på frå og med-dato</h2>
+     * <p>
+     * Når ein skal periodisere må ein først og fremst splitte på alle tidsperioders frå og med-dato sidan dette markerer
+     * ein overgang frå ei tilstand til ei anna.
+     * <p>
+     * <h4>Split på til og med-dato</h4>
+     * <p>
+     * I tillegg må ein spesialhandtere til og med-datoar, ein må her splitte dagen _etter_ periodas til og med-dato
+     * fordi det først er då det skjer ei tilstandsendring.
+     * <p>
+     * <h4>Eksempel</h4>
+     * Knut startar i stilling 1. januar og sluttar i stillinga stilling 30. juni. Han tar deretter 2 månedar ubetalt
+     * ferie før han startar i ny stilling 3. september.
+     * <p>
+     * Underlaget for Knut må her splittast opp i 3 perioder, ei som går frå 1. januar til 30. juni sidan han her er i
+     * aktiv stilling og den endrar seg ikkje underveis (vi ser bort frå alle andre typer periodiske endringar i dette
+     * eksempelet). Underlaget må deretter splittast 1. juli sidan det markerer starten på ei underlagsperiode der Knut
+     * ikkje er i aktiv stilling. Underlagsperioda strekker seg frå 1. juli til 2. september. Siste underlagsperiode
+     * startar 3. september og løper no fram til underlaget si observsjonsperiodes til og med-dato sidan Knut no jobbar
+     * i ei aktiv stilling utan nokon andre endringar i tilstand (så vidt vi veit).
+     * <p>
+     * <h4>Avgrensing av datoar</h4>
+     * <p>
+     * Ved oppsplitting av underlaget så er det ikkje ønskelig å ende opp med underlagsperioder som har enten frå og med-
+     * eller til og med-dato som ligg utanfor observasjonsperioda som underlaget skal avgrensast til.
+     * <p>
+     * Tilsvarande, løpande/aktive tidsperioder (dvs utan til og med-dato) må på ein eller anna måte avgrensast sidan eit
+     * underlag ikkje skal kunne vere løpande.
+     * <p>
+     * For å sikre desse betingelsane blir derfor alle datoar returnert av denne metoda avgrensa til å tidligast starte
+     * samme dag som observsjonsperiodas frå og med-dato.
+     * <p>
+     * Datoane blir og garantert å ikkje starte meir enn 1 dag etter observasjonsperiodas til og med-dato, at ein her
+     * inkluderer datoar som faktisk ligg ein dag utanfor observasjonsperioda, skyldast at ein seinare i sjølve
+     * periodiseringa, skal trekke frå ein dag når ein bygger opp underlagsperiodene ut frå lista som vi her returnerer.
+     * <p>
+     * <h4>Rekkefølge</h4>
+     * <p>
+     * Sidan behandlinga av tidsperiodene i <code>input</code> ikkje vil garantere at vi endar opp med ei frå og med-
+     * og til og med-datoar i kronologisk sortert rekkefølge blir derfor lista vi returnerer sortert kronologisk (dvs
+     * frå minste dato til største dato) før vi returnerer. Uten dette vil ein ikkje kunne konstruere eit
+     * underlag sidan ein ikkje lenger har ein garanti for at ei underlagsperiodes frå og med-dato alltid vil vere
+     * mindre enn til og med-datoen for samme periode.
+     *
+     * @param input ei liste som inneheld alle tidsperioder som underlagets potensielt sett skal måtte periodiserast frå
+     * @return ei kronologisk sortert samling av unike datoar som underlaget sine underlagsperioder skal splittast på
+     */
+    private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<StillingsforholdPeriode> input) {
+        return Stream.of(
                 input
                         .stream()
                         .map(StillingsforholdPeriode::fraOgMed)
@@ -93,24 +160,11 @@ public class UnderlagFactory {
                         .map(UnderlagFactory::nesteDag)
         )
                 .flatMap(perioder -> perioder)
-                .map(d -> avgrensTilNedreGrense(d))
-                .map(d -> avgrensTilOevreGrense(d))
+                .map(this::avgrensTilNedreGrense)
+                .map(this::avgrensTilOevreGrense)
                 .distinct()
                 .sorted(LocalDate::compareTo)
-                .collect(toList());
-
-        final ArrayList<Underlagsperiode> nyePerioder = new ArrayList<>();
-        Optional<LocalDate> fraOgMed = Optional.empty();
-        for (final LocalDate nextDate : endringsdatoar) {
-            fraOgMed.ifPresent(dato -> {
-                nyePerioder.add(new Underlagsperiode(dato, nextDate.minusDays(1)));
-            });
-            fraOgMed = of(nextDate);
-        }
-        return new Underlag(
-                nyePerioder
-                        .stream()
-        );
+                .collect(TreeSet::new, TreeSet::add, TreeSet::addAll);
     }
 
     /**
