@@ -34,7 +34,7 @@ public class AarsfaktorRegel implements BeregningsRegel<Aarsfaktor> {
         if (verdi > 1d) {
             throw new IllegalArgumentException(
                     "årsfaktor kan kun beregnast for perioder på 1 år eller kortare, men perioda var "
-                            + dagarIPeriode + " lang"
+                            + dagarIPeriode + " lang, perioda det gjaldt er " + periode
             );
         }
         return new Aarsfaktor(verdi);

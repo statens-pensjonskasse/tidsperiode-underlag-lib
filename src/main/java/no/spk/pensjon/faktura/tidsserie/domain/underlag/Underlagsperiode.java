@@ -8,6 +8,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 /**
  * Ei tidsperiode som inngår som ein del av eit underlag.
@@ -71,11 +72,11 @@ public class Underlagsperiode {
      * @throws PaakrevdAnnotasjonManglarException viss perioda ikkje har ein verdi for den angitte annotasjonstypen
      */
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
-        Object verdi = annotasjonar.get(type);
-        if (verdi == null) {
+        final Optional<T> verdi = valgfriAnnotasjonFor(type);
+        if (!verdi.isPresent()) {
             throw new PaakrevdAnnotasjonManglarException(this, type);
         }
-        return (T) verdi;
+        return verdi.get();
     }
 
     /**
@@ -90,7 +91,7 @@ public class Underlagsperiode {
      * angitte annotasjonen
      */
     public <T> Optional<T> valgfriAnnotasjonFor(final Class<T> type) {
-        return empty();
+        return ofNullable((T) annotasjonar.get(type));
     }
 
     /**
@@ -123,5 +124,10 @@ public class Underlagsperiode {
      */
     public Optional<LocalDate> tilOgMed() {
         return tilOgMed;
+    }
+
+    @Override
+    public String toString() {
+        return "UP[" + fraOgMed + "->" + tilOgMed.map(d -> d.toString()).orElse("") + "]";
     }
 }

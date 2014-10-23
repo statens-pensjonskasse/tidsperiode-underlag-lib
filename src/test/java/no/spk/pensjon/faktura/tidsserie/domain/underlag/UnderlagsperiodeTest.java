@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +18,29 @@ public class UnderlagsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
+    /**
+     * Verifiserer at oppslag av valgfrie annotasjonar ikkje feilar dersom perioda ikkje har ein verdi for
+     * annotasjonen.
+     */
+    @Test
+    public void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonSomIkkjeEksistererPaaPerioda() {
+        assertThat(
+                eiPeriode().valgfriAnnotasjonFor(Object.class)
+        ).isEqualTo(empty());
+    }
+
+    /**
+     * Verifiserer at oppslag av valgfri annotasjon fungerer når perioda har ein verdi for annotasjonen.
+     */
+    @Test
+    public void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
+        final Object verdi = new String("valgfrie annotasjonar fungerer fint");
+
+        final Underlagsperiode periode = eiPeriode();
+        periode.annoter(Object.class, verdi);
+
+        assertThat(periode.valgfriAnnotasjonFor(Object.class)).isEqualTo(of(verdi));
+    }
 
     /**
      * Verifiserer at oppslag av påkrevde annotasjonar via
@@ -69,6 +93,10 @@ public class UnderlagsperiodeTest {
 
     private Underlagsperiode create(final String fra, final String til) {
         return new Underlagsperiode(dato(fra), dato(til));
+    }
+
+    private Underlagsperiode eiPeriode() {
+        return create("2007.01.01", "2007.12.31");
     }
 
 }

@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+
 import java.text.NumberFormat;
 
 /**
@@ -30,19 +32,38 @@ public class Aarsfaktor {
         this.verdi = verdi;
     }
 
+    /**
+     * Listar ut årsfaktoren avrunda til 4 desimalar.
+     * <br>
+     * NB: Dette er ein potensielt dyr operasjon då formateringa og avrundinga blir utført via ein ny
+     * {@link java.text.NumberFormat} pr kall.
+     */
     @Override
     public String toString() {
-        NumberFormat format = NumberFormat.getNumberInstance();
+        final NumberFormat format = NumberFormat.getNumberInstance();
         format.setMaximumFractionDigits(4);
         return format.format(verdi);
     }
 
     /**
      * Returnerer verdien som representerer årsfaktoren.
+     * <br>
+     * Dette er ein intern implementasjonsdetalj og skal kun benyttast for testing.
      *
      * @return årsfaktor-verdien
      */
     double verdi() {
         return verdi;
+    }
+
+    /**
+     * Multipliserer kronebeløpet med årsfaktoren.
+     *
+     * @param beloep eit kronebeløp som skal avkortast i henhold til årsfaktoren
+     * @return det nye kronebeløpet, avkorta i henhold til årsfaktoren
+     * @see Kroner#multiply(double)
+     */
+    public Kroner multiply(final Kroner beloep) {
+        return beloep.multiply(verdi);
     }
 }
