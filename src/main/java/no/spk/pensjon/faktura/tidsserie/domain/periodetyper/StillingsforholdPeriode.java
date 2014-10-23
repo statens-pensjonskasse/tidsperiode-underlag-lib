@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.unmodifiableList;
@@ -52,19 +53,18 @@ public class StillingsforholdPeriode extends GenerellTidsperiode {
     }
 
     /**
-     * Kobler sammen perioden med endringene som den overlapper.
+     * Kobler sammen perioden med alle stillingsendringer som perioden overlapper.
+     * <p>
+     * Kun stillingsendringer som faktisk overlapper perioden vil bli lagt til, <code>endringer</code> kan godt inneholde
+     * ikke overlappende perioder, de vil ikke bli koblet til perioden.
      *
-     * @param endring stillingsendringen som skal kobles til perioden
-     * @return <code>this</code>
+     * @param endringer en liste som inneholder alle stillingsendringer som skal forsøkes tilkoblet perioden
      */
-    public StillingsforholdPeriode kobleTil(final Stillingsendring endring) {
-        if (!overlapper(endring.aksjonsdato())) {
-            throw new IllegalArgumentException(
-                    "stillingsendringen med aksjonsdato " + endring.aksjonsdato()
-                            + " ligger utenfor stillingsforholdperioden " + this + ", endring = " + endring
-            );
+    public void leggTilOverlappendeStillingsendringer(final List<Stillingsendring> endringer) {
+        for (final Stillingsendring endring : endringer) {
+            if (overlapper(endring.aksjonsdato())) {
+                gjeldendeVerdier.add(endring);
+            }
         }
-        gjeldendeVerdier.add(endring);
-        return this;
     }
 }
