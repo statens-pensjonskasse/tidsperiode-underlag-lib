@@ -1,7 +1,12 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
+
+import static java.util.Collections.unmodifiableList;
 
 /**
  * {@link StillingsforholdPeriode} representerer ei periode der det ikkje skjer nokon endringar på eit bestemt
@@ -13,6 +18,8 @@ import java.util.Optional;
  * @author Tarjei Skorgenes
  */
 public class StillingsforholdPeriode extends GenerellTidsperiode {
+    private final ArrayList<Stillingsendring> gjeldendeVerdier = new ArrayList<>();
+
     /**
      * Konstruerer ei ny periode for eit stillingsforhold.
      *
@@ -22,5 +29,42 @@ public class StillingsforholdPeriode extends GenerellTidsperiode {
      */
     public StillingsforholdPeriode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         super(fraOgMed, tilOgMed);
+    }
+
+    /**
+     * Stillingsendringene som gjelder fra og med periodens første dag.
+     * <p>
+     * For stillingsforholdets siste periode vil det og kunne ligge inne en eller flere stillingsendringer som
+     * representerer sluttmeldingen eller sluttmeldinger som avslutter stillingsforholdet.
+     * <p>
+     * Antagelse: For stillingsforhold der datakvaliteten er som forventet skal alle perioder før stillingsforholdets
+     * siste periode kun være tillknyttet 1 stillingsendring.
+     * <p>
+     * Og for stillingsforholdets siste periode for stillingsforhold som ikke er aktive, dvs stillingsforhold som har
+     * blitt korrekt registrert som sluttmeldt, vil siste periode inneholde to stillingsendringer, en for siste endring
+     * før sluttmeldingen og en for selve sluttmeldingen.
+     *
+     * @return alle stillingsendringer som har en aksjonsdato som perioden overlapper, er garantert å inneholde minst
+     * en endring
+     */
+    public Iterable<Stillingsendring> endringer() {
+        return unmodifiableList(gjeldendeVerdier);
+    }
+
+    /**
+     * Kobler sammen perioden med endringene som den overlapper.
+     *
+     * @param endring stillingsendringen som skal kobles til perioden
+     * @return <code>this</code>
+     */
+    public StillingsforholdPeriode kobleTil(final Stillingsendring endring) {
+        if (!overlapper(endring.aksjonsdato())) {
+            throw new IllegalArgumentException(
+                    "stillingsendringen med aksjonsdato " + endring.aksjonsdato()
+                            + " ligger utenfor stillingsforholdperioden " + this + ", endring = " + endring
+            );
+        }
+        gjeldendeVerdier.add(endring);
+        return this;
     }
 }
