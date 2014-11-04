@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 
 import java.time.LocalDate;
@@ -10,8 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.time.LocalDate.MAX;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -31,6 +34,14 @@ public class PeriodiserStillingshistorikk {
      *
      * @param endringer stillingsendringer som skal periodiseres
      * @return <code>this</code>
+     */
+    public PeriodiserStillingshistorikk addEndring(final Stream<Stillingsendring> endringer) {
+        endringer.forEach(e -> this.endringer.add(e));
+        return this;
+    }
+
+    /**
+     * @see #addEndring(java.util.stream.Stream)
      */
     public PeriodiserStillingshistorikk addEndring(final Iterable<Stillingsendring> endringer) {
         endringer.forEach(e -> this.endringer.add(e));
@@ -64,11 +75,9 @@ public class PeriodiserStillingshistorikk {
      *
      * @return ein ny og ferdig periodisert representasjon av stillingsforholdets endringar så lenge det har vore aktivt
      */
-    public List<StillingsforholdPeriode> periodiser() {
+    public Optional<List<StillingsforholdPeriode>> periodiser() {
         if (endringer.isEmpty()) {
-            throw new IllegalStateException("Periodisering av stillingshistorikk kan ikkje bli utført " +
-                    "med mindre stillingsforholdet har minst ei usletta endring i stillingshistorikken"
-            );
+            return empty();
         }
 
         final Map<LocalDate, List<Stillingsendring>> prAksjonsdato = grupperPaaAksjonsdato();
@@ -78,7 +87,7 @@ public class PeriodiserStillingshistorikk {
 
         final List<StillingsforholdPeriode> perioder = byggStillingsforholdperioder(prAksjonsdato.keySet(), startDato, tilOgMed);
         leggTilOverlappandeStillingsendringar(perioder);
-        return perioder;
+        return of(perioder);
     }
 
     /**

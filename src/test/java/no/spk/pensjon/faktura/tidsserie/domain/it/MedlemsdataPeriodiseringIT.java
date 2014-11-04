@@ -1,19 +1,27 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
+import org.assertj.core.api.AbstractIterableAssert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
 import static no.spk.pensjon.faktura.tidsserie.domain.it.CsvFileReader.readFromClasspath;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,6 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 public class MedlemsdataPeriodiseringIT {
+    private static final StillingsforholdId STILLINGSFORHOLD_A = valueOf(999999999999L);
+    private static final StillingsforholdId STILLINGSFORHOLD_B = valueOf(888888888888L);
+    private static final StillingsforholdId MEDREGNING_C = valueOf(777777777777L);
+
     private final HashMap<Class<?>, MedlemsdataOversetter<?>> oversettere = new HashMap<>();
 
     private List<List<String>> data;
@@ -46,7 +58,51 @@ public class MedlemsdataPeriodiseringIT {
      */
     @Test
     public void skalFinne3UnikeStillingsforhold() {
-        final Medlemsdata medlem = new Medlemsdata(data, oversettere);
-        assertThat(medlem.allePeriodiserbareStillingsforhold().collect(toList())).hasSize(3);
+        final Medlemsdata medlem = create();
+        assertThat(medlem.allePeriodiserbareStillingsforhold().collect(toList()))
+                .hasSize(3)
+                .containsOnly(STILLINGSFORHOLD_A, STILLINGSFORHOLD_B, MEDREGNING_C);
+    }
+
+    /**
+     * Verifiserer at vi får ut 3 stillingsforhold periodisert kun ut frå stillingsendringar tilknytta kvart enkelt
+     * stillingsforhold, ikkje ei periodisering som er splitta på alle stillingsforholda sine stillingsendringar.
+     */
+    @Test
+    @Ignore
+    public void skalPeriodiserePrStillingsforhold() {
+        final Map<StillingsforholdId, List<StillingsforholdPerioder>> stillingsforholdene = create()
+                .alleStillingsforholdPerioder()
+                .collect(groupingBy(s -> s.id()));
+        assertThat(stillingsforholdene).hasSize(3);
+
+        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_A).hasSize(14);
+        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_B).hasSize(3);
+        assertPerioder(stillingsforholdene, MEDREGNING_C).hasSize(1);
+    }
+
+    /**
+     * Verifiserer at vi får ut 2 stillingsforhold periodisert kun ut frå stillingsendringar tilknytta kvart enkelt
+     * stillingsforhold, ikkje ei periodisering som er splitta på alle stillingsforholda sine stillingsendringar.
+     */
+    @Test
+    public void skalPeriodiserePrStillingsforholdMenKunForStillingsEndringarInntilMedregningErImplementert() {
+        final Map<StillingsforholdId, List<StillingsforholdPerioder>> stillingsforholdene = create()
+                .alleStillingsforholdPerioder()
+                .collect(groupingBy(s -> s.id()));
+        assertThat(stillingsforholdene).hasSize(2);
+
+        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_A).hasSize(14);
+        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_B).hasSize(3);
+    }
+
+    private Medlemsdata create() {
+        return new Medlemsdata(data, oversettere);
+    }
+
+    private static AbstractIterableAssert<?, ? extends Iterable<StillingsforholdPeriode>, StillingsforholdPeriode> assertPerioder(final Map<StillingsforholdId, List<StillingsforholdPerioder>> alleStillingsforhold, final StillingsforholdId id) {
+        final List<StillingsforholdPerioder> stillingsforhold = alleStillingsforhold.get(id);
+        assertThat(stillingsforhold).as("periodisering av stillingsforhold " + id).isNotNull().hasSize(1);
+        return assertThat(stillingsforhold.get(0).perioder());
     }
 }

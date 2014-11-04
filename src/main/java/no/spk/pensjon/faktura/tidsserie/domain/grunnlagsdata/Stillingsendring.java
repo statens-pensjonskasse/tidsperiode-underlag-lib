@@ -25,6 +25,16 @@ public class Stillingsendring {
 
     private String aksjonskode;
 
+    /**
+     * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
+     *
+     * @param stillingsforhold stillingsforholdet som stillingsendringa skal sjekkast opp mot
+     * @return <code>true</code> dersom stillingsendringar tilhøyrer stillingsforholdet,
+     * <code>false</code> viss den tilhøyrer eit anna stillingsforhold
+     */
+    public boolean tilhoerer(final StillingsforholdId stillingsforhold) {
+        return this.stillingsforhold.equals(stillingsforhold);
+    }
 
     /**
      * Stillingsforholdet endringa tilhøyrer.
@@ -66,6 +76,15 @@ public class Stillingsendring {
     public Stillingsendring aksjonskode(final String text) {
         this.aksjonskode = text;
         return this;
+    }
+
+    /**
+     * Aksjonskoden som indikerer hvilken type stillingsendring det er snakk om.
+     *
+     * @return en tekstlig representasjon av en 3-sifra tallkode som representerer endringstypen
+     */
+    public String aksjonskode() {
+        return aksjonskode;
     }
 
     /**

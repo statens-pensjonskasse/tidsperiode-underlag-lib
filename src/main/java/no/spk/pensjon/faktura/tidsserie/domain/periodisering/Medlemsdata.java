@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,8 @@ import static java.util.stream.Collectors.toSet;
  * Denne representaasjonen er valgt for å holde serialiseringa enkel og forenkle handtering av stillingshistorikk,
  * medregning og avtalekoblingar utan å måtte lage spesialisert serialisering for kvar og ein av desse.
  * <p>
- * Kontrakta for korleis kvar rad må sjå ut, varierer mellom dei 3 forskjellige datatypene. Men 4 felt er likevel påkrevd for at ting skal fungere som ønska:
+ * Kontrakta for korleis kvar rad må sjå ut, varierer mellom dei 3 forskjellige datatypene. Men 4 felt er likevel
+ * påkrevd for at ting skal fungere som ønska:
  * <ol>
  * <li>Typeindikator</li>
  * <li>Fødselsdato</li>
@@ -56,6 +58,11 @@ import static java.util.stream.Collectors.toSet;
  * @author Tarjei Skorgenes
  */
 public class Medlemsdata {
+    /**
+     * Indexen stillingsforholdnummeret blir henta frå i radene som utgjer medlemsdatane.
+     */
+    private static final int INDEX_STILLINGSFORHOLD_ID = 3;
+
     private final Map<?, MedlemsdataOversetter<?>> oversettere;
 
     private final List<List<String>> data;
@@ -99,10 +106,43 @@ public class Medlemsdata {
         // filtrerast til kun å inneholde data tilknytta stillingsforhold
         return data
                 .stream()
-                .map(e -> e.get(3))
+                .map(e -> e.get(INDEX_STILLINGSFORHOLD_ID))
                 .map(Long::valueOf)
                 .map(StillingsforholdId::new)
                 .distinct();
+    }
+
+    /**
+     * Periodiserer alle unike stillingsforhold som vi har stillingsendringar tilknytta.
+     * <p>
+     * For kvart stillingsforhold blir alle tilknytta stillingsendringar henta ut og brukt for å bygge opp
+     * ein ny instans av {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder} for kvart
+     * stillingsforhold.
+     * <p>
+     * For stillingsforhold som ikkje har nokon stillingsendringar men som har medregning vil det foreløpig ikkje blir
+     * generert nokon periodisering basert på dette.
+     *
+     * @return ein straum som inneheld alle stillingsforholdperioder for alle stillingsforhold som vi har stillingsendringar for
+     * @see #allePeriodiserbareStillingsforhold()
+     */
+    public Stream<StillingsforholdPerioder> alleStillingsforholdPerioder() {
+        return allePeriodiserbareStillingsforhold()
+                .map(id -> periodiserStillingsforhold(id))
+                .filter(o -> o.isPresent())
+                .map(o -> o.get());
+    }
+
+    /**
+     * Periodiserer stillingsendringar eller medregningar tilknytta eit bestemt stillingsforhold.
+     * <p>
+     * TODO: Implementere støtte for periodisering basert på medregning.
+     *
+     * @param stillingsforhold stillingsforholdet som skal periodiserast
+     * @return ein periodisert representasjon av stillingsforholdet viss det er tilknytta stillingsendringar eller medregning,
+     * eller {@link java.util.Optional#empty()} dersom det ikkje eksisterer nokon informasjon tilknytta stillingsforholdet
+     */
+    private Optional<StillingsforholdPerioder> periodiserStillingsforhold(final StillingsforholdId stillingsforhold) {
+        return periodiserHistorikk(stillingsforhold);
     }
 
     /**
@@ -111,7 +151,7 @@ public class Medlemsdata {
      * @return alle stillingsendring for medlemmet
      */
     Iterable<Stillingsendring> alleStillingsendringar() {
-        return finnOgOversett(Stillingsendring.class);
+        return finnOgOversett(Stillingsendring.class).collect(toSet());
     }
 
     /**
@@ -120,7 +160,31 @@ public class Medlemsdata {
      * @return alle avtalekoblingar for medlemmet
      */
     Iterable<Avtalekoblingsperiode> alleAvtalekoblingsperioder() {
-        return finnOgOversett(Avtalekoblingsperiode.class);
+        return finnOgOversett(Avtalekoblingsperiode.class).collect(toSet());
+    }
+
+    /**
+     * Lokaliserer alle stillingsendringar tilknytta det angitte stillingsforholdet og periodiserer
+     * stillingsforholdet basert på dette.
+     * <p>
+     * Dersom det ikkje eksisterer nokon stillingsendringar tilknytta stillingsforhold blir dette ignorert
+     * sidan det høgst sannsynlig då vil eksisterer ei medregning tilknytta stillingsforholdet og den
+     * forventast handtert av den som kallar denne metoda.
+     *
+     * @param stillingsforhold stillingsforholdet som skal forsøkast periodisert basert på stillingsendringar
+     * @return alle stillingsforholdperioder generert for stillingsforholdet, eller ingenting dersom det ikkje
+     * eksisterer nokon stillingsendringar som er tilknytta stillingsforholdet
+     */
+    private Optional<StillingsforholdPerioder> periodiserHistorikk(final StillingsforholdId stillingsforhold) {
+        final PeriodiserStillingshistorikk algoritme = new PeriodiserStillingshistorikk();
+        algoritme.addEndring(
+                finnOgOversett(Stillingsendring.class)
+                        .filter(e -> e.tilhoerer(stillingsforhold))
+
+        );
+        return algoritme
+                .periodiser()
+                .map(list -> new StillingsforholdPerioder(stillingsforhold, list));
     }
 
     /**
@@ -163,13 +227,12 @@ public class Medlemsdata {
      * @param <T>  datatypen som lokaliserast og konverterast
      * @return alle medlemsdata for den angitte typen
      */
-    private <T> Iterable<T> finnOgOversett(final Class<T> type) {
+    private <T> Stream<T> finnOgOversett(final Class<T> type) {
         final MedlemsdataOversetter<T> oversetter = lookup(type).orElse(new NullOversetter<T>());
         return data
                 .stream()
                 .filter(oversetter::supports)
-                .map(oversetter::oversett)
-                .collect(toSet());
+                .map(oversetter::oversett);
     }
 
     private <T> Optional<MedlemsdataOversetter<T>> lookup(final Class<? extends T> datatype) {

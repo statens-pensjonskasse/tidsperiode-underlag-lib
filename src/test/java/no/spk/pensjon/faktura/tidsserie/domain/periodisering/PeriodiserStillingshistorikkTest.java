@@ -24,17 +24,6 @@ import static org.assertj.core.api.Assertions.fail;
  * @author Tarjei Skorgenes
  */
 public class PeriodiserStillingshistorikkTest {
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
-
-    @Test
-    public void skalHvaSkjeVissIngenEndringerErLagtTil() {
-        e.expect(IllegalStateException.class);
-        e.expectMessage("Periodisering av stillingshistorikk kan ikkje bli utført");
-        e.expectMessage("med mindre stillingsforholdet har minst ei usletta endring i stillingshistorikken");
-        periodiser();
-    }
-
     @Test
     public void skalDannePerioderMellomKvarUnikeAksjonsdato() {
         final List<StillingsforholdPeriode> perioder = periodiser(
@@ -135,6 +124,6 @@ public class PeriodiserStillingshistorikkTest {
     private List<StillingsforholdPeriode> periodiser(final Iterable<Stillingsendring> endringer) {
         return new PeriodiserStillingshistorikk()
                 .addEndring(endringer)
-                .periodiser();
+                .periodiser().get();
     }
 }
