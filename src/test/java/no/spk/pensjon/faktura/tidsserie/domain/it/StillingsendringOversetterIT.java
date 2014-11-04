@@ -52,6 +52,16 @@ public class StillingsendringOversetterIT {
     }
 
     /**
+     * Verifiserer at oversettinga hentar aksjonskode frå kolonne nr 5 / index 4.
+     */
+    @Test
+    public void skalHenteUtAksjonskodeFraKolonne5() {
+        final List<String> actual = stillingsendringar().map(Stillingsendring::aksjonskode).collect(toList());
+        final List<String> expected = lesFraKolonne(4, e -> e).collect(toList());
+        assertThat(actual).as("aksjonskoder etter oversetting").containsExactlyElementsOf(expected);
+    }
+
+    /**
      * Verifiserer at oversettinga hentar aksjonsdato frå kolonne nr 15 / index 14.
      */
     @Test

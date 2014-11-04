@@ -123,6 +123,21 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     public static final String TYPEINDIKATOR = "0";
 
     /**
+     * Kolonneindeksen stillingsforholdnummer blir henta frå.
+     */
+    public static final int INDEX_STILLINGSFORHOLD = 3;
+
+    /**
+     * Kolonneindeksen aksjonskode blir henta frå.
+     */
+    public static final int INDEX_AKSJONSKODE = 4;
+
+    /**
+     * Kolonneindeksen aksjonsdato blir henta frå.
+     */
+    public static final int INDEX_AKSJONSDATO = 14;
+
+    /**
      * Oversetter innholdet i <code>rad</code> til ei ny
      * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
      *
@@ -132,8 +147,9 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     @Override
     public Stillingsendring oversett(final List<String> rad) {
         return new Stillingsendring()
-                .stillingsforhold(StillingsforholdId.valueOf(rad.get(3)))
-                .aksjonsdato(rad.get(14));
+                .stillingsforhold(StillingsforholdId.valueOf(rad.get(INDEX_STILLINGSFORHOLD)))
+                .aksjonskode(rad.get(INDEX_AKSJONSKODE))
+                .aksjonsdato(rad.get(INDEX_AKSJONSDATO));
     }
 
     /**
