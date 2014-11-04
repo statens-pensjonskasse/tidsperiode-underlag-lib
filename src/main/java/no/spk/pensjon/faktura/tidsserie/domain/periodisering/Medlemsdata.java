@@ -5,8 +5,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiod
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
@@ -27,169 +29,27 @@ import static java.util.stream.Collectors.toSet;
  * <p>
  * <h4>Stillingshistorikk</h4>
  * <p>
- * Informasjon henta frå stillingshistorikken skal inneholde følgjande verdiar, alle representert som tekst:
- * <table>
- * <thead>
- * <tr>
- * <td>Index</td>
- * <td>Verdi / Format</td>
- * <td>Beskrivelse</td>
- * <td>Kilde</td>
- * </tr>
- * </thead>
- * <tbody>
- * <tr>
- * <td>0</td>
- * <td>0</td>
- * <td>Typeindikator som identifiserer rada som ei stillingsendring</td>
- * <td>Hardkoda</td>
- * </tr>
- * <tr>
- * <td>1</td>
- * <td>yyyyMMdd</td>
- * <td>Fødselsdato for medlem</td>
- * <td>TORT016.DAT_KUNDE_FOEDT_NUM</td>
- * </tr>
- * <tr>
- * <td>2</td>
- * <td>5-sifra tall</td>
- * <td>Personnummer for medlem</td>
- * <td>TORT016.IDE_KUNDE_PRSNR</td>
- * </tr>
- * <tr>
- * <td>3</td>
- * <td>Long</td>
- * <td>Stillingsforholdnr</td>
- * <td>TORT016.IDE_SEKV_TORT125</td>
- * </tr>
- * <tr>
- * <td>4</td>
- * <td>4-sifra kode</td>
- * <td>Aksjonskoda som nærmare beskrive kva type stillingsendring det er snakk om</td>
- * <td>TORT016.TYP_AKSJONSKODE</td>
- * </tr>
- * <tr>
- * <td>5</td>
- * <td>Long</td>
- * <td>Organisasjonsnummer, ikkje i bruk</td>
- * <td>TORT016.IDE_ARBGIV_NR</td>
- * </tr>
- * <tr>
- * <td>6</td>
- * <td>3-sifra kode</td>
- * <td>Permisjonsavtale for stillingsendringar med aksjonskode 028, 029, 012</td>
- * <td>TORT016.TYP_PERMAVT</td>
- * </tr>
- * <tr>
- * <td>7</td>
- * <td>yyyyMMdd</td>
- * <td>Registreringsdato for når stillingsendringa vart registrert i PUMA</td>
- * <td>TORT016.DAT_REGISTRERT</td>
- * </tr>
- * <tr>
- * <td>8</td>
- * <td>Double</td>
- * <td>Stillingsprosent for stillinga endringa er tilknytta, er normalt sett ein verdi mellom 0 og 100, men kan for visse historiske årgangar og yrkesgrupper vere større enn 100</td>
- * <td>TORT016.RTE_DELTID</td>
- * </tr>
- * <tr>
- * <td>9</td>
- * <td>Integer</td>
- * <td>Lønnstrinn, for stillingar som ikkje innrapporterer lønn blir lønna innrapportert som lønnstrinn som kan benyttast for å slå opp lønn i 100% stilling.</td>
- * <td>TORT016.NUM_LTR</td>
- * </tr>
- * <tr>
- * <td>10</td>
- * <td>Integer</td>
- * <td>Deltidsjustert, innrapportert lønn for stillingar som ikkje blir innrapportert med lønnstrinn</td>
- * <td>TORT016.BEL_LONN</td>
- * </tr>
- * <tr>
- * <td>11</td>
- * <td>Integer</td>
- * <td>Faste lønnstillegg som blir utbetalt i tillegg til grunnlønna, skal innrapporterast deltidsjustert.</td>
- * <td>TORT016.BEL_FTILL</td>
- * </tr>
- * <tr>
- * <td>12</td>
- * <td>Integer</td>
- * <td>Variable lønnstillegg som blir utbetalt i tillegg til grunnlønna, skal innrapporterast deltidsjustert.</td>
- * <td>TORT016.BEL_VTILL</td>
- * </tr>
- * <tr>
- * <td>13</td>
- * <td>Integer</td>
- * <td>Funksjonstillegg som blir utbetalt i tillegg til grunnlønna, skal ikkje innrapporterast deltidsjustert.</td>
- * <td>TORT016.BEL_FUTILL</td>
- * </tr>
- * <tr>
- * <td>14</td>
- * <td>yyyyMMdd</td>
- * <td>Aksjonsdato, datoen stillingsendringa trer i kraft</td>
- * <td>TORT016.DAT_AKSJON</td>
- * </tr>
- * </tbody>
- * </table>
- * <h4>Avtalekobling</h4>
- * Ei avtalekobling skal inneholde følgjande verdiar, alle representert som tekst:
- * <table>
- * <thead>
- * <tr>
- * <td>Index</td>
- * <td>Verdi / Format</td>
- * <td>Beskrivelse</td>
- * <td>Kilde</td>
- * </tr>
- * </thead>
- * <tbody>
- * <tr>
- * <td>0</td>
- * <td>1</td>
- * <td>Typeindikator som identifiserer rada som ei avtalekobling</td>
- * <td>Hardkoda</td>
- * </tr>
- * <tr>
- * <td>1</td>
- * <td>yyyyMMdd</td>
- * <td>Fødselsdato for medlem</td>
- * <td>TORT126.DAT_KUNDE_FOEDT_NUM</td>
- * </tr>
- * <tr>
- * <td>2</td>
- * <td>5-sifra tall</td>
- * <td>Personnummer for medlem</td>
- * <td>TORT126.IDE_KUNDE_PRSNR</td>
- * </tr>
- * <tr>
- * <td>3</td>
- * <td>Long</td>
- * <td>Stillingsforholdnr</td>
- * <td>TORT126.IDE_SEKV_TORT125</td>
- * </tr>
- * <tr>
- * <td>4</td>
- * <td>yyyy.MM.dd</td>
- * <td>Startdato, første dag i perioda stillingsforholdet er tilknytta avtalen</td>
- * <td>TORT126.DAT_START</td>
- * </tr>
- * <tr>
- * <td>5</td>
- * <td>yyyy.MM.dd</td>
- * <td>Sluttdato, siste dag i perioda stillingsforholdet er tilknytta avtalen</td>
- * <td>TORT126.DAT_SLUTT</td>
- * </tr>
- * <tr>
- * <td>6</td>
- * <td>6-sifra tall</td>
- * <td>Avtalenummer, avtalen stillingsforholdet er tilknytta i den aktuelle perioda</td>
- * <td>TORT126.NUM_AVTALE_ID</td>
- * </tr>
- * </tbody>
- * </table>
+ * Informasjon henta frå stillingshistorikken blir mappa om og representert som
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}. Dette blir automatisk utført for alle
+ * medlemsdata som har verdien <code>0</code> som sin typeindikator.
  * <p>
+ * Sjå {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter} for meir detaljert
+ * informasjon om konktrakta på formatet som slike endringar må oppfylle.
+ * <p>
+ * <h4>Avtalekobling</h4>
+ * <p>
+ * Informasjon henta frå stillingsforholdets avtalekoblingar blir mappa om og representert som
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}. Dette blir automatisk utført for
+ * alle medlemsdata som har verdien <code>1</code> som sin typeindikator.
+ * <p>
+ * Sjå {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter} for meir detaljert
+ * informasjon om konktrakta på formatet som slike endringar må oppfylle.
+ *
  * @author Tarjei Skorgenes
  */
 public class Medlemsdata {
+    private final Map<?, MedlemsdataOversetter<?>> oversettere;
+
     private final List<List<String>> data;
 
     /**
@@ -197,19 +57,27 @@ public class Medlemsdata {
      * <p>
      * Referansen til datasettet som blir sendt inn blir brukt direkte for å unngå allokering og kopiering til ei ny
      * samling, data gjort på <code>medlemsdata</code> etter konstruksjon vil derfor vere direkte synlig for Medlemsdata.
+     * <p>
+     * Ettersom kontrakta for formatet på verdiane i <code>medlemsdata</code> er at alt skal representerast som svakt typa
+     * lister av tekst, er det implementert støtte for å konvertere frå desse tekstlige verdaine til sterkt typa
+     * datatyper som er bedre tilrettelagt for vidare behdnaling. Denne konverteringa blir ikkje utført ved konstruksjon,
+     * den blir utført kvar gang metoder som returnerer sterkt typa data, blir kalla på det konstruerte objektet.
      *
-     * @param medlemsdata
-     * @throws java.lang.NullPointerException     viss <code>medlemsdata</code> er <code>null</code>
+     * @param medlemsdata datasettet som inneholder den medlemsspesifikke informasjonen som skal behandles
+     * @param oversettere oversettere som er ansvarlige for å konvertere radene i <code>medlemsdata</code> til sterkt
+     *                    typa verdiar ved senere behandling
+     * @throws java.lang.NullPointerException     viss noen av parameterverdiene er <code>null</code>
      * @throws java.lang.IllegalArgumentException viss <code>medlemsdata</code> ikkje inneheld noko informasjon og er tom
      */
-    public Medlemsdata(final List<List<String>> medlemsdata) {
+    public Medlemsdata(final List<List<String>> medlemsdata, final Map<Class<?>, MedlemsdataOversetter<?>> oversettere) {
         requireNonNull(medlemsdata, () -> "medlemsdata er påkrevd, men var null");
+        requireNonNull(oversettere, () -> "oversettere er påkrevd, men var null");
         if (medlemsdata.isEmpty()) {
             throw new IllegalArgumentException(
                     "medlemsdata må inneholde minst ei stillingsendring, medregning eller avtalekobling, men var tom"
             );
         }
-
+        this.oversettere = oversettere;
         this.data = medlemsdata;
     }
 
@@ -219,11 +87,7 @@ public class Medlemsdata {
      * @return alle stillingsendring for medlemmet
      */
     Iterable<Stillingsendring> alleStillingsendringar() {
-        return data
-                .stream()
-                .filter(e -> "0".equals(e.get(0)))
-                .map(e -> new Stillingsendring())
-                .collect(toSet());
+        return finnOgOversett(Stillingsendring.class);
     }
 
     /**
@@ -232,11 +96,7 @@ public class Medlemsdata {
      * @return alle avtalekoblingar for medlemmet
      */
     Iterable<Avtalekoblingsperiode> alleAvtalekoblingsperioder() {
-        return data
-                .stream()
-                .filter(e -> "1".equals(e.get(0)))
-                .map(e -> new Avtalekoblingsperiode())
-                .collect(toSet());
+        return finnOgOversett(Avtalekoblingsperiode.class);
     }
 
     /**
@@ -266,5 +126,41 @@ public class Medlemsdata {
             }
         }
         return builder.toString();
+    }
+
+    /**
+     * Lokaliserer alle rader som inneheld informasjon som kan konverterast til
+     * datatypen angitt av <code>type</code> og oversetter kvar rad til denne typen.
+     * <p>
+     * Dersom det ikkje er registrert nokon oversetter for <code>type</code> vil denne metode ikkje feile, men kun returnere
+     * ei tom samling.
+     *
+     * @param type datatypen som lokaliserast og konverterast
+     * @param <T>  datatypen som lokaliserast og konverterast
+     * @return alle medlemsdata for den angitte typen
+     */
+    private <T> Iterable<T> finnOgOversett(final Class<T> type) {
+        final MedlemsdataOversetter<T> oversetter = lookup(type).orElse(new NullOversetter<T>());
+        return data
+                .stream()
+                .filter(oversetter::supports)
+                .map(oversetter::oversett)
+                .collect(toSet());
+    }
+
+    private <T> Optional<MedlemsdataOversetter<T>> lookup(final Class<? extends T> datatype) {
+        return ofNullable((MedlemsdataOversetter<T>) oversettere.get(datatype));
+    }
+
+    private static class NullOversetter<T> implements MedlemsdataOversetter<T> {
+        @Override
+        public T oversett(List<String> rad) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean supports(List<String> rad) {
+            return false;
+        }
     }
 }
