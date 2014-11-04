@@ -1,11 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -25,7 +27,13 @@ import static java.util.stream.Collectors.toSet;
  * Denne representaasjonen er valgt for å holde serialiseringa enkel og forenkle handtering av stillingshistorikk,
  * medregning og avtalekoblingar utan å måtte lage spesialisert serialisering for kvar og ein av desse.
  * <p>
- * Kontrakta for korleis kvar rad må sjå ut, varierer mellom dei 3 forskjellige datatypene.
+ * Kontrakta for korleis kvar rad må sjå ut, varierer mellom dei 3 forskjellige datatypene. Men 4 felt er likevel påkrevd for at ting skal fungere som ønska:
+ * <ol>
+ * <li>Typeindikator</li>
+ * <li>Fødselsdato</li>
+ * <li>Personnummer</li>
+ * <li>Stillingsforholdnummer</li>
+ * </ol>
  * <p>
  * <h4>Stillingshistorikk</h4>
  * <p>
@@ -79,6 +87,22 @@ public class Medlemsdata {
         }
         this.oversettere = oversettere;
         this.data = medlemsdata;
+    }
+
+    /**
+     * Listar ut alle unike stillingsforhold som vi har medlemsdata tilknytta.
+     *
+     * @return ein straum med alle dei unike stillingsforholda som medlemmet er tilknytta
+     */
+    public Stream<StillingsforholdId> allePeriodiserbareStillingsforhold() {
+        // Dersom vi endrar designet til å også ta inn data som ikkje er kobla mot stillingsforhold må denne straumen
+        // filtrerast til kun å inneholde data tilknytta stillingsforhold
+        return data
+                .stream()
+                .map(e -> e.get(3))
+                .map(Long::valueOf)
+                .map(StillingsforholdId::new)
+                .distinct();
     }
 
     /**

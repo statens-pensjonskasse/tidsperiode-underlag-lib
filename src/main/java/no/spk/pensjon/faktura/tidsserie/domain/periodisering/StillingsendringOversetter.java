@@ -112,62 +112,6 @@ import java.util.List;
  * </tr>
  * </tbody>
  * </table>
- * <h4>Avtalekobling</h4>
- * Ei avtalekobling skal inneholde følgjande verdiar, alle representert som tekst:
- * <table>
- * <thead>
- * <tr>
- * <td>Index</td>
- * <td>Verdi / Format</td>
- * <td>Beskrivelse</td>
- * <td>Kilde</td>
- * </tr>
- * </thead>
- * <tbody>
- * <tr>
- * <td>0</td>
- * <td>1</td>
- * <td>Typeindikator som identifiserer rada som ei avtalekobling</td>
- * <td>Hardkoda</td>
- * </tr>
- * <tr>
- * <td>1</td>
- * <td>yyyyMMdd</td>
- * <td>Fødselsdato for medlem</td>
- * <td>TORT126.DAT_KUNDE_FOEDT_NUM</td>
- * </tr>
- * <tr>
- * <td>2</td>
- * <td>5-sifra tall</td>
- * <td>Personnummer for medlem</td>
- * <td>TORT126.IDE_KUNDE_PRSNR</td>
- * </tr>
- * <tr>
- * <td>3</td>
- * <td>Long</td>
- * <td>Stillingsforholdnr</td>
- * <td>TORT126.IDE_SEKV_TORT125</td>
- * </tr>
- * <tr>
- * <td>4</td>
- * <td>yyyy.MM.dd</td>
- * <td>Startdato, første dag i perioda stillingsforholdet er tilknytta avtalen</td>
- * <td>TORT126.DAT_START</td>
- * </tr>
- * <tr>
- * <td>5</td>
- * <td>yyyy.MM.dd</td>
- * <td>Sluttdato, siste dag i perioda stillingsforholdet er tilknytta avtalen</td>
- * <td>TORT126.DAT_SLUTT</td>
- * </tr>
- * <tr>
- * <td>6</td>
- * <td>6-sifra tall</td>
- * <td>Avtalenummer, avtalen stillingsforholdet er tilknytta i den aktuelle perioda</td>
- * <td>TORT126.NUM_AVTALE_ID</td>
- * </tr>
- * </tbody>
- * </table>
  *
  * @author Tarjei Skorgenes
  */
