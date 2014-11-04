@@ -25,6 +25,111 @@ import static java.util.stream.Collectors.toSet;
  * <p>
  * Kontrakta for korleis kvar rad må sjå ut, varierer mellom dei 3 forskjellige datatypene.
  * <p>
+ * <h4>Stillingshistorikk</h4>
+ * <p>
+ * Informasjon henta frå stillingshistorikken skal inneholde følgjande verdiar, alle representert som tekst:
+ * <table>
+ * <thead>
+ * <tr>
+ * <td>Index</td>
+ * <td>Verdi / Format</td>
+ * <td>Beskrivelse</td>
+ * <td>Kilde</td>
+ * </tr>
+ * </thead>
+ * <tbody>
+ * <tr>
+ * <td>0</td>
+ * <td>0</td>
+ * <td>Typeindikator som identifiserer rada som ei stillingsendring</td>
+ * <td>Hardkoda</td>
+ * </tr>
+ * <tr>
+ * <td>1</td>
+ * <td>yyyyMMdd</td>
+ * <td>Fødselsdato for medlem</td>
+ * <td>TORT016.DAT_KUNDE_FOEDT_NUM</td>
+ * </tr>
+ * <tr>
+ * <td>2</td>
+ * <td>5-sifra tall</td>
+ * <td>Personnummer for medlem</td>
+ * <td>TORT016.IDE_KUNDE_PRSNR</td>
+ * </tr>
+ * <tr>
+ * <td>3</td>
+ * <td>Long</td>
+ * <td>Stillingsforholdnr</td>
+ * <td>TORT016.IDE_SEKV_TORT125</td>
+ * </tr>
+ * <tr>
+ * <td>4</td>
+ * <td>4-sifra kode</td>
+ * <td>Aksjonskoda som nærmare beskrive kva type stillingsendring det er snakk om</td>
+ * <td>TORT016.TYP_AKSJONSKODE</td>
+ * </tr>
+ * <tr>
+ * <td>5</td>
+ * <td>Long</td>
+ * <td>Organisasjonsnummer, ikkje i bruk</td>
+ * <td>TORT016.IDE_ARBGIV_NR</td>
+ * </tr>
+ * <tr>
+ * <td>6</td>
+ * <td>3-sifra kode</td>
+ * <td>Permisjonsavtale for stillingsendringar med aksjonskode 028, 029, 012</td>
+ * <td>TORT016.TYP_PERMAVT</td>
+ * </tr>
+ * <tr>
+ * <td>7</td>
+ * <td>yyyyMMdd</td>
+ * <td>Registreringsdato for når stillingsendringa vart registrert i PUMA</td>
+ * <td>TORT016.DAT_REGISTRERT</td>
+ * </tr>
+ * <tr>
+ * <td>8</td>
+ * <td>Double</td>
+ * <td>Stillingsprosent for stillinga endringa er tilknytta, er normalt sett ein verdi mellom 0 og 100, men kan for visse historiske årgangar og yrkesgrupper vere større enn 100</td>
+ * <td>TORT016.RTE_DELTID</td>
+ * </tr>
+ * <tr>
+ * <td>9</td>
+ * <td>Integer</td>
+ * <td>Lønnstrinn, for stillingar som ikkje innrapporterer lønn blir lønna innrapportert som lønnstrinn som kan benyttast for å slå opp lønn i 100% stilling.</td>
+ * <td>TORT016.NUM_LTR</td>
+ * </tr>
+ * <tr>
+ * <td>10</td>
+ * <td>Integer</td>
+ * <td>Deltidsjustert, innrapportert lønn for stillingar som ikkje blir innrapportert med lønnstrinn</td>
+ * <td>TORT016.BEL_LONN</td>
+ * </tr>
+ * <tr>
+ * <td>11</td>
+ * <td>Integer</td>
+ * <td>Faste lønnstillegg som blir utbetalt i tillegg til grunnlønna, skal innrapporterast deltidsjustert.</td>
+ * <td>TORT016.BEL_FTILL</td>
+ * </tr>
+ * <tr>
+ * <td>12</td>
+ * <td>Integer</td>
+ * <td>Variable lønnstillegg som blir utbetalt i tillegg til grunnlønna, skal innrapporterast deltidsjustert.</td>
+ * <td>TORT016.BEL_VTILL</td>
+ * </tr>
+ * <tr>
+ * <td>13</td>
+ * <td>Integer</td>
+ * <td>Funksjonstillegg som blir utbetalt i tillegg til grunnlønna, skal ikkje innrapporterast deltidsjustert.</td>
+ * <td>TORT016.BEL_FUTILL</td>
+ * </tr>
+ * <tr>
+ * <td>14</td>
+ * <td>yyyyMMdd</td>
+ * <td>Aksjonsdato, datoen stillingsendringa trer i kraft</td>
+ * <td>TORT016.DAT_AKSJON</td>
+ * </tr>
+ * </tbody>
+ * </table>
  * <h4>Avtalekobling</h4>
  * Ei avtalekobling skal inneholde følgjande verdiar, alle representert som tekst:
  * <table>
@@ -33,6 +138,7 @@ import static java.util.stream.Collectors.toSet;
  * <td>Index</td>
  * <td>Verdi / Format</td>
  * <td>Beskrivelse</td>
+ * <td>Kilde</td>
  * </tr>
  * </thead>
  * <tbody>
@@ -40,40 +146,47 @@ import static java.util.stream.Collectors.toSet;
  * <td>0</td>
  * <td>1</td>
  * <td>Typeindikator som identifiserer rada som ei avtalekobling</td>
+ * <td>Hardkoda</td>
  * </tr>
  * <tr>
  * <td>1</td>
- * <td>Long</td>
- * <td>Stillingsforholdnr</td>
+ * <td>yyyyMMdd</td>
+ * <td>Fødselsdato for medlem</td>
+ * <td>TORT126.DAT_KUNDE_FOEDT_NUM</td>
  * </tr>
  * <tr>
  * <td>2</td>
- * <td>yyyyMMdd</td>
- * <td>Fødselsdato for medlem</td>
+ * <td>5-sifra tall</td>
+ * <td>Personnummer for medlem</td>
+ * <td>TORT126.IDE_KUNDE_PRSNR</td>
  * </tr>
  * <tr>
  * <td>3</td>
- * <td>5-sifra tall</td>
- * <td>Personnummer for medlem</td>
+ * <td>Long</td>
+ * <td>Stillingsforholdnr</td>
+ * <td>TORT126.IDE_SEKV_TORT125</td>
  * </tr>
  * <tr>
  * <td>4</td>
  * <td>yyyy.MM.dd</td>
  * <td>Startdato, første dag i perioda stillingsforholdet er tilknytta avtalen</td>
+ * <td>TORT126.DAT_START</td>
  * </tr>
  * <tr>
  * <td>5</td>
  * <td>yyyy.MM.dd</td>
  * <td>Sluttdato, siste dag i perioda stillingsforholdet er tilknytta avtalen</td>
+ * <td>TORT126.DAT_SLUTT</td>
  * </tr>
  * <tr>
  * <td>6</td>
  * <td>6-sifra tall</td>
  * <td>Avtalenummer, avtalen stillingsforholdet er tilknytta i den aktuelle perioda</td>
+ * <td>TORT126.NUM_AVTALE_ID</td>
  * </tr>
  * </tbody>
  * </table>
- *
+ * <p>
  * @author Tarjei Skorgenes
  */
 public class Medlemsdata {
