@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 import java.util.List;
 
@@ -130,7 +131,9 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
      */
     @Override
     public Stillingsendring oversett(final List<String> rad) {
-        return new Stillingsendring();
+        return new Stillingsendring()
+                .stillingsforhold(StillingsforholdId.valueOf(rad.get(3)))
+                .aksjonsdato(rad.get(14));
     }
 
     /**

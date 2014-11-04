@@ -65,4 +65,12 @@ public class StillingsforholdId {
     public static StillingsforholdId valueOf(final long id) {
         return new StillingsforholdId(id);
     }
+
+    /**
+     * @see #valueOf(long)
+     * @see Long#parseLong(String)
+     */
+    public static StillingsforholdId valueOf(final String text) {
+        return valueOf(Long.parseLong(text));
+    }
 }

@@ -19,8 +19,32 @@ import static java.time.temporal.TemporalQueries.localDate;
 public class Stillingsendring {
     private static DateTimeFormatter yyyyMMddFormat = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
+    private StillingsforholdId stillingsforhold;
+
     private LocalDate aksjonsdato;
+
     private String aksjonskode;
+
+
+    /**
+     * Stillingsforholdet endringa tilhøyrer.
+     *
+     * @param stillingsforhold stillingsforholdnummeret for stillingsforholdet endringa tilhøyrer
+     * @return <code>this</code>
+     */
+    public Stillingsendring stillingsforhold(final StillingsforholdId stillingsforhold) {
+        this.stillingsforhold = stillingsforhold;
+        return this;
+    }
+
+    /**
+     * Stillingsforholdet endringa tilhøyrer.
+     *
+     * @return stillingsforholdnummeret for stillingsforholdet endringa tilhøyrer
+     */
+    public StillingsforholdId stillingsforhold() {
+        return stillingsforhold;
+    }
 
     /**
      * Datoen som stillingsendringen gjelder fra og med.
