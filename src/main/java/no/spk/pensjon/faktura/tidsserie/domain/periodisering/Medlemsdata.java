@@ -1,10 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -74,13 +77,13 @@ import static java.util.stream.Collectors.toSet;
  * @author Tarjei Skorgenes
  */
 public class Medlemsdata {
-    private final List<List<String>> endringar;
+    private final List<List<String>> data;
 
     /**
      * Konstruerer eit nytt sett med medlemsdata basert på <code>medlemsdata</code>.
      * <p>
      * Referansen til datasettet som blir sendt inn blir brukt direkte for å unngå allokering og kopiering til ei ny
-     * samling, endringar gjort på <code>medlemsdata</code> etter konstruksjon vil derfor vere direkte synlig for Medlemsdata.
+     * samling, data gjort på <code>medlemsdata</code> etter konstruksjon vil derfor vere direkte synlig for Medlemsdata.
      *
      * @param medlemsdata
      * @throws java.lang.NullPointerException     viss <code>medlemsdata</code> er <code>null</code>
@@ -94,7 +97,7 @@ public class Medlemsdata {
             );
         }
 
-        this.endringar = medlemsdata;
+        this.data = medlemsdata;
     }
 
     /**
@@ -103,10 +106,52 @@ public class Medlemsdata {
      * @return alle stillingsendring for medlemmet
      */
     Iterable<Stillingsendring> alleStillingsendringar() {
-        return endringar
+        return data
                 .stream()
                 .filter(e -> "0".equals(e.get(0)))
                 .map(e -> new Stillingsendring())
                 .collect(toSet());
+    }
+
+    /**
+     * Hentar ut alle avtalekoblingar tilknytta medlemmet.
+     *
+     * @return alle avtalekoblingar for medlemmet
+     */
+    Iterable<Avtalekoblingsperiode> alleAvtalekoblingsperioder() {
+        return data
+                .stream()
+                .filter(e -> "1".equals(e.get(0)))
+                .map(e -> new Avtalekoblingsperiode())
+                .collect(toSet());
+    }
+
+    /**
+     * Genererer ei tekstlig oversikt over all medlemsinformasjonen, gruppert på type.
+     *
+     * @return ein tekstlig representaasjon av alle medlemsdatane som er tilgjengelig for medlemmet
+     */
+    @Override
+    public String toString() {
+        final Map<String, List<List<String>>> gruppert = data
+                .stream()
+                .collect(
+                        groupingBy(e -> e.get(0))
+                );
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Medlemsdata for medlem ").append("XXXXXXXXXXX").append('\n');
+
+        for (final Map.Entry<String, List<List<String>>> e : gruppert.entrySet()) {
+            builder.append("Type ").append(e.getKey()).append(":\n");
+            List<List<String>> value = e.getValue();
+            for (List<String> row : value) {
+                builder
+                        .append('\t')
+                        .append("- ")
+                        .append(row)
+                        .append('\n');
+            }
+        }
+        return builder.toString();
     }
 }

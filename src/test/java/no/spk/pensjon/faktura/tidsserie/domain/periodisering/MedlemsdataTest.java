@@ -21,11 +21,14 @@ public class MedlemsdataTest {
 
     /**
      * Verifiserer at endringar av type 1 er dei einaste som blir forsøkt konvertert til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}.
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
      */
     @Test
-    public void skalKonvertereType0TilStillingsendring() {
+    public void skalKonvertereType1TilAvtalekobling() {
         List<List<String>> endringar = asList(
+                asList(
+                        "1"
+                ),
                 asList(
                         "0"
                 ),
@@ -37,7 +40,34 @@ public class MedlemsdataTest {
                 )
         );
         final Medlemsdata data = new Medlemsdata(endringar);
-        assertThat(data.alleStillingsendringar()).as("alle stillingendringar i medlemsdata " + data).hasSize(3);
+        assertThat(data.alleAvtalekoblingsperioder()).as("alle avtalekoblingsperioder i " + data).hasSize(1);
+    }
+
+    /**
+     * Verifiserer at endringar av type 0 er dei einaste som blir forsøkt konvertert til
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}.
+     */
+    @Test
+    public void skalKonvertereType0TilStillingsendring() {
+        List<List<String>> endringar = asList(
+                asList(
+                        "1"
+                ),
+                asList(
+                        "0"
+                ),
+                asList(
+                        "0"
+                ),
+                asList(
+                        "0"
+                ),
+                asList(
+                        "2"
+                )
+        );
+        final Medlemsdata data = new Medlemsdata(endringar);
+        assertThat(data.alleStillingsendringar()).as("alle stillingendringar i " + data).hasSize(3);
     }
 
     /**
