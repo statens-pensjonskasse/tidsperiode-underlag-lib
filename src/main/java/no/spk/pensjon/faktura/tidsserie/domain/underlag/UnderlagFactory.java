@@ -49,7 +49,7 @@ public class UnderlagFactory {
     /**
      * @see #addPerioder(java.util.stream.Stream)
      */
-    public UnderlagFactory addPerioder(final Iterable<Tidsperiode> perioder) {
+    public UnderlagFactory addPerioder(final Iterable<? extends Tidsperiode> perioder) {
         return addPerioder(stream(perioder.spliterator(), false));
     }
 
@@ -60,7 +60,7 @@ public class UnderlagFactory {
      * @param perioder input-perioder som skal leggast til for seinare å brukast ved periodisering av og konstruksjon av nye underlag
      * @return <code>this</code>
      */
-    public UnderlagFactory addPerioder(Stream<Tidsperiode> perioder) {
+    public UnderlagFactory addPerioder(Stream<? extends Tidsperiode> perioder) {
         perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
         return this;
     }
