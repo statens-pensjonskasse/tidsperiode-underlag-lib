@@ -3,7 +3,9 @@ package no.spk.pensjon.faktura.tidsserie.domain.it;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
@@ -17,11 +19,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Optional.empty;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
+import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -34,6 +39,10 @@ import static org.mockito.Mockito.mock;
  * @author Tarjei Skorgenes
  */
 public class TidsserieUnderlagFacadeIT {
+    private static final StillingsforholdId STILLINGSFORHOLD_A = valueOf(999999999999L);
+
+    private static final StillingsforholdId STILLINGSFORHOLD_B = valueOf(888888888888L);
+
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
@@ -55,6 +64,58 @@ public class TidsserieUnderlagFacadeIT {
     }
 
     /**
+     * Verifiserer at periodiseringa av underlag tar hensyn til endringar i gjeldande beregningsreglar og splittar også blir periodisert ut frå regelperioder som representerer perioder med potensielt
+     * sett forskjellige beregningsreglar.
+     */
+    @Test
+    public void skalPeriodisereUnderlagPaDatoarDerEinEndrarBeregningsRegel() {
+        final LocalDate regelEndring = dato("2005.10.07");
+
+        fasade.addBeregningsregel(new Regelperiode(regelEndring, empty(), new MaskineltGrunnlagRegel()));
+
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        final Underlag underlag = underlagene.get(STILLINGSFORHOLD_A);
+        assertThat(underlag
+                        .stream()
+                        .filter(p -> p.fraOgMed().isEqual(regelEndring))
+                        .findFirst()
+                        .isPresent()
+        ).as(
+                "har underlaget blitt splitta og periodisert når gjeldande beregningsregel endra seg den "
+                        + regelEndring + "? (underlag = " + underlag + ")"
+        )
+                .isTrue();
+    }
+
+    /**
+     * Verifiserer at underlag for stillingsforhold ikkje inneheld underlagperioder som
+     * ligg før stillingsforholdets første stillingsendring, sjølv om ein har referansedata
+     * eller regelperioder som startar/sluttar før stillingsforholdet startar.
+     */
+    @Test
+    public void skalAvgrenseUnderlagetsStartTilStillingsforholdetsFoersteEndring() {
+        final LocalDate regelEndring = dato("2005.01.01");
+
+        fasade.addBeregningsregel(new Regelperiode(regelEndring, empty(), new MaskineltGrunnlagRegel()));
+
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        final Underlag underlag = underlagene.get(STILLINGSFORHOLD_A);
+        assertThat(underlag
+                        .stream()
+                        .findFirst()
+                        .map(p -> p.fraOgMed())
+                        .get()
+        ).as(
+                "fra og med-dato for underlagets første periode (underlag = " + underlag + ")"
+        )
+                .isEqualTo(dato("2005.08.15"));
+    }
+
+    /**
      * Verifiserer at fasada genererer eit underlag for kvart av stillingsforholda med historikk som medlemmet
      * er eller har vore tilknytta innanfor 10-års perioda frå 1. januar 2005 til 31. desember 2014.
      * <p>
@@ -68,8 +129,8 @@ public class TidsserieUnderlagFacadeIT {
 
         assertThat(underlagene).hasSize(2);
 
-        assertThat(underlagene.get(valueOf(999999999999L))).hasSize(14);
-        assertThat(underlagene.get(valueOf(888888888888L))).hasSize(3);
+        assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(14);
+        assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(3);
     }
 
     /**

@@ -1,8 +1,16 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
 
 /**
  * {@link TidsserieUnderlagFacade} tilbyr ein høg-nivå API
@@ -12,6 +20,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
  * @author Tarjei Skorgenes
  */
 public class TidsserieUnderlagFacade {
+    private final Set<Tidsperiode> referanseperioder = new HashSet<>();
+
     /**
      * Bygger opp underlag for kvart unike stillingsforhold som medlemmet er eller har vore tilknytta innanfor
      * observasjonsperioda.
@@ -46,6 +56,7 @@ public class TidsserieUnderlagFacade {
                 .forEach(s -> {
                     final UnderlagFactory factory = new UnderlagFactory(observasjonsperiode);
                     factory.addPerioder(s.perioder());
+                    factory.addPerioder(referanseperioder);
 
                     try {
                         callback.prosesser(s.id(), factory.periodiser());
@@ -57,4 +68,30 @@ public class TidsserieUnderlagFacade {
                 });
     }
 
+    /**
+     * Legger til ein beregningsregel som skal inkluderast ved periodisering av underlag.
+     * <p>
+     * Periodiseringa av alle underlag skal ta hensyn til og splitte underlagsperioder som overlappar
+     * alle innlagte regelperioders frå og med- og til og med-datoar.
+     *
+     * @param perioder beregingsreglane og periodene dei er gjeldande for, som skal inkluderast ved periodisering
+     *                 av underlag
+     */
+    public void addBeregningsregel(final Stream<Regelperiode> perioder) {
+        perioder.forEach(p -> referanseperioder.add(p));
+    }
+
+    /**
+     * @see #addBeregningsregel(java.util.stream.Stream)
+     */
+    public void addBeregningsregel(final Regelperiode... perioder) {
+        addBeregningsregel(asList(perioder));
+    }
+
+    /**
+     * @see #addBeregningsregel(java.util.stream.Stream)
+     */
+    public void addBeregningsregel(final Iterable<Regelperiode> perioder) {
+        perioder.forEach(p -> referanseperioder.add(p));
+    }
 }
