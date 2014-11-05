@@ -83,9 +83,30 @@ public class UnderlagFactory {
             );
         }
         final List<Tidsperiode> input = finnObserverbarePerioder();
-        return new Underlag(
-                byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(input))
+        return kobleTilOverlappandeTidsperioder(
+                new Underlag(
+                        byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(input))
+                )
         );
+    }
+
+    /**
+     * Koblar gjennom kvar av underlagsperiodene i underlaget og koblar dei saman med alle tidsperioder
+     * lagt til via ei av {@link #addPerioder(java.util.stream.Stream)}-metodene, som overlappar underlagsperioda.
+     *
+     * @param underlag underlaget som inneheld underlagsperiodene som skal koblast til tidsperiodene som vart
+     *                 brukt ved periodiseringa av underlaget
+     * @return <code>underlag</code>
+     */
+    private Underlag kobleTilOverlappandeTidsperioder(final Underlag underlag) {
+        underlag.stream().forEach(underlagsperiode -> {
+            for (final Tidsperiode periode : perioder) {
+                if (periode.overlapper(underlagsperiode)) {
+                    underlagsperiode.kobleTil(periode);
+                }
+            }
+        });
+        return underlag;
     }
 
     /**

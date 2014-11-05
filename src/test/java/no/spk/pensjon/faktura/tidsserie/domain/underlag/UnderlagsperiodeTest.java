@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,6 +19,60 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UnderlagsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at uthenting av periodekobling kun slår opp basert på koblinga si hovedtype,
+     * ikkje basert på supertyper  eller interface som koblingstypen arvar frå eller implementerer.
+     * <p>
+     * Intensjonen med dette er å unngå ytelsesproblem ved oppslag av koblingar som underlagsperioda manglar
+     * men der periodetypen som blir slått opp har eit djupt type-hierarki.
+     */
+    @Test
+    public void skalKunSlaaOppKoblingarBasertPaKoblingasHovedtype() {
+        final Underlagsperiode periode = eiPeriode();
+        periode.kobleTil(new GenerellTidsperiode(periode.fraOgMed(), empty()));
+
+        assertThat(periode.valgfriAnnotasjonFor(Tidsperiode.class)).isEqualTo(empty());
+    }
+
+    /**
+     * Verifiserer at uthenting av periodekobling returnerer korrekt tilkobla tidsperiode.
+     */
+    @Test
+    public void skalReturnereTidsperiodeAvDenOenskaTypen() {
+        final Underlagsperiode periode = eiPeriode();
+
+        final GenerellTidsperiode kobling = new GenerellTidsperiode(periode.fraOgMed(), empty());
+        periode.kobleTil(kobling);
+
+        assertThat(periode.koblingAvType(GenerellTidsperiode.class)).isEqualTo(of(kobling));
+    }
+
+    /**
+     * Verifiserer at uthenting av periodekobling ikkje feilar når det ikkje eksisterer
+     * ei tilkobla tidsperioda av den ønska typen.
+     */
+    @Test
+    public void skalIkkjeFeileDersomUnderlagsperiodaIkkjeErKoblaTilMinstEiTidsperiodeAvDenOenskaTypen() {
+        assertThat(eiPeriode().koblingAvType(Tidsperiode.class)).isEqualTo(empty());
+    }
+
+    /**
+     * Verifiserer at uthenting av ei periodekobling feilar dersom underlagsperioda er tilkobla meir enn ei
+     * tidsperiode av den ønska typen.
+     */
+    @Test
+    public void skalFeileDersomUnderlagsperiodaErTilkoblaMeirEnnEiTidsperiodeAvDenOenskaTypen() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Underlagsperioda er kobla til meir enn ei tidsperiode av type");
+        e.expectMessage(GenerellTidsperiode.class.getSimpleName());
+        e.expectMessage("vi forventa berre 1 kobling av denne typen");
+
+        final Underlagsperiode periode = eiPeriode();
+        periode.kobleTil(new GenerellTidsperiode(periode.fraOgMed(), of(periode.fraOgMed().plusMonths(1).minusDays(1))));
+        periode.kobleTil(new GenerellTidsperiode(periode.fraOgMed().plusMonths(1), empty()));
+        periode.koblingAvType(GenerellTidsperiode.class);
+    }
 
     /**
      * Verifiserer at oppslag av valgfrie annotasjonar ikkje feilar dersom perioda ikkje har ein verdi for
@@ -94,5 +150,4 @@ public class UnderlagsperiodeTest {
     private Underlagsperiode eiPeriode() {
         return create("2007.01.01", "2007.12.31");
     }
-
 }

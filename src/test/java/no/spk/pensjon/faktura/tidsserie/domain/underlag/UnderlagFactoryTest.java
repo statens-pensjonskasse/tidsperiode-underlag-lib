@@ -3,18 +3,21 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDate.now;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
@@ -34,6 +37,27 @@ public class UnderlagFactoryTest {
     @Before
     public void _before() {
         grenser = new Observasjonsperiode(dato("1970.01.01"), now().with(lastDayOfYear()));
+    }
+
+    /**
+     * Verifiserer at kvar av underlagsperiodene i underlaget blir kobla opp mot
+     * alle tidsperioder brukt ved periodiseringa av underlaget, som og overlappar
+     * underlagsperioda.
+     */
+    @Test
+    public void skalKobleUnderlagsperiodeOppMotOverlappandeTidsperioder() {
+        final Tidsperiode a = periode(dato("2005.08.15"), of(dato("2012.06.30")));
+        final Tidsperiode b = periode(dato("2005.08.15"), empty());
+        final Tidsperiode c = periode(dato("2005.01.01"), empty());
+        final Underlag underlag = create()
+                .addPerioder(
+                        a, b, c
+                )
+                .periodiser();
+        assertThat(underlag).hasSize(3);
+        assertKobling(underlag, GenerellTidsperiode.class, 0).containsOnly(c);
+        assertKobling(underlag, GenerellTidsperiode.class, 1).containsOnly(a, b, c);
+        assertKobling(underlag, GenerellTidsperiode.class, 2).containsOnly(b, c);
     }
 
     /**
@@ -290,5 +314,10 @@ public class UnderlagFactoryTest {
 
     private Tidsperiode periode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         return new GenerellTidsperiode(fraOgMed, tilOgMed);
+    }
+
+    private static AbstractListAssert<?, ? extends List<Tidsperiode>, Tidsperiode> assertKobling(final Underlag underlag, final Class<? extends Tidsperiode> type, final int index) {
+        final Underlagsperiode underlagsperiode = underlag.toList().get(index);
+        return assertThat(underlagsperiode.koblingarAvType(type).collect(toList()));
     }
 }

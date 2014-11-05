@@ -2,6 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
@@ -59,7 +60,12 @@ public class TidsserieUnderlagFacade {
                     factory.addPerioder(referanseperioder);
 
                     try {
-                        callback.prosesser(s.id(), factory.periodiser());
+                        callback.prosesser(
+                                s.id(),
+                                factory
+                                        .periodiser()
+                                        .restrict(p -> p.koblingAvType(StillingsforholdPeriode.class).isPresent())
+                        );
                     } catch (final RuntimeException e) {
                         // Callbacken er ansvarlig for å handtere egne feil, vi sluker derfor slike feil her
                         // for å unngå at dei hindrar prosessering av underlag for andre stillingsforhold enn
