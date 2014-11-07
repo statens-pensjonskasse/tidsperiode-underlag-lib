@@ -1,8 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -11,10 +16,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,7 +48,11 @@ public class StillingsendringOversetterIT {
     public void skalFeileMedEinGodBeskrivelseAvFeilenDersomAntallKolonnerErUlik7() {
         e.expect(IllegalArgumentException.class);
         e.expectMessage("Ei stillingsendring må inneholde følgjande kolonner i angitt rekkefølge");
-        e.expectMessage("typeindikator, fødselsdato, personnummer, aksjonskode, arbeidsgivar, permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, funksjonstillegg og aksjonsdato");
+        e.expectMessage(
+                "typeindikator, fødselsdato, personnummer, stillingsforhold, aksjonskode, arbeidsgivar, " +
+                "permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, " +
+                "funksjonstillegg og aksjonsdato"
+        );
         e.expectMessage("Rada som feila: ");
         e.expectMessage(emptyList().toString());
 
@@ -75,6 +86,45 @@ public class StillingsendringOversetterIT {
     }
 
     /**
+     * Verifiserer at oversettinga hentar stillingsprosent frå kolonne nr 9 / index 8.
+     */
+    @Test
+    public void skalHenteUtStillingsprosentFraKolonne9() {
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::stillingsprosent)
+        ).as("stillingsprosent frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(8), s -> new Stillingsprosent(new Prosent(s)))
+                );
+    }
+
+    /**
+     * Verifiserer at oversettinga hentar lønnstrinn frå kolonne nr 10 / index 9.
+     */
+    @Test
+    public void skalHenteUtLoennstrinnFraKolonne10() {
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::loennstrinn)
+        ).as("lønnstrinn frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(9), this::tilLoennstrinn)
+                );
+    }
+
+    /**
+     * Verifiserer at oversettinga hentar innrapportert lønn frå kolonne nr 11 / index 10.
+     */
+    @Test
+    public void skalHenteUtLoennFraKolonne11() {
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::loenn)
+        ).as("lønn frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(10), this::tilLoenn)
+                );
+    }
+
+    /**
      * Verifiserer at oversettinga hentar aksjonsdato frå kolonne nr 15 / index 14.
      */
     @Test
@@ -85,6 +135,19 @@ public class StillingsendringOversetterIT {
                 .containsExactlyElementsOf(
                         transform(rad -> rad.get(14), Datoar::dato)
                 );
+    }
+
+    private Optional<Loennstrinn> tilLoennstrinn(final String text) {
+        return valgfri(text).map(Loennstrinn::new);
+    }
+
+    private Optional<DeltidsjustertLoenn> tilLoenn(final String text) {
+        return valgfri(text).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new);
+    }
+
+    private Optional<String> valgfri(String text) {
+        return ofNullable(text)
+                .filter(t -> !t.trim().isEmpty());
     }
 
     private <T, R> List<R> transform(final Function<List<String>, T> mapper,

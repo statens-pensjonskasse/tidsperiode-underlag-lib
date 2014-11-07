@@ -1,20 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toSet;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingForMeirEnnEiKobling;
 
 /**
@@ -29,10 +24,10 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  *
  * @author Tarjei Skorgenes
  */
-public class Underlagsperiode extends GenerellTidsperiode {
-    private final Map<Class<? extends Tidsperiode>, Set<Tidsperiode>> koblingar = new HashMap<>();
+public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> {
+    private final Koblingar koblingar = new Koblingar();
 
-    private final Map<Object, Object> annotasjonar = new HashMap<>();
+    private final Annotasjonar annotasjonar = new Annotasjonar();
 
     /**
      * Konstruerer ei ny underlagsperiode som har ein frå og med- og ein til og med-dato ulik <code>null</code>.
@@ -71,13 +66,8 @@ public class Underlagsperiode extends GenerellTidsperiode {
      *
      * @param kobling ei tidsperiode som underlagsperioda skal koblast opp mot
      */
-    public void kobleTil(final Tidsperiode kobling) {
-        koblingar
-                .computeIfAbsent(
-                        kobling.getClass(),
-                        c -> new HashSet<>()
-                )
-                .add(kobling);
+    public void kobleTil(final Tidsperiode<?> kobling) {
+        koblingar.add(kobling);
     }
 
     /**
@@ -98,20 +88,20 @@ public class Underlagsperiode extends GenerellTidsperiode {
      *
      * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
      * @return den eine tidsperioda av den angitte typen som underlagsperioda er tilkobla, eller eit
-     * {@link java.util.Optional#empty() tomt} svar viss perioda ikkje er kobla til ei tidsperioda av den angitte typen
+     * {@link Optional#empty() tomt} svar viss perioda ikkje er kobla til ei tidsperioda av den angitte typen
      * @throws IllegalStateException dersom perioda er tilkobla meir enn ei tidsperiode av den angitte typen
      */
-    public Optional<Tidsperiode> koblingAvType(Class<? extends Tidsperiode> type) {
-        final Set<Tidsperiode> koblingar = this.koblingar.get(type);
-        if (koblingar == null) {
-            return empty();
-        }
-        if (koblingar.size() > 1) {
+    public <T extends Tidsperiode<T>> Optional<T> koblingAvType(final Class<T> type) {
+        return koblingarAvType(type).reduce((a, b) -> {
+            // Dersom det eksisterer meir enn 1 kobling av samme type blir denne metoda kalla, ergo feilar vi alltid her
+            // Dersom det kun eksisterer ei kobling, eller ingen koblingar, kjem vi aldri inn hit
             throw new IllegalStateException(
-                    feilmeldingForMeirEnnEiKobling(type, koblingar)
+                    feilmeldingForMeirEnnEiKobling(
+                            type,
+                            koblingarAvType(type).collect(toSet())
+                    )
             );
-        }
-        return koblingar.stream().findFirst();
+        });
     }
 
     /**
@@ -123,12 +113,8 @@ public class Underlagsperiode extends GenerellTidsperiode {
      * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
      * @return ein straum som inneheld alle dei tilkobla periodene av den angitte typen
      */
-    public Stream<Tidsperiode> koblingarAvType(final Class<? extends Tidsperiode> type) {
-        final Set<Tidsperiode> koblingar = this.koblingar.get(type);
-        if (koblingar == null) {
-            return Stream.empty();
-        }
-        return koblingar.stream();
+    public <T extends Tidsperiode<?>> Stream<T> koblingarAvType(final Class<T> type) {
+        return koblingar.get(type);
     }
 
     /**
@@ -143,11 +129,9 @@ public class Underlagsperiode extends GenerellTidsperiode {
      * @throws PaakrevdAnnotasjonManglarException viss perioda ikkje har ein verdi for den angitte annotasjonstypen
      */
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
-        final Optional<T> verdi = valgfriAnnotasjonFor(type);
-        if (!verdi.isPresent()) {
-            throw new PaakrevdAnnotasjonManglarException(this, type);
-        }
-        return verdi.get();
+        return annotasjonar
+                .lookup(type)
+                .orElseThrow(() -> new PaakrevdAnnotasjonManglarException(this, type));
     }
 
     /**
@@ -162,18 +146,23 @@ public class Underlagsperiode extends GenerellTidsperiode {
      * angitte annotasjonen
      */
     public <T> Optional<T> valgfriAnnotasjonFor(final Class<T> type) {
-        return ofNullable((T) annotasjonar.get(type));
+        return annotasjonar.lookup(type);
     }
 
     /**
      * Annoterer perioda med den angitte typen og verdien.
+     * <p>
+     * Dersom <code>verdi</code> er av type {@link Optional}, er det den valgfrie, wrappa verdien som blir registrert,
+     * viss den wrappa verdien ikkje eksisterer blir annotasjonsverdien som perioda potensielt sett kan ha frå tidligare
+     * for den angitte typen, fjerna.
      *
      * @param <T>   annotasjonstypen
      * @param type  annotasjonstypen
      * @param verdi verdien som skal vere tilknytta annotasjonstypen
+     * @throws IllegalArgumentException viss <code>type</code> er {@link Optional}
      */
     public <T> void annoter(final Class<? extends T> type, final T verdi) {
-        annotasjonar.put(type, verdi);
+        annotasjonar.registrer(type, verdi);
     }
 
     /**
@@ -189,9 +178,9 @@ public class Underlagsperiode extends GenerellTidsperiode {
      * Til og med-datoen til underlagsperioda.
      * <p>
      * Merk at sjølv om underlagsperioda alltid er garanterert å ha ein til og med-dato blir den returnert
-     * som ein {@link java.util.Optional} for å oppfølge den generelle kontrakta til tidsperioder.
+     * som ein {@link Optional} for å oppfølge den generelle kontrakta til tidsperioder.
      *
-     * @return siste dag i underlagsperioda, garantert å vere {@link java.util.Optional#isPresent() tilgjengelig}
+     * @return siste dag i underlagsperioda, garantert å vere {@link Optional#isPresent() tilgjengelig}
      */
     public Optional<LocalDate> tilOgMed() {
         return tilOgMed;
@@ -201,4 +190,5 @@ public class Underlagsperiode extends GenerellTidsperiode {
     public String toString() {
         return "UP[" + fraOgMed + "->" + tilOgMed.map(d -> d.toString()).orElse("") + "]";
     }
+
 }

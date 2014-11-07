@@ -4,10 +4,13 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.LocalDate.MAX;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Optional.ofNullable;
 
 /**
  * {@link StillingsforholdPeriode} representerer ei periode der det ikkje skjer nokon endringar på eit bestemt
@@ -18,7 +21,7 @@ import static java.util.Collections.unmodifiableList;
  *
  * @author Tarjei Skorgenes
  */
-public class StillingsforholdPeriode extends GenerellTidsperiode {
+public class StillingsforholdPeriode extends AbstractTidsperiode<StillingsforholdPeriode> {
     private final ArrayList<Stillingsendring> gjeldendeVerdier = new ArrayList<>();
 
     /**
@@ -66,5 +69,23 @@ public class StillingsforholdPeriode extends GenerellTidsperiode {
                 gjeldendeVerdier.add(endring);
             }
         }
+    }
+
+    /**
+     * Returnerer gjeldende stillingsendring.
+     * <p>
+     * I situasjoner der stillingsperioden kun har tilknyttet en endring vil denne alltid være gjeldende endring for perioden.
+     * <p>
+     * I situasjoner der en har mer enn en endring vil sist registrerte endring bli brukt som gjeldende endring. Dette er
+     * en forenkling som ikke nødvendigvis er funksjonelt ønskelig. Det gjennstår å finne gode konflikthåndteringsstrategier
+     * for å velge rett endring for desse situasjonene.
+     *
+     * @return stillingsendringen som er utvalgt til å representere gjeldende tilstand for stillingsforholde i perioden
+     */
+    public Stillingsendring gjeldende() {
+        final Comparator<Stillingsendring> comparator = Comparator
+                .comparing((Stillingsendring e) -> ofNullable(e.registreringsdato()).orElse(MAX))
+                .reversed();
+        return gjeldendeVerdier.stream().sorted(comparator).findFirst().get();
     }
 }

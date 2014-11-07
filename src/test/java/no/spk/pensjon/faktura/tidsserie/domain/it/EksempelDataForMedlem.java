@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -87,6 +88,10 @@ class EksempelDataForMedlem extends ExternalResource {
 
     private static BufferedReader open(final String resource) throws IOException {
         final Optional<InputStream> open = ofNullable(EksempelDataForMedlem.class.getResourceAsStream(resource));
-        return new BufferedReader(new InputStreamReader(open.orElseThrow(() -> new FileNotFoundException("Klarte ikkje åpne " + resource + ", den eksisterer ikkje på classpathen"))));
+        return new BufferedReader(new InputStreamReader(open.orElseThrow(fileNotFound(resource))));
+    }
+
+    private static Supplier<FileNotFoundException> fileNotFound(final String resource) {
+        return () -> new FileNotFoundException("Klarte ikkje åpne " + resource + ", den eksisterer ikkje på classpathen");
     }
 }

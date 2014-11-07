@@ -18,7 +18,10 @@ import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar
  *
  * @author Tarjei Skorgenes
  */
-public class Maaned extends GenerellTidsperiode {
+public class Maaned extends AbstractTidsperiode<Maaned> {
+    private final Aarstall aar;
+    private final Month maaned;
+
     /**
      * Konstruerer ei ny tidsperiode som strekker seg frå første til siste dag i den aktuelle måneden
      * for det aktuelle året.
@@ -35,6 +38,8 @@ public class Maaned extends GenerellTidsperiode {
                 ).with(firstDayOfMonth()),
                 of(dato(aar, maaned).with(lastDayOfMonth()))
         );
+        this.aar = aar;
+        this.maaned = maaned;
     }
 
     /**
@@ -46,6 +51,11 @@ public class Maaned extends GenerellTidsperiode {
      */
     public boolean tilhoeyrer(final Month month) {
         return fraOgMed().getMonth() == month;
+    }
+
+    @Override
+    public String toString() {
+        return maaned + " " + aar;
     }
 
     private static LocalDate dato(final Aarstall aar, final Month maaned) {

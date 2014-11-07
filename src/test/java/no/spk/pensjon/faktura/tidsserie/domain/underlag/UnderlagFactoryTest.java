@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,15 +13,16 @@ import org.junit.rules.ExpectedException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.time.LocalDate.now;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -312,12 +314,13 @@ public class UnderlagFactoryTest {
         return new UnderlagFactory(grenser);
     }
 
-    private Tidsperiode periode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
+    private Tidsperiode<?> periode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         return new GenerellTidsperiode(fraOgMed, tilOgMed);
     }
 
-    private static AbstractListAssert<?, ? extends List<Tidsperiode>, Tidsperiode> assertKobling(final Underlag underlag, final Class<? extends Tidsperiode> type, final int index) {
+    @SuppressWarnings("rawtypes")
+    private static AbstractListAssert assertKobling(Underlag underlag, Class<? extends Tidsperiode<?>> type, int index) {
         final Underlagsperiode underlagsperiode = underlag.toList().get(index);
-        return assertThat(underlagsperiode.koblingarAvType(type).collect(toList()));
+        return assertThat(underlagsperiode.koblingarAvType(type).<Tidsperiode<?>>map(k -> (Tidsperiode<?>) k).collect(toList()));
     }
 }

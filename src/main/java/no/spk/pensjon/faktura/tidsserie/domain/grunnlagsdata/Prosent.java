@@ -82,4 +82,19 @@ public class Prosent {
         format.setGroupingUsed(false);
         return format.format(verdi);
     }
+
+    /**
+     * Avrundar prosentane til det angitte antall desimalar og sjekkar om verdiane er like.
+     *
+     * @param other           den andre prosenten vi skal samanlikne mot
+     * @param antallDesimalar antall desimalar vi skal ta runde av til og ta hensyn til i samanlikninga
+     * @return <code>true</code> viss dei to prosentane er like etter avrunding, <code>false</code> ellers
+     */
+    public boolean equals(final Prosent other, final int antallDesimalar) {
+        return avrund(this, antallDesimalar) == avrund(other, antallDesimalar);
+    }
+
+    private long avrund(final Prosent other, final int antallDesimalar) {
+        return Math.round(100d * other.verdi * Math.pow(10, antallDesimalar));
+    }
 }

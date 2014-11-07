@@ -6,6 +6,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Optional;
+
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
@@ -19,6 +21,44 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UnderlagsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at {@link java.util.Optional} blir spesialhandtert ved registrering av annotasjonar,
+     * ei perioda skal enten kunne ha ein verdi eller ikkje ha den (Optional&lt;Verdi&gt;), den skal ikkje kanskje
+     * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
+     */
+    @Test
+    public void skalEkspandereOptionalSinVerdiVedRegistreringAvAnnotasjon() {
+        final Integer expected = Integer.valueOf(1);
+
+        final Underlagsperiode periode = eiPeriode();
+        periode.annoter(Integer.class, of(expected));
+        assertThat(periode.annotasjonFor(Integer.class)).isEqualTo(expected);
+    }
+
+    /**
+     * Verifiserer at {@link java.util.Optional} blir spesialhandtert ved registrering av annotasjonar,
+     * ei perioda skal enten kunne ha ein verdi eller ikkje ha den (Optional&lt;Verdi&gt;), den skal ikkje kanskje
+     * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
+     */
+    @Test
+    public void skalIkkjeRegistrereEinVerdiVissVerdiErEinTomOptional() {
+        final Underlagsperiode periode = eiPeriode();
+        periode.annoter(Integer.class, empty());
+        assertThat(periode.valgfriAnnotasjonFor(Integer.class).isPresent()).isFalse();
+    }
+
+    /**
+     * Verifiserer at {@link java.util.Optional} blir spesialhandtert ved registrering av annotasjonar,
+     * ei perioda skal enten kunne ha ein verdi eller ikkje ha den (Optional&lt;Verdi&gt;), den skal ikkje kanskje
+     * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
+     */
+    @Test
+    public void skalFeileVissAnnotasjonstypeErOptional() {
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("Annotasjonar av type Optional er ikkje støtta, viss du vil legge til ein valgfri annotasjon må den registrerast under verdiens egen type");
+        eiPeriode().annoter(Optional.class, empty());
+    }
 
     /**
      * Verifiserer at uthenting av periodekobling kun slår opp basert på koblinga si hovedtype,

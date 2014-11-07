@@ -21,7 +21,7 @@ public final class Assertions {
      * @param periode underlagsperioda som til og med-dato skal hentast frå
      * @return ein ny asserter for til og med-datoen til perioda
      */
-    public static AbstractObjectAssert<?, Optional<LocalDate>> assertTilOgMed(final Tidsperiode periode) {
+    public static AbstractObjectAssert<?, Optional<LocalDate>> assertTilOgMed(final Tidsperiode<?> periode) {
         return assertThat(periode.tilOgMed()).as("til og med-dato for underlagsperiode " + periode);
     }
 
@@ -31,7 +31,7 @@ public final class Assertions {
      * @param periode underlagsperioda som fra og med-dato skal hentast frå
      * @return ein ny asserter for fra og med-datoen til perioda
      */
-    public static AbstractComparableAssert<?, LocalDate> assertFraOgMed(final Tidsperiode periode) {
+    public static AbstractComparableAssert<?, LocalDate> assertFraOgMed(final Tidsperiode<?> periode) {
         return assertThat(periode.fraOgMed()).as("fra og med-dato for tidsperiode " + periode);
     }
 

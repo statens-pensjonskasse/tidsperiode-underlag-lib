@@ -31,7 +31,7 @@ class Feilmeldingar {
         return ugyldigAntallKolonner(
                 rad,
                 "stillingsendring",
-                "typeindikator, fødselsdato, personnummer, aksjonskode, arbeidsgivar, permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, funksjonstillegg og aksjonsdato"
+                "typeindikator, fødselsdato, personnummer, stillingsforhold, aksjonskode, arbeidsgivar, permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, funksjonstillegg og aksjonsdato"
         );
     }
 

@@ -13,7 +13,7 @@ import static java.time.LocalDate.MAX;
  *
  * @author Tarjei Skorgenes
  */
-public interface Tidsperiode {
+public interface Tidsperiode<T extends Tidsperiode<T>> {
     /**
      * Første dag i tidsperioda.
      *

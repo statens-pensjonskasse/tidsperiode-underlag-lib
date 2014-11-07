@@ -90,7 +90,7 @@ public class MedlemsdataPeriodiseringIT {
         assertThat(stillingsforholdene).hasSize(2);
 
         assertPerioder(stillingsforholdene, STILLINGSFORHOLD_A).hasSize(14);
-        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_B).hasSize(3);
+        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_B).hasSize(5);
     }
 
     private Medlemsdata create() {

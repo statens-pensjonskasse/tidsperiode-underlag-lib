@@ -25,10 +25,10 @@ public class PeriodiserStillingshistorikkTest {
     @Test
     public void skalDannePerioderMellomKvarUnikeAksjonsdato() {
         final List<StillingsforholdPeriode> perioder = periodiser(
-                stillingsendring().aksjonsdato("2001.01.01"),
-                stillingsendring().aksjonsdato("2001.03.07").aksjonskode("012"),
-                stillingsendring().aksjonsdato("2001.03.07").aksjonskode("021"),
-                stillingsendring().aksjonsdato("2011.12.11")
+                stillingsendring().aksjonsdato(dato("2001.01.01")),
+                stillingsendring().aksjonsdato(dato("2001.03.07")).aksjonskode("012"),
+                stillingsendring().aksjonsdato(dato("2001.03.07")).aksjonskode("021"),
+                stillingsendring().aksjonsdato(dato("2011.12.11"))
         );
 
         assertFraOgMed(perioder.get(0)).isEqualTo(dato("2001.01.01"));
@@ -44,9 +44,9 @@ public class PeriodiserStillingshistorikkTest {
     @Test
     public void skalBehandleKronologiskFoersteEndringSomStartMeldingSelvOmEndringIkkeTilhoererEnStartmelding() {
         final List<StillingsforholdPeriode> perioder = periodiser(
-                stillingsendring().aksjonsdato("2011.12.11").aksjonskode("011"),
-                stillingsendring().aksjonsdato("2001.03.07").aksjonskode("021"),
-                stillingsendring().aksjonsdato("2001.01.01").aksjonskode("031")
+                stillingsendring().aksjonsdato(dato("2011.12.11")).aksjonskode("011"),
+                stillingsendring().aksjonsdato(dato("2001.03.07")).aksjonskode("021"),
+                stillingsendring().aksjonsdato(dato("2001.01.01")).aksjonskode("031")
         );
 
         assertFraOgMed(perioder.get(0)).isEqualTo(dato("2001.01.01"));
@@ -58,7 +58,7 @@ public class PeriodiserStillingshistorikkTest {
     @Test
     public void skalSpesialhandtereSistePeriodesTilOgMedDatoVissDetErRegistrertSluttmeldingSammeDag() {
         List<StillingsforholdPeriode> perioder = periodiser(
-                stillingsendring().aksjonsdato("2012.06.30").aksjonskode("031")
+                stillingsendring().aksjonsdato(dato("2012.06.30")).aksjonskode("031")
         );
         assertTilOgMed(perioder.get(0)).isEqualTo(of(dato("2012.06.30")));
     }
@@ -66,7 +66,7 @@ public class PeriodiserStillingshistorikkTest {
     @Test
     public void skalGenerereLoependeSistePeriodesVissDetIkkeErRegistrertSluttmeldingPaSisteAksjonsdato() {
         List<StillingsforholdPeriode> perioder = periodiser(
-                stillingsendring().aksjonsdato("2012.06.30").aksjonskode("021")
+                stillingsendring().aksjonsdato(dato("2012.06.30")).aksjonskode("021")
         );
         assertTilOgMed(perioder.get(0)).isEqualTo(empty());
     }
@@ -83,8 +83,8 @@ public class PeriodiserStillingshistorikkTest {
         asList("011", "012", "013", "021", "023", "028", "029", "031")
                 .forEach(aksjonskode -> {
                     List<StillingsforholdPeriode> perioder = periodiser(
-                            stillingsendring().aksjonsdato("2000.01.01").aksjonskode(aksjonskode),
-                            stillingsendring().aksjonsdato("2001.01.01").aksjonskode("021")
+                            stillingsendring().aksjonsdato(dato("2000.01.01")).aksjonskode(aksjonskode),
+                            stillingsendring().aksjonsdato(dato("2001.01.01")).aksjonskode("021")
                     );
                     assertFraOgMed(perioder.get(0)).isEqualTo(dato("2000.01.01"));
                     assertTilOgMed(perioder.get(0)).isEqualTo(of(dato("2000.12.31")));
@@ -100,11 +100,11 @@ public class PeriodiserStillingshistorikkTest {
     @Test
     public void skalKobleOppPerioderTilEndringerSomDeOverlapper() {
         List<Stillingsendring> endringer = asList(
-                stillingsendring().aksjonsdato("2005.08.15"),
-                stillingsendring().aksjonsdato("2006.01.01"),
-                stillingsendring().aksjonsdato("2007.08.01"),
-                stillingsendring().aksjonsdato("2010.01.01"),
-                stillingsendring().aksjonsdato("2012.06.30").aksjonskode("031")
+                stillingsendring().aksjonsdato(dato("2005.08.15")),
+                stillingsendring().aksjonsdato(dato("2006.01.01")),
+                stillingsendring().aksjonsdato(dato("2007.08.01")),
+                stillingsendring().aksjonsdato(dato("2010.01.01")),
+                stillingsendring().aksjonsdato(dato("2012.06.30")).aksjonskode("031")
         );
 
         List<StillingsforholdPeriode> perioder = periodiser(endringer);
