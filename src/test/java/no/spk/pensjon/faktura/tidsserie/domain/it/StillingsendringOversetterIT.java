@@ -4,16 +4,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.domain.it.CsvFileReader.readFromClasspath;
 import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,15 +22,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 public class StillingsendringOversetterIT {
-    private List<List<String>> data;
     private StillingsendringOversetter oversetter;
 
-    @Before
-    public void _before() throws IOException {
-        final String ressurs = "/csv/medlem-1-stillingsforhold-3.csv";
-        data = readFromClasspath(ressurs);
-        assertThat(data).as("medlemsdata frå CSV-fil " + ressurs).isNotEmpty();
+    @ClassRule
+    public static EksempelDataForMedlem data = new EksempelDataForMedlem();
 
+    @Before
+    public void _before() {
         oversetter = new StillingsendringOversetter();
     }
 
@@ -93,4 +90,5 @@ public class StillingsendringOversetterIT {
                 .stream()
                 .filter(oversetter::supports);
     }
+
 }

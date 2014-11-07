@@ -12,16 +12,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOve
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdUnderlagCallback;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Optional.empty;
@@ -43,6 +39,9 @@ public class TidsserieUnderlagFacadeIT {
 
     private static final StillingsforholdId STILLINGSFORHOLD_B = valueOf(888888888888L);
 
+    @ClassRule
+    public static EksempelDataForMedlem data = new EksempelDataForMedlem();
+
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
@@ -57,8 +56,7 @@ public class TidsserieUnderlagFacadeIT {
         oversettere = new HashMap<>();
         oversettere.put(Stillingsendring.class, new StillingsendringOversetter());
 
-        final List<List<String>> medlemsdata = CsvFileReader.readFromClasspath("/csv/medlem-1-stillingsforhold-3.csv");
-        medlem = new Medlemsdata(medlemsdata, oversettere);
+        medlem = new Medlemsdata(data.toList(), oversettere);
 
         fasade = new TidsserieUnderlagFacade();
     }
