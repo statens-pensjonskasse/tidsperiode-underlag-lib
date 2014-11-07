@@ -1,19 +1,21 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
+import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -27,9 +29,23 @@ public class StillingsendringOversetterIT {
     @ClassRule
     public static EksempelDataForMedlem data = new EksempelDataForMedlem();
 
+    @Rule
+    public final ExpectedException e = ExpectedException.none();
+
     @Before
     public void _before() {
         oversetter = new StillingsendringOversetter();
+    }
+
+    @Test
+    public void skalFeileMedEinGodBeskrivelseAvFeilenDersomAntallKolonnerErUlik7() {
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("Ei stillingsendring må inneholde følgjande kolonner i angitt rekkefølge");
+        e.expectMessage("typeindikator, fødselsdato, personnummer, aksjonskode, arbeidsgivar, permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, funksjonstillegg og aksjonsdato");
+        e.expectMessage("Rada som feila: ");
+        e.expectMessage(emptyList().toString());
+
+        oversetter.oversett(emptyList());
     }
 
     /**
@@ -37,15 +53,12 @@ public class StillingsendringOversetterIT {
      */
     @Test
     public void skalHenteUtStillingsforholdNummerFraKolonne4() {
-        final List<StillingsforholdId> actual = stillingsendringar()
-                .map(Stillingsendring::stillingsforhold)
-                .distinct()
-                .collect(toList());
-        assertThat(actual).containsOnlyElementsOf(
-                lesFraKolonne(3, StillingsforholdId::valueOf)
-                        .distinct()
-                        .collect(toList())
-        );
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::stillingsforhold)
+        ).as("stillingsforhold frå stillingsendringane")
+                .containsOnlyElementsOf(
+                        transform(rad -> rad.get(3), StillingsforholdId::valueOf)
+                );
     }
 
     /**
@@ -53,9 +66,12 @@ public class StillingsendringOversetterIT {
      */
     @Test
     public void skalHenteUtAksjonskodeFraKolonne5() {
-        final List<String> actual = stillingsendringar().map(Stillingsendring::aksjonskode).collect(toList());
-        final List<String> expected = lesFraKolonne(4, e -> e).collect(toList());
-        assertThat(actual).as("aksjonskoder etter oversetting").containsExactlyElementsOf(expected);
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::aksjonskode)
+        ).as("aksjonskoder frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(4), s -> s)
+                );
     }
 
     /**
@@ -63,31 +79,26 @@ public class StillingsendringOversetterIT {
      */
     @Test
     public void skalHenteUtAksjonsdatoFraKolonne15() {
-        final List<LocalDate> actual = stillingsendringar()
-                .map(Stillingsendring::aksjonsdato)
-                .distinct()
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::aksjonsdato)
+        ).as("aksjonskoder frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(14), Datoar::dato)
+                );
+    }
+
+    private <T, R> List<R> transform(final Function<List<String>, T> mapper,
+                                     final Function<T, R> transformasjon) {
+        return stillingsendringar()
+                .map(mapper)
+                .map(transformasjon)
                 .collect(toList());
-        assertThat(actual).containsOnlyElementsOf(
-                lesFraKolonne(14, e -> dato(e))
-                        .distinct()
-                        .collect(toList())
-        );
     }
 
-    private Stream<Stillingsendring> stillingsendringar() {
-        return kunStillingsendringar()
-                .map(oversetter::oversett);
-    }
-
-    private <T> Stream<T> lesFraKolonne(final int index, final Function<String, T> mapper) {
-        return kunStillingsendringar()
-                .map(e -> e.get(index))
-                .map(mapper);
-    }
-
-    private Stream<List<String>> kunStillingsendringar() {
+    private Stream<List<String>> stillingsendringar() {
         return data
                 .stream()
+                .distinct()
                 .filter(oversetter::supports);
     }
 

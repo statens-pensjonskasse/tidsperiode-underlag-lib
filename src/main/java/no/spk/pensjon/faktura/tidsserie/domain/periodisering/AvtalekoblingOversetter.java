@@ -8,6 +8,7 @@ import java.util.List;
 
 import static java.util.Optional.ofNullable;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForAvtalekobling;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter} representerer algoritma
@@ -79,6 +80,31 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
     public static final String TYPEINDIKATOR = "1";
 
     /**
+     * Kolonneindeksen stillingsforholdnummer blir henta frå.
+     */
+    public static final int INDEX_STILLINGSFORHOLD = 3;
+
+    /**
+     * Kolonneindeksen startdato blir henta frå.
+     */
+    public static final int INDEX_STARTDATO = 4;
+
+    /**
+     * Kolonneindeksen sluttdato blir henta frå.
+     */
+    public static final int INDEX_SLUTTDATO = 5;
+
+    /**
+     * Kolonneindeksen avtalenummer blir henta frå.
+     */
+    public static final int INDEX_AVTALE = 6;
+
+    /**
+     * Forventa antall kolonner i ei avtalekoblingsrad.
+     */
+    public static final int ANTALL_KOLONNER = INDEX_AVTALE + 1;
+
+    /**
      * Oversetter innholdet i <code>rad</code> til ei ny
      * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
      *
@@ -87,11 +113,16 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
      */
     @Override
     public Avtalekoblingsperiode oversett(final List<String> rad) {
+        if (rad.size() != ANTALL_KOLONNER) {
+            throw new IllegalArgumentException(
+                    ugyldigAntallKolonnerForAvtalekobling(rad)
+            );
+        }
         return new Avtalekoblingsperiode(
-                dato(rad.get(4)),
-                ofNullable(dato(rad.get(5))),
-                StillingsforholdId.valueOf(rad.get(3)),
-                AvtaleId.valueOf(rad.get(6))
+                dato(rad.get(INDEX_STARTDATO)),
+                ofNullable(dato(rad.get(INDEX_SLUTTDATO))),
+                StillingsforholdId.valueOf(rad.get(INDEX_STILLINGSFORHOLD)),
+                AvtaleId.valueOf(rad.get(INDEX_AVTALE))
         );
     }
 

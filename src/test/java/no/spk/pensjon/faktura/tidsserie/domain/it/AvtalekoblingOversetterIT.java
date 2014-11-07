@@ -6,12 +6,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
@@ -26,7 +29,24 @@ public class AvtalekoblingOversetterIT {
     @ClassRule
     public static EksempelDataForMedlem data = new EksempelDataForMedlem();
 
+    @Rule
+    public final ExpectedException e = ExpectedException.none();
+
     private final AvtalekoblingOversetter oversetter = new AvtalekoblingOversetter();
+
+    /**
+     * Verifiserer at oversettinga feilar dersom input-rada ikkje inneheld korrekt antall kolonner.
+     */
+    @Test
+    public void skalFeileMedEinGodBeskrivelseAvFeilenDersomAntallKolonnerErUlik7() {
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("Ei avtalekobling må inneholde følgjande kolonner i angitt rekkefølge");
+        e.expectMessage("typeindikator, fødselsdato, personnummer, stillingsforholdnummer, startdato, sluttdato og avtalenummer");
+        e.expectMessage("Rada som feila: ");
+        e.expectMessage(emptyList().toString());
+
+        oversetter.oversett(emptyList());
+    }
 
     /**
      * Verifiserer at stillingsforholdnummeret blir henta frå kolonne 4 / index 3.
@@ -79,7 +99,6 @@ public class AvtalekoblingOversetterIT {
                         transform(rad -> rad.get(6), AvtaleId::valueOf)
                 );
     }
-
 
     private <T, R> List<R> transform(final Function<List<String>, T> mapper,
                                      final Function<T, R> transformasjon) {
