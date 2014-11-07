@@ -8,4 +8,7 @@ import java.util.function.Supplier;
 class Feilmeldingar {
     static final Supplier<String> FRA_OG_MED_PAAKREVD = () -> "fra og med-dato er påkrevd, men var null";
     static final Supplier<String> TIL_OG_MED_PAAKREVD = () -> "til og med-dato er påkrevd, men var null";
+
+    static final Supplier<String> AARSTALL_PAAKREVD = () -> "årstall er påkrevd, men var null";
+    static final Supplier<String> MAANED_PAAKREVD = () -> "måned er påkrevd, men var null";
 }

@@ -1,6 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
+import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -26,5 +31,25 @@ public class Observasjonsperiode extends GenerellTidsperiode {
      */
     public Observasjonsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
         super(fraOgMed, ofNullable(requireNonNull(tilOgMed, TIL_OG_MED_PAAKREVD)));
+    }
+
+    /**
+     * Returnerer alle år som observasjonsperioda overlappar, enten heilt eller delvis.
+     * <p>
+     * Ettersom vi her returnerer åra, ikkje månedane perioda overlappar vil det samlinga kunne inneholde fleire
+     * månedar enn observasjonsperioda faktisk dekker. Vi har ikkje heilt bestemt oss om kva som er ønska oppførsel
+     * i situasjonar der ein ønskjer å observere berre delar av ei år. Skal det i det heile tatt vere tillatt?
+     *
+     * @return ei samling med alle åra som observasjonsperioda overlappar
+     */
+    public Collection<Aar> overlappendeAar() {
+        return IntStream
+                .rangeClosed(
+                        fraOgMed().getYear(),
+                        tilOgMed().get().getYear()
+                )
+                .mapToObj(Aarstall::new)
+                .map(Aar::new)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 }

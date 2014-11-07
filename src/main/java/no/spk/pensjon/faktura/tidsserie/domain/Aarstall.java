@@ -45,4 +45,31 @@ public class Aarstall {
     public String toString() {
         return Integer.toString(aarstall);
     }
+
+    /**
+     * Opprettar ein ny instans av {@link java.time.Year} som representerer det aktuelle årstallet.
+     *
+     * @return ein ny instans av Year for samme årstall
+     */
+    public Year toYear() {
+        return Year.of(aarstall);
+    }
+
+    /**
+     * Returnerer eit årstall for det kronologisk foregåande året.
+     *
+     * @return forrige årstall
+     */
+    public Aarstall forrige() {
+        return new Aarstall(aarstall - 1);
+    }
+
+    /**
+     * Returnerer eit årstall for det kronologisk etterfølgande året.
+     *
+     * @return neste årstall
+     */
+    public Aarstall neste() {
+        return new Aarstall(aarstall + 1);
+    }
 }

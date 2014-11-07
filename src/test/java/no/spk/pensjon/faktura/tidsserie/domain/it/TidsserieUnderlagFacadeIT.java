@@ -4,9 +4,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
@@ -15,14 +18,21 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdUnderla
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-import org.junit.*;
+import org.assertj.core.api.AbstractListAssert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
@@ -65,6 +75,64 @@ public class TidsserieUnderlagFacadeIT {
         medlem = new Medlemsdata(data.toList(), oversettere);
 
         fasade = new TidsserieUnderlagFacade();
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir kobla til måneden dei ligg innanfor.
+     */
+    @Test
+    public void skalKobleAlleUnderlagsperioderTilMaanedenDeiLiggInnanfor() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        final Aarstall aar = new Aarstall(2010);
+        prosesser(underlagene::put, new Observasjonsperiode(aar.atStartOfYear(), aar.atEndOfYear()));
+
+        assertUnderlagsperioderUtanKoblingTil(underlagene, Maaned.class).isEmpty();
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir kobla til året dei ligg innanfor.
+     */
+    @Test
+    public void skalKobleAlleUnderlagsperioderTilAaretDeiLiggInnanfor() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        final Aarstall aar = new Aarstall(2012);
+        prosesser(underlagene::put, new Observasjonsperiode(aar.atStartOfYear(), aar.atEndOfYear()));
+
+        assertUnderlagsperioderUtanKoblingTil(underlagene, Aar.class).isEmpty();
+    }
+
+    /**
+     * Verifiserer at underlaget blir splitta kvar gang ein endrar måned innanfor observasjonsperioda.
+     */
+    @Test
+    public void skalSplitteUnderlagVedKvarOvergangFraaEinMaanedTilEinAnnanMaanedInnanforObservasjonsperioda() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        final Aarstall aar = new Aarstall(2006);
+        prosesser(underlagene::put, new Observasjonsperiode(aar.atStartOfYear(), aar.atEndOfYear()));
+
+        final List<Underlag> aktiveStillingsforholdI2006 = underlagene
+                .values()
+                .stream()
+                .filter(u -> u.stream().count() > 0)
+                .collect(toList());
+        assertThat(aktiveStillingsforholdI2006).hasSize(1);
+
+        final List<Month> actual = aktiveStillingsforholdI2006
+                .stream()
+                .flatMap(u -> u.stream())
+                .map(p -> Stream.of(
+                                p.fraOgMed().getMonth(),
+                                p.tilOgMed().get().getMonth()
+                        )
+                ).flatMap(s -> s)
+                .distinct()
+                .collect(toList());
+        assertThat(actual)
+                .as("maaneder som det finnes underlagsperioder for i underlaget til stillingsforholdet som er aktivt i 2006")
+                .containsOnly(Month.values());
     }
 
     /**
@@ -115,6 +183,8 @@ public class TidsserieUnderlagFacadeIT {
      * Verifiserer at underlag for stillingsforhold ikkje inneheld underlagperioder som
      * ligg før stillingsforholdets første stillingsendring, sjølv om ein har referansedata
      * eller regelperioder som startar/sluttar før stillingsforholdet startar.
+     * <p>
+     * Dette forutsetter at observasjonsperioda startar før stillingsforholdet startar.
      */
     @Test
     public void skalAvgrenseUnderlagetsStartTilStillingsforholdetsFoersteEndring() {
@@ -151,8 +221,8 @@ public class TidsserieUnderlagFacadeIT {
 
         assertThat(underlagene).hasSize(2);
 
-        assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(14);
-        assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(3);
+        assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(5 + 6 * 12 + 6); // 5 mnd i 2005 + 6 fulle år + 6 mnd i 2012
+        assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(4 + 2 * 12); // 4 mnd i 2012 + 2 fulle år
     }
 
     /**
@@ -269,11 +339,22 @@ public class TidsserieUnderlagFacadeIT {
         prosesser(callback, standardperiode());
     }
 
-    private void prosesser(final StillingsforholdUnderlagCallback callback, Observasjonsperiode observasjonsperiode) {
+    private void prosesser(final StillingsforholdUnderlagCallback callback, final Observasjonsperiode observasjonsperiode) {
         fasade.prosesser(medlem, callback, observasjonsperiode);
     }
 
     private Observasjonsperiode standardperiode() {
         return new Observasjonsperiode(new Aarstall(2005).atStartOfYear(), new Aarstall(2014).atEndOfYear());
+    }
+
+    private static AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode> assertUnderlagsperioderUtanKoblingTil(Map<StillingsforholdId, Underlag> underlagene, Class<? extends Tidsperiode> type) {
+        return assertThat(
+                underlagene
+                        .values()
+                        .stream()
+                        .flatMap(u -> u.stream())
+                        .filter(p -> !p.koblingAvType(type).isPresent())
+                        .collect(toList())
+        ).as("underlagsperioder utan kobling til " + type.getSimpleName());
     }
 }
