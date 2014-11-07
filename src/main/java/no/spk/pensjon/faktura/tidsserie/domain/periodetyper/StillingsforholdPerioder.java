@@ -34,6 +34,17 @@ public class StillingsforholdPerioder {
     }
 
     /**
+     * Tilhøyrer avtalekobling dette stillingsforholdet?
+     *
+     * @param avtalekobling avtalekoblinga som skal sjekkast
+     * @return <code>true</code> dersom avtalekoblinga tilhøyrer samme stillingsforhold som oss,
+     * <code>false</code> viss avtalekoblinga tilhøyrer eit anna stillingsforhold
+     */
+    public boolean tilhoeyrer(final Avtalekoblingsperiode avtalekobling) {
+        return avtalekobling.tilhoeyrer(stillingsforhold);
+    }
+
+    /**
      * Stillingsforholdsnummeret som unikt identifiserer og skiller stillingsforholdet frå alle andre stillingsforhold.
      *
      * @return stillingsforholdnummeret

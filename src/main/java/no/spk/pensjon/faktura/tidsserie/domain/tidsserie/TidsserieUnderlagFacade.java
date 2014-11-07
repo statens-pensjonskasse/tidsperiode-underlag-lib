@@ -57,6 +57,7 @@ public class TidsserieUnderlagFacade {
                 .forEach(s -> {
                     final UnderlagFactory factory = new UnderlagFactory(observasjonsperiode);
                     factory.addPerioder(s.perioder());
+                    factory.addPerioder(medlem.avtalekoblingar(s::tilhoeyrer));
                     factory.addPerioder(referanseperioder);
 
                     try {

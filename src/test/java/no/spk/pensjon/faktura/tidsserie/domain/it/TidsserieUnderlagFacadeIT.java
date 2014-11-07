@@ -4,25 +4,30 @@ import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdUnderlagCallback;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Optional.empty;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
+import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -55,10 +60,29 @@ public class TidsserieUnderlagFacadeIT {
     public void _before() throws IOException {
         oversettere = new HashMap<>();
         oversettere.put(Stillingsendring.class, new StillingsendringOversetter());
+        oversettere.put(Avtalekoblingsperiode.class, new AvtalekoblingOversetter());
 
         medlem = new Medlemsdata(data.toList(), oversettere);
 
         fasade = new TidsserieUnderlagFacade();
+    }
+
+    /**
+     * Verifiserer at periodiseringa av underlag inkluderer avtalekoblingsperiodene i periodiseringa og koblar opp
+     * underlagsperiodene til avtalekoblingsperiodene som dei overlappar.
+     */
+    @Test
+    public void skalInkludereAvtalekoblingarIPeriodiseringa() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        final List<Underlagsperiode> perioderUtanAvtalekobling = underlagene
+                .values()
+                .stream()
+                .flatMap(u -> u.stream())
+                .filter(p -> !p.koblingAvType(Avtalekoblingsperiode.class).isPresent())
+                .collect(toList());
+        assertThat(perioderUtanAvtalekobling).as("underlagsperioder utan avtalekobling").isEmpty();
     }
 
     /**

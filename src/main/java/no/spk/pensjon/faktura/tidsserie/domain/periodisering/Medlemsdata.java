@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeri
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -94,6 +95,18 @@ public class Medlemsdata {
         }
         this.oversettere = oversettere;
         this.data = medlemsdata;
+    }
+
+    /**
+     * Listar ut alle avtalekoblingar tilknytta medlemmet sine stillingsforhold, som matchar
+     * det angitte søkekriteriet.
+     *
+     * @param predikat eit predikat som indikerer kva avtalekoblingar som skal returnerast
+     * @return ein straum med alle avtalekoblingane som tilhøyrer medlemmet sine stillingsforhold og som ikkje
+     * blir filtrert bort
+     */
+    public Stream<Avtalekoblingsperiode> avtalekoblingar(final Predicate<Avtalekoblingsperiode> predikat) {
+        return finnOgOversett(Avtalekoblingsperiode.class).filter(predikat);
     }
 
     /**

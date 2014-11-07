@@ -41,6 +41,17 @@ public class Avtalekoblingsperiode extends GenerellTidsperiode {
     }
 
     /**
+     * Er avtalekoblinga tilknytta det angitte stillingsforholdet?
+     *
+     * @param stillingsforhold stillingsforholdnummeret avtalekoblinga skal sjekkast mot
+     * @return <code>true</code> dersom avtalekoblinga er tilknytta det angitte stillingsforholdet,
+     * <code>false</code> ellers
+     */
+    public boolean tilhoeyrer(final StillingsforholdId stillingsforhold) {
+        return this.stillingsforhold.equals(stillingsforhold);
+    }
+
+    /**
      * Stillingsforholdet avtalekoblinga tilhøyrer.
      *
      * @return stillingsforholdet avtalekoblinga tilhøyrer

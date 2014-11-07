@@ -16,6 +16,7 @@ import java.util.List;
 import static java.time.LocalDate.now;
 import static java.util.Arrays.asList;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -58,6 +59,22 @@ public class MedlemsdataTest {
                 return "1".equals(rad.get(0));
             }
         });
+    }
+
+    /**
+     * Verifiserer at uthentinga av avtalekoblingar lar predikatet styre kva for nokon av avtalekoblingane som
+     * skal returnerast.
+     */
+    @Test
+    public void skalFiltrereAvtalekoblingarBasertPaaPredikat() {
+        final Medlemsdata data = medMedlemsdata(
+                avtalekoblingsdata(),
+                stillingsendringdata(),
+                avtalekoblingsdata(),
+                stillingsendringdata()
+        ).create();
+        assertThat(data.avtalekoblingar(p -> true).collect(toList())).hasSize(2);
+        assertThat(data.avtalekoblingar(p -> false).collect(toList())).hasSize(0);
     }
 
     /**
