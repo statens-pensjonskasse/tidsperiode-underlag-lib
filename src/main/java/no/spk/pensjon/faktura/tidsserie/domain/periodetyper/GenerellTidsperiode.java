@@ -1,10 +1,12 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
+import no.spk.pensjon.faktura.tidsserie.Datoar;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static java.time.LocalDate.MAX;
 import static java.util.Objects.requireNonNull;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.sjekkForVrengteDatoar;
 import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.FRA_OG_MED_PAAKREVD;
 import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.TIL_OG_MED_PAAKREVD;
 
@@ -47,25 +49,7 @@ public class GenerellTidsperiode implements Tidsperiode {
     }
 
     @Override
-    public boolean overlapper(final Tidsperiode other) {
-        return overlapper(other.fraOgMed()) || other.overlapper(fraOgMed());
-    }
-
-    @Override
-    public boolean overlapper(final LocalDate dato) {
-        return !(dato.isBefore(fraOgMed()) || dato.isAfter(tilOgMed().orElse(MAX)));
-    }
-
-    @Override
     public String toString() {
         return String.format("%s[%s->%s]", "", fraOgMed(), tilOgMed().map(d -> d.toString()).orElse(""));
-    }
-
-    private void sjekkForVrengteDatoar(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        if (fraOgMed.isAfter(tilOgMed)) {
-            throw new IllegalArgumentException("fra og med-dato kan ikkje vere etter til og med-dato, men "
-                    + fraOgMed + " er etter " + tilOgMed
-            );
-        }
     }
 }

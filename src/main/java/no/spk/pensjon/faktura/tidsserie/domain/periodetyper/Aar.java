@@ -60,16 +60,6 @@ public class Aar implements Tidsperiode {
         return perioder.stream().filter(m -> m.tilhoeyrer(Month.DECEMBER)).findAny().get().tilOgMed();
     }
 
-    @Override
-    public boolean overlapper(final LocalDate dato) {
-        return !(dato.isBefore(fraOgMed()) || tilOgMed().orElse(MAX).isBefore(dato));
-    }
-
-    @Override
-    public boolean overlapper(final Tidsperiode other) {
-        return new GenerellTidsperiode(fraOgMed(), tilOgMed()).overlapper(other);
-    }
-
     /**
      * Månadane som året periodisert og splittet opp i.
      *
