@@ -1,8 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 
 import java.util.List;
+
+import static java.util.Optional.ofNullable;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter} representerer algoritma
@@ -82,7 +87,12 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
      */
     @Override
     public Avtalekoblingsperiode oversett(final List<String> rad) {
-        return new Avtalekoblingsperiode();
+        return new Avtalekoblingsperiode(
+                dato(rad.get(4)),
+                ofNullable(dato(rad.get(5))),
+                StillingsforholdId.valueOf(rad.get(3)),
+                AvtaleId.valueOf(rad.get(6))
+        );
     }
 
     /**

@@ -6,7 +6,7 @@ import org.junit.rules.ExpectedException;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

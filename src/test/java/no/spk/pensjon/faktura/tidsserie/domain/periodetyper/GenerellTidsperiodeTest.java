@@ -14,7 +14,7 @@ import static java.time.LocalDate.now;
 import static java.util.Arrays.asList;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

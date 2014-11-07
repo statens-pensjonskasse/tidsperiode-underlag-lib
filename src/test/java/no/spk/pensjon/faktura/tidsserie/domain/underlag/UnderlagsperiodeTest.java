@@ -8,7 +8,7 @@ import org.junit.rules.ExpectedException;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

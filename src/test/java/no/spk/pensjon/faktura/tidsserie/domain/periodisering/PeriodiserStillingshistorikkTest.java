@@ -2,9 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring.stillingsendring;
-import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 

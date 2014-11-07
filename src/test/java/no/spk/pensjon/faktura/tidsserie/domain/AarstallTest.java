@@ -2,7 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain;
 
 import org.junit.Test;
 
-import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
