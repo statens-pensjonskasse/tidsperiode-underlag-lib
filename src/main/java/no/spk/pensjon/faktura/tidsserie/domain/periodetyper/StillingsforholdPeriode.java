@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDate.MAX;
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
 
@@ -53,6 +54,14 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      */
     public Iterable<Stillingsendring> endringer() {
         return unmodifiableList(gjeldendeVerdier);
+    }
+
+    /**
+     * @see #leggTilOverlappendeStillingsendringer(java.util.List)
+     * @see java.util.Arrays#asList
+     */
+    public void leggTilOverlappendeStillingsendringer(final Stillingsendring... endringer) {
+        leggTilOverlappendeStillingsendringer(asList(endringer));
     }
 
     /**

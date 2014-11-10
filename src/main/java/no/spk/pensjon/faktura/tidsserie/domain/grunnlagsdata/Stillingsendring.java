@@ -110,7 +110,7 @@ public class Stillingsendring {
      * @return datoen stillingsendringen inntreffer på
      */
     public LocalDate aksjonsdato() {
-        return aksjonsdato.get();
+        return aksjonsdato.orElseThrow(this::stillingsendringHarIkkeAksjonsdato);
     }
 
     /**
@@ -227,5 +227,9 @@ public class Stillingsendring {
 
     private static Stream<Object> line(final Object... fields) {
         return Stream.of(fields);
+    }
+
+    private IllegalArgumentException stillingsendringHarIkkeAksjonsdato() {
+        return new IllegalArgumentException("Stillingsendringen har ingen aksjonsdato.\n" + this);
     }
 }
