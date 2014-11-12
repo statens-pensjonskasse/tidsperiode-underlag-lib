@@ -1,15 +1,21 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingForMeirEnnEiKobling;
 
 /**
  * Ei tidsperiode som inngår som ein del av eit underlag.
@@ -24,6 +30,8 @@ import static java.util.Optional.ofNullable;
  * @author Tarjei Skorgenes
  */
 public class Underlagsperiode extends GenerellTidsperiode {
+    private final Map<Class<? extends Tidsperiode>, Set<Tidsperiode>> koblingar = new HashMap<>();
+
     private final Map<Object, Object> annotasjonar = new HashMap<>();
 
     /**
@@ -49,6 +57,78 @@ public class Underlagsperiode extends GenerellTidsperiode {
      */
     public <T> T beregn(final Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException {
         return annotasjonFor(regelType).beregn(this);
+    }
+
+    /**
+     * Koblar saman underlagsperioda med ei tidsperiode som overlappar underlagsperioda heilt eller delvis.
+     * <p>
+     * Det er både mulig og tillatt å koble opp ei underlagsperiode mot fleire tidsperioder av samme type. Brukarane av
+     * av underlaget er den som skal styre korvidt fleire tilkobla perioder av samme type er funksjonelt sett tillatt
+     * eller ikkje frå bruksmønster til bruksmønster.
+     * <p>
+     * Av ytelsesmessige årsaker verifiserer ikkje underlagsperioda at <code>kobling</code> faktisk overlappar
+     * underlagsperioda, det er opp til klienten å handheve denne kontrakta.
+     *
+     * @param kobling ei tidsperiode som underlagsperioda skal koblast opp mot
+     */
+    public void kobleTil(final Tidsperiode kobling) {
+        koblingar
+                .computeIfAbsent(
+                        kobling.getClass(),
+                        c -> new HashSet<>()
+                )
+                .add(kobling);
+    }
+
+    /**
+     * Hentar ut koblinga underlagsperioda muligens har til ei tidsperiode av den angitte typen.
+     * <p>
+     * Denne metoda er primært ei hjelpemetode for å forenkle klientar som har ei forventning til at underlagsperioder
+     * kun skal kunne vere tilkobla 0 eller 1 tidsperioder av den bestemte typen. I det generelle tilfellet der
+     * underlagsperioder funksjonelt sett kan vere kobla til fleire perioder av samme type, må
+     * {@link #koblingarAvType(Class)} brukast framfor denne metoda.
+     * <p>
+     * Dersom denne metoda blir brukt, antas det derfor at klienten forventar at viss underlagsperioda er kobla opp mot
+     * meir enn ei periode av den angitte typen så indikerer dette dårlig datakvalitet. Alternativt at klienten er
+     * feilaktig implementert. Det blir derfor kasta ein exception for å sikre at klienten blir gjort oppmerksom på
+     * problemet og kan handtere dette på eit eller anna vis.
+     * <p>
+     * Dersom underlagsperioda ikkje er kobla opp til ei periode av den angitte typen er det ikkje ein feil,
+     * ingen exception vil bli kasta i denne situasjonen.
+     *
+     * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
+     * @return den eine tidsperioda av den angitte typen som underlagsperioda er tilkobla, eller eit
+     * {@link java.util.Optional#empty() tomt} svar viss perioda ikkje er kobla til ei tidsperioda av den angitte typen
+     * @throws IllegalStateException dersom perioda er tilkobla meir enn ei tidsperiode av den angitte typen
+     */
+    public Optional<Tidsperiode> koblingAvType(Class<? extends Tidsperiode> type) {
+        final Set<Tidsperiode> koblingar = this.koblingar.get(type);
+        if (koblingar == null) {
+            return empty();
+        }
+        if (koblingar.size() > 1) {
+            throw new IllegalStateException(
+                    feilmeldingForMeirEnnEiKobling(type, koblingar)
+            );
+        }
+        return koblingar.stream().findFirst();
+    }
+
+    /**
+     * Hentar ut alle koblingar underlagsperioda har til tidsperioder av den angitte typen.
+     * <p>
+     * Dersom underlagsperioda ikkje er kobla opp til ei periode av den angitte typen er det ikkje ein feil,
+     * ingen exception vil bli kasta i denne situasjonen.
+     *
+     * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
+     * @return ein straum som inneheld alle dei tilkobla periodene av den angitte typen
+     */
+    public Stream<Tidsperiode> koblingarAvType(final Class<? extends Tidsperiode> type) {
+        final Set<Tidsperiode> koblingar = this.koblingar.get(type);
+        if (koblingar == null) {
+            return Stream.empty();
+        }
+        return koblingar.stream();
     }
 
     /**
