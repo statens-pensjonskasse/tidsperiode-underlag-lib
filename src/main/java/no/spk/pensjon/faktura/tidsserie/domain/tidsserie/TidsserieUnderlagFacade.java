@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
@@ -7,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -52,12 +54,17 @@ public class TidsserieUnderlagFacade {
      */
     public void prosesser(final Medlemsdata medlem, final StillingsforholdUnderlagCallback callback,
                           final Observasjonsperiode observasjonsperiode) {
+        final Collection<Aar> observerbare = observasjonsperiode.overlappendeAar();
         medlem
                 .alleStillingsforholdPerioder()
                 .forEach(s -> {
                     final UnderlagFactory factory = new UnderlagFactory(observasjonsperiode);
                     factory.addPerioder(s.perioder());
                     factory.addPerioder(medlem.avtalekoblingar(s::tilhoeyrer));
+
+                    factory.addPerioder(observerbare.stream().flatMap(Aar::maaneder));
+                    factory.addPerioder(observerbare);
+
                     factory.addPerioder(referanseperioder);
 
                     try {
@@ -101,4 +108,5 @@ public class TidsserieUnderlagFacade {
     public void addBeregningsregel(final Iterable<Regelperiode> perioder) {
         perioder.forEach(p -> referanseperioder.add(p));
     }
+
 }
