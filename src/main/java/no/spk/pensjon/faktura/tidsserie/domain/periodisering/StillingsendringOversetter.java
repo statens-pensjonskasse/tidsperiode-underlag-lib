@@ -5,6 +5,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 import java.util.List;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForStillingsendring;
+
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter} representerer algoritma
  * for å mappe om og konvertere stillingshistorikk til
@@ -23,7 +25,7 @@ import java.util.List;
  * <tbody>
  * <tr>
  * <td>0</td>
- * <td>0</td>
+ * <td>{@linkplain #TYPEINDIKATOR}</td>
  * <td>Typeindikator som identifiserer rada som ei stillingsendring</td>
  * <td>Hardkoda</td>
  * </tr>
@@ -138,6 +140,11 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     public static final int INDEX_AKSJONSDATO = 14;
 
     /**
+     * Forventa antall kolonner i ei stillingsendringrad.
+     */
+    public static final int ANTALL_KOLONNER = INDEX_AKSJONSDATO + 1;
+
+    /**
      * Oversetter innholdet i <code>rad</code> til ei ny
      * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
      *
@@ -146,6 +153,11 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
      */
     @Override
     public Stillingsendring oversett(final List<String> rad) {
+        if (rad.size() != ANTALL_KOLONNER) {
+            throw new IllegalArgumentException(
+                    ugyldigAntallKolonnerForStillingsendring(rad)
+            );
+        }
         return new Stillingsendring()
                 .stillingsforhold(StillingsforholdId.valueOf(rad.get(INDEX_STILLINGSFORHOLD)))
                 .aksjonskode(rad.get(INDEX_AKSJONSKODE))

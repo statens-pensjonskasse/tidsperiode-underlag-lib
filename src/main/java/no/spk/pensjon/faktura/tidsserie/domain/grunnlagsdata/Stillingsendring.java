@@ -1,9 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-import static java.time.temporal.TemporalQueries.localDate;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 
 /**
  * {@link Stillingsendring}
@@ -17,8 +16,6 @@ import static java.time.temporal.TemporalQueries.localDate;
  * @author Tarjei Skorgenes
  */
 public class Stillingsendring {
-    private static DateTimeFormatter yyyyMMddFormat = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-
     private StillingsforholdId stillingsforhold;
 
     private LocalDate aksjonsdato;
@@ -103,19 +100,6 @@ public class Stillingsendring {
      */
     public LocalDate aksjonsdato() {
         return aksjonsdato;
-    }
-
-    /**
-     * Konverterer datoar på formatet yyyy.MM.dd frå tekst til {@link java.time.LocalDate}.
-     *
-     * @param text tekstlig representasjon av datoen som skal konverterast
-     * @return den konverterte datoen, eller null viss <code>text</code> er <code>null</code>
-     */
-    public static LocalDate dato(final String text) {
-        if (text == null) {
-            return null;
-        }
-        return yyyyMMddFormat.parse(text).query(localDate());
     }
 
     /**

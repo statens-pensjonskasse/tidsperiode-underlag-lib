@@ -11,6 +11,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversett
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -22,7 +23,6 @@ import java.util.Map;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
-import static no.spk.pensjon.faktura.tidsserie.domain.it.CsvFileReader.readFromClasspath;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -40,14 +40,11 @@ public class MedlemsdataPeriodiseringIT {
 
     private final HashMap<Class<?>, MedlemsdataOversetter<?>> oversettere = new HashMap<>();
 
-    private List<List<String>> data;
+    @ClassRule
+    public static EksempelDataForMedlem data = new EksempelDataForMedlem();
 
     @Before
     public void _before() throws IOException {
-        final String ressurs = "/csv/medlem-1-stillingsforhold-3.csv";
-        this.data = readFromClasspath(ressurs);
-        assertThat(data).as("medlemsdata frå CSV-fil " + ressurs).isNotEmpty();
-
         oversettere.put(Stillingsendring.class, new StillingsendringOversetter());
         oversettere.put(Avtalekoblingsperiode.class, new AvtalekoblingOversetter());
     }
@@ -97,7 +94,7 @@ public class MedlemsdataPeriodiseringIT {
     }
 
     private Medlemsdata create() {
-        return new Medlemsdata(data, oversettere);
+        return new Medlemsdata(data.toList(), oversettere);
     }
 
     private static AbstractIterableAssert<?, ? extends Iterable<StillingsforholdPeriode>, StillingsforholdPeriode> assertPerioder(final Map<StillingsforholdId, List<StillingsforholdPerioder>> alleStillingsforhold, final StillingsforholdId id) {

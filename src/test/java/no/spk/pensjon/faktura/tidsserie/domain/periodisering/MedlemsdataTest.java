@@ -1,6 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,7 +13,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static java.time.LocalDate.now;
 import static java.util.Arrays.asList;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -44,10 +49,9 @@ public class MedlemsdataTest {
             }
         });
         oversettere.put(Avtalekoblingsperiode.class, new MedlemsdataOversetter<Avtalekoblingsperiode>() {
-
             @Override
             public Avtalekoblingsperiode oversett(List<String> rad) {
-                return new Avtalekoblingsperiode();
+                return new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), new AvtaleId(1L));
             }
 
             @Override
@@ -55,6 +59,22 @@ public class MedlemsdataTest {
                 return "1".equals(rad.get(0));
             }
         });
+    }
+
+    /**
+     * Verifiserer at uthentinga av avtalekoblingar lar predikatet styre kva for nokon av avtalekoblingane som
+     * skal returnerast.
+     */
+    @Test
+    public void skalFiltrereAvtalekoblingarBasertPaaPredikat() {
+        final Medlemsdata data = medMedlemsdata(
+                avtalekoblingsdata(),
+                stillingsendringdata(),
+                avtalekoblingsdata(),
+                stillingsendringdata()
+        ).create();
+        assertThat(data.avtalekoblingar(p -> true).collect(toList())).hasSize(2);
+        assertThat(data.avtalekoblingar(p -> false).collect(toList())).hasSize(0);
     }
 
     /**

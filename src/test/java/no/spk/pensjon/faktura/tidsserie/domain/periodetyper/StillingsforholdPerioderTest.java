@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
-import static no.spk.pensjon.faktura.tidsserie.helpers.Tid.dato;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
