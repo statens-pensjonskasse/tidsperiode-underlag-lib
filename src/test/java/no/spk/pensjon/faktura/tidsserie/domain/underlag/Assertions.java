@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
@@ -68,6 +69,26 @@ public class Assertions {
                         .map(mapper)
                         .collect(toList())
         );
+    }
+
+    /**
+     * Lagar ein ny assertion som opererer på alle unike annotasjonsverdiar av angitt type, henta frå alle
+     * underlagsperiodene i <code>underlag</code>.
+     *
+     * @param underlag        underlaget som periodene blir henta frå
+     * @param annotasjonstype annotasjonstypen som verdiar skal hentast ut for
+     * @return ein assertion som opererer på alle unike annotasjonar av angitt type frå underlagsets perioder
+     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)
+     */
+    public static <T> AbstractListAssert<?, ? extends List<T>, T> assertUnikeAnnotasjonsverdiar(
+            final Underlag underlag, final Class<T> annotasjonstype) {
+        return assertThat(
+                underlag
+                        .stream()
+                        .map((Underlagsperiode p) -> p.annotasjonFor(annotasjonstype))
+                        .distinct()
+                        .collect(toList())
+        ).as("unike verdiar for annotasjon " + annotasjonstype.getSimpleName() + " i underlag " + underlag);
     }
 
     /**
