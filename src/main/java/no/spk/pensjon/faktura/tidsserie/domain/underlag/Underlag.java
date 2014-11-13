@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingVedOverlappandeTidsperioder;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingVedTidsgapIUnderlaget;
 
 /**
@@ -28,6 +30,9 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  * Den viktigaste kontrakta som klientar som brukar underlaget kan basere seg på er at at det ikkje skal kunne
  * eksistere tidsgap mellom ei eller fleire av underlagsperiodene som inngår i underlaget. Forsøk på å konstruere
  * eit underlag med tidsgap skal feile umiddelbart.
+ * <p>
+ * Underlaget skal vere bygd opp av underlagsperioder sortert i kronologisk rekkefølge, med eldste periode første og
+ * nyaste periode sist.
  * <p>
  * <h2>Koblingar</h2>
  * Sidan konstruksjon av underlag og underlagsperioder krever eit periodisert datasett som input, er det ønskelig å
@@ -102,8 +107,11 @@ public class Underlag implements Iterable<Underlagsperiode> {
      * @throws IllegalArgumentException dersom det blir oppdaga eit tidsgap mellom ei eller fleire av underlagsperiodene
      */
     public Underlag(final Stream<Underlagsperiode> perioder) {
-        perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
+        perioder
+                .sorted((a, b) -> a.fraOgMed().compareTo(b.fraOgMed()))
+                .collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
         detekterTidsgapMellomPerioder();
+        detekterOverlappandePerioder();
     }
 
     /**
@@ -152,6 +160,17 @@ public class Underlag implements Iterable<Underlagsperiode> {
     }
 
     /**
+     * Returnerer kronologisk siste periode fra underlaget, eller ein tom verdi dersom underlaget ikkje inneheld
+     * nokon perioder.
+     *
+     * @return kronologisk siste underlagsperiode frå underlaget, eller ein tom verdi om underlaget ikkje inneheld
+     * nokon perioder
+     */
+    public Optional<Underlagsperiode> last() {
+        return perioder.stream().reduce((a, b) -> b);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -165,8 +184,21 @@ public class Underlag implements Iterable<Underlagsperiode> {
         if (validator.harTidsgap()) {
             throw new IllegalArgumentException(
                     feilmeldingVedTidsgapIUnderlaget(
-                            "Eit underlag skal ikkje kunne inneholde tidsgap mellom underlagsperiodene",
+                            "Eit underlag kan ikkje inneholde tidsgap mellom underlagsperiodene",
                             validator
+                    )
+            );
+        }
+    }
+
+    private void detekterOverlappandePerioder() {
+        final DetekterOverlappandePerioder detektor = new DetekterOverlappandePerioder();
+        this.perioder.stream().reduce(detektor);
+        if (detektor.harOverlappande()) {
+            throw new IllegalArgumentException(
+                    feilmeldingVedOverlappandeTidsperioder(
+                            "Eit underlag kan ikkje inneholde underlagsperioder som overlappar kvarandre",
+                            detektor
                     )
             );
         }

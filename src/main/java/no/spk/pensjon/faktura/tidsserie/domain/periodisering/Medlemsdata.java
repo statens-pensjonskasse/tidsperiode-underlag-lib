@@ -248,6 +248,7 @@ public class Medlemsdata {
                 .map(oversetter::oversett);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> Optional<MedlemsdataOversetter<T>> lookup(final Class<? extends T> datatype) {
         return ofNullable((MedlemsdataOversetter<T>) oversettere.get(datatype));
     }

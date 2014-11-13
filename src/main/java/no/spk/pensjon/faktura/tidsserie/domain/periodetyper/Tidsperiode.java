@@ -37,7 +37,7 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
      * @return <code>true</code> dersom dei to periodene har minst ein felles dato som begge overlappar,
      * <code>false</code> ellers
      */
-    default boolean overlapper(final Tidsperiode other) {
+    default boolean overlapper(final Tidsperiode<?> other) {
         return overlapper(other.fraOgMed()) || other.overlapper(fraOgMed());
     }
 

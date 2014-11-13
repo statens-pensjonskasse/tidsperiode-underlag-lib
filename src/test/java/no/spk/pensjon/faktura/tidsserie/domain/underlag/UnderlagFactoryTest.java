@@ -11,9 +11,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static java.time.LocalDate.now;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
@@ -46,11 +44,12 @@ public class UnderlagFactoryTest {
      * alle tidsperioder brukt ved periodiseringa av underlaget, som og overlappar
      * underlagsperioda.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void skalKobleUnderlagsperiodeOppMotOverlappandeTidsperioder() {
-        final Tidsperiode a = periode(dato("2005.08.15"), of(dato("2012.06.30")));
-        final Tidsperiode b = periode(dato("2005.08.15"), empty());
-        final Tidsperiode c = periode(dato("2005.01.01"), empty());
+        final Tidsperiode<?> a = periode(dato("2005.08.15"), of(dato("2012.06.30")));
+        final Tidsperiode<?> b = periode(dato("2005.08.15"), empty());
+        final Tidsperiode<?> c = periode(dato("2005.01.01"), empty());
         final Underlag underlag = create()
                 .addPerioder(
                         a, b, c

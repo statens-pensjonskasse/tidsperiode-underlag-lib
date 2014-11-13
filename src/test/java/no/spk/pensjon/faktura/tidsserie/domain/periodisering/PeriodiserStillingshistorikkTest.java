@@ -14,7 +14,6 @@ import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring.stillingsendring;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.PeriodiserStillingshistorikk}.

@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Tarjei Skorgenes
  */
+@SuppressWarnings("rawtypes")
 public class GenerellTidsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
@@ -96,7 +97,7 @@ public class GenerellTidsperiodeTest {
         skalIkkjeOverlappe.forEach(p -> assertOverlapper(primaer, p).isFalse());
     }
 
-    public AbstractBooleanAssert<?> assertOverlapper(Tidsperiode a, Tidsperiode b) {
+    public AbstractBooleanAssert<?> assertOverlapper(Tidsperiode<?> a, Tidsperiode<?> b) {
         return assertThat(a.overlapper(b)).as("overlapper " + a + " med " + b + "?");
     }
 

@@ -2,6 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -21,6 +22,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UnderlagsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at all tilstand frå underlagsperioda blir med når ein kopi blir bygd.
+     */
+    @Test
+    public void skalKopiereOverAllTilstandFraaUnderlagsPerioda() {
+        final Underlagsperiode kilde = create("2000.01.01", "2014.12.31");
+        kilde.annoter(Object.class, new Object());
+        kilde.kobleTil(new GenerellTidsperiode(dato("2004.03.17"), empty()));
+
+        final Underlagsperiode kopi = kilde.kopi().bygg();
+        assertThat(kopi.fraOgMed()).isEqualTo(kilde.fraOgMed());
+        assertThat(kopi.tilOgMed()).isEqualTo(kilde.tilOgMed());
+        assertThat(kopi.annotasjonFor(Object.class)).isEqualTo(kilde.annotasjonFor(Object.class));
+        assertThat(kopi.koblingAvType(GenerellTidsperiode.class)).isEqualTo(kilde.koblingAvType(GenerellTidsperiode.class));
+    }
 
     /**
      * Verifiserer at {@link java.util.Optional} blir spesialhandtert ved registrering av annotasjonar,
@@ -92,6 +109,7 @@ public class UnderlagsperiodeTest {
      * Verifiserer at uthenting av periodekobling ikkje feilar når det ikkje eksisterer
      * ei tilkobla tidsperioda av den ønska typen.
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void skalIkkjeFeileDersomUnderlagsperiodaIkkjeErKoblaTilMinstEiTidsperiodeAvDenOenskaTypen() {
         assertThat(eiPeriode().koblingAvType(Tidsperiode.class)).isEqualTo(empty());
