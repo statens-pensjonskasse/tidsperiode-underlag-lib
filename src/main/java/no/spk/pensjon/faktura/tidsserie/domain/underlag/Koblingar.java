@@ -29,4 +29,17 @@ class Koblingar {
                 .stream()
                 .map(p -> (T) p);
     }
+
+    /**
+     * Populerer underlagsperioda med alle koblingane som er lagt inn tidligare via {@link #add}.
+     *
+     * @param periode underlagsperioda som koblingane skal leggast til på
+     */
+    void kobleTil(final Underlagsperiode periode) {
+        koblingar
+                .values()
+                .stream()
+                .flatMap(Set::stream)
+                .forEach(periode::kobleTil);
+    }
 }

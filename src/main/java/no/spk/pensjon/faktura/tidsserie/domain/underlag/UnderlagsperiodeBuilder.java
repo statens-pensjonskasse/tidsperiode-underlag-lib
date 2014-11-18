@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.Map.Entry;
  */
 public class UnderlagsperiodeBuilder {
     private final Map<Class<?>, Object> annotasjonar = new HashMap<>();
+
+    private final Koblingar koblingar = new Koblingar();
 
     private LocalDate fraOgMed;
 
@@ -28,6 +32,7 @@ public class UnderlagsperiodeBuilder {
         for (final Entry<Class<?>, Object> e : annotasjonar.entrySet()) {
             periode.annoter(e.getKey(), e.getValue());
         }
+        koblingar.kobleTil(periode);
         return periode;
     }
 
@@ -77,6 +82,17 @@ public class UnderlagsperiodeBuilder {
      */
     public UnderlagsperiodeBuilder uten(final Class<?> type) {
         annotasjonar.remove(type);
+        return this;
+    }
+
+    /**
+     * Legger til ei kobling som perioder bygd seinare av builderen skal bli kobla til.
+     *
+     * @param kobling ei tidsperiode som framtidige bygde underlagsperioder skal koblast til
+     * @return <code>this</code>
+     */
+    public UnderlagsperiodeBuilder medKobling(final Tidsperiode<?> kobling) {
+        koblingar.add(kobling);
         return this;
     }
 }
