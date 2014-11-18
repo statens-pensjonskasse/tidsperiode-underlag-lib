@@ -43,6 +43,15 @@ public class Maaned extends AbstractTidsperiode<Maaned> {
     }
 
     /**
+     * Returnerer kva for ein måned i året perioda tilhøyrer.
+     *
+     * @return periodas tilhøyrande måned i året
+     */
+    public Month toMonth() {
+        return maaned;
+    }
+
+    /**
      * Er vi tilknytta den angitte måneden i året?
      *
      * @param month måned i året som vi skal sjekke om vi er tilknytta

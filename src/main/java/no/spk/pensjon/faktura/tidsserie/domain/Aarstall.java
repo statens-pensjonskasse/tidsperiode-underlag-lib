@@ -42,6 +42,26 @@ public class Aarstall {
     }
 
     @Override
+    public int hashCode() {
+        return aarstall;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Aarstall other = (Aarstall) obj;
+        return aarstall == other.aarstall;
+    }
+
+    @Override
     public String toString() {
         return Integer.toString(aarstall);
     }

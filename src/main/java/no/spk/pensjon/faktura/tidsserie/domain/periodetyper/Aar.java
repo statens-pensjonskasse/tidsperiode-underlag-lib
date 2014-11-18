@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.time.LocalDate.MAX;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.AARSTALL_PAAKREVD;
@@ -38,6 +37,15 @@ public class Aar implements Tidsperiode<Aar> {
                 .stream()
                 .map(m -> new Maaned(aar, m))
                 .collect(() -> perioder, ArrayList::add, ArrayList::addAll);
+    }
+
+    /**
+     * Årstallet som årsperioda representerer.
+     *
+     * @return årets årstall
+     */
+    public Aarstall aarstall() {
+        return aar;
     }
 
     /**

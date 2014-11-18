@@ -123,6 +123,69 @@ public class TidsserieUnderlagFacadeIT {
     }
 
     /**
+     * Verifiserer at alle underlagsperiodene innanfor observasjonsperioda blir annotert med årstall henta frå
+     * overlappande årsperiode slik at seinare generering av årsunderlag blir ei enkel filtrering
+     * av underlagsperioder med tilhøyrande annotasjon tilknytta ønska årstall.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperioderMedAarstallFraTilkoblaAarsperiode() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        final int fraOgMedAar = 2005;
+        final int tilOgMedAar = 2014;
+        prosesser(underlagene::put, new Observasjonsperiode(
+                        new Aarstall(fraOgMedAar).atStartOfYear(),
+                        new Aarstall(tilOgMedAar).atEndOfYear())
+        );
+
+        assertUnderlagsperioder(
+                underlagene.values(),
+                harAnnotasjon(Aarstall.class).negate()
+        ).isEmpty();
+
+        assertAnnotasjonFraUnderlagsperioder(underlagene.values(), Aarstall.class)
+                .containsOnlyElementsOf(
+                        underlagene
+                                .values()
+                                .stream()
+                                .flatMap(Underlag::stream)
+                                .map((Underlagsperiode p) -> p.koblingAvType(Aar.class).get().aarstall())
+                                .collect(toList())
+                );
+    }
+
+    /**
+     * Verifiserer at alle underlagsperiodene innanfor observasjonsperioda blir annotert med {@link java.time.Month}
+     * henta frå overlappande månedsperiode slik at seinare generering av observasjonsunderlag lett kan filtrere bort
+     * perioder som tilhøyrer månedar etter observasjonsdatoen ein skal observere for.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperioderMedMonthFraTilkoblaMaanedsperiode() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        prosesser(underlagene::put, new Observasjonsperiode(
+                        new Aarstall(2006).atStartOfYear(),
+                        new Aarstall(2006).atEndOfYear())
+        );
+
+        assertUnderlagsperioder(
+                underlagene.values(),
+                harAnnotasjon(Month.class).negate()
+        ).isEmpty();
+
+        assertAnnotasjonFraUnderlagsperioder(underlagene.values(), Month.class)
+                .containsOnlyElementsOf(
+                        underlagene
+                                .values()
+                                .stream()
+                                .flatMap(Underlag::stream)
+                                .map((Underlagsperiode p) -> p.koblingAvType(Maaned.class).get().toMonth())
+                                .collect(toList())
+                );
+    }
+
+
+    /**
      * Verifiserer at underlagsperiodene blir annotert med stillingsprosent henta frå overlappande
      * stillingsforholdperiodes gjeldande stillingsendring.
      */
