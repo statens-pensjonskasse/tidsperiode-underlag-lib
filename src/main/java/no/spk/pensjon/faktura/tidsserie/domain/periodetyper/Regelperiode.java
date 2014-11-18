@@ -31,7 +31,7 @@ import java.util.Optional;
  *
  * @author Tarjei Skorgenes
  */
-public class Regelperiode<T> extends GenerellTidsperiode {
+public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
     private final BeregningsRegel<T> gjeldandeRegel;
 
     /**

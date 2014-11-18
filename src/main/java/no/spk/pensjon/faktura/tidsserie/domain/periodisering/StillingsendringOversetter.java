@@ -1,10 +1,18 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
+import no.spk.pensjon.faktura.tidsserie.Datoar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 
 import java.util.List;
+import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
 import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForStillingsendring;
 
 /**
@@ -135,6 +143,21 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     public static final int INDEX_AKSJONSKODE = 4;
 
     /**
+     * Kolonneindeksen stillingsprosenten blir henta frå.
+     */
+    public static final int INDEX_STILLINGSPROSENT = 8;
+
+    /**
+     * Kolonneindeksen lønnstrinn blir henta frå.
+     */
+    public static final int INDEX_LOENNSTRINN = 9;
+
+    /**
+     * Kolonneindeksen lønn blir henta frå.
+     */
+    public static final int INDEX_LOENN = 10;
+
+    /**
      * Kolonneindeksen aksjonsdato blir henta frå.
      */
     public static final int INDEX_AKSJONSDATO = 14;
@@ -143,6 +166,7 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
      * Forventa antall kolonner i ei stillingsendringrad.
      */
     public static final int ANTALL_KOLONNER = INDEX_AKSJONSDATO + 1;
+
 
     /**
      * Oversetter innholdet i <code>rad</code> til ei ny
@@ -159,9 +183,12 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
             );
         }
         return new Stillingsendring()
-                .stillingsforhold(StillingsforholdId.valueOf(rad.get(INDEX_STILLINGSFORHOLD)))
-                .aksjonskode(rad.get(INDEX_AKSJONSKODE))
-                .aksjonsdato(rad.get(INDEX_AKSJONSDATO));
+                .stillingsforhold(read(rad, INDEX_STILLINGSFORHOLD).map(StillingsforholdId::valueOf).get())
+                .aksjonskode(read(rad, INDEX_AKSJONSKODE).get())
+                .aksjonsdato(read(rad, INDEX_AKSJONSDATO).map(Datoar::dato).get())
+                .stillingsprosent(read(rad, INDEX_STILLINGSPROSENT).map(Prosent::new).map(Stillingsprosent::new).get())
+                .loennstrinn(read(rad, INDEX_LOENNSTRINN).map(Integer::valueOf).map(Loennstrinn::new))
+                .loenn(read(rad, INDEX_LOENN).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new));
     }
 
     /**
@@ -174,5 +201,18 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     @Override
     public boolean supports(final List<String> rad) {
         return TYPEINDIKATOR.equals(rad.get(0));
+    }
+
+    /**
+     * Hentar ut den tekstlige verdien frå den angitte indeksen. Dersom verdien er <code>null</code> eller
+     * inneheld kun whitespace, eventuelt er heilt tom, blir ein {@link Optional#empty() tom} verdi returnert.
+     *
+     * @param rad   rada som verdien skal hentast frå
+     * @param index indexen som peikar til feltet som verdien skal hentast frå
+     * @return den tekstlige verdien av feltet på den angitte indeksen i rada, eller ingenting dersom feltets verdi
+     * er <code>null</code>, eller dersom det kun inneheld whitespace eller verdien er ein tom tekst-streng
+     */
+    private Optional<String> read(final List<String> rad, final int index) {
+        return ofNullable(rad.get(index)).map(String::trim).filter(t -> !t.isEmpty());
     }
 }

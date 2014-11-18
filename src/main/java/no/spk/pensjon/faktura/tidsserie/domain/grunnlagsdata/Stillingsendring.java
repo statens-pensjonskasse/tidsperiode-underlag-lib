@@ -1,8 +1,12 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import java.time.LocalDate;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static java.time.LocalDate.MIN;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 
 /**
  * {@link Stillingsendring}
@@ -18,9 +22,16 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 public class Stillingsendring {
     private StillingsforholdId stillingsforhold;
 
-    private LocalDate aksjonsdato;
+    private Optional<LocalDate> registreringsdato = empty();
 
-    private String aksjonskode;
+    private Optional<LocalDate> aksjonsdato = empty();
+
+    private Optional<String> aksjonskode = empty();
+
+    private Optional<Stillingsprosent> stillingsprosent = empty();
+
+    private Optional<Loennstrinn> loennstrinn = empty();
+    private Optional<DeltidsjustertLoenn> loenn;
 
     /**
      * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
@@ -54,24 +65,13 @@ public class Stillingsendring {
     }
 
     /**
-     * Datoen som stillingsendringen gjelder fra og med.
-     *
-     * @param dato en tekstlig representasjon av en dato på formatet yyyy.MM.dd
-     * @return <code>this</code>
-     */
-    public Stillingsendring aksjonsdato(final String dato) {
-        this.aksjonsdato = dato(dato);
-        return this;
-    }
-
-    /**
      * Aksjonskoden som indikerer hvilken type stillingsendring det er snakk om.
      *
      * @param text en tekstlig representasjon av en 3-sifra tallkode som representerer endringstypen
      * @return <code>this</code>
      */
     public Stillingsendring aksjonskode(final String text) {
-        this.aksjonskode = text;
+        this.aksjonskode = ofNullable(text);
         return this;
     }
 
@@ -81,7 +81,7 @@ public class Stillingsendring {
      * @return en tekstlig representasjon av en 3-sifra tallkode som representerer endringstypen
      */
     public String aksjonskode() {
-        return aksjonskode;
+        return aksjonskode.get();
     }
 
     /**
@@ -96,10 +96,21 @@ public class Stillingsendring {
     /**
      * Datoen som stillingsendringen gjelder fra og med.
      *
+     * @param dato en tekstlig representasjon av en dato på formatet yyyy.MM.dd
+     * @return <code>this</code>
+     */
+    public Stillingsendring aksjonsdato(final LocalDate dato) {
+        this.aksjonsdato = ofNullable(dato);
+        return this;
+    }
+
+    /**
+     * Datoen som stillingsendringen gjelder fra og med.
+     *
      * @return datoen stillingsendringen inntreffer på
      */
     public LocalDate aksjonsdato() {
-        return aksjonsdato;
+        return aksjonsdato.get();
     }
 
     /**
@@ -109,6 +120,112 @@ public class Stillingsendring {
      * <code>false</code> ellers
      */
     public boolean erSluttmelding() {
-        return "031".equals(aksjonskode);
+        return "031".equals(aksjonskode.orElse(null));
+    }
+
+    /**
+     * Gjeldande lønnstrinn for stillinga.
+     * <p>
+     * Ei stilling kan bli innrapportert enten med lønn eller med lønnstrinn, men aldri med begge to.
+     *
+     * @return stillingas lønnstrinn viss den ikkje innrapporteres med lønnsbeløp
+     */
+    public Optional<Loennstrinn> loennstrinn() {
+        return loennstrinn;
+    }
+
+    /**
+     * Gjeldende lønnstrinn for stillingen.
+     *
+     * @param loennstrinn stillingens lønnstrinn
+     * @return <code>this</code>
+     */
+    public Stillingsendring loennstrinn(final Optional<Loennstrinn> loennstrinn) {
+        this.loennstrinn = loennstrinn;
+        return this;
+    }
+
+    /**
+     * Gjeldande lønn for stillinga.
+     * <p>
+     * Ei stilling kan bli innrapportert enten med lønn eller med lønnstrinn, men aldri med begge to.
+     *
+     * @return stillingas lønn viss den ikkje innrapporteres med lønnstrinn
+     */
+    public Optional<DeltidsjustertLoenn> loenn() {
+        return loenn;
+    }
+
+    /**
+     * Gjeldande lønn for stillinga.
+     * <p>
+     * Ei stilling kan bli innrapportert enten med lønn eller med lønnstrinn, men aldri med begge to.
+     *
+     * @param loenn stillingas lønn viss den ikkje innrapporteres med lønnstrinn
+     */
+    public Stillingsendring loenn(final Optional<DeltidsjustertLoenn> loenn) {
+        this.loenn = loenn;
+        return this;
+    }
+
+    /**
+     * Stillingsbrøken for stillingsforholdet.
+     *
+     * @return stillingsbrøken for stillingsforholdet
+     */
+    public Stillingsprosent stillingsprosent() {
+        return stillingsprosent.get();
+    }
+
+    /**
+     * Stillingsbrøken for stillingsforholdet.
+     *
+     * @param stillingsprosent stillingsbrøken for stillingsforholdet
+     * @return <code></code>this</code>
+     */
+    public Stillingsendring stillingsprosent(Stillingsprosent stillingsprosent) {
+        this.stillingsprosent = ofNullable(stillingsprosent);
+        return this;
+    }
+
+    /**
+     * Datoen stillingsendringa vart registrert hos SPK.
+     *
+     * @param dato datoen stillingsendringa vart registrert
+     * @return <code>this</code>
+     */
+    public Stillingsendring registreringsdato(final LocalDate dato) {
+        this.registreringsdato = ofNullable(dato);
+        return this;
+    }
+
+    /**
+     * Datoen stillingsendringa vart registrert hos SPK.
+     *
+     * @return dato datoen stillingsendringa vart registrert
+     */
+    public LocalDate registreringsdato() {
+        return registreringsdato.orElse(MIN);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Stillingsendring, registrert ").append(registreringsdato).append(", gjeldende fra ").append(aksjonsdato).append("\n");
+        Stream.of(
+                line("Aksjonskode: ", aksjonskode),
+                line("Stillingsbrøk: ", stillingsprosent),
+                line("Lønnstrinn: ", loennstrinn)
+        ).forEach(line -> {
+            builder.append(" - ");
+            line.forEach(builder::append);
+            builder.append('\n');
+        });
+        return builder.toString();
+
+    }
+
+    private static Stream<Object> line(final Object... fields) {
+        return Stream.of(fields);
     }
 }

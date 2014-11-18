@@ -20,7 +20,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar
  *
  * @author Tarjei Skorgenes
  */
-public class Aar implements Tidsperiode {
+public class Aar implements Tidsperiode<Aar> {
     private final ArrayList<Maaned> perioder = new ArrayList<>(12);
 
     private final Aarstall aar;

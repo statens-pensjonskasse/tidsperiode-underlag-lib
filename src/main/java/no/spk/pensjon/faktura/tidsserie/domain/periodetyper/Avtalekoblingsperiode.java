@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Tarjei Skorgenes
  */
-public class Avtalekoblingsperiode extends GenerellTidsperiode {
+public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsperiode> {
     private final StillingsforholdId stillingsforhold;
     private final AvtaleId avtale;
 

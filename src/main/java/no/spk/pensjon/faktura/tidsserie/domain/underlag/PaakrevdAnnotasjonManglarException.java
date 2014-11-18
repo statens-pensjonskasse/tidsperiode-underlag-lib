@@ -7,6 +7,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
  * @author Tarjei Skorgenes
  */
 public class PaakrevdAnnotasjonManglarException extends RuntimeException {
+    private static final long serialVersionUID = 5240556663220387894L;
+
     private final Underlagsperiode periode;
 
     private final Class<?> type;

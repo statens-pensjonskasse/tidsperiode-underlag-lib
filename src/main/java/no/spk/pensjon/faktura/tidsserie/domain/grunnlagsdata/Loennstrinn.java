@@ -12,11 +12,48 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
  * @author Tarjei Skorgenes
  */
 public class Loennstrinn {
+    private final int trinn;
+
     /**
      * Konstruerer et nytt lønnstrinn.
      *
      * @param trinn tallet som representerer hvilket lønnstrinn som skal konstrueres
      */
     public Loennstrinn(final int trinn) {
+        this.trinn = trinn;
+    }
+
+    /**
+     * Konstruerer et nytt lønnstrinn.
+     *
+     * @param text ein tekstlig representasjon av tallet som representerer lønnstrinnet
+     */
+    public Loennstrinn(final String text) {
+        this(Integer.parseInt(text));
+    }
+
+    @Override
+    public int hashCode() {
+        return trinn;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Loennstrinn other = (Loennstrinn) obj;
+        return trinn == other.trinn;
+    }
+
+    @Override
+    public String toString() {
+        return "lønnstrinn " + trinn;
     }
 }

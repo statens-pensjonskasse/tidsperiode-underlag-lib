@@ -6,7 +6,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * {@link TidsserieUnderlagFacade} tilbyr ein høg-nivå API
@@ -24,6 +27,8 @@ import static java.util.Arrays.asList;
  */
 public class TidsserieUnderlagFacade {
     private final Set<Tidsperiode> referanseperioder = new HashSet<>();
+
+    private Annoteringsstrategi annotator = new IngenAnnotering();
 
     /**
      * Bygger opp underlag for kvart unike stillingsforhold som medlemmet er eller har vore tilknytta innanfor
@@ -67,11 +72,13 @@ public class TidsserieUnderlagFacade {
 
                     factory.addPerioder(referanseperioder);
 
+                    final Underlag underlag = factory.periodiser();
+                    underlag.forEach(periode -> annotator.annoter(underlag, periode));
                     try {
+
                         callback.prosesser(
                                 s.id(),
-                                factory
-                                        .periodiser()
+                                underlag
                                         .restrict(p -> p.koblingAvType(StillingsforholdPeriode.class).isPresent())
                         );
                     } catch (final RuntimeException e) {
@@ -109,4 +116,43 @@ public class TidsserieUnderlagFacade {
         perioder.forEach(p -> referanseperioder.add(p));
     }
 
+    /**
+     * Endrar annoteringsstrategi for fasada.
+     * <p>
+     * Fasadas standardstrategi er å ikkje annotere periodene den genererer, bruk denne metoda for å overstyre denne
+     * oppførselen.
+     *
+     * @param strategi den nye annoteringsstrategien som skal benyttast
+     * @throws NullPointerException viss <code>strategi</code> er <code>null</code>
+     */
+    public void endreAnnoteringsstrategi(final Annoteringsstrategi strategi) {
+        this.annotator = requireNonNull(strategi, () -> "annoteringsstrategi er påkrevd, men var null");
+    }
+
+    /**
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi}
+     * representerer ein strategi for å annotere
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode underlagsperiode}.
+     *
+     * @author Tarjei Skorgenes
+     */
+    public static interface Annoteringsstrategi {
+        /**
+         * Populerer underlagsperioda med annotasjonar ut frå tilstand i perioda sjølv eller underlaget.
+         *
+         * @param underlag underlaget som perioda inngår i
+         * @param periode  underlagsperioda som skal populerast med annotasjonar
+         * @see Underlagsperiode#annoter(Class, Object)
+         */
+        public void annoter(final Underlag underlag, final Underlagsperiode periode);
+    }
+
+    /**
+     * Null-object, annoterer ikkje perioda med nokon verdens ting.
+     */
+    private static class IngenAnnotering implements Annoteringsstrategi {
+        @Override
+        public void annoter(final Underlag underlag, final Underlagsperiode periode) {
+        }
+    }
 }

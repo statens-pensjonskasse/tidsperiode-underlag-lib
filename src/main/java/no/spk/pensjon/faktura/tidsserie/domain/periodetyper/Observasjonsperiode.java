@@ -21,7 +21,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar
  *
  * @author Tarjei Skorgenes
  */
-public class Observasjonsperiode extends GenerellTidsperiode {
+public class Observasjonsperiode extends AbstractTidsperiode<Observasjonsperiode> {
     /**
      * Konstruerer ei ny grenser.
      *

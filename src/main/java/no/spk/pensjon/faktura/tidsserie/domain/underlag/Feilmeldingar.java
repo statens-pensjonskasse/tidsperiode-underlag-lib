@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 class Feilmeldingar {
-    static String feilmeldingForMeirEnnEiKobling(Class<? extends Tidsperiode> type, Set<Tidsperiode> koblingar) {
+    static String feilmeldingForMeirEnnEiKobling(final Class<?> type, final Set<?> koblingar) {
         final StringBuilder builder = new StringBuilder();
         builder.append("Underlagsperioda er kobla til meir enn ei tidsperiode av type ");
         builder.append(type.getSimpleName());

@@ -1,21 +1,26 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdUnderlagCallback;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import org.assertj.core.api.AbstractListAssert;
@@ -29,18 +34,30 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.and;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertUnderlagsperioder;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertUnderlagsperioderUtanKoblingTil;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertVerdiFraUnderlagsperioder;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.harAnnotasjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.paakrevdAnnotasjon;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.failBecauseExceptionWasNotThrown;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
@@ -54,11 +71,15 @@ public class TidsserieUnderlagFacadeIT {
 
     private static final StillingsforholdId STILLINGSFORHOLD_B = valueOf(888888888888L);
 
+    private static final StillingsforholdId STILLINGSFORHOLD_C = valueOf(7777777777777L);
+
     @ClassRule
     public static EksempelDataForMedlem data = new EksempelDataForMedlem();
 
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    private Annoteringsstrategi annotator = new StandardTidsserieAnnotering();
 
     private Map<Class<?>, MedlemsdataOversetter<?>> oversettere;
 
@@ -75,6 +96,112 @@ public class TidsserieUnderlagFacadeIT {
         medlem = new Medlemsdata(data.toList(), oversettere);
 
         fasade = new TidsserieUnderlagFacade();
+        fasade.endreAnnoteringsstrategi(annotator);
+    }
+
+    /**
+     * Verifiserer at dersom annoteringa av underlagsperioder feilar, fører det til at periodiseringa av medlemmet sine
+     * stillingsforhold blir umiddelbart avbrutt utan å gå vidare til medlemmets gjennståande stillingsforhold.
+     */
+    @Test
+    public void skalAvbrytePeriodiseringaUmiddelbartDersomFeilBlirKastaFraaAnnoteringa() {
+        final Annoteringsstrategi annotator = mock(Annoteringsstrategi.class);
+
+        final RuntimeException expected = new NullPointerException();
+        doAnswer(a -> {
+            throw expected;
+        }).when(annotator).annoter(any(Underlag.class), any(Underlagsperiode.class));
+        fasade.endreAnnoteringsstrategi(annotator);
+
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        try {
+            prosesser(underlagene::put, standardperiode());
+            failBecauseExceptionWasNotThrown(expected.getClass());
+        } catch (final NullPointerException e) {
+            assertThat(e).as("feilen som fasada kastar dersom annoteringa feilar").isSameAs(expected);
+        }
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med stillingsprosent henta frå overlappande
+     * stillingsforholdperiodes gjeldande stillingsendring.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperioderMedStillingsprosentFraStillingsforholdperiode() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        prosesser(underlagene::put, standardperiode());
+
+        assertUnderlagsperioder(
+                underlagene.values(),
+                harAnnotasjon(Stillingsprosent.class).negate()
+        ).isEmpty();
+
+        assertAnnotasjonFraUnderlagsperioder(underlagene.values(), Stillingsprosent.class)
+                .containsOnlyElementsOf(
+                        fraMedlemsdata(
+                                stillingsendringOversetter(),
+                                Stillingsendring::stillingsprosent
+                        )
+                );
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med lønnstrinn henta frå overlappande
+     * stillingsforholdperiodes gjeldande stillingsendring for stillingsforholdet
+     * som blir innrapportert med lønnstrinn.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperioderMedLoennstrinnFraStillingsforholdperiode() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        prosesser(underlagene::put, standardperiode());
+
+        assertUnderlagsperioder(
+                asList(underlagene.get(STILLINGSFORHOLD_A)),
+                harAnnotasjon(Loennstrinn.class).negate()
+        ).isEmpty();
+
+        assertAnnotasjonFraUnderlagsperioder(
+                underlagene.values(),
+                Loennstrinn.class,
+                harAnnotasjon(Loennstrinn.class)
+        ).containsOnlyElementsOf(
+                fraMedlemsdata(
+                        stillingsendringOversetter(),
+                        e -> e.loennstrinn().get(),
+                        e -> e.loennstrinn().isPresent()
+                )
+        );
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med lønn henta frå overlappande stillingsforholdperiodes
+     * gjeldande stillingsendring for stillingsforholdet
+     * som blir innrapportert med lønn.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperioderMedLoennFraStillingsforholdperiode() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+
+        prosesser(underlagene::put, standardperiode());
+
+        assertUnderlagsperioder(
+                asList(underlagene.get(STILLINGSFORHOLD_B)),
+                harAnnotasjon(DeltidsjustertLoenn.class).negate()
+        ).isEmpty();
+
+        assertAnnotasjonFraUnderlagsperioder(
+                underlagene.values(),
+                DeltidsjustertLoenn.class,
+                harAnnotasjon(DeltidsjustertLoenn.class)
+        ).containsOnlyElementsOf(
+                fraMedlemsdata(
+                        stillingsendringOversetter(),
+                        e -> e.loenn().get(),
+                        e -> e.loenn().isPresent()
+                )
+        );
     }
 
     /**
@@ -83,9 +210,7 @@ public class TidsserieUnderlagFacadeIT {
     @Test
     public void skalKobleAlleUnderlagsperioderTilMaanedenDeiLiggInnanfor() {
         final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
-
-        final Aarstall aar = new Aarstall(2010);
-        prosesser(underlagene::put, new Observasjonsperiode(aar.atStartOfYear(), aar.atEndOfYear()));
+        prosesser(underlagene::put, standardperiode());
 
         assertUnderlagsperioderUtanKoblingTil(underlagene, Maaned.class).isEmpty();
     }
@@ -96,11 +221,32 @@ public class TidsserieUnderlagFacadeIT {
     @Test
     public void skalKobleAlleUnderlagsperioderTilAaretDeiLiggInnanfor() {
         final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
-
-        final Aarstall aar = new Aarstall(2012);
-        prosesser(underlagene::put, new Observasjonsperiode(aar.atStartOfYear(), aar.atEndOfYear()));
+        prosesser(underlagene::put, standardperiode());
 
         assertUnderlagsperioderUtanKoblingTil(underlagene, Aar.class).isEmpty();
+    }
+
+    /**
+     * Verifiserer at periodiseringa av underlag inkluderer avtalekoblingsperiodene i periodiseringa og koblar opp
+     * underlagsperiodene til avtalekoblingsperiodene som dei overlappar.
+     */
+    @Test
+    public void skalInkludereAvtalekoblingarIPeriodiseringa() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        assertUnderlagsperioderUtanKoblingTil(underlagene, Avtalekoblingsperiode.class).isEmpty();
+    }
+
+    /**
+     * Verifiserer at fasada kun returnerer underlag der alle underlagsperiodene er kobla til eit stillingsforhold.
+     */
+    @Test
+    public void skalKobleAlleUnderlagsperiodeTilStillingsforholdPeriode() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        assertUnderlagsperioderUtanKoblingTil(underlagene, StillingsforholdPeriode.class).isEmpty();
     }
 
     /**
@@ -136,26 +282,8 @@ public class TidsserieUnderlagFacadeIT {
     }
 
     /**
-     * Verifiserer at periodiseringa av underlag inkluderer avtalekoblingsperiodene i periodiseringa og koblar opp
-     * underlagsperiodene til avtalekoblingsperiodene som dei overlappar.
-     */
-    @Test
-    public void skalInkludereAvtalekoblingarIPeriodiseringa() {
-        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
-        prosesser(underlagene::put, standardperiode());
-
-        final List<Underlagsperiode> perioderUtanAvtalekobling = underlagene
-                .values()
-                .stream()
-                .flatMap(u -> u.stream())
-                .filter(p -> !p.koblingAvType(Avtalekoblingsperiode.class).isPresent())
-                .collect(toList());
-        assertThat(perioderUtanAvtalekobling).as("underlagsperioder utan avtalekobling").isEmpty();
-    }
-
-    /**
-     * Verifiserer at periodiseringa av underlag tar hensyn til endringar i gjeldande beregningsreglar og splittar også blir periodisert ut frå regelperioder som representerer perioder med potensielt
-     * sett forskjellige beregningsreglar.
+     * Verifiserer at periodiseringa av underlag tar hensyn til endringar i gjeldande beregningsreglar og splittar også
+     * blir periodisert ut frå regelperioder som representerer perioder med potensielt sett forskjellige beregningsreglar.
      */
     @Test
     public void skalPeriodisereUnderlagPaDatoarDerEinEndrarBeregningsRegel() {
@@ -240,9 +368,9 @@ public class TidsserieUnderlagFacadeIT {
 
         assertThat(underlagene).hasSize(3);
 
-        assertThat(underlagene.get(valueOf(999999999999L))).hasSize(14);
-        assertThat(underlagene.get(valueOf(888888888888L))).hasSize(3);
-        assertThat(underlagene.get(valueOf(777777777777L))).hasSize(3);
+        assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(14);
+        assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(3);
+        assertThat(underlagene.get(STILLINGSFORHOLD_C)).hasSize(3);
     }
 
     /**
@@ -265,7 +393,7 @@ public class TidsserieUnderlagFacadeIT {
         underlagene
                 .entrySet()
                 .stream()
-                .filter(e -> !e.getKey().equals(valueOf(999999999999L)))
+                .filter(e -> !e.getKey().equals(STILLINGSFORHOLD_A))
                 .forEach(e -> {
                             assertThat(e.getValue()).as("underlag for stillingsforhold " + e.getKey()).isEmpty();
                         }
@@ -295,7 +423,7 @@ public class TidsserieUnderlagFacadeIT {
         underlagene
                 .entrySet()
                 .stream()
-                .filter(e -> !e.getKey().equals(valueOf(999999999999L)))
+                .filter(e -> !e.getKey().equals(STILLINGSFORHOLD_A))
                 .forEach(e -> {
                             assertThat(e.getValue()).as("underlag for stillingsforhold " + e.getKey()).isEmpty();
                         }
@@ -314,7 +442,7 @@ public class TidsserieUnderlagFacadeIT {
         );
 
         final StillingsforholdUnderlagCallback callback = mock(StillingsforholdUnderlagCallback.class);
-        doThrow(feil).when(callback).prosesser(eq(valueOf(999999999999L)), any(Underlag.class));
+        doThrow(feil).when(callback).prosesser(eq(STILLINGSFORHOLD_A), any(Underlag.class));
 
         prosesser(callback, standardperiode());
     }
@@ -334,7 +462,7 @@ public class TidsserieUnderlagFacadeIT {
         e.expectMessage(feil.getMessage());
 
         final StillingsforholdUnderlagCallback callback = mock(StillingsforholdUnderlagCallback.class);
-        doThrow(feil).when(callback).prosesser(eq(valueOf(999999999999L)), any(Underlag.class));
+        doThrow(feil).when(callback).prosesser(eq(STILLINGSFORHOLD_A), any(Underlag.class));
 
         prosesser(callback, standardperiode());
     }
@@ -347,14 +475,30 @@ public class TidsserieUnderlagFacadeIT {
         return new Observasjonsperiode(new Aarstall(2005).atStartOfYear(), new Aarstall(2014).atEndOfYear());
     }
 
-    private static AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode> assertUnderlagsperioderUtanKoblingTil(Map<StillingsforholdId, Underlag> underlagene, Class<? extends Tidsperiode> type) {
-        return assertThat(
-                underlagene
-                        .values()
-                        .stream()
-                        .flatMap(u -> u.stream())
-                        .filter(p -> !p.koblingAvType(type).isPresent())
-                        .collect(toList())
-        ).as("underlagsperioder utan kobling til " + type.getSimpleName());
+    private static <T> AbstractListAssert<?, ? extends List<T>, T> assertAnnotasjonFraUnderlagsperioder(
+            final Collection<Underlag> underlag, final Class<T> annotasjonsType,
+            final Predicate<Underlagsperiode>... predikater
+    ) {
+        return assertVerdiFraUnderlagsperioder(underlag, paakrevdAnnotasjon(annotasjonsType), predikater).as(
+                "annoterte " +
+                        annotasjonsType.getSimpleName() +
+                        " frå underlagsperiodene i underlaga " + underlag
+        );
+    }
+
+    private MedlemsdataOversetter<Stillingsendring> stillingsendringOversetter() {
+        return (MedlemsdataOversetter<Stillingsendring>) oversettere.get(Stillingsendring.class);
+    }
+
+    private <T> List<T> fraMedlemsdata(final MedlemsdataOversetter<Stillingsendring> oversetter,
+                                       final Function<Stillingsendring, T> mapper,
+                                       final Predicate<Stillingsendring>... predikater) {
+        return data
+                .stream()
+                .filter(oversetter::supports)
+                .map(oversetter::oversett)
+                .filter(and(predikater))
+                .map(mapper)
+                .collect(toList());
     }
 }

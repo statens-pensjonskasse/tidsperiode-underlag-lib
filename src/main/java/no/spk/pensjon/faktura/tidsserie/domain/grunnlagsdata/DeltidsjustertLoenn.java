@@ -31,7 +31,32 @@ public class DeltidsjustertLoenn {
      * @throws java.lang.NullPointerException if <code>beloep</code> er <code>null</code>
      */
     public DeltidsjustertLoenn(final Kroner beloep) {
-        this.beloep = beloep;
         requireNonNull(beloep, VALIDER_BELOEP);
+        this.beloep = beloep;
+    }
+
+    @Override
+    public int hashCode() {
+        return beloep.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DeltidsjustertLoenn other = (DeltidsjustertLoenn) obj;
+        return beloep.equals(other.beloep);
+    }
+
+    @Override
+    public String toString() {
+        return beloep.toString();
     }
 }

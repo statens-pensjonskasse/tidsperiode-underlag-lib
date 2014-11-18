@@ -1,6 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -20,6 +23,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StillingsforholdPerioderTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at gjeldande stillingsendring blir plukka basert på kva endring som er nyligast registrert, under
+     * antagelsen om at den trulig er mest korrekt.
+     */
+    @Test
+    public void skalBrukeSistRegistrerteStillingsendringSomGjeldendeEndringVissPeriodenOverlapperMerEnnEnEndring() {
+        final StillingsforholdPeriode periode = new StillingsforholdPeriode(dato("2006.02.01"), empty());
+
+        final Stillingsendring sistRegistrerteEndring = endring()
+                .aksjonsdato(dato("2006.02.01"))
+                .registreringsdato(dato("2012.10.07"))
+                .aksjonskode("021")
+                .stillingsprosent(new Stillingsprosent(new Prosent("50%")));
+        periode.leggTilOverlappendeStillingsendringer(
+                asList(
+                        endring()
+                                .aksjonsdato(dato("2006.02.01"))
+                                .registreringsdato(dato("2006.09.15"))
+                                .aksjonskode("011")
+                                .stillingsprosent(new Stillingsprosent(new Prosent("100%"))),
+                        sistRegistrerteEndring,
+                        endring()
+                                .aksjonsdato(dato("2006.02.01"))
+                                .registreringsdato(dato("2006.10.07"))
+                                .aksjonskode("011")
+                                .stillingsprosent(new Stillingsprosent(new Prosent("50%")))
+                )
+        );
+        assertThat(periode.gjeldende()).as("gjeldende stillingsendring for " + periode)
+                .isSameAs(sistRegistrerteEndring);
+    }
 
     /**
      * Verifiserer at stillingsforholdnummer er påkrevd ved konstruksjon slik at ein unngår at alle brukarane av klassa
@@ -53,5 +88,9 @@ public class StillingsforholdPerioderTest {
                 )
         );
         assertThat(stillingsforhold.perioder()).hasSize(1);
+    }
+
+    private static Stillingsendring endring() {
+        return new Stillingsendring();
     }
 }

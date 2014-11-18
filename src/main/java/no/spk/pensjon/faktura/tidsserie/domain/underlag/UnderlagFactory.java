@@ -183,7 +183,7 @@ public class UnderlagFactory {
      * @param input ei liste som inneheld alle tidsperioder som underlagets potensielt sett skal måtte periodiserast frå
      * @return ei kronologisk sortert samling av unike datoar som underlaget sine underlagsperioder skal splittast på
      */
-    private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<Tidsperiode> input) {
+    private <T extends Tidsperiode<T>> SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<T> input) {
         return Stream.of(
                 input
                         .stream()
