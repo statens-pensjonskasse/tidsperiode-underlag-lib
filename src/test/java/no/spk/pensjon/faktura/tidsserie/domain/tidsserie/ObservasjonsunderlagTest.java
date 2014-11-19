@@ -20,7 +20,9 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.rangeClosed;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -57,7 +59,7 @@ public class ObservasjonsunderlagTest {
         final List<Underlag> prMnd = observasjonsunderlag
                 .genererUnderlagPrMaaned(aarsunderlag)
                 .collect(toList());
-        IntStream.rangeClosed(Month.JANUARY.getValue(), Month.NOVEMBER.getValue())
+        rangeClosed(Month.JANUARY.getValue(), Month.NOVEMBER.getValue())
                 .forEach(nr -> {
                     // Forventar at mnd nr X inneheld X synlige månedar + 1 fiktiv periode på slutten
                     assertObservasjonsunderlagMedFiktivPeriode(prMnd, nr - 1).hasSize(nr + 1);
@@ -99,19 +101,22 @@ public class ObservasjonsunderlagTest {
                 builder.kopi().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(Month.FEBRUARY),
                 builder.kopi().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(Month.MARCH),
                 builder.kopi().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(Month.APRIL),
-                builder.kopi().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(Month.MAY),
-                builder.kopi().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.06.30")).med(Month.JUNE),
-                builder.kopi().fraOgMed(dato("2000.07.01")).tilOgMed(dato("2000.07.31")).med(Month.JULY),
-                builder.kopi().fraOgMed(dato("2000.08.01")).tilOgMed(dato("2000.08.31")).med(Month.AUGUST),
-                builder.kopi().fraOgMed(dato("2000.09.01")).tilOgMed(dato("2000.09.30")).med(Month.SEPTEMBER),
-                builder.kopi().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(Month.OCTOBER),
-                builder.kopi().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30"))
-                        .med(Month.NOVEMBER).med(SistePeriode.INSTANCE)
+                builder.kopi().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.21")).med(Month.MAY)
+                        .med(SistePeriode.INSTANCE)
         );
 
         final List<Underlag> prMnd = observasjonsunderlag.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
-        assertObservasjonsunderlagMedFiktivPeriode(prMnd, 0).hasSize(2);
-        assertObservasjonsunderlagMedFiktivPeriode(prMnd, 9).hasSize(11);
+        rangeClosed(Month.JANUARY.getValue(), Month.APRIL.getValue())
+                .forEach(nr -> {
+                    // Forventar at mnd nr X inneheld X synlige månedar + 1 fiktiv periode for resten av året
+                    assertObservasjonsunderlagMedFiktivPeriode(prMnd, nr - 1).hasSize(nr + 1);
+                    assertTilOgMed(prMnd.get(nr - 1).last().get()).isEqualTo(of(dato("2000.12.31")));
+                });
+        rangeClosed(Month.MAY.getValue(), Month.DECEMBER.getValue())
+                .forEach(nr -> {
+                    assertObservasjonsunderlagUtanFiktivPeriode(prMnd, nr - 1).hasSize(5);
+                    assertTilOgMed(prMnd.get(nr - 1).last().get()).isEqualTo(of(dato("2000.05.21")));
+                });
     }
 
     /**
@@ -262,7 +267,7 @@ public class ObservasjonsunderlagTest {
     }
 
     private static Underlag underlag(final UnderlagsperiodeBuilder... perioder) {
-        return new Underlag(asList(perioder).stream().map((UnderlagsperiodeBuilder builder) -> builder.bygg()));
+        return new Underlag(asList(perioder).stream().map(UnderlagsperiodeBuilder::bygg));
     }
 
     private AbstractListAssert<?, ? extends List<Underlag>, Underlag> assertObservasjonsunderlag(final Underlag aarsunderlag) {
