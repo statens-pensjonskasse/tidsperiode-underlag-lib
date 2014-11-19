@@ -33,6 +33,16 @@ public final class Kroner implements Comparable<Kroner> {
     }
 
     /**
+     * Konstruerer ein ny kronerepresentasjon for eit <code>beloep</code>.
+     *
+     * @param beloep beløpet som skal representerast som eit kronebeløp
+     * @return eit nytt kronebeløp
+     */
+    public static Kroner kroner(final int beloep) {
+        return new Kroner(beloep);
+    }
+
+    /**
      * Multipliserer opp beløpet med <code>verdi</code>
      * og returnerer eit nytt beløp.
      *

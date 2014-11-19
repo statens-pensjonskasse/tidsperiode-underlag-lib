@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
@@ -14,18 +15,18 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import java.time.Month;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinære
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinï¿½re
  * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi strategien}
- * som bør brukast når ein skal annotere underlagsperioder som blir brukt til å generere ein ny tidsserie.
+ * som bï¿½r brukast nï¿½r ein skal annotere underlagsperioder som blir brukt til ï¿½ generere ein ny tidsserie.
  *
  * @author Tarjei Skorgenes
  */
 public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Annoteringsstrategi {
     /**
-     * Annoterer underlagsperioda basert på gjeldande stillingsendring viss perioda
+     * Annoterer underlagsperioda basert pï¿½ gjeldande stillingsendring viss perioda
      * er tilknytta eit stillingsforhold
      *
-     * @param underlag underlaget som perioda inngår i
+     * @param underlag underlaget som perioda inngï¿½r i
      * @param periode  underlagsperioda som skal populerast med annotasjonar
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#koblingarAvType(Class)
      * @see no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode#gjeldende()
@@ -34,7 +35,9 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             periode.annoter(Stillingsprosent.class, gjeldende(stillingsforhold).stillingsprosent());
-            periode.annoter(Loennstrinn.class, gjeldende(stillingsforhold).loennstrinn());
+            gjeldende(stillingsforhold).loennstrinn().ifPresent((Loennstrinn loennstrinn) -> {
+                annoterLoennForLoennstrinn(periode, loennstrinn);
+            });
             periode.annoter(DeltidsjustertLoenn.class, gjeldende(stillingsforhold).loenn());
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
@@ -44,6 +47,15 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
             periode.annoter(Month.class, m.toMonth());
         });
         markerSisteUnderlagsperiodeSomSistePeriodeVissStillingsforholdetErSluttmeldt(underlag, periode);
+    }
+
+    private void annoterLoennForLoennstrinn(Underlagsperiode periode, Loennstrinn loennstrinn) {
+        periode.annoter(Loennstrinn.class, loennstrinn);
+
+        final FinnLoennForLoennstrinn oppslag = new FinnLoennForLoennstrinn(periode, loennstrinn);
+        oppslag.loennForLoennstrinn().ifPresent((LoennstrinnBeloep beloep) -> {
+            periode.annoter(LoennstrinnBeloep.class, beloep);
+        });
     }
 
     private Stillingsendring gjeldende(final StillingsforholdPeriode periode) {
@@ -56,4 +68,5 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
             periode.annoter(SistePeriode.class, SistePeriode.INSTANCE);
         });
     }
+
 }

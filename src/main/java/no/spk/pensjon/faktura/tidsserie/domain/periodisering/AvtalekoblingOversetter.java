@@ -34,7 +34,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldinga
  * </tr>
  * <tr>
  * <td>1</td>
- * <td>yyyyMMdd</td>
+ * <td>yyyy.MM.dd</td>
  * <td>Fødselsdato for medlem</td>
  * <td>TORT126.DAT_KUNDE_FOEDT_NUM</td>
  * </tr>
@@ -58,7 +58,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldinga
  * </tr>
  * <tr>
  * <td>5</td>
- * <td>yyyy.MM.dd</td>
+ * <td>yyyy.MM.dd / ingenting</td>
  * <td>Sluttdato, siste dag i perioda stillingsforholdet er tilknytta avtalen</td>
  * <td>TORT126.DAT_SLUTT</td>
  * </tr>
