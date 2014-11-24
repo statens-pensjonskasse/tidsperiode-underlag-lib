@@ -58,4 +58,13 @@ public class Stillingsprosent {
     public String toString() {
         return prosent + " stilling";
     }
+
+    /**
+     * Konstruerer ein ny stillingsprosent for ei 100%-stilling.
+     *
+     * @return 100% stillingsprosent
+     */
+    public static Stillingsprosent fulltid() {
+        return new Stillingsprosent(new Prosent("100%"));
+    }
 }

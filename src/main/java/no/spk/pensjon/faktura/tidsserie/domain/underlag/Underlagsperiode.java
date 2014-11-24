@@ -24,7 +24,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  *
  * @author Tarjei Skorgenes
  */
-public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> {
+public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> implements Annoterbar<Underlagsperiode> {
     private final Koblingar koblingar = new Koblingar();
 
     private final Annotasjonar annotasjonar = new Annotasjonar();
@@ -117,52 +117,33 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> {
         return koblingar.get(type);
     }
 
-    /**
-     * Slår opp verdien av den påkrevde annotasjonen med den angitte typen frå perioda.
-     * <p>
-     * Dersom perioda ikkje har ein annotasjon av den angitte typen blir det kasta ein feil sidan annotasjonen blir
-     * behandla som påkrevd. og dermed skulle ha vore tilgjengelig på perioda.
-     *
-     * @param <T>  annotasjonens type
-     * @param type annotasjonens type
-     * @return verdien av den angitte annotasjonstypen
-     * @throws PaakrevdAnnotasjonManglarException viss perioda ikkje har ein verdi for den angitte annotasjonstypen
-     */
+    @Override
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
         return annotasjonar
                 .lookup(type)
                 .orElseThrow(() -> new PaakrevdAnnotasjonManglarException(this, type));
     }
 
-    /**
-     * Slår opp verdien av den valgfrie annotasjonen med den angitte typen frå perioda.
-     * <p>
-     * Dersom perioda ikkje har ein annotasjon av den angitte typen blir det returnert ein {@link Optional#empty() tom}
-     * verdi, det blir ikkje kasta nokon feil.
-     *
-     * @param <T>  annotasjonens type
-     * @param type annotasjonens type
-     * @return verdien av den angitte annotasjonstypen, eller {@link Optional#empty()} viss perioda ikkje har den
-     * angitte annotasjonen
-     */
+    @Override
     public <T> Optional<T> valgfriAnnotasjonFor(final Class<T> type) {
         return annotasjonar.lookup(type);
     }
 
-    /**
-     * Annoterer perioda med den angitte typen og verdien.
-     * <p>
-     * Dersom <code>verdi</code> er av type {@link Optional}, er det den valgfrie, wrappa verdien som blir registrert,
-     * viss den wrappa verdien ikkje eksisterer blir annotasjonsverdien som perioda potensielt sett kan ha frå tidligare
-     * for den angitte typen, fjerna.
-     *
-     * @param <T>   annotasjonstypen
-     * @param type  annotasjonstypen
-     * @param verdi verdien som skal vere tilknytta annotasjonstypen
-     * @throws IllegalArgumentException viss <code>type</code> er {@link Optional}
-     */
-    public <T> void annoter(final Class<? extends T> type, final T verdi) {
+    @Override
+    public <T> Underlagsperiode annoter(final Class<? extends T> type, final T verdi) {
         annotasjonar.registrer(type, verdi);
+        return this;
+    }
+
+    @Override
+    public Underlagsperiode annoterFra(final Annoterbar<?> kilde) {
+        annotasjonar.addAll(kilde.annotasjonar());
+        return this;
+    }
+
+    @Override
+    public Annotasjonar annotasjonar() {
+        return annotasjonar;
     }
 
     /**

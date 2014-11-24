@@ -65,6 +65,17 @@ public final class Kroner implements Comparable<Kroner> {
     }
 
     /**
+     * Legger saman gjeldande kronebeløp med det andre kronebeløpet
+     * og returnerer eit nytt kronebeløp med summen av dei to.
+     *
+     * @param other det andre kronebeløpet
+     *              @return eit nytt kronebeløp som inneheld summen av dei to kronebeløpa
+     */
+    public Kroner plus(final Kroner other) {
+        return new Kroner(beloep + other.beloep);
+    }
+
+    /**
      * Samanliknar dei avrunda kronebeløpa numerisk.
      * <br>
      * Merk at samanlikninga blir gjort basert på avrunda kronebeløp, to beløp med forskjellige desimalverdiar men

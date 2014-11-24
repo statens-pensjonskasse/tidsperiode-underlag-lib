@@ -36,8 +36,9 @@ class Annotasjonar {
         this.annotasjonar.putAll(other.annotasjonar);
     }
 
-    void annoter(final Underlagsperiode periode) {
-        annotasjonar.forEach((key, value) -> periode.annoter(key, value));
+    <T extends Annoterbar<T>> T annoter(final T periode) {
+        annotasjonar.forEach(periode::annoter);
+        return periode;
     }
 
     void remove(final Class<?> type) {

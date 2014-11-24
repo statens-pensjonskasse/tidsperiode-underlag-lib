@@ -163,11 +163,14 @@ public class UnderlagsperiodeTest {
      */
     @Test
     public void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
+        final Underlagsperiode periode = create("2005.01.01", "2005.12.31");
+
         e.expect(PaakrevdAnnotasjonManglarException.class);
-        e.expectMessage("Underlagsperioda frå 2005-01-01 til 2005-12-31 manglar påkrevd annotasjon av type");
+        e.expectMessage(periode.toString());
+        e.expectMessage("manglar ein påkrevd annotasjon av type");
         e.expectMessage(Integer.class.getSimpleName());
 
-        create("2005.01.01", "2005.12.31").annotasjonFor(Integer.class);
+        periode.annotasjonFor(Integer.class);
     }
 
     /**

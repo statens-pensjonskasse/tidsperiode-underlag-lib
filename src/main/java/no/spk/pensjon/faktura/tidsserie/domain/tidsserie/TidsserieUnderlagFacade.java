@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
@@ -15,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -72,14 +72,12 @@ public class TidsserieUnderlagFacade {
 
                     factory.addPerioder(referanseperioder);
 
-                    final Underlag underlag = factory.periodiser();
-                    underlag.forEach(periode -> annotator.annoter(underlag, periode));
+                    final Underlag underlag = genererStillingsforholdUnderlag(factory);
+                    annoter(underlag.annoter(StillingsforholdId.class, s.id()));
                     try {
-
                         callback.prosesser(
                                 s.id(),
                                 underlag
-                                        .restrict(p -> p.koblingAvType(StillingsforholdPeriode.class).isPresent())
                         );
                     } catch (final RuntimeException e) {
                         // Callbacken er ansvarlig for å handtere egne feil, vi sluker derfor slike feil her
@@ -90,6 +88,74 @@ public class TidsserieUnderlagFacade {
     }
 
     /**
+     * Periodiserer og genererer eit nytt underlag for heile observasjonsperioda og avgrensar deretter dette til eit nytt
+     * underlag som kun inneheld underlagsperioder der stillingsforholdet er aktivt.
+     *
+     * @param factory periodiseringsfabrikken som er populert med alle tidsperiodene som skal brukast til periodiseringa
+     * @return eit nytt underlag som kun inneheld underlagsperioder tilknytta stillingsforholdet
+     */
+    private Underlag genererStillingsforholdUnderlag(final UnderlagFactory factory) {
+        return factory
+                .periodiser()
+                .restrict(p -> p.koblingAvType(StillingsforholdPeriode.class).isPresent());
+    }
+
+    /**
+     * Annoterer stillingsforholdunderlaget og underlagsperiodene som det inneheld med informasjon henta frå
+     * kvar underlagsperiodes koblingar.
+     * <p>
+     * Dersom underlagets tilknytta stillingsforhold blir avslutta innanfor observasjonsperioda, vil siste
+     * underlagsperiode bli annotert med {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.SistePeriode} slik
+     * at seinare prosesseringa kjapt skal kunne sjekke opp om det eksisterer nokon fleire underlagsperioder i
+     * underlaget.
+     *
+     * @param stillingsforholdunderlag eit underlag som kun inneheld underlagsperioder tilkobla eit stillingsforhold
+     * @return <code>stillingsforholdunderlag</code>
+     * @see Annoteringsstrategi
+     */
+    Underlag annoter(final Underlag stillingsforholdunderlag) {
+        stillingsforholdunderlag.forEach(periode -> annotator.annoter(stillingsforholdunderlag, periode));
+        stillingsforholdunderlag.last().ifPresent(sistePeriode -> sistePeriode.annoter(SistePeriode.class, SistePeriode.INSTANCE));
+        return stillingsforholdunderlag;
+    }
+
+    /**
+     * Legger til tidsperioder som inneheld globale referansedata som ein ynskjer at periodiseringa skal ta hensyn til
+     * når den bygger opp underlagsperiodene.
+     * <p>
+     * Kvar tidsperiode vil bli inkludert i periodiseringa og kobla til den eller dei underlagsperiodene
+     * som dei overlappar.
+     * <p>
+     * Hovedintensjonen med dette er å støtte oppslag av tidsperiodisert informasjon som ikkje er direkte knytta
+     * til eit medlem eller stillingsforhold, f.eks. informasjon om avtale, omregningsperioder, lønnstrinn eller
+     * liknande.
+     * <p>
+     * Referanseperiodene blir tatt hensyn til ved periodisering av underlaget splittar og genererer nye
+     * underlagsperioder som startar ved kvar referanseperiodes frå og med dato og dagen etter kvar referanseperiodes
+     * til og med-dato (for dei periodene som ikkje er løpande).
+     *
+     * @param perioder tidsperiodene som skal inkluderast i tillegg til medlemsdata ved periodisering av
+     *                 underlag
+     */
+    public void addReferansePerioder(final Stream<Tidsperiode<?>> perioder) {
+        perioder.forEach(referanseperioder::add);
+    }
+
+    /**
+     * @see #addReferansePerioder(java.util.stream.Stream)
+     */
+    public void addReferansePerioder(final Iterable<Tidsperiode<?>> perioder) {
+        perioder.forEach(referanseperioder::add);
+    }
+
+    /**
+     * @see #addReferansePerioder(java.util.stream.Stream)
+     */
+    public void addReferansePerioder(final Tidsperiode<?>... perioder) {
+        addReferansePerioder(Stream.of(perioder));
+    }
+
+    /**
      * Legger til ein beregningsregel som skal inkluderast ved periodisering av underlag.
      * <p>
      * Periodiseringa av alle underlag skal ta hensyn til og splitte underlagsperioder som overlappar
@@ -97,23 +163,24 @@ public class TidsserieUnderlagFacade {
      *
      * @param perioder beregingsreglane og periodene dei er gjeldande for, som skal inkluderast ved periodisering
      *                 av underlag
+     * @see #addReferansePerioder(java.util.stream.Stream)
      */
     public void addBeregningsregel(final Stream<Regelperiode<?>> perioder) {
-        perioder.forEach(p -> referanseperioder.add(p));
+        perioder.forEach(referanseperioder::add);
     }
 
     /**
      * @see #addBeregningsregel(java.util.stream.Stream)
      */
     public void addBeregningsregel(final Regelperiode<?>... perioder) {
-        addBeregningsregel(asList(perioder));
+        addReferansePerioder(perioder);
     }
 
     /**
      * @see #addBeregningsregel(java.util.stream.Stream)
      */
     public void addBeregningsregel(final Iterable<Regelperiode<?>> perioder) {
-        perioder.forEach(p -> referanseperioder.add(p));
+        perioder.forEach(referanseperioder::add);
     }
 
     /**

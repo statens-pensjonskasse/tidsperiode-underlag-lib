@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -46,6 +47,15 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
     public Regelperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final BeregningsRegel<T> gjeldandeRegel) {
         super(fraOgMed, tilOgMed);
         this.gjeldandeRegel = gjeldandeRegel;
+    }
+
+    /**
+     * Annoterer underlagsperioda med gjeldande beregningsregel.
+     *
+     * @param periode underlagsperioda som skal annoterast
+     */
+    public void annoter(final Underlagsperiode periode) {
+        periode.annoter(gjeldandeRegel.getClass(), gjeldandeRegel);
     }
 
     @Override

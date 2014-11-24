@@ -12,6 +12,7 @@ import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -55,19 +56,17 @@ public class FinnLoennForLoennstrinnTest {
                 eiPeriode
                         .kopi()
                         .medKoblingar(
-                                grupper(
-                                        loepende(loennstrinn, fraOgMed, kroner(372_000))
-                                )
-                        )
-                        .medKoblingar(
-                                grupper(
-                                        loepende(loennstrinn, fraOgMed.minusYears(1), kroner(172_000))
-                                )
-                        )
-                        .medKoblingar(
-                                grupper(
-                                        loepende(loennstrinn, fraOgMed.plusYears(1), kroner(272_000))
-                                )
+                                Stream.of(
+                                        grupper(
+                                                loepende(loennstrinn, fraOgMed, kroner(372_000))
+                                        ),
+                                        grupper(
+                                                loepende(loennstrinn, fraOgMed.minusYears(1), kroner(172_000))
+                                        ),
+                                        grupper(
+                                                loepende(loennstrinn, fraOgMed.plusYears(1), kroner(272_000))
+                                        )
+                                ).flatMap(gruppe -> gruppe)
                         )
                         .bygg(),
                 loennstrinn

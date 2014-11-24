@@ -1,8 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import org.junit.rules.ExternalResource;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +30,50 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 class EksempelDataForMedlem extends ExternalResource {
+    /**
+     * {@link Stillingsforhold} inneheld ei kortfatta oversikt over stillingsforholda ein forventar skal eksistere
+     * i testdatasettet som {@link EksempelDataForMedlem} leser inn.
+     */
+    public static enum Stillingsforhold {
+        /**
+         * Stillingsforhold med historikk, aktivt frå 15. august 2005 til 30. juni 2012
+         */
+        A(999999999999L),
+        /**
+         * Stillingsforhold med historikk, aktivt frå 3. september 2012.
+         */
+        B(888888888888L),
+        /**
+         * Stillingsforhold med medregning, aktivt frå 1. juli 2010 til 31. mai 2016.
+         */
+        C(777777777777L);
+
+        private final StillingsforholdId id;
+
+        Stillingsforhold(long id) {
+            this.id = new StillingsforholdId(id);
+        }
+
+        public StillingsforholdId id() {
+            return id;
+        }
+    }
+
+    /**
+     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.Stillingsforhold#A
+     */
+    public static StillingsforholdId STILLING_A = Stillingsforhold.A.id();
+
+    /**
+     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.Stillingsforhold#B
+     */
+    public static StillingsforholdId STILLING_B = Stillingsforhold.B.id();
+
+    /**
+     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.Stillingsforhold#C
+     */
+    public static StillingsforholdId STILLING_C = Stillingsforhold.C.id();
+
     private final String ressurs;
 
     private List<List<String>> data;
