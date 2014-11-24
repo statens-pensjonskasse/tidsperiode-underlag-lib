@@ -15,18 +15,18 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import java.time.Month;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinï¿½re
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinære
  * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi strategien}
- * som bï¿½r brukast nï¿½r ein skal annotere underlagsperioder som blir brukt til ï¿½ generere ein ny tidsserie.
+ * som bør brukast når ein skal annotere underlagsperioder som blir brukt til å generere ein ny tidsserie.
  *
  * @author Tarjei Skorgenes
  */
 public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Annoteringsstrategi {
     /**
-     * Annoterer underlagsperioda basert pï¿½ gjeldande stillingsendring viss perioda
+     * Annoterer underlagsperioda basert på gjeldande stillingsendring viss perioda
      * er tilknytta eit stillingsforhold
      *
-     * @param underlag underlaget som perioda inngï¿½r i
+     * @param underlag underlaget som perioda inngår i
      * @param periode  underlagsperioda som skal populerast med annotasjonar
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#koblingarAvType(Class)
      * @see no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode#gjeldende()
@@ -68,5 +68,4 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
             periode.annoter(SistePeriode.class, SistePeriode.INSTANCE);
         });
     }
-
 }
