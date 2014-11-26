@@ -5,6 +5,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
@@ -23,15 +26,37 @@ import static java.util.Optional.ofNullable;
  * @author Tarjei Skorgenes
  */
 public class TidsserieObservasjon {
-    private final StillingsforholdId stillingsforhold;
-    private final AvtaleId avtale;
-    private final Observasjonsdato observasjonsdato;
+    /**
+     * Stillingsforholdet observasjonen er utført av og for.
+     */
+    public final StillingsforholdId stillingsforhold;
+
+    /**
+     * Avtalen stillingsforholdet har vore tilknytta i alle perioder observasjonen er utført på.
+     */
+    public final AvtaleId avtale;
+
+    /**
+     * Datoen observasjonen er simulert utført på.
+     */
+    public final Observasjonsdato observasjonsdato;
 
     /**
      * Totalt maskinelt grunnlag for stillingsforholdet på avtalen i det aktuelle året.
      */
     public final Kroner maskineltGrunnlag;
 
+    /**
+     * Konstruerer ein ny observasjon av totalt maskinelt grunnlag for eit stillingsforhold på ein bestemt avtale
+     * der observasjonen er utført på eit observasjonsunderlag for den angitte observasjonsdatoen.
+     *
+     * @param stillingsforhold  stillingsforholdet obserasjonen er utført for
+     * @param avtale            avtalen som stillingsforholdet har vore eller er aktivt på
+     * @param observasjonsdato  datoen observasjonen er simulert utført
+     * @param maskineltGrunnlag det maskinelle grunnlaget for alle periodene stillingsforholdet har vore aktivt på
+     *                          avtalen innanfor premieåret observasjonen er utført for
+     * @throws NullPointerException dersom nokon av parameterverdiane er <code>null</code>
+     */
     public TidsserieObservasjon(final StillingsforholdId stillingsforhold, final AvtaleId avtale,
                                 final Observasjonsdato observasjonsdato, final Kroner maskineltGrunnlag) {
         this.stillingsforhold = requireNonNull(stillingsforhold);
@@ -66,22 +91,28 @@ public class TidsserieObservasjon {
      * observasjon med summen av kvar måling.
      * <p>
      * Kontrakta for denne operasjonen forutsetter at begge observasjonane tilhøyrer samme stillingsforhold, avtale og
-     * observasjonsdato. Blir det sendt inn ein observasjon som tilhøyrer eit anna stillingsforhold, ein annan avtale
-     * eller ein annan observasjonsdato vil det gi feil resultat men det vil ikkje feile. Det er derfor opp til klienten
-     * å sikre at dei to observasjonane kan kombinerast.
+     * observasjonsdato.
      *
      * @param other den andre observasjonen som vi skal kombinerast saman med
      * @return ein ny observasjon som inneheld summen av gjeldande og den andre observasjonens målingar
-     * @throws AssertionError dersom observasjonane ikkje har lik stillingsforhold, avtale og observasjonsdato
+     * @throws IllegalArgumentException dersom observasjonane ikkje har lik stillingsforhold, avtale og observasjonsdato
      */
     TidsserieObservasjon plus(final TidsserieObservasjon other) {
-        assert ofNullable(stillingsforhold).equals(ofNullable(other.stillingsforhold))
-                : "Tidsserieobservasjonane tilhøyrer forskjellige stillingsforhold (" + this + ", " + other + ")";
-        assert ofNullable(avtale).equals(ofNullable(other.avtale))
-                : "Tidsserieobservasjonane tilhøyrer forskjellige avtalar  (" + this + ", " + other + ")";
-        assert ofNullable(observasjonsdato).equals(ofNullable(other.observasjonsdato))
-                : "Tidsserieobservasjonane tilhøyrer forskjellige observasjondatoar (" + this + ", " + other + ")";
-
+        valider(
+                other,
+                that -> ofNullable(this.stillingsforhold).equals(ofNullable(that.stillingsforhold)),
+                () -> feilmeldingForskjelligVerdi(other, "stillingsforhold")
+        );
+        valider(
+                other,
+                that -> ofNullable(this.avtale).equals(ofNullable(that.avtale)),
+                () -> feilmeldingForskjelligVerdi(other, "avtalar")
+        );
+        valider(
+                other,
+                that -> ofNullable(this.observasjonsdato).equals(ofNullable(that.observasjonsdato)),
+                () -> feilmeldingForskjelligVerdi(other, "observasjonsdatoar")
+        );
         return new TidsserieObservasjon(
                 stillingsforhold,
                 avtale,
@@ -92,13 +123,27 @@ public class TidsserieObservasjon {
 
     @Override
     public String toString() {
-        return "observasjon utført "
-                + observasjonsdato
+        return observasjonsdato
                 + " for stilling "
                 + stillingsforhold
                 + " på "
                 + avtale
                 + " med maskinelt grunnlag  "
                 + maskineltGrunnlag;
+    }
+
+    private static void valider(final TidsserieObservasjon other, final Predicate<TidsserieObservasjon> predikat,
+                                final Supplier<String> feilmelding) {
+        if (!predikat.test(other)) {
+            throw new IllegalArgumentException(feilmelding.get());
+        }
+    }
+
+    private String feilmeldingForskjelligVerdi(final TidsserieObservasjon other, final String reason) {
+        return "Tidsserieobservasjonane tilhøyrer forskjellige "
+                + reason
+                + ".\n"
+                + "Observasjon 1: " + this + "\n"
+                + "Observasjon 2: " + other + "\n";
     }
 }

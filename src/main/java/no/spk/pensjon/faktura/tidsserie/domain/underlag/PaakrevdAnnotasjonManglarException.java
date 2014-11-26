@@ -9,7 +9,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 public class PaakrevdAnnotasjonManglarException extends RuntimeException {
     private static final long serialVersionUID = 5240556663220387894L;
 
-    private final Annoterbar kilde;
+    private final Annoterbar<?> kilde;
 
     private final Class<?> type;
 
@@ -19,7 +19,7 @@ public class PaakrevdAnnotasjonManglarException extends RuntimeException {
      * @param kilde objektet som manglar den påkrevde annotasjonen
      * @param type  typen til den påkrevde annotasjonen
      */
-    public PaakrevdAnnotasjonManglarException(final Annoterbar kilde, final Class<?> type) {
+    public PaakrevdAnnotasjonManglarException(final Annoterbar<?> kilde, final Class<?> type) {
         this.kilde = kilde;
         this.type = type;
     }

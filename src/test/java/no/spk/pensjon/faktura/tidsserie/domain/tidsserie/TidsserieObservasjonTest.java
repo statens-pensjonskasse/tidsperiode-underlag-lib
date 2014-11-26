@@ -11,6 +11,7 @@ import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
 
+import static java.util.Objects.requireNonNull;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +26,8 @@ public class TidsserieObservasjonTest {
 
     @Test
     public void skalFeileDersomEinLeggerSamanObservasjonarMedForskjelligAvtale() {
-        e.expect(AssertionError.class);
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("tilhøyrer forskjellige avtalar");
         final TidsserieObservasjonBuilder builder = observasjon("2008.02.29")
                 .stilling(1L)
                 .maskineltgrunnlag(100_000);
@@ -37,7 +39,8 @@ public class TidsserieObservasjonTest {
 
     @Test
     public void skalFeileDersomEinLeggerSamanObservasjonarMedForskjelligStillingsforhold() {
-        e.expect(AssertionError.class);
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("tilhøyrer forskjellige stillingsforhold");
         final TidsserieObservasjonBuilder builder = observasjon("2008.03.31")
                 .avtale(1L)
                 .maskineltgrunnlag(100_000);
@@ -49,7 +52,8 @@ public class TidsserieObservasjonTest {
 
     @Test
     public void skalFeileDersomEinLeggerSamanObservasjonarMedForskjelligObservasjonsdato() {
-        e.expect(AssertionError.class);
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("tilhøyrer forskjellige observasjonsdatoar");
         final TidsserieObservasjonBuilder builder = observasjon("2008.06.30")
                 .avtale(3L)
                 .stilling(1L)
@@ -89,14 +93,21 @@ public class TidsserieObservasjonTest {
         return new TidsserieObservasjonBuilder(dato(observasjonsdato));
     }
 
+    private static TidsserieObservasjonBuilder observasjon() {
+        return new TidsserieObservasjonBuilder();
+    }
+
     private static class TidsserieObservasjonBuilder {
         private LocalDate dato;
-        private long stillingsforhold;
-        private long avtale;
+        private Long stillingsforhold;
+        private Long avtale;
         private Kroner maskineltgrunnlag;
 
         private TidsserieObservasjonBuilder(final LocalDate dato) {
             this.dato = dato;
+        }
+
+        private TidsserieObservasjonBuilder() {
         }
 
         public TidsserieObservasjonBuilder stilling(final long stillingsforhold) {
@@ -115,6 +126,10 @@ public class TidsserieObservasjonTest {
         }
 
         public TidsserieObservasjon bygg() {
+            requireNonNull(dato);
+            requireNonNull(stillingsforhold);
+            requireNonNull(avtale);
+            requireNonNull(maskineltgrunnlag);
             return new TidsserieObservasjon(
                     new StillingsforholdId(stillingsforhold),
                     new AvtaleId(avtale),
