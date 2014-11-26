@@ -5,6 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
+import java.time.Month;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -31,10 +32,7 @@ public class TidsserieObservasjon {
      */
     public final StillingsforholdId stillingsforhold;
 
-    /**
-     * Avtalen stillingsforholdet har vore tilknytta i alle perioder observasjonen er utført på.
-     */
-    public final AvtaleId avtale;
+    private final AvtaleId avtale;
 
     /**
      * Datoen observasjonen er simulert utført på.
@@ -66,13 +64,32 @@ public class TidsserieObservasjon {
     }
 
     /**
+     * Avtalen stillingsforholdet har vore tilknytta i alle perioder observasjonen er utført på.
+     *
+     * @return stillingsforholdets avtale
+     */
+    public AvtaleId avtale() {
+        return avtale;
+    }
+
+    /**
      * Er observasjonen tilknytta det angitte stillingsforholdet?
      *
-     * @param stillingsforhold stillingsforholdet obserasjonen skal sjekkast mot
+     * @param stillingsforhold stillingsforholdet observasjonen skal sjekkast mot
      * @return <code>true</code> dersom observasjonen tilhøyrer stillingsforholdet, <code>false</code> ellers
      */
     public boolean tilhoeyrer(final StillingsforholdId stillingsforhold) {
         return this.stillingsforhold.equals(stillingsforhold);
+    }
+
+    /**
+     * Er observasjonen tilknytta den angitte avtalen?
+     *
+     * @param avtale avtalen observasjonen skal sjekkast mot
+     * @return <code>true</code> dersom observasjonen tilhøyrer den angite avtalen, <code>false</code> ellers
+     */
+    public boolean tilhoeyrer(AvtaleId avtale) {
+        return this.avtale.equals(avtale);
     }
 
     /**
@@ -84,6 +101,17 @@ public class TidsserieObservasjon {
      */
     public boolean tilhoeyrer(final Aarstall aarstall) {
         return observasjonsdato.tilhoeyrer(aarstall);
+    }
+
+
+    /**
+     * Ligg observasjonsdatoen innanfor den angitte månaden?
+     *
+     * @param month månaden observasjonsdatoen skal sjekkast opp mot
+     * @return <code>true</code> dersom observasjonsdatoen ligg innanfor den aktuelle månaden, <code>false</code> ellers
+     */
+    public boolean tilhoeyrer(final Month month) {
+        return observasjonsdato.tilhoeyrer(month);
     }
 
     /**

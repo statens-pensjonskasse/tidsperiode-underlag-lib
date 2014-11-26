@@ -33,15 +33,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.time.Month.APRIL;
+import static java.time.Month.AUGUST;
+import static java.time.Month.DECEMBER;
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
+import static java.time.Month.JULY;
+import static java.time.Month.JUNE;
+import static java.time.Month.MARCH;
+import static java.time.Month.MAY;
+import static java.time.Month.NOVEMBER;
+import static java.time.Month.OCTOBER;
+import static java.time.Month.SEPTEMBER;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.IntStream.rangeClosed;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_A;
 import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_B;
+import static no.spk.pensjon.faktura.tidsserie.domain.it.TidsserieAvtalebytteIT.feilVissMeirEnnEinObservasjonPrMonth;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.and;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,8 +79,6 @@ public class TidsserieIT {
 
     private Tidsserie tidsserie;
 
-    private ArrayList<TidsserieObservasjon> observasjonar;
-
     @Before
     public void _before() {
         final Map<Class<?>, MedlemsdataOversetter<?>> oversettere = new HashMap<>();
@@ -79,8 +91,6 @@ public class TidsserieIT {
         observasjonsperiode = new Observasjonsperiode(dato("2005.01.01"), dato("2014.12.31"));
 
         tidsserie = new Tidsserie();
-
-        observasjonar = new ArrayList<>();
     }
 
     /**
@@ -89,30 +99,19 @@ public class TidsserieIT {
      */
     @Test
     public void skalBeregneForventaMaskineltGrunnlagForKvarObservasjonI2012ForStillingsforholdA() {
-        final Predicate<TidsserieObservasjon> predikat = and(
-                o -> o.tilhoeyrer(new Aarstall(2012)),
-                o -> o.tilhoeyrer(STILLING_A)
-        );
-        final List<TidsserieObservasjon> observasjonar = genererObservasjonar(predikat);
-        assertThat(observasjonar).hasSize(12);
-        rangeClosed(Month.JANUARY.getValue(), Month.APRIL.getValue())
-                .mapToObj(Month::of)
-                .forEach(m -> {
-                    assertObservasjonAvMaskineltgrunnlag(observasjonar, m)
-                            .isEqualTo(new Kroner(548_200));
-                });
-        rangeClosed(Month.MAY.getValue(), Month.MAY.getValue())
-                .mapToObj(Month::of)
-                .forEach(m -> {
-                    assertObservasjonAvMaskineltgrunnlag(observasjonar, m)
-                            .isEqualTo(new Kroner(558_107));
-                });
-        rangeClosed(Month.JUNE.getValue(), Month.DECEMBER.getValue())
-                .mapToObj(Month::of)
-                .forEach(m -> {
-                    assertObservasjonAvMaskineltgrunnlag(observasjonar, m)
-                            .isEqualTo(new Kroner(275_069));
-                });
+        assertThat(generer(STILLING_A, 2012)).hasSize(12);
+        assertObservasjonAvMaskineltgrunnlag(2012, JANUARY, STILLING_A).isEqualTo(kroner(548_200));
+        assertObservasjonAvMaskineltgrunnlag(2012, FEBRUARY, STILLING_A).isEqualTo(kroner(548_200));
+        assertObservasjonAvMaskineltgrunnlag(2012, MARCH, STILLING_A).isEqualTo(kroner(548_200));
+        assertObservasjonAvMaskineltgrunnlag(2012, APRIL, STILLING_A).isEqualTo(kroner(548_200));
+        assertObservasjonAvMaskineltgrunnlag(2012, MAY, STILLING_A).isEqualTo(kroner(558_107));
+        assertObservasjonAvMaskineltgrunnlag(2012, JUNE, STILLING_A).isEqualTo(kroner(275_069));
+        assertObservasjonAvMaskineltgrunnlag(2012, JULY, STILLING_A).isEqualTo(kroner(275_069));
+        assertObservasjonAvMaskineltgrunnlag(2012, AUGUST, STILLING_A).isEqualTo(kroner(275_069));
+        assertObservasjonAvMaskineltgrunnlag(2012, SEPTEMBER, STILLING_A).isEqualTo(kroner(275_069));
+        assertObservasjonAvMaskineltgrunnlag(2012, OCTOBER, STILLING_A).isEqualTo(kroner(275_069));
+        assertObservasjonAvMaskineltgrunnlag(2012, NOVEMBER, STILLING_A).isEqualTo(kroner(275_069));
+        assertObservasjonAvMaskineltgrunnlag(2012, DECEMBER, STILLING_A).isEqualTo(kroner(275_069));
     }
 
     /**
@@ -121,40 +120,62 @@ public class TidsserieIT {
      */
     @Test
     public void skalBeregneForventaMaskineltGrunnlagForKvarObservasjonI2012ForStillingsforholdB() {
-        final Predicate<TidsserieObservasjon> predikat = and(
-                o -> o.tilhoeyrer(new Aarstall(2012)),
-                o -> o.tilhoeyrer(STILLING_B)
-        );
-        final List<TidsserieObservasjon> observasjonar = genererObservasjonar(predikat);
-        assertThat(observasjonar).hasSize(4);
-        assertThat(observasjonar.get(0).maskineltGrunnlag).isEqualTo(new Kroner(195_148));
-        assertThat(observasjonar.get(1).maskineltGrunnlag).isEqualTo(new Kroner(195_148));
-        assertThat(observasjonar.get(2).maskineltGrunnlag).isEqualTo(new Kroner(195_148));
-        assertThat(observasjonar.get(3).maskineltGrunnlag).isEqualTo(new Kroner(195_148));
+        assertThat(generer(STILLING_B, 2012)).hasSize(4);
+        assertObservasjonAvMaskineltgrunnlag(2012, SEPTEMBER, STILLING_B).isEqualTo(kroner(195_148));
+        assertObservasjonAvMaskineltgrunnlag(2012, OCTOBER, STILLING_B).isEqualTo(kroner(195_148));
+        assertObservasjonAvMaskineltgrunnlag(2012, NOVEMBER, STILLING_B).isEqualTo(kroner(195_148));
+        assertObservasjonAvMaskineltgrunnlag(2012, DECEMBER, STILLING_B).isEqualTo(kroner(195_148));
     }
 
     /**
      * Verifiserer at totalt antall observasjonar er lik summen av forventa antall observasjonar pr stillingsforhold.
      */
     @Test
-    public void skalGenerere117ObservasjonarTotaltForMedlemmet() {
-        assertAlleObservasjonar().hasSize(117);
+    public void skalGenerereForventaAntallObservasjonarTotaltForMedlemmet() {
+        assertAlleObservasjonar().hasSize(0
+                + 5      // A i 2005
+                + 6 * 12 // A i 2006-2011
+                + 12     // A i 2012
+                + 4      // B i 2012
+                + 2 * 12 // B i 2013-2014
+        );
     }
 
     /**
-     * Verifiserer at antall observasjonar som blir generert for stillingsforhold {@link EksempelDataForMedlem#STILLING_A}
+     * Verifiserer at antall observasjonar som blir generert for stillingsforhold
+     * {@link EksempelDataForMedlemMedAvtalebytte#STILLING} pr avtale pr Âr er som forventa.
      */
     @Test
-    public void skalGenerereXXXObservasjonarForStillingA() {
-        assertObservasjonar(tilhoeyrer(STILLING_A)).hasSize(5 + 6 * 12 + 12); // 2005, 2006-2011, 2012
-    }
+    public void skalGenerereForventaAntallObservasjonarPrForStillingaPr≈r() {
+        assertObservasjonar(2005, STILLING_A).hasSize(5); // juni til november
+        assertObservasjonar(2005, STILLING_B).hasSize(0); // ikkje aktiv enda
 
-    /**
-     * Verifiserer at antall observasjonar som blir generert for stillingsforhold {@link EksempelDataForMedlem#STILLING_B}
-     */
-    @Test
-    public void skalGenerereXXXObservasjonarForStillingB() {
-        assertObservasjonar(tilhoeyrer(STILLING_B)).hasSize(4 + 24); // 2012, 2013-2014
+        assertObservasjonar(2006, STILLING_A).hasSize(12); // juni til november
+        assertObservasjonar(2006, STILLING_B).hasSize(0); // ikkje aktiv enda
+
+        assertObservasjonar(2007, STILLING_A).hasSize(12); // juni til november
+        assertObservasjonar(2007, STILLING_B).hasSize(0); // ikkje aktiv enda
+
+        assertObservasjonar(2008, STILLING_A).hasSize(12); // juni til november
+        assertObservasjonar(2008, STILLING_B).hasSize(0); // ikkje aktiv enda
+
+        assertObservasjonar(2009, STILLING_A).hasSize(12); // juni til november
+        assertObservasjonar(2009, STILLING_B).hasSize(0); // ikkje aktiv enda
+
+        assertObservasjonar(2010, STILLING_A).hasSize(12); // juni til november
+        assertObservasjonar(2010, STILLING_B).hasSize(0); // ikkje aktiv enda
+
+        assertObservasjonar(2011, STILLING_A).hasSize(12); // juni til november
+        assertObservasjonar(2011, STILLING_B).hasSize(0); // ikkje aktiv enda
+
+        assertObservasjonar(2012, STILLING_A).hasSize(12); // januar til desember
+        assertObservasjonar(2012, STILLING_B).hasSize(4); // september til desember
+
+        assertObservasjonar(2013, STILLING_A).hasSize(0); // ikkje lenger aktiv
+        assertObservasjonar(2013, STILLING_B).hasSize(12); // heile Âret
+
+        assertObservasjonar(2014, STILLING_A).hasSize(0); // juni til november
+        assertObservasjonar(2014, STILLING_B).hasSize(12); // heile Âret
     }
 
     /**
@@ -166,28 +187,44 @@ public class TidsserieIT {
     }
 
     private static AbstractComparableAssert<?, Kroner> assertObservasjonAvMaskineltgrunnlag(List<TidsserieObservasjon> observasjonar, Month month) {
-        return assertThat(observasjonar.get(month.getValue() - 1).maskineltGrunnlag)
+        final Optional<TidsserieObservasjon> observasjon = observasjonar.stream()
+                .filter(o -> o.tilhoeyrer(month))
+                .reduce(feilVissMeirEnnEinObservasjonPrMonth(month, observasjonar));
+        assertThat(observasjon.isPresent()).as("eksisterer det ein observasjon for " + month + "?").isTrue();
+        return assertThat(observasjon.get().maskineltGrunnlag)
                 .as("maskinelt grunnlag for observasjonsunderlag for " + month);
     }
 
     private AbstractListAssert<?, ? extends List<TidsserieObservasjon>, TidsserieObservasjon> assertAlleObservasjonar() {
-        return assertObservasjonar(o -> true);
+        return assertObservasjonar(o -> true).as("alle observasjonar i tidsserien");
+    }
+
+    private AbstractListAssert<?, ? extends List<TidsserieObservasjon>, TidsserieObservasjon> assertObservasjonar(
+            final int aarstall, final StillingsforholdId stilling) {
+        return assertObservasjonar(tilhoeyrer(aarstall, stilling))
+                .as("observasjonar for " + stilling + " i Âr " + aarstall);
     }
 
     private AbstractListAssert<?, ? extends List<TidsserieObservasjon>, TidsserieObservasjon> assertObservasjonar(
             final Predicate<TidsserieObservasjon> predikat) {
-        return assertThat(genererObservasjonar(predikat))
-                .as("antall observasjonsperioder i tidsserien for alle stillingar");
+        return assertThat(genererObservasjonar(predikat));
+    }
+
+    private AbstractComparableAssert<?, Kroner> assertObservasjonAvMaskineltgrunnlag(
+            final int aarstall, final Month month, final StillingsforholdId stilling) {
+        return assertObservasjonAvMaskineltgrunnlag(generer(stilling, aarstall), month);
+    }
+
+    private List<TidsserieObservasjon> generer(final StillingsforholdId stilling, final int aarstall) {
+        return genererObservasjonar(tilhoeyrer(aarstall, stilling));
     }
 
     private List<TidsserieObservasjon> genererObservasjonar(final Predicate<TidsserieObservasjon> predikat) {
-        generer();
-        return this.observasjonar.stream().filter(predikat).collect(toList());
+        return generer().stream().filter(predikat).collect(toList());
     }
 
-    private void generer() {
-        ;
-
+    private List<TidsserieObservasjon> generer() {
+        final List<TidsserieObservasjon> observasjonar = new ArrayList<>();
         tidsserie.generer(medlemsdata, observasjonsperiode, observasjonar::add,
                 Stream.concat(
                         Stream.<Tidsperiode<?>>of(
@@ -205,9 +242,13 @@ public class TidsserieIT {
                                 .map(p -> p)
                 )
         );
+        return observasjonar;
     }
 
-    private Predicate<TidsserieObservasjon> tilhoeyrer(final StillingsforholdId stillingsforhold) {
-        return (TidsserieObservasjon o) -> o.tilhoeyrer(stillingsforhold);
+    private Predicate<TidsserieObservasjon> tilhoeyrer(int aarstall, final StillingsforholdId stilling) {
+        return and(
+                o -> o.tilhoeyrer(new Aarstall(aarstall)),
+                o -> o.tilhoeyrer(stilling)
+        );
     }
 }

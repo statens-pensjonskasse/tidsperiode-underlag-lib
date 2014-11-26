@@ -78,10 +78,19 @@ public class Observasjonsdato {
      * Ligg observasjonsdatoen innanfor det angitte året?
      *
      * @param aarstall årstallet til året datoen skal sjekkast mot
-     * @return <code>true</code> dersom datoen ligg innanfor det angitt året,
-     * <code>false</code>
+     * @return <code>true</code> dersom datoen ligg innanfor det angitt året, <code>false</code> ellers
      */
     public boolean tilhoeyrer(final Aarstall aarstall) {
         return dato.getYear() == aarstall.toYear().getValue();
+    }
+
+    /**
+     * Ligg observasjonsdatoen innanfor den angitte månaden?
+     *
+     * @param month månaden som datoen skal sjekkast mot
+     * @return <code>true</code> dersom datoen ligg innanfor den angitte månaden,  <code>false</code> ellers
+     */
+    public boolean tilhoeyrer(final Month month) {
+        return dato.getMonth().equals(month);
     }
 }
