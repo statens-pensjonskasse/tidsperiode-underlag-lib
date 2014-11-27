@@ -4,10 +4,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForAvtalekobling;
 
 /**
@@ -104,6 +104,8 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
      */
     public static final int ANTALL_KOLONNER = INDEX_AVTALE + 1;
 
+    private final OversetterSupport support = new OversetterSupport();
+
     /**
      * Oversetter innholdet i <code>rad</code> til ei ny
      * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
@@ -119,10 +121,10 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
             );
         }
         return new Avtalekoblingsperiode(
-                dato(rad.get(INDEX_STARTDATO)),
-                ofNullable(dato(rad.get(INDEX_SLUTTDATO))),
-                StillingsforholdId.valueOf(rad.get(INDEX_STILLINGSFORHOLD)),
-                AvtaleId.valueOf(rad.get(INDEX_AVTALE))
+                readDato(rad, INDEX_STARTDATO).get(),
+                readDato(rad, INDEX_SLUTTDATO),
+                read(rad, INDEX_STILLINGSFORHOLD).map(StillingsforholdId::valueOf).get(),
+                read(rad, INDEX_AVTALE).map(AvtaleId::valueOf).get()
         );
     }
 
@@ -136,5 +138,19 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
     @Override
     public boolean supports(List<String> rad) {
         return TYPEINDIKATOR.equals(rad.get(0));
+    }
+
+    /**
+     * @see OversetterSupport#readDato(List, int)
+     */
+    Optional<LocalDate> readDato(final List<String> rad, final int index) {
+        return support.readDato(rad, index);
+    }
+
+    /**
+     * @see OversetterSupport#read(List, int)
+     */
+    Optional<String> read(final List<String> rad, final int index) {
+        return support.read(rad, index);
     }
 }
