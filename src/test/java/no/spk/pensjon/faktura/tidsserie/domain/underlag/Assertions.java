@@ -1,9 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+
 import org.assertj.core.api.AbstractListAssert;
 
 import java.util.Collection;
@@ -18,12 +17,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Assertions {
     /**
+     * Opprettar ein ny assertion som opererer på samlinga av alle koblingar av angitt type frå underlagsperioda.
+     *
+     * @param periode underlagsperioda koblingane skal hentast frå
+     * @param type    kva type koblingar som skal hentast ut frå underlagsperioda
+     * @return ein ny assert med ei liste som inneheld alle koblingane av den angitte typen
+     */
+    @SuppressWarnings("rawtypes")
+    public static AbstractListAssert assertKoblingarAvType(final Underlagsperiode periode, Class<? extends Tidsperiode<?>> type) {
+        return assertThat(periode.koblingarAvType(type).<Tidsperiode<?>>map(k -> k).collect(toList()));
+    }
+
+    /**
      * @see #assertUnderlagsperioder(java.util.Collection, java.util.function.Predicate)
      * @see #harKobling(Class)
      * @see java.util.function.Predicate#negate()
      */
     public static AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode> assertUnderlagsperioderUtanKoblingTil(
-            final Map<StillingsforholdId, Underlag> underlagene, final Class<? extends Tidsperiode> type) {
+            final Map<StillingsforholdId, Underlag> underlagene, final Class<? extends Tidsperiode<?>> type) {
         return assertUnderlagsperioder(underlagene.values(), harKobling(type).negate())
                 .as("underlagsperioder utan kobling til " + type.getSimpleName());
     }
@@ -50,14 +61,16 @@ public class Assertions {
      * Opprettar ein ny assertion som opererer på samlinga av verdiar henta av <code>mapper</code> frå
      * underlagsperiodene på <code>underlag</code>.
      *
-     * @param <T>      verditypen som det skal verifiserast på
-     * @param underlag ei samling med underlag som underlagsperiodene som <code>mapper</code> opererer på skal
-     *                 hentast frå
-     * @param mapper   ein funksjon som hentar ut verdien som asserten skal operere på frå underlagsperiodene
-     *                 i <code>underlag</code>
-     * @param predikater
+     * @param <T>        verditypen som det skal verifiserast på
+     * @param underlag   ei samling med underlag som underlagsperiodene som <code>mapper</code> opererer på skal
+     *                   hentast frå
+     * @param mapper     ein funksjon som hentar ut verdien som asserten skal operere på frå underlagsperiodene
+     *                   i <code>underlag</code>
+     * @param predikater eit valgfritt sett med predikat som alle må slå til for at underlagsperioda skal bli 
+     *                   tatt med i asserten
      * @return ein ny asserter med verdiar henta frå alle underlagsperiodene
      */
+    @SafeVarargs
     public static <T> AbstractListAssert<?, ? extends List<T>, T> assertVerdiFraUnderlagsperioder(
             final Collection<Underlag> underlag, final Function<Underlagsperiode, T> mapper,
             final Predicate<Underlagsperiode>... predikater) {
@@ -97,6 +110,7 @@ public class Assertions {
      * @param type periodetypen som underlagsperiodene må vere kobla til
      * @return eit predikat som matchar underlagsperioder som er tilkobla tidsperioder av den angitte typen
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Predicate<Underlagsperiode> harKobling(final Class<? extends Tidsperiode> type) {
         return p -> p.koblingAvType(type).isPresent();
     }
@@ -119,6 +133,7 @@ public class Assertions {
      * @return et nytt predikat som returnerer <code>true</code> dersom alle predikatene returnerer true
      * eller <code>predikater</code> er tom, <code>false</code> ellers
      */
+    @SafeVarargs
     public static <T> Predicate<T> and(final Predicate<T>... predikater) {
         return input -> Stream
                 .of(predikater)

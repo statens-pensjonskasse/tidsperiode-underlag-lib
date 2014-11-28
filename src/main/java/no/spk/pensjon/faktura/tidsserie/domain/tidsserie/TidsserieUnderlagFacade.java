@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public class TidsserieUnderlagFacade {
-    private final Set<Tidsperiode> referanseperioder = new HashSet<>();
+    private final Set<Tidsperiode<?>> referanseperioder = new HashSet<>();
 
     private Annoteringsstrategi annotator = new IngenAnnotering();
 
@@ -98,21 +98,21 @@ public class TidsserieUnderlagFacade {
      * @param perioder beregingsreglane og periodene dei er gjeldande for, som skal inkluderast ved periodisering
      *                 av underlag
      */
-    public void addBeregningsregel(final Stream<Regelperiode> perioder) {
+    public void addBeregningsregel(final Stream<Regelperiode<?>> perioder) {
         perioder.forEach(p -> referanseperioder.add(p));
     }
 
     /**
      * @see #addBeregningsregel(java.util.stream.Stream)
      */
-    public void addBeregningsregel(final Regelperiode... perioder) {
+    public void addBeregningsregel(final Regelperiode<?>... perioder) {
         addBeregningsregel(asList(perioder));
     }
 
     /**
      * @see #addBeregningsregel(java.util.stream.Stream)
      */
-    public void addBeregningsregel(final Iterable<Regelperiode> perioder) {
+    public void addBeregningsregel(final Iterable<Regelperiode<?>> perioder) {
         perioder.forEach(p -> referanseperioder.add(p));
     }
 

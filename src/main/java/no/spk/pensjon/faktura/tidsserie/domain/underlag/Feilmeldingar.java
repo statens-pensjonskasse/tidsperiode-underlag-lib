@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,6 +14,31 @@ class Feilmeldingar {
         builder.append(", vi forventa berre 1 kobling av denne typen.\n");
         builder.append("Koblingar:\n");
         koblingar.forEach(k -> builder.append("- ").append(k).append('\n'));
+        return builder.toString();
+    }
+
+    /**
+     * Genererer feilmeldinga som skal bli brukt når underlaget oppdagar at eksisterer overlappande underlagsperioder
+     * i underlaget.
+     *
+     * @param message  første linje i feilmeldinga som blir generert
+     * @param overlapp validatoren som inneheld informasjon om tidsperiodene som overlappar kvarandre
+     */
+    static String feilmeldingVedOverlappandeTidsperioder(final String message, final DetekterOverlappandePerioder overlapp) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(message);
+        builder.append(":\n");
+
+        final Stream<Underlagsperiode[]> stream = overlapp.stream();
+        stream.forEach(array -> {
+            final Underlagsperiode a = array[0];
+            final Underlagsperiode b = array[1];
+            builder
+                    .append(a)
+                    .append(" overlappar ")
+                    .append(b)
+                    .append('\n');
+        });
         return builder.toString();
     }
 

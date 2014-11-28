@@ -25,7 +25,7 @@ import static java.util.stream.StreamSupport.stream;
  * @author Tarjei Skorgenes
  */
 public class UnderlagFactory {
-    private final ArrayList<Tidsperiode> perioder = new ArrayList<>();
+    private final ArrayList<Tidsperiode<?>> perioder = new ArrayList<>();
     private final Observasjonsperiode grenser;
 
     /**
@@ -42,14 +42,14 @@ public class UnderlagFactory {
     /**
      * @see #addPerioder(java.util.stream.Stream)
      */
-    public UnderlagFactory addPerioder(final Tidsperiode... perioder) {
+    public UnderlagFactory addPerioder(final Tidsperiode<?>... perioder) {
         return addPerioder(asList(perioder));
     }
 
     /**
      * @see #addPerioder(java.util.stream.Stream)
      */
-    public UnderlagFactory addPerioder(final Iterable<? extends Tidsperiode> perioder) {
+    public UnderlagFactory addPerioder(final Iterable<? extends Tidsperiode<?>> perioder) {
         return addPerioder(stream(perioder.spliterator(), false));
     }
 
@@ -60,7 +60,7 @@ public class UnderlagFactory {
      * @param perioder input-perioder som skal leggast til for seinare å brukast ved periodisering av og konstruksjon av nye underlag
      * @return <code>this</code>
      */
-    public UnderlagFactory addPerioder(Stream<? extends Tidsperiode> perioder) {
+    public UnderlagFactory addPerioder(Stream<? extends Tidsperiode<?>> perioder) {
         perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
         return this;
     }
@@ -82,7 +82,7 @@ public class UnderlagFactory {
                             "men fabrikken er satt opp uten nokon tidsperioder."
             );
         }
-        final List<Tidsperiode> input = finnObserverbarePerioder();
+        final List<Tidsperiode<?>> input = finnObserverbarePerioder();
         return kobleTilOverlappandeTidsperioder(
                 new Underlag(
                         byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(input))
@@ -100,7 +100,7 @@ public class UnderlagFactory {
      */
     private Underlag kobleTilOverlappandeTidsperioder(final Underlag underlag) {
         underlag.stream().forEach(underlagsperiode -> {
-            for (final Tidsperiode periode : perioder) {
+            for (final Tidsperiode<?> periode : perioder) {
                 if (periode.overlapper(underlagsperiode)) {
                     underlagsperiode.kobleTil(periode);
                 }
@@ -183,7 +183,7 @@ public class UnderlagFactory {
      * @param input ei liste som inneheld alle tidsperioder som underlagets potensielt sett skal måtte periodiserast frå
      * @return ei kronologisk sortert samling av unike datoar som underlaget sine underlagsperioder skal splittast på
      */
-    private <T extends Tidsperiode<T>> SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<T> input) {
+    private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<Tidsperiode<?>> input) {
         return Stream.of(
                 input
                         .stream()
@@ -244,7 +244,7 @@ public class UnderlagFactory {
      *
      * @return ei liste som kun inneheld perioder som overlappar observasjonsperioda
      */
-    private List<Tidsperiode> finnObserverbarePerioder() {
+    private List<Tidsperiode<?>> finnObserverbarePerioder() {
         return perioder
                 .stream()
                 .filter(p -> p.overlapper(grenser))

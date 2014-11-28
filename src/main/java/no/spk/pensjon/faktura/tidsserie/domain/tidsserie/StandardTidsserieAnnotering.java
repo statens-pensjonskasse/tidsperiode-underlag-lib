@@ -43,9 +43,17 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         periode.koblingAvType(Maaned.class).ifPresent((Maaned m) -> {
             periode.annoter(Month.class, m.toMonth());
         });
+        markerSisteUnderlagsperiodeSomSistePeriodeVissStillingsforholdetErSluttmeldt(underlag, periode);
     }
 
     private Stillingsendring gjeldende(final StillingsforholdPeriode periode) {
         return periode.gjeldende();
+    }
+
+    private void markerSisteUnderlagsperiodeSomSistePeriodeVissStillingsforholdetErSluttmeldt(
+            final Underlag underlag, final Underlagsperiode periode) {
+        underlag.last().filter(siste -> siste == periode).ifPresent((Underlagsperiode siste) -> {
+            periode.annoter(SistePeriode.class, SistePeriode.INSTANCE);
+        });
     }
 }

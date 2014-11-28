@@ -31,4 +31,16 @@ class Annotasjonar {
     <T> Optional<T> lookup(final Class<T> type) {
         return ofNullable((T) annotasjonar.get(type));
     }
+
+    void addAll(final Annotasjonar other) {
+        this.annotasjonar.putAll(other.annotasjonar);
+    }
+
+    void annoter(final Underlagsperiode periode) {
+        annotasjonar.forEach((key, value) -> periode.annoter(key, value));
+    }
+
+    void remove(final Class<?> type) {
+        this.annotasjonar.remove(type);
+    }
 }

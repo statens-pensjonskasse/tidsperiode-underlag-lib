@@ -3,9 +3,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Builder for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode}.
@@ -13,13 +10,41 @@ import java.util.Map.Entry;
  * @author Tarjei Skorgenes
  */
 public class UnderlagsperiodeBuilder {
-    private final Map<Class<?>, Object> annotasjonar = new HashMap<>();
+    private final Annotasjonar annotasjonar = new Annotasjonar();
 
     private final Koblingar koblingar = new Koblingar();
 
     private LocalDate fraOgMed;
 
     private LocalDate tilOgMed;
+
+    /**
+     * Konstruerer ein ny builder med tom tilstand.
+     */
+    public UnderlagsperiodeBuilder() {
+    }
+
+    /**
+     * Konstruerer ein ny builder utan frå og med- og til og med-dato, som
+     * med ein kopi av dei angitte koblingane og annotasjonane.
+     *
+     * @param koblingar    koblingane som builderen skal populerast med
+     * @param annotasjonar annotasjonane som builderen skal populerast med
+     */
+    public UnderlagsperiodeBuilder(final Koblingar koblingar, final Annotasjonar annotasjonar) {
+        this.annotasjonar.addAll(annotasjonar);
+        this.koblingar.addAll(koblingar);
+    }
+
+    /**
+     * Konstruerer ein ny builder med ein kopi av tilstanden til <code>source</code>.
+     *
+     * @param source builderen som tilstanda skal kopierast frå
+     */
+    public UnderlagsperiodeBuilder(final UnderlagsperiodeBuilder source) {
+        this(source.koblingar, source.annotasjonar);
+        fraOgMed(source.fraOgMed).tilOgMed(source.tilOgMed);
+    }
 
     /**
      * Konstruerer ei ny underlagsperiode og populerer den med frå og med- og til og med-dato
@@ -29,9 +54,7 @@ public class UnderlagsperiodeBuilder {
      */
     public Underlagsperiode bygg() {
         final Underlagsperiode periode = new Underlagsperiode(fraOgMed, tilOgMed);
-        for (final Entry<Class<?>, Object> e : annotasjonar.entrySet()) {
-            periode.annoter(e.getKey(), e.getValue());
-        }
+        annotasjonar.annoter(periode);
         koblingar.kobleTil(periode);
         return periode;
     }
@@ -69,7 +92,7 @@ public class UnderlagsperiodeBuilder {
      * @return <code>this</code>
      */
     public UnderlagsperiodeBuilder med(final Object annotasjon) {
-        annotasjonar.put(annotasjon.getClass(), annotasjon);
+        annotasjonar.registrer(annotasjon.getClass(), annotasjon);
         return this;
     }
 
@@ -94,5 +117,14 @@ public class UnderlagsperiodeBuilder {
     public UnderlagsperiodeBuilder medKobling(final Tidsperiode<?> kobling) {
         koblingar.add(kobling);
         return this;
+    }
+
+    /**
+     * Lagar ein kopi av builderen som ein kan endre tilstand på utan å påvirke builderen kopien vart laga frå.
+     *
+     * @return ein ny builder med som inneheld ein kopi av gjeldande tilstand på builderen
+     */
+    public UnderlagsperiodeBuilder kopi() {
+        return new UnderlagsperiodeBuilder(this);
     }
 }

@@ -23,6 +23,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -66,6 +67,7 @@ import static org.mockito.Mockito.mock;
  *
  * @author Tarjei Skorgenes
  */
+@SuppressWarnings("unchecked")
 public class TidsserieUnderlagFacadeIT {
     private static final StillingsforholdId STILLINGSFORHOLD_A = valueOf(999999999999L);
 
@@ -225,6 +227,8 @@ public class TidsserieUnderlagFacadeIT {
                 harAnnotasjon(Loennstrinn.class).negate()
         ).isEmpty();
 
+        final Function<Stillingsendring, Loennstrinn> mapper = e -> e.loennstrinn().get();
+        final Predicate<Stillingsendring> filter = e -> e.loennstrinn().isPresent();
         assertAnnotasjonFraUnderlagsperioder(
                 underlagene.values(),
                 Loennstrinn.class,
@@ -232,8 +236,8 @@ public class TidsserieUnderlagFacadeIT {
         ).containsOnlyElementsOf(
                 fraMedlemsdata(
                         stillingsendringOversetter(),
-                        e -> e.loennstrinn().get(),
-                        e -> e.loennstrinn().isPresent()
+                        mapper,
+                        filter
                 )
         );
     }
@@ -254,6 +258,8 @@ public class TidsserieUnderlagFacadeIT {
                 harAnnotasjon(DeltidsjustertLoenn.class).negate()
         ).isEmpty();
 
+        final Function<Stillingsendring, DeltidsjustertLoenn> mapper = e -> e.loenn().get();
+        final Predicate<Stillingsendring> filter = e -> e.loenn().isPresent();
         assertAnnotasjonFraUnderlagsperioder(
                 underlagene.values(),
                 DeltidsjustertLoenn.class,
@@ -261,8 +267,8 @@ public class TidsserieUnderlagFacadeIT {
         ).containsOnlyElementsOf(
                 fraMedlemsdata(
                         stillingsendringOversetter(),
-                        e -> e.loenn().get(),
-                        e -> e.loenn().isPresent()
+                        mapper,
+                        filter
                 )
         );
     }
@@ -352,7 +358,7 @@ public class TidsserieUnderlagFacadeIT {
     public void skalPeriodisereUnderlagPaDatoarDerEinEndrarBeregningsRegel() {
         final LocalDate regelEndring = dato("2005.10.07");
 
-        fasade.addBeregningsregel(new Regelperiode(regelEndring, empty(), new MaskineltGrunnlagRegel()));
+        fasade.addBeregningsregel(new Regelperiode<>(regelEndring, empty(), new MaskineltGrunnlagRegel()));
 
         final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
         prosesser(underlagene::put, standardperiode());
@@ -381,7 +387,7 @@ public class TidsserieUnderlagFacadeIT {
     public void skalAvgrenseUnderlagetsStartTilStillingsforholdetsFoersteEndring() {
         final LocalDate regelEndring = dato("2005.01.01");
 
-        fasade.addBeregningsregel(new Regelperiode(regelEndring, empty(), new MaskineltGrunnlagRegel()));
+        fasade.addBeregningsregel(new Regelperiode<>(regelEndring, empty(), new MaskineltGrunnlagRegel()));
 
         final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
         prosesser(underlagene::put, standardperiode());
@@ -538,7 +544,9 @@ public class TidsserieUnderlagFacadeIT {
         return new Observasjonsperiode(new Aarstall(2005).atStartOfYear(), new Aarstall(2014).atEndOfYear());
     }
 
-    private static <T> AbstractListAssert<?, ? extends List<T>, T> assertAnnotasjonFraUnderlagsperioder(
+    @SuppressWarnings("rawtypes")
+    @SafeVarargs
+    private static <T> AbstractListAssert assertAnnotasjonFraUnderlagsperioder(
             final Collection<Underlag> underlag, final Class<T> annotasjonsType,
             final Predicate<Underlagsperiode>... predikater
     ) {
@@ -553,7 +561,7 @@ public class TidsserieUnderlagFacadeIT {
         return (MedlemsdataOversetter<Stillingsendring>) oversettere.get(Stillingsendring.class);
     }
 
-    private <T> List<T> fraMedlemsdata(final MedlemsdataOversetter<Stillingsendring> oversetter,
+    private <T> Iterable<? extends T> fraMedlemsdata(final MedlemsdataOversetter<Stillingsendring> oversetter,
                                        final Function<Stillingsendring, T> mapper,
                                        final Predicate<Stillingsendring>... predikater) {
         return data

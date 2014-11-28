@@ -23,6 +23,10 @@ class Koblingar {
                 .add(kobling);
     }
 
+    void addAll(final Koblingar koblingar) {
+        koblingar.koblingar.forEach((key, values) -> this.koblingar.put(key, new HashSet<>(values)));
+    }
+
     <T extends Tidsperiode<?>> Stream<T> get(final Class<T> type) {
         return ofNullable(koblingar.get(type))
                 .orElse(emptySet())

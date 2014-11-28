@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.junit.Rule;
@@ -32,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 @RunWith(Theories.class)
+@SuppressWarnings("rawtypes")
 public class AarTest {
     @DataPoints
     public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(y -> new Aarstall(y)).collect(toList()).toArray(new Aarstall[0]);

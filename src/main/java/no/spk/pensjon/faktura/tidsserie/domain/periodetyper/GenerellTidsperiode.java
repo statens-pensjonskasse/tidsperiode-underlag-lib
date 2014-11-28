@@ -3,8 +3,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode} representerer ei vanlig
  * tidsperiode som ikkje er av nokon bestemt type.

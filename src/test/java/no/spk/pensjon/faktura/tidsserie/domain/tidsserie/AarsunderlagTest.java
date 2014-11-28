@@ -95,7 +95,7 @@ public class AarsunderlagTest {
                 underlag(
                         periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.10.12"))
                                 .med(new Aarstall(2000)),
-                        periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.10.12"))
+                        periode().fraOgMed(dato("2000.10.13")).tilOgMed(dato("2000.12.12"))
                 )
         ).collect(toList());
     }

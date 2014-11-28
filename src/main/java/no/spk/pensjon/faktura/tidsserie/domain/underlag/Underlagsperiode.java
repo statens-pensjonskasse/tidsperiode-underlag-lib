@@ -191,4 +191,14 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> {
         return "UP[" + fraOgMed + "->" + tilOgMed.map(d -> d.toString()).orElse("") + "]";
     }
 
+    /**
+     * Opprettar ein ny builder som inneheld ein kopi av all tilstand frå underlagsperioda.
+     *
+     * @return ein ny builder med ein kopi av periodas tilstand
+     */
+    public UnderlagsperiodeBuilder kopi() {
+        return new UnderlagsperiodeBuilder(koblingar, annotasjonar)
+                .fraOgMed(fraOgMed())
+                .tilOgMed(tilOgMed().get());
+    }
 }
