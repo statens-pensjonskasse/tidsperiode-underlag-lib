@@ -188,7 +188,7 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
                 .aksjonskode(read(rad, INDEX_AKSJONSKODE).get())
                 .aksjonsdato(readDato(rad, index).get())
                 .stillingsprosent(read(rad, INDEX_STILLINGSPROSENT).map(Prosent::new).map(Stillingsprosent::new).get())
-                .loennstrinn(read(rad, INDEX_LOENNSTRINN).map(Integer::valueOf).map(Loennstrinn::new))
+                .loennstrinn(readLoennstrinn(rad, INDEX_LOENNSTRINN))
                 .loenn(read(rad, INDEX_LOENN).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new));
     }
 
@@ -202,6 +202,20 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     @Override
     public boolean supports(final List<String> rad) {
         return TYPEINDIKATOR.equals(rad.get(0));
+    }
+
+    /**
+     * Oversetter innholdet frå feltet på den angitte indeksen i rada frå tekst til lønnstrinn.
+     *
+     * @param rad   ei rad som inneheld kolonner med informasjonen som representerer stillingsendringa
+     * @param index indeksen som styrer kva kolonne i rada lønnstrinnverdien blir henta frå
+     * @return endringas lønnstrinn eller ingenting dersom lønnstrinn manglar, er tomt eller er lik 0
+     */
+    Optional<Loennstrinn> readLoennstrinn(final List<String> rad, final int index) {
+        return read(rad, index)
+                .map(Integer::valueOf)
+                .filter(tall -> tall > 0)
+                .map(Loennstrinn::new);
     }
 
     /**
