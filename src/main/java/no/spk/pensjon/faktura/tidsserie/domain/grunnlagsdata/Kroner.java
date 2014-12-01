@@ -33,6 +33,15 @@ public final class Kroner implements Comparable<Kroner> {
     }
 
     /**
+     * Hentar ut verdien av beløpet, avrunda til nærmaste heile heiltal.
+     *
+     * @return kronebeløpet avrunda til nørmaste heile krone.
+     */
+    public long verdi() {
+        return Math.round(beloep);
+    }
+
+    /**
      * Konstruerer ein ny kronerepresentasjon for eit <code>beloep</code>.
      *
      * @param beloep beløpet som skal representerast som eit kronebeløp
@@ -69,7 +78,7 @@ public final class Kroner implements Comparable<Kroner> {
      * og returnerer eit nytt kronebeløp med summen av dei to.
      *
      * @param other det andre kronebeløpet
-     *              @return eit nytt kronebeløp som inneheld summen av dei to kronebeløpa
+     * @return eit nytt kronebeløp som inneheld summen av dei to kronebeløpa
      */
     public Kroner plus(final Kroner other) {
         return new Kroner(beloep + other.beloep);
@@ -127,7 +136,7 @@ public final class Kroner implements Comparable<Kroner> {
         return format.format(beloep);
     }
 
-    private Kroner rundAv(final Kroner other) {
-        return new Kroner(Math.round(other.beloep));
+    private Kroner rundAv(final Kroner that) {
+        return new Kroner(that.verdi());
     }
 }

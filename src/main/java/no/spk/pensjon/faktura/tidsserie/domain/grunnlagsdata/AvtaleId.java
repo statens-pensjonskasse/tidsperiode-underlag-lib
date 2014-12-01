@@ -59,4 +59,8 @@ public class AvtaleId {
     public static AvtaleId valueOf(long id) {
         return new AvtaleId(id);
     }
+
+    public Long id() {
+        return id;
+    }
 }

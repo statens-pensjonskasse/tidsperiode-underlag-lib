@@ -19,6 +19,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOverse
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonspublikator;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieObservasjon;
 import org.assertj.core.api.AbstractComparableAssert;
@@ -225,7 +226,8 @@ public class TidsserieIT {
 
     private List<TidsserieObservasjon> generer() {
         final List<TidsserieObservasjon> observasjonar = new ArrayList<>();
-        tidsserie.generer(medlemsdata, observasjonsperiode, observasjonar::add,
+        final Observasjonspublikator<TidsserieObservasjon> publikator = observasjonar::add;
+        tidsserie.generer(medlemsdata, observasjonsperiode, publikator,
                 Stream.concat(
                         Stream.<Tidsperiode<?>>of(
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new MaskineltGrunnlagRegel()),

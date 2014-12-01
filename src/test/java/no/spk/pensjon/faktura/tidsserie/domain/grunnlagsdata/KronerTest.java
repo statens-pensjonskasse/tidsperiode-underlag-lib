@@ -17,6 +17,18 @@ public class KronerTest {
     public final ExpectedException e = ExpectedException.none();
 
     @Test
+    public void skalAvrundeVerdiTilNaermasterHeileKrone() {
+        assertThat(new Kroner(1.5d).verdi()).isEqualTo(2L);
+        assertThat(new Kroner(1.49d).verdi()).isEqualTo(1L);
+        assertThat(new Kroner(0.5d).verdi()).isEqualTo(1L);
+        assertThat(new Kroner(0.49d).verdi()).isEqualTo(0L);
+        assertThat(new Kroner(-0.5d).verdi()).isEqualTo(0L);
+        assertThat(new Kroner(-0.51d).verdi()).isEqualTo(-1L);
+        assertThat(new Kroner(-1.5d).verdi()).isEqualTo(-1L);
+        assertThat(new Kroner(-1.51d).verdi()).isEqualTo(-2L);
+    }
+
+    @Test
     public void skalLeggeSamanKronebeloepaOgGenerereEitNyttKronebeloep() {
         assertThat(new Kroner(10).plus(new Kroner(-2))).isEqualTo(new Kroner(8));
         assertThat(new Kroner(0).plus(new Kroner(1))).isEqualTo(new Kroner(1));
