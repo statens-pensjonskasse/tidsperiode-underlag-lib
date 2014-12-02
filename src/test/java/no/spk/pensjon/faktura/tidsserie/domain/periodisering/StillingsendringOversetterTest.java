@@ -12,6 +12,25 @@ public class StillingsendringOversetterTest {
     private final StillingsendringOversetter oversetter = new StillingsendringOversetter();
 
     /**
+     * Verifiserer at dersom faste tillegg er tom, kun inneheld whitespace eller er lik 0
+     * så blir det tolka som at ein ikkje har faste tillegg.
+     */
+    @Test
+    public void skalTolkeTommeFastetilleggEllerLikKroner0SomHarIkkjeFasteTillegg() {
+        assertThat(oversetter.readFastetillegg(asList("0"), 0))
+                .as("stillingsendringas faste tillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFastetillegg(asList(""), 0))
+                .as("stillingsendringas faste tillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFastetillegg(asList(" "), 0))
+                .as("stillingsendringas faste tillegg")
+                .isEqualTo(empty());
+    }
+
+    /**
      * Verifiserer at dersom lønnstrinn er tom, kun inneheld whitespace eller er lik 0
      * så blir det tolka som at ein ikkje har lønnstrinn.
      */

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.time.LocalDate.MIN;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
@@ -31,7 +32,10 @@ public class Stillingsendring {
     private Optional<Stillingsprosent> stillingsprosent = empty();
 
     private Optional<Loennstrinn> loennstrinn = empty();
+
     private Optional<DeltidsjustertLoenn> loenn;
+
+    private Optional<Fastetillegg> fastetillegg = empty();
 
     /**
      * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
@@ -165,6 +169,27 @@ public class Stillingsendring {
      */
     public Stillingsendring loenn(final Optional<DeltidsjustertLoenn> loenn) {
         this.loenn = loenn;
+        return this;
+    }
+
+    /**
+     * Det faste tillegget i årslønn for stillinga.
+     * <p>
+     * Det faste tillegget som blir innrapportert skal vere innrapportert deltidsjustert og det skal representere
+     * totalt fast tillegg for heile premieåret, på samme måte som innrapportert lønn er deltidsjustert og gjeld
+     * heile året.
+     *
+     * @return det faste tillegget i årslønn for stillinga
+     */
+    public Optional<Fastetillegg> fastetillegg() {
+        return fastetillegg;
+    }
+
+    /**
+     * @see #fastetillegg()
+     */
+    public Stillingsendring fastetillegg(final Optional<Fastetillegg> fastetillegg) {
+        this.fastetillegg = requireNonNull(fastetillegg);
         return this;
     }
 

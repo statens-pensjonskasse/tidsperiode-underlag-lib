@@ -2,16 +2,19 @@ package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractComparableAssert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -22,6 +25,79 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    @Test
+    @Ignore
+    public void skalInkludereVariableTilleggIBeregningar() {
+    }
+
+    @Test
+    @Ignore
+    public void skalInkludereFunksjonsTilleggIBeregningar() {
+    }
+
+    /**
+     * Verifiserer at dei faste tillegga blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
+     * deltidsjusterte årslønna.
+     */
+    @Test
+    public void skalNedjustereFasteTilleggEtterAarsfaktor() {
+        assertMaskineltGrunnlag(
+                periode("2006.01.01", "2006.01.01")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2006))
+                        .med(new DeltidsjustertLoenn(kroner(365_000)))
+                        .med(new Fastetillegg(kroner(365_000)))
+        ).isEqualTo(kroner(1_000).plus(kroner(1_000)));
+    }
+
+    /**
+     * Verifiserer at maskinelt grunnlag framleis kan beregnast når underlagsperioda ikkje er annotert med faste tillegg
+     * slik at ein slepp å ta annotere perioder med fast tillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
+     * <p>
+     * Intensjonen med å unngå å annotere når verdien er lik kr 0, er å oppføre oss konsistent med lønnstrinnhandteringa
+     * for lønnstrinn 0, der vi også hoppar over og ikkje annoterer perioda med eit tomt lønnstrinn.
+     */
+    @Test
+    public void skalIkkjeFeileDersomPeriodeIkkjeErAnnotertMedFasteTillegg() {
+        assertMaskineltGrunnlag(
+                periode("2006.01.01", "2006.12.31")
+                        .med(new Stillingsprosent(new Prosent("10%")))
+                        .med(new Aarstall(2006))
+                        .med(new DeltidsjustertLoenn(kroner(372_000)))
+                        .uten(Fastetillegg.class)
+        ).isEqualTo(kroner(372_000));
+    }
+
+    /**
+     * Verifiserer at dei faste tillegga som er innrapportert blir brukt as is ved beregning av maskinelt grunnlag, uten
+     * å forsøke å deltidjustere dei basert på stillingsprosenten. Dette fordi faste tillegg blir innrapportert ferdig
+     * deltidsjustert.
+     */
+    @Test
+    public void skalIkkjeDeltidsjustereFasteTillegg() {
+        assertMaskineltGrunnlag(
+                periode("2006.01.01", "2006.12.31")
+                        .med(new Stillingsprosent(new Prosent("10%")))
+                        .med(new Aarstall(2006))
+                        .med(new DeltidsjustertLoenn(kroner(372_000)))
+                        .med(new Fastetillegg(kroner(16_457)))
+        ).isEqualTo(kroner(372_000).plus(kroner(16_457)));
+    }
+
+    /**
+     * Verifiserer at faste tillegg blir inkludert i sluttsummen ved beregning av maskinelt grunnlag.
+     */
+    @Test
+    public void skalInkludereFasteTilleggIBeregningar() {
+        assertMaskineltGrunnlag(
+                periode("2006.01.01", "2006.12.31")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2006))
+                        .med(new DeltidsjustertLoenn(kroner(372_000)))
+                        .med(new Fastetillegg(kroner(16_457)))
+        ).isEqualTo(kroner(372_000).plus(kroner(16_457)));
+    }
 
     @Test
     public void skalBeregneDeltidsjustertLoennViaAnnanRegel() {

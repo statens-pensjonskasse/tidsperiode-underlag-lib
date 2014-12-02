@@ -2,6 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.it;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
@@ -50,8 +51,8 @@ public class StillingsendringOversetterIT {
         e.expectMessage("Ei stillingsendring må inneholde følgjande kolonner i angitt rekkefølge");
         e.expectMessage(
                 "typeindikator, fødselsdato, personnummer, stillingsforhold, aksjonskode, arbeidsgivar, " +
-                "permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, " +
-                "funksjonstillegg og aksjonsdato"
+                        "permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, " +
+                        "funksjonstillegg og aksjonsdato"
         );
         e.expectMessage("Rada som feila: ");
         e.expectMessage(emptyList().toString());
@@ -125,6 +126,19 @@ public class StillingsendringOversetterIT {
     }
 
     /**
+     * Verifiserer at oversettinga hentar innrapporterte faste tillegg i lønn frå kolonne nr 12 / index 11.
+     */
+    @Test
+    public void skalHenteUtFasteTilleggFraaKolonne12() {
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::fastetillegg)
+        ).as("faste tillegg frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(11), this::tilFastetillegg)
+                );
+    }
+
+    /**
      * Verifiserer at oversettinga hentar aksjonsdato frå kolonne nr 15 / index 14.
      */
     @Test
@@ -143,6 +157,10 @@ public class StillingsendringOversetterIT {
 
     private Optional<DeltidsjustertLoenn> tilLoenn(final String text) {
         return valgfri(text).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new);
+    }
+
+    private Optional<Fastetillegg> tilFastetillegg(final String text) {
+        return valgfri(text).map(Long::valueOf).filter(tall -> tall > 0).map(Kroner::new).map(Fastetillegg::new);
     }
 
     private Optional<String> valgfri(String text) {

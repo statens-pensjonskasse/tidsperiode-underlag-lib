@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -11,6 +12,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  * @author Tarjei Skorgenes
  */
 public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
+    private static final Fastetillegg INGEN_FASTE_TILLEGG = new Fastetillegg(new Kroner(0));
+
     /**
      * Beregnar underlagsperiodas andel av premieårets totale maskinelle grunnlag.
      * <br>
@@ -27,9 +30,16 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
         return periode
                 .beregn(AarsfaktorRegel.class)
                 .multiply(
-                        periode
-                                .beregn(DeltidsjustertLoennRegel.class)
-                                .beloep
+                        grunnloenn(periode)
+                                .plus(fastetillegg(periode))
                 );
+    }
+
+    private Kroner grunnloenn(final Underlagsperiode periode) {
+        return periode.beregn(DeltidsjustertLoennRegel.class).beloep();
+    }
+
+    private Kroner fastetillegg(final Underlagsperiode periode) {
+        return periode.valgfriAnnotasjonFor(Fastetillegg.class).orElse(INGEN_FASTE_TILLEGG).beloep();
     }
 }

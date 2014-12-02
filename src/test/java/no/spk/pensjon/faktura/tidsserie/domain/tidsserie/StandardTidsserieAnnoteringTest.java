@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
@@ -53,6 +54,30 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    @Test
+    public void skalAnnotereUnderlagsperioderMedFastetillegg() {
+        final Optional<Fastetillegg> expected = of(new Fastetillegg(kroner(10_000)));
+        assertAnnotasjon(
+                annoter(
+                        eiTomPeriode()
+                                .fraOgMed(dato("2006.02.01"))
+                                .tilOgMed(dato("2006.02.28"))
+                                .medKobling(
+                                        new StillingsforholdPeriode(dato("2005.08.15"), empty())
+                                                .leggTilOverlappendeStillingsendringer(
+                                                        new Stillingsendring()
+                                                                .aksjonsdato(dato("2005.08.15"))
+                                                                .stillingsprosent(fulltid())
+                                                                .fastetillegg(
+                                                                        expected
+                                                                )
+                                                )
+                                )
+                )
+                , Fastetillegg.class)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -371,6 +396,10 @@ public class StandardTidsserieAnnoteringTest {
         periode.kobleTil(new Aar(new Aarstall(1990)));
 
         assertAnnotasjon(annoter(periode), Aarstall.class).isEqualTo(of(new Aarstall(1990)));
+    }
+
+    private Underlagsperiode annoter(final UnderlagsperiodeBuilder builder) {
+        return annoter(builder.bygg());
     }
 
     private Underlagsperiode annoter(final Underlagsperiode periode) {

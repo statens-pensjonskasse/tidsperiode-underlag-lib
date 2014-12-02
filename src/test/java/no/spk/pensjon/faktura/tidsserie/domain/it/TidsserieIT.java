@@ -95,6 +95,27 @@ public class TidsserieIT {
     }
 
     /**
+     * Verifiserer at faste tillegg blir inkludert ved beregning av maskinelt grunnlag.
+     */
+    @Test
+    public void skalInkludereFasteTilleggIMaskineltGrunnlagForKvarObservasjonAv2006FraOgMedFebruar() {
+        final int aar = 2006;
+        assertThat(generer(STILLING_A, aar)).hasSize(12);
+        assertObservasjonAvMaskineltgrunnlag(aar, JANUARY, STILLING_A).isEqualTo(kroner(372_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, FEBRUARY, STILLING_A).isEqualTo(kroner(387_059));
+        assertObservasjonAvMaskineltgrunnlag(aar, MARCH, STILLING_A).isEqualTo(kroner(397_407));
+        assertObservasjonAvMaskineltgrunnlag(aar, APRIL, STILLING_A).isEqualTo(kroner(383_665));
+        assertObservasjonAvMaskineltgrunnlag(aar, MAY, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, JUNE, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, JULY, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, AUGUST, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, SEPTEMBER, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, OCTOBER, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, NOVEMBER, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, DECEMBER, STILLING_A).isEqualTo(kroner(397_855));
+    }
+
+    /**
      * Verifiserer at observasjonen av kvart av dei 12 observasjonsunderlaga i 2012 for tidsserien til stilling A har
      * rett verdi for maskinelt grunnlag.
      */

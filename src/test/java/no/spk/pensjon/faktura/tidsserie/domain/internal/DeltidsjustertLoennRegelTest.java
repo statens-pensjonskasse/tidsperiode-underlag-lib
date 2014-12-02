@@ -60,7 +60,7 @@ public class DeltidsjustertLoennRegelTest {
     }
 
     private AbstractComparableAssert<?, Kroner> assertDeltidsjustertLoenn(final UnderlagsperiodeBuilder periode) {
-        return assertThat(periode.bygg().beregn(DeltidsjustertLoennRegel.class).beloep);
+        return assertThat(periode.bygg().beregn(DeltidsjustertLoennRegel.class).beloep());
     }
 
     private static UnderlagsperiodeBuilder periode(final String fra, final String til) {

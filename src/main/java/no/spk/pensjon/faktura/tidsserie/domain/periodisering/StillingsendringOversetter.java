@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
@@ -157,6 +158,11 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     public static final int INDEX_LOENN = 10;
 
     /**
+     * Kolonneindeksen faste tillegg blir henta frå.
+     */
+    public static final int INDEX_FASTE_TILLEGG = 11;
+
+    /**
      * Kolonneindeksen aksjonsdato blir henta frå.
      */
     public static final int INDEX_AKSJONSDATO = 14;
@@ -189,7 +195,8 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
                 .aksjonsdato(readDato(rad, index).get())
                 .stillingsprosent(read(rad, INDEX_STILLINGSPROSENT).map(Prosent::new).map(Stillingsprosent::new).get())
                 .loennstrinn(readLoennstrinn(rad, INDEX_LOENNSTRINN))
-                .loenn(read(rad, INDEX_LOENN).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new));
+                .loenn(read(rad, INDEX_LOENN).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new))
+                .fastetillegg(readFastetillegg(rad, INDEX_FASTE_TILLEGG));
     }
 
     /**
@@ -217,6 +224,22 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
                 .filter(tall -> tall > 0)
                 .map(Loennstrinn::new);
     }
+
+    /**
+     * Oversetter innholdet frå feltet på den angitte indeksen i rada frå tekst til faste tillegg.
+     *
+     * @param rad   ei rad som inneheld kolonner med informasjonen som representerer stillingsendringa
+     * @param index indeksen som styrer kva kolonne i rada dei faste tillegga blir henta frå
+     * @return endringas faste tillegg eller ingenting dersom faste tillegg manglar, er tomt eller er lik 0
+     */
+    Optional<Fastetillegg> readFastetillegg(final List<String> rad, final int index) {
+        return read(rad, index)
+                .map(Integer::valueOf)
+                .filter(tall -> tall > 0)
+                .map(Kroner::new)
+                .map(Fastetillegg::new);
+    }
+
 
     /**
      * @see OversetterSupport#read(List, int)
