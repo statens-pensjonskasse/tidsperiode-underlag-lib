@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -163,10 +164,14 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
     public static final int INDEX_FASTE_TILLEGG = 11;
 
     /**
+     * Kolonneindeksen variable tillegg blir henta frå.
+     */
+    public static final int INDEX_VARIABLE_TILLEGG = 12;
+
+    /**
      * Kolonneindeksen aksjonsdato blir henta frå.
      */
     public static final int INDEX_AKSJONSDATO = 14;
-
     /**
      * Forventa antall kolonner i ei stillingsendringrad.
      */
@@ -196,7 +201,9 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
                 .stillingsprosent(read(rad, INDEX_STILLINGSPROSENT).map(Prosent::new).map(Stillingsprosent::new).get())
                 .loennstrinn(readLoennstrinn(rad, INDEX_LOENNSTRINN))
                 .loenn(read(rad, INDEX_LOENN).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new))
-                .fastetillegg(readFastetillegg(rad, INDEX_FASTE_TILLEGG));
+                .fastetillegg(readFastetillegg(rad, INDEX_FASTE_TILLEGG))
+                .variabletillegg(readVariabletillegg(rad, INDEX_VARIABLE_TILLEGG))
+                ;
     }
 
     /**
@@ -233,13 +240,19 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
      * @return endringas faste tillegg eller ingenting dersom faste tillegg manglar, er tomt eller er lik 0
      */
     Optional<Fastetillegg> readFastetillegg(final List<String> rad, final int index) {
-        return read(rad, index)
-                .map(Integer::valueOf)
-                .filter(tall -> tall > 0)
-                .map(Kroner::new)
-                .map(Fastetillegg::new);
+        return readValgfrittKronebeloep(rad, index).map(Fastetillegg::new);
     }
 
+    /**
+     * Oversetter innholdet frå feltet på den angitte indeksen i rada frå tekst til variable tillegg.
+     *
+     * @param rad   ei rad som inneheld kolonner med informasjonen som representerer stillingsendringa
+     * @param index indeksen som styrer kva kolonne i rada dei variable tillegga blir henta frå
+     * @return endringas variable tillegg eller ingenting dersom variable tillegg manglar, er tomt eller er lik 0
+     */
+    Optional<Variabletillegg> readVariabletillegg(final List<String> rad, final int index) {
+        return readValgfrittKronebeloep(rad, index).map(Variabletillegg::new);
+    }
 
     /**
      * @see OversetterSupport#read(List, int)
@@ -253,5 +266,12 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
      */
     Optional<LocalDate> readDato(final List<String> rad, final int index) {
         return support.readDato(rad, index);
+    }
+
+    private Optional<Kroner> readValgfrittKronebeloep(final List<String> rad, final int index) {
+        return read(rad, index)
+                .map(Integer::valueOf)
+                .filter(tall -> tall > 0)
+                .map(Kroner::new);
     }
 }

@@ -9,6 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -139,6 +140,19 @@ public class StillingsendringOversetterIT {
     }
 
     /**
+     * Verifiserer at oversettinga hentar innrapporterte faste tillegg i lønn frå kolonne nr 13 / index 12.
+     */
+    @Test
+    public void skalHenteUtFasteTilleggFraaKolonne13() {
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::variabletillegg)
+        ).as("variable tillegg frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(12), this::tilVariabletillegg)
+                );
+    }
+
+    /**
      * Verifiserer at oversettinga hentar aksjonsdato frå kolonne nr 15 / index 14.
      */
     @Test
@@ -161,6 +175,10 @@ public class StillingsendringOversetterIT {
 
     private Optional<Fastetillegg> tilFastetillegg(final String text) {
         return valgfri(text).map(Long::valueOf).filter(tall -> tall > 0).map(Kroner::new).map(Fastetillegg::new);
+    }
+
+    private Optional<Variabletillegg> tilVariabletillegg(final String text) {
+        return valgfri(text).map(Long::valueOf).filter(tall -> tall > 0).map(Kroner::new).map(Variabletillegg::new);
     }
 
     private Optional<String> valgfri(String text) {

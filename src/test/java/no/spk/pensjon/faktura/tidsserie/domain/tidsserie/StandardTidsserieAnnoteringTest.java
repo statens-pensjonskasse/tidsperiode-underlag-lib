@@ -11,6 +11,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
@@ -77,6 +78,30 @@ public class StandardTidsserieAnnoteringTest {
                                 )
                 )
                 , Fastetillegg.class)
+                .isEqualTo(expected);
+    }
+
+    @Test
+    public void skalAnnotereUnderlagsperioderMedVariabletillegg() {
+        final Optional<Variabletillegg> expected = of(new Variabletillegg(kroner(10_000)));
+        assertAnnotasjon(
+                annoter(
+                        eiTomPeriode()
+                                .fraOgMed(dato("2007.01.01"))
+                                .tilOgMed(dato("2007.01.31"))
+                                .medKobling(
+                                        new StillingsforholdPeriode(dato("2007.01.01"), empty())
+                                                .leggTilOverlappendeStillingsendringer(
+                                                        new Stillingsendring()
+                                                                .aksjonsdato(dato("2007.01.01"))
+                                                                .stillingsprosent(fulltid())
+                                                                .variabletillegg(
+                                                                        expected
+                                                                )
+                                                )
+                                )
+                )
+                , Variabletillegg.class)
                 .isEqualTo(expected);
     }
 

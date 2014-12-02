@@ -6,6 +6,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractComparableAssert;
@@ -26,9 +27,67 @@ public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
+    /**
+     * Verifiserer at dei variable tillegga blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
+     * deltidsjusterte årslønna.
+     */
     @Test
-    @Ignore
+    public void skalNedjustereVariableTilleggEtterAarsfaktor() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.01.01")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(36_500)))
+                        .med(new Variabletillegg(kroner(365_000)))
+        ).isEqualTo(kroner(100).plus(kroner(1_000)));
+    }
+
+    /**
+     * Verifiserer at maskinelt grunnlag framleis kan beregnast når underlagsperioda ikkje er annotert med variable tillegg
+     * slik at ein slepp å ta annotere perioder med variable tillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
+     * <p>
+     * Intensjonen med å unngå å annotere når verdien er lik kr 0, er å oppføre oss konsistent med lønnstrinnhandteringa
+     * for lønnstrinn 0, der vi også hoppar over og ikkje annoterer perioda med eit tomt lønnstrinn.
+     */
+    @Test
+    public void skalIkkjeFeileDersomPeriodeIkkjeErAnnotertMedVariableTillegg() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.12.31")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(403_700)))
+                        .uten(Variabletillegg.class)
+        ).isEqualTo(kroner(403_700));
+    }
+
+    /**
+     * Verifiserer at dei variable tillegga som er innrapportert blir brukt as is ved beregning av maskinelt grunnlag, uten
+     * å forsøke å deltidjustere dei basert på stillingsprosenten. Dette fordi variable tillegg blir innrapportert ferdig
+     * deltidsjustert.
+     */
+    @Test
+    public void skalIkkjeDeltidsjustereVariableTillegg() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.12.31")
+                        .med(new Stillingsprosent(new Prosent("10%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(403_700)))
+                        .med(new Variabletillegg(kroner(14_400)))
+        ).isEqualTo(kroner(403_700).plus(kroner(14_400)));
+    }
+
+    /**
+     * Verifiserer at variable tillegg blir inkludert i sluttsummen ved beregning av maskinelt grunnlag.
+     */
+    @Test
     public void skalInkludereVariableTilleggIBeregningar() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.12.31")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(403_700)))
+                        .med(new Variabletillegg(kroner(14_400)))
+        ).isEqualTo(kroner(403_700).plus(kroner(14_400)));
     }
 
     @Test

@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
@@ -44,6 +45,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
             });
             periode.annoter(DeltidsjustertLoenn.class, gjeldende(stillingsforhold).loenn());
             periode.annoter(Fastetillegg.class, gjeldende(stillingsforhold).fastetillegg());
+            periode.annoter(Variabletillegg.class, gjeldende(stillingsforhold).variabletillegg());
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
             periode.annoter(Aarstall.class, aar.aarstall());

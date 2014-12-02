@@ -37,6 +37,8 @@ public class Stillingsendring {
 
     private Optional<Fastetillegg> fastetillegg = empty();
 
+    private Optional<Variabletillegg> variabletillegg = empty();
+
     /**
      * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
      *
@@ -190,6 +192,27 @@ public class Stillingsendring {
      */
     public Stillingsendring fastetillegg(final Optional<Fastetillegg> fastetillegg) {
         this.fastetillegg = requireNonNull(fastetillegg);
+        return this;
+    }
+
+    /**
+     * Det variable tillegget i årslønn for stillinga.
+     * <p>
+     * Det variable tillegget som blir innrapportert skal vere innrapportert deltidsjustert og det skal representere
+     * totalt variabelt tillegg for heile premieåret, på samme måte som innrapportert lønn er deltidsjustert og gjeld
+     * heile året.
+     *
+     * @return det variable tillegget i årslønn for stillinga
+     */
+    public Optional<Variabletillegg> variabletillegg() {
+        return variabletillegg;
+    }
+
+    /**
+     * @see #variabletillegg()
+     */
+    public Stillingsendring variabletillegg(final Optional<Variabletillegg> variabletillegg) {
+        this.variabletillegg = requireNonNull(variabletillegg);
         return this;
     }
 

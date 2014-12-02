@@ -7,7 +7,7 @@ import static java.util.Objects.requireNonNull;
  * inngår som ein del av den totale, utbetalte årslønna for stillinga den er innrapportert på.
  * <p>
  * I likheit med grunnlønna forventast faste tillegg å bli innrapportert deltidsjustert slik at ein ikkje treng
- * å forta nokon vidare justering av dei faste tillegga basert på stillingsprosenten til stillingsendringa.
+ * å foreta nokon vidare justering av dei faste tillegga basert på stillingsprosenten til stillingsendringa.
  * <p>
  * Faste tillegg blir innrapportert som ein årsverdi, på samme måte som deltidsjustert lønn.
  *
@@ -23,13 +23,13 @@ public class Fastetillegg {
      * @throws NullPointerException dersom <code>beloep</code> er <code>null</code>
      */
     public Fastetillegg(final Kroner beloep) {
-        this.beloep = requireNonNull(beloep, () -> "faste tillegg er påkrevd, men var null");
+        this.beloep = requireNonNull(beloep, () -> "beløp er påkrevd, men var null");
     }
 
     /**
      * Returnerer det faste, årlige lønnstillegget.
      *
-     * @return det faste, årlige lønnstillegget
+     * @return devt faste, årlige lønnstillegget
      */
     public Kroner beloep() {
         return beloep;
