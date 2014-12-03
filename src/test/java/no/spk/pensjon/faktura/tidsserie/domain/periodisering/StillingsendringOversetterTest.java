@@ -12,6 +12,25 @@ public class StillingsendringOversetterTest {
     private final StillingsendringOversetter oversetter = new StillingsendringOversetter();
 
     /**
+     * Verifiserer at dersom lønnstrinn er tom, kun inneheld whitespace eller er lik 0
+     * så blir det tolka som at ein ikkje har lønnstrinn.
+     */
+    @Test
+    public void skalTolkeLoennstrinn0SomAtStillingaIkkjeHarLoennstrinn() {
+        assertThat(oversetter.readLoennstrinn(asList("0"), 0))
+                .as("stillingsendringas lønnstrinn")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readLoennstrinn(asList(""), 0))
+                .as("stillingsendringas lønnstrinn")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readLoennstrinn(asList(" "), 0))
+                .as("stillingsendringas lønnstrinn")
+                .isEqualTo(empty());
+    }
+
+    /**
      * Verifiserer at oversetteren ikkje feilar dersom sybase datoar på formata
      * YYYY-MM-DD HH:mm:ss.S blir brukt som verdi på start- eller
      * sluttdatoane til avtalekoblingane.
