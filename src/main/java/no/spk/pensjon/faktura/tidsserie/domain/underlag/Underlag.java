@@ -94,8 +94,10 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  *
  * @author Tarjei Skorgenes
  */
-public class Underlag implements Iterable<Underlagsperiode> {
+public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag> {
     private final ArrayList<Underlagsperiode> perioder = new ArrayList<>();
+
+    private final Annotasjonar annotasjonar = new Annotasjonar();
 
     /**
      * Konstruerer eit nytt underlag ut frå ein straum med underlagsperioder sortert i kronologisk rekkefølge.
@@ -156,7 +158,7 @@ public class Underlag implements Iterable<Underlagsperiode> {
      *                                  underlagsperiodene
      */
     public Underlag restrict(final Predicate<Underlagsperiode> predikat) {
-        return new Underlag(perioder.stream().filter(predikat));
+        return annotasjonar.annoter(new Underlag(perioder.stream().filter(predikat)));
     }
 
     /**
@@ -168,6 +170,36 @@ public class Underlag implements Iterable<Underlagsperiode> {
      */
     public Optional<Underlagsperiode> last() {
         return perioder.stream().reduce((a, b) -> b);
+    }
+
+
+    @Override
+    public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
+        return annotasjonar
+                .lookup(type)
+                .orElseThrow(() -> new PaakrevdAnnotasjonManglarException(this, type));
+    }
+
+    @Override
+    public <T> Optional<T> valgfriAnnotasjonFor(final Class<T> type) {
+        return annotasjonar.lookup(type);
+    }
+
+    @Override
+    public <T> Underlag annoter(final Class<? extends T> type, final T verdi) {
+        annotasjonar.registrer(type, verdi);
+        return this;
+    }
+
+    @Override
+    public Underlag annoterFra(final Annoterbar<?> kilde) {
+        annotasjonar.addAll(kilde.annotasjonar());
+        return this;
+    }
+
+    @Override
+    public Annotasjonar annotasjonar() {
+        return annotasjonar;
     }
 
     /**

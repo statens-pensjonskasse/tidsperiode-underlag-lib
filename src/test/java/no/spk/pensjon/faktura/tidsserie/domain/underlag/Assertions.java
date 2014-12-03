@@ -2,7 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
-
 import org.assertj.core.api.AbstractListAssert;
 
 import java.util.Collection;
@@ -66,7 +65,7 @@ public class Assertions {
      *                   hentast frå
      * @param mapper     ein funksjon som hentar ut verdien som asserten skal operere på frå underlagsperiodene
      *                   i <code>underlag</code>
-     * @param predikater eit valgfritt sett med predikat som alle må slå til for at underlagsperioda skal bli 
+     * @param predikater eit valgfritt sett med predikat som alle må slå til for at underlagsperioda skal bli
      *                   tatt med i asserten
      * @return ein ny asserter med verdiar henta frå alle underlagsperiodene
      */
@@ -110,26 +109,26 @@ public class Assertions {
      * @param type periodetypen som underlagsperiodene må vere kobla til
      * @return eit predikat som matchar underlagsperioder som er tilkobla tidsperioder av den angitte typen
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static Predicate<Underlagsperiode> harKobling(final Class<? extends Tidsperiode> type) {
         return p -> p.koblingAvType(type).isPresent();
     }
 
     /**
-     * Underlagsperioder som er annotert med ein verdi av den angitte typen.
+     * Annoterbare objekt som er annotert med ein verdi av den angitte typen.
      *
-     * @param type annotasjonstypen som underlagsperioda er annotert med ein verdi for
-     * @return eit predikat som matchar underlagsperioder som er annotert med ein verdi av den angitte typen
+     * @param type annotasjonstypen som objektet er annotert med ein verdi for
+     * @return eit predikat som matchar objektet som er annotert med ein verdi av den angitte typen
      */
-    public static Predicate<Underlagsperiode> harAnnotasjon(final Class<?> type) {
-        return periode -> periode.valgfriAnnotasjonFor(type).isPresent();
+    public static <S extends Annoterbar<S>> Predicate<S> harAnnotasjon(final Class<?> type) {
+        return objekt -> objekt.valgfriAnnotasjonFor(type).isPresent();
     }
 
     /**
      * Et composite predikat som returnerer <code>true</code> dersom alle predikatene i <code>predikater</code>
      * returnerer true, eller dersom <code>predikater</code> er tom.
      *
-     * @param predikater en samling predikater som en skal slå til et samlet AND-separert predikat
+     * @param predikater en samling predikater som en skal slås sammen til et samlet AND-separert predikat
      * @return et nytt predikat som returnerer <code>true</code> dersom alle predikatene returnerer true
      * eller <code>predikater</code> er tom, <code>false</code> ellers
      */
@@ -143,14 +142,31 @@ public class Assertions {
     }
 
     /**
+     * Et composite predikat som returnerer <code>true</code> dersom minst et av predikatene i <code>predikater</code>
+     * returnerer true, eller dersom <code>predikater</code> er tom.
+     *
+     * @param predikater en samling predikater som en skal slås sammen til et samlet OR-separert predikat
+     * @return et nytt predikat som returnerer <code>true</code> dersom et av predikatene returnerer true
+     * eller <code>predikater</code> er tom, <code>false</code> ellers
+     */
+    @SafeVarargs
+    public static <T> Predicate<T> or(final Predicate<T>... predikater) {
+        return input -> Stream
+                .of(predikater)
+                .reduce(Predicate::or)
+                .orElse(t -> true)
+                .test(input);
+    }
+
+    /**
      * Hentar ut verdien for ein påkrevd annotasjon av angitt type.
      *
      * @param <T>  verditypen til annotasjonen som skal hentast ut
      * @param type annotasjonstypen som verdien skal hentast ut for
-     * @return ein funksjon som hentar ut verdien som underlagsperioda er annotert med for den angitte typen
-     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)
+     * @return ein funksjon som hentar ut verdien som det annoterbare objektet er annotert med for den angitte typen
+     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar#annotasjonFor(Class)
      */
-    public static <T> Function<Underlagsperiode, T> paakrevdAnnotasjon(Class<T> type) {
-        return periode -> periode.annotasjonFor(type);
+    public static <T, S extends Annoterbar<S>> Function<S, T> paakrevdAnnotasjon(final Class<T> type) {
+        return objekt -> objekt.annotasjonFor(type);
     }
 }

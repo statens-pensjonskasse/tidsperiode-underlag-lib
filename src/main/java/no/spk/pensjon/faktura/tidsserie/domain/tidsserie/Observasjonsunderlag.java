@@ -7,13 +7,14 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Arrays.asList;
-import static java.util.Optional.of;
 import static java.util.stream.Stream.concat;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonsdato.forSisteDag;
 
 /**
  * {@link Observasjonsunderlag} representerer
@@ -44,17 +45,14 @@ class Observasjonsunderlag {
      * @return ein straum som inneheld eit observasjonsunderlag pr måned i <code>aarsunderlag</code>
      * @throws IllegalArgumentException           viss <code>aarsunderlag</code> ikkje er eit gyldig årsunderlag og
      *                                            inneheld perioder tilknytta forskjellige årstall
-     * @throws PaakrevdAnnotasjonManglarException viss <code>aarsunderlag</code> inneheld perioder som ikkje
-     *                                            er annotert med <code>Aarstall</code>
+     * @throws PaakrevdAnnotasjonManglarException viss <code>aarsunderlag</code> ikkje er annotert med {@link Aarstall}
      */
     Stream<Underlag> genererUnderlagPrMaaned(final Underlag aarsunderlag)
             throws IllegalArgumentException, PaakrevdAnnotasjonManglarException {
-        final long antallAar = aarsunderlag.stream().map(p -> p.annotasjonFor(Aarstall.class)).distinct().count();
-        if (antallAar > 1) {
+        if (!aarsunderlag.valgfriAnnotasjonFor(Aarstall.class).isPresent()) {
             throw new IllegalStateException(
-                    "Generering av observasjonsunderlag er ikkje støtta for årsunderlag som dekker " +
-                            "meir enn eit år om gangen, fann " + antallAar
-                            + " unike årstall i underlaget.\nUnderlag: " + aarsunderlag
+                    "Generering av observasjonsunderlag er kun støtta for årsunderlag, "
+                            + aarsunderlag + " er ikkje eit årsunderlag sidan det ikkje er annotert med årstall"
             );
         }
         return asList(Month.values())
@@ -78,14 +76,18 @@ class Observasjonsunderlag {
      */
     private Underlag nyttObservasjonsunderlag(final Underlag aarsunderlag, final Month month) {
         if (inneholderSistePeriode(aarsunderlag, month)) {
-            return aarsunderlag;
+            return aarsunderlag
+                    .restrict(allePerioder())
+                    .annoter(Observasjonsdato.class, forSisteDag(aarsunderlag.annotasjonFor(Aarstall.class), month));
         }
         return new Underlag(
                 concat(
                         synligePerioderFramTilOgMed(aarsunderlag, month),
                         fiktivPeriodeUtAaret(aarsunderlag, month)
                 )
-        );
+        )
+                .annoterFra(aarsunderlag)
+                .annoter(Observasjonsdato.class, forSisteDag(aarsunderlag.annotasjonFor(Aarstall.class), month));
     }
 
     /**
@@ -120,8 +122,8 @@ class Observasjonsunderlag {
      * <p>
      * Det er to situasjonar der det ikkje vil bli generert ei fiktiv periode:
      * <ul>
-     *     <li>Månaden er desember.</li>
-     *     <li>Stillingsforholdet blir sluttmeldt siste dag i siste synlige underlagsperiode.</li>
+     * <li>Månaden er desember.</li>
+     * <li>Stillingsforholdet blir sluttmeldt siste dag i siste synlige underlagsperiode.</li>
      * </ul>
      * <h3>1. Desember månad</h3>
      * Det blir ikkje generert ei fiktiv periode viss <code>month</code> er lik desember måned ettersom årsunderlaget
@@ -193,7 +195,11 @@ class Observasjonsunderlag {
                 .bygg();
     }
 
-    private Predicate<Underlag> isEmpty() {
+    private static Predicate<Underlag> isEmpty() {
         return (Underlag u) -> u.stream().count() == 0;
+    }
+
+    private static Predicate<Underlagsperiode> allePerioder() {
+        return (Underlagsperiode p) -> true;
     }
 }

@@ -132,6 +132,16 @@ public class UnderlagsperiodeBuilder {
     }
 
     /**
+     * Legger til alle koblingane som perioder bygd seinare av builderen skal bli kobla til.
+     *
+     * @param perioder eit variabel lengde parameter med tidsperiode som framtidige underlagsperioder skal koblast til
+     * @return <code>this</code>
+     */
+    public UnderlagsperiodeBuilder medKoblingar(final Tidsperiode<?>... perioder) {
+        return medKoblingar(Stream.of(perioder));
+    }
+
+    /**
      * Lagar ein kopi av builderen som ein kan endre tilstand på utan å påvirke builderen kopien vart laga frå.
      *
      * @return ein ny builder med som inneheld ein kopi av gjeldande tilstand på builderen

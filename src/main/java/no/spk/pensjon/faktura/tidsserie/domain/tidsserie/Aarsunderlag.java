@@ -29,7 +29,9 @@ public class Aarsunderlag {
      * @return ein straum av nye underlag der kvart underlag kun inneheld underlagsperioder for eit bestemt årstall
      */
     public Stream<Underlag> genererUnderlagPrAar(final Underlag underlag) {
-        final Function<Aarstall, Underlag> nyttUnderlagForAarstall = aar -> underlag.restrict(annotertMedAarstall(aar));
+        final Function<Aarstall, Underlag> nyttUnderlagForAarstall = aar -> underlag
+                .restrict(annotertMedAarstall(aar))
+                .annoter(Aarstall.class, aar);
         return underlag
                 .stream()
                 .map(Aarsunderlag::aarstallForPeriode)

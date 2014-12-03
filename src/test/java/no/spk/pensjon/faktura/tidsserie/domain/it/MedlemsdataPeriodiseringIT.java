@@ -34,9 +34,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 public class MedlemsdataPeriodiseringIT {
-    private static final StillingsforholdId STILLINGSFORHOLD_A = valueOf(999999999999L);
-    private static final StillingsforholdId STILLINGSFORHOLD_B = valueOf(888888888888L);
-    private static final StillingsforholdId MEDREGNING_C = valueOf(777777777777L);
+    private static final StillingsforholdId STILLINGSFORHOLD_A = EksempelDataForMedlem.STILLING_A;
+    private static final StillingsforholdId STILLINGSFORHOLD_B = EksempelDataForMedlem.STILLING_B;
+    private static final StillingsforholdId MEDREGNING_C = EksempelDataForMedlem.STILLING_C;
 
     private final HashMap<Class<?>, MedlemsdataOversetter<?>> oversettere = new HashMap<>();
 

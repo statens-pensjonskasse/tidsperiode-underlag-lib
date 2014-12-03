@@ -1,7 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -13,9 +14,21 @@ import org.junit.rules.ExpectedException;
 
 import java.time.Month;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.time.Month.APRIL;
+import static java.time.Month.AUGUST;
+import static java.time.Month.DECEMBER;
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
+import static java.time.Month.JULY;
+import static java.time.Month.JUNE;
+import static java.time.Month.MARCH;
+import static java.time.Month.MAY;
+import static java.time.Month.NOVEMBER;
+import static java.time.Month.OCTOBER;
+import static java.time.Month.SEPTEMBER;
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -23,6 +36,10 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.rangeClosed;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertUnikeUnderlagsAnnotasjonar;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.harAnnotasjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.or;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.paakrevdAnnotasjon;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -38,12 +55,84 @@ public class ObservasjonsunderlagTest {
     private final Observasjonsunderlag observasjonsunderlag = new Observasjonsunderlag();
 
     /**
+     * Verifiserer at kvart observasjonsunderlag får kopiert inn alle annotasjonane frå årsunderlaget.
+     */
+    @Test
+    public void skalKopiereOverAlleAnnotasjonaneFraaAarsunderlagetTilObservasjonsunderlaga() {
+        final Underlag aarsunderlag = etAarsunderlag()
+                .annoter(StillingsforholdId.class, new StillingsforholdId(18971237L))
+                .annoter(Integer.class, 123456789);
+        final List<Underlag> alle = observasjonsunderlag.genererUnderlagPrMaaned(
+                aarsunderlag
+        )
+                .collect(toList());
+
+        final Predicate<Underlag> manglerAnnotasjonFraAarsunderlagetUnderlaget = or(
+                Assertions.<Underlag>harAnnotasjon(StillingsforholdId.class).negate(),
+                Assertions.<Underlag>harAnnotasjon(Integer.class).negate()
+        );
+        assertThat(
+                alle
+                        .stream()
+                        .filter(manglerAnnotasjonFraAarsunderlagetUnderlaget)
+                        .collect(toList())
+        )
+                .as("observasjonsunderlag utan alle annotasjonar som årsunderlaget var annotert med")
+                .hasSize(0);
+
+        assertUnikeUnderlagsAnnotasjonar(alle, Integer.class).contains(123456789);
+        assertUnikeUnderlagsAnnotasjonar(alle, StillingsforholdId.class).contains(new StillingsforholdId(18971237L));
+    }
+
+    /**
+     * Verifiserer at observasjonsunderlaga blir annotert med observasjonsdatoen dei er tilrettelagt for å bli
+     * observert på.
+     */
+    @Test
+    public void skalAnnotereObservasjonsunderlagMedAarstall() {
+        final List<Underlag> alle = observasjonsunderlag.genererUnderlagPrMaaned(
+                underlag(
+                        new Aarstall(2000),
+                        periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
+                        periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(FEBRUARY),
+                        periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(MARCH)
+                )
+        )
+                .collect(toList());
+
+        final Predicate<Underlag> predikat = harAnnotasjon(Observasjonsdato.class);
+        assertThat(alle.stream().filter(predikat.negate()).collect(toList()))
+                .as("observasjonsunderlag som ikkje er annotert med observasjonsdato")
+                .isEmpty();
+
+        assertThat(alle.stream().map(paakrevdAnnotasjon(Observasjonsdato.class)).collect(toList()))
+                .as("observasjonsdato annotert på årsunderlaga")
+                .containsExactly(
+                        new Observasjonsdato(dato("2000.01.31")),
+                        new Observasjonsdato(dato("2000.02.29")),
+                        new Observasjonsdato(dato("2000.03.31")),
+                        new Observasjonsdato(dato("2000.04.30")),
+                        new Observasjonsdato(dato("2000.05.31")),
+                        new Observasjonsdato(dato("2000.06.30")),
+                        new Observasjonsdato(dato("2000.07.31")),
+                        new Observasjonsdato(dato("2000.08.31")),
+                        new Observasjonsdato(dato("2000.09.30")),
+                        new Observasjonsdato(dato("2000.10.31")),
+                        new Observasjonsdato(dato("2000.11.30")),
+                        new Observasjonsdato(dato("2000.12.31"))
+                );
+    }
+
+    /**
      * Verifiserer at innsending av eit tomt underlag medfører at ingen observasjonsunderlag blir generert.
      */
     @Test
     public void skalIkkjeGenerereNokonObservasjonsunderlagVissAarsunderlagErTomt() {
-        assertThat(observasjonsunderlag.genererUnderlagPrMaaned(new Underlag(Stream.empty())).collect(toList()))
-                .as("observasjonsunderlag generert frå tomt årsunderlage").isEmpty();
+        assertThat(observasjonsunderlag
+                        .genererUnderlagPrMaaned(new Underlag(Stream.empty()).annoter(Aarstall.class, new Aarstall(2007))).collect(toList())
+        )
+                .as("observasjonsunderlag generert frå tomt årsunderlage")
+                .isEmpty();
     }
 
     /**
@@ -59,11 +148,73 @@ public class ObservasjonsunderlagTest {
         final List<Underlag> prMnd = observasjonsunderlag
                 .genererUnderlagPrMaaned(aarsunderlag)
                 .collect(toList());
-        rangeClosed(Month.JANUARY.getValue(), Month.NOVEMBER.getValue())
+        rangeClosed(JANUARY.getValue(), NOVEMBER.getValue())
                 .forEach(nr -> {
                     // Forventar at mnd nr X inneheld X synlige månedar + 1 fiktiv periode på slutten
                     assertObservasjonsunderlagMedFiktivPeriode(prMnd, nr - 1).hasSize(nr + 1);
                 });
+    }
+
+    /**
+     * Verifiserer at observasjonsunderlaget for desember ikkje er samme instans som årsunderlaget det
+     * er generert ut i frå.
+     */
+    @Test
+    public void skalGenerereNyttObservasjonsunderlagForDesemberSjoelvOmStillingaBlirAvsluttaIDesember() {
+        final Underlag aarsunderlag = underlag(
+                new Aarstall(2000),
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
+                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(FEBRUARY),
+                periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(MARCH),
+                periode().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(APRIL),
+                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(MAY),
+                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.06.30")).med(JUNE),
+                periode().fraOgMed(dato("2000.07.01")).tilOgMed(dato("2000.07.31")).med(JULY),
+                periode().fraOgMed(dato("2000.08.01")).tilOgMed(dato("2000.08.31")).med(AUGUST),
+                periode().fraOgMed(dato("2000.09.01")).tilOgMed(dato("2000.09.30")).med(SEPTEMBER),
+                periode().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(OCTOBER),
+                periode().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(NOVEMBER),
+                periode().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(DECEMBER)
+                        .med(SistePeriode.INSTANCE)
+        );
+        final Underlag observasjonsunderlagDesember = observasjonsunderlag
+                .genererUnderlagPrMaaned(aarsunderlag)
+                .reduce(this::last)
+                .get();
+        assertThat(observasjonsunderlagDesember)
+                .as("observasjonsunderlag for desember skal ikkje vere identisk med årsunderlaget")
+                .isNotSameAs(aarsunderlag);
+    }
+
+    /**
+     * Verifiserer at observasjonsunderlaget for desember blir annotert med 31. desember som observasjonsdato.
+     */
+    @Test
+    public void skalAnnotereObservasjonsunderlagForDesemberMaanedMedObservasjonsdato() {
+        final Underlag aarsunderlag = underlag(
+                new Aarstall(2000),
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
+                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(FEBRUARY),
+                periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(MARCH),
+                periode().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(APRIL),
+                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(MAY),
+                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.06.30")).med(JUNE),
+                periode().fraOgMed(dato("2000.07.01")).tilOgMed(dato("2000.07.31")).med(JULY),
+                periode().fraOgMed(dato("2000.08.01")).tilOgMed(dato("2000.08.31")).med(AUGUST),
+                periode().fraOgMed(dato("2000.09.01")).tilOgMed(dato("2000.09.30")).med(SEPTEMBER),
+                periode().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(OCTOBER),
+                periode().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(NOVEMBER),
+                periode().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(DECEMBER)
+                        .med(SistePeriode.INSTANCE)
+        );
+        assertThat(
+                observasjonsunderlag
+                        .genererUnderlagPrMaaned(aarsunderlag)
+                        .reduce(this::last)
+                        .get()
+                        .valgfriAnnotasjonFor(Observasjonsdato.class)
+        ).as("Observasjonsdato-annotasjon til observasjonsunderlag for desember 2000")
+                .isEqualTo(of(new Observasjonsdato(dato("2000.12.31"))));
     }
 
     /**
@@ -94,42 +245,28 @@ public class ObservasjonsunderlagTest {
      */
     @Test
     public void skalIkkjeGenerereFiktivPeriodeUtAaretDersomSisteUnderlagsperiodeIAarsunderlagetErAnnotertMedSistePeriode() {
-        final UnderlagsperiodeBuilder builder = periode()
-                .med(new Aarstall(2000));
         final Underlag aarsunderlag = underlag(
-                builder.kopi().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(Month.JANUARY),
-                builder.kopi().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(Month.FEBRUARY),
-                builder.kopi().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(Month.MARCH),
-                builder.kopi().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(Month.APRIL),
-                builder.kopi().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.21")).med(Month.MAY)
+                new Aarstall(2000),
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
+                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(FEBRUARY),
+                periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(MARCH),
+                periode().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(APRIL),
+                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.21")).med(MAY)
                         .med(SistePeriode.INSTANCE)
         );
 
         final List<Underlag> prMnd = observasjonsunderlag.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
-        rangeClosed(Month.JANUARY.getValue(), Month.APRIL.getValue())
+        rangeClosed(JANUARY.getValue(), APRIL.getValue())
                 .forEach(nr -> {
                     // Forventar at mnd nr X inneheld X synlige månedar + 1 fiktiv periode for resten av året
                     assertObservasjonsunderlagMedFiktivPeriode(prMnd, nr - 1).hasSize(nr + 1);
                     assertTilOgMed(prMnd.get(nr - 1).last().get()).isEqualTo(of(dato("2000.12.31")));
                 });
-        rangeClosed(Month.MAY.getValue(), Month.DECEMBER.getValue())
+        rangeClosed(MAY.getValue(), DECEMBER.getValue())
                 .forEach(nr -> {
                     assertObservasjonsunderlagUtanFiktivPeriode(prMnd, nr - 1).hasSize(5);
                     assertTilOgMed(prMnd.get(nr - 1).last().get()).isEqualTo(of(dato("2000.05.21")));
                 });
-    }
-
-    /**
-     * Verifiserer at genereringa feilar dersom det antatte årsunderlaget ikkje inneheld
-     * perioder annotert med årstall.
-     */
-    @Test
-    public void skalFeileDersomAntattAarsunderlagInneheldPerioderUtanAarstallAnnotasjon() {
-        e.expect(PaakrevdAnnotasjonManglarException.class);
-        final Underlag underlag = underlag(
-                periode().fraOgMed(dato("2001.12.01")).tilOgMed(dato("2001.12.31")).med(Month.DECEMBER)
-        );
-        observasjonsunderlag.genererUnderlagPrMaaned(underlag);
     }
 
     /**
@@ -138,11 +275,11 @@ public class ObservasjonsunderlagTest {
     @Test
     public void skalFeileDersomAntattAarsunderlagetIkkjeErEitAarsunderlag() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("Generering av observasjonsunderlag er ikkje støtta for årsunderlag som dekker meir enn eit år om gangen");
-        e.expectMessage("fann 2 unike årstall i underlaget");
+        e.expectMessage("Generering av observasjonsunderlag er kun støtta for årsunderlag");
+        e.expectMessage("er ikkje eit årsunderlag sidan det ikkje er annotert med årstall");
         final Underlag underlag = underlag(
-                periode().fraOgMed(dato("2001.12.01")).tilOgMed(dato("2001.12.31")).med(new Aarstall(2001)).med(Month.DECEMBER),
-                periode().fraOgMed(dato("2002.01.01")).tilOgMed(dato("2002.01.31")).med(new Aarstall(2002)).med(Month.JANUARY)
+                periode().fraOgMed(dato("2001.12.01")).tilOgMed(dato("2001.12.31")).med(new Aarstall(2001)).med(DECEMBER),
+                periode().fraOgMed(dato("2002.01.01")).tilOgMed(dato("2002.01.31")).med(new Aarstall(2002)).med(JANUARY)
         );
         observasjonsunderlag.genererUnderlagPrMaaned(underlag);
     }
@@ -167,16 +304,16 @@ public class ObservasjonsunderlagTest {
      */
     @Test
     public void skalGenerereObservasjonsunderlagForMaanedarEtterSistePeriodesTilknyttaMaaned() {
-        final UnderlagsperiodeBuilder builder = periode().med(new Aarstall(2000));
         final Underlag aarsunderlag = underlag(
-                builder.kopi().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(Month.JANUARY),
-                builder.kopi().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(Month.FEBRUARY),
-                builder.kopi().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(Month.MARCH),
-                builder.kopi().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(Month.APRIL),
-                builder.kopi().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(Month.MAY),
-                builder.kopi().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.06.30")).med(Month.JUNE),
-                builder.kopi().fraOgMed(dato("2000.07.01")).tilOgMed(dato("2000.07.31")).med(Month.JULY),
-                builder.kopi().fraOgMed(dato("2000.08.01")).tilOgMed(dato("2000.08.31")).med(Month.AUGUST)
+                new Aarstall(2000),
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
+                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(FEBRUARY),
+                periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(MARCH),
+                periode().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(APRIL),
+                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(MAY),
+                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.06.30")).med(JUNE),
+                periode().fraOgMed(dato("2000.07.01")).tilOgMed(dato("2000.07.31")).med(JULY),
+                periode().fraOgMed(dato("2000.08.01")).tilOgMed(dato("2000.08.31")).med(AUGUST)
         );
         assertObservasjonsunderlag(aarsunderlag).hasSize(12);
     }
@@ -191,17 +328,16 @@ public class ObservasjonsunderlagTest {
      */
     @Test
     public void skalGenerereObservasjonsunderlagAvKorrektLengdeDersomStillingsforholdetBlirAvsluttaILoepetAvAaret() {
-        final UnderlagsperiodeBuilder builder = periode()
-                .med(new Aarstall(2012));
         final Underlag aarsunderlag = underlag(
-                builder.kopi().fraOgMed(dato("2012.01.01")).tilOgMed(dato("2012.01.31")).med(Month.JANUARY),
-                builder.kopi().fraOgMed(dato("2012.02.01")).tilOgMed(dato("2012.02.29")).med(Month.FEBRUARY),
-                builder.kopi().fraOgMed(dato("2012.03.01")).tilOgMed(dato("2012.03.31")).med(Month.MARCH),
-                builder.kopi().fraOgMed(dato("2012.04.01")).tilOgMed(dato("2012.04.30")).med(Month.APRIL),
-                builder.kopi().fraOgMed(dato("2012.05.01")).tilOgMed(dato("2012.05.31")).med(Month.MAY),
-                builder.kopi().fraOgMed(dato("2012.06.01")).tilOgMed(dato("2012.06.09")).med(Month.JUNE),
-                builder.kopi().fraOgMed(dato("2012.06.10")).tilOgMed(dato("2012.06.15"))
-                        .med(Month.JUNE).med(SistePeriode.INSTANCE)
+                new Aarstall(2012),
+                periode().fraOgMed(dato("2012.01.01")).tilOgMed(dato("2012.01.31")).med(JANUARY),
+                periode().fraOgMed(dato("2012.02.01")).tilOgMed(dato("2012.02.29")).med(FEBRUARY),
+                periode().fraOgMed(dato("2012.03.01")).tilOgMed(dato("2012.03.31")).med(MARCH),
+                periode().fraOgMed(dato("2012.04.01")).tilOgMed(dato("2012.04.30")).med(APRIL),
+                periode().fraOgMed(dato("2012.05.01")).tilOgMed(dato("2012.05.31")).med(MAY),
+                periode().fraOgMed(dato("2012.06.01")).tilOgMed(dato("2012.06.09")).med(JUNE),
+                periode().fraOgMed(dato("2012.06.10")).tilOgMed(dato("2012.06.15"))
+                        .med(JUNE).med(SistePeriode.INSTANCE)
         );
         final List<Underlag> prMnd = observasjonsunderlag.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
 
@@ -225,11 +361,11 @@ public class ObservasjonsunderlagTest {
      */
     @Test
     public void skalIkkjeGenerereObservasjonsunderlagForMaanedarFoerFoerstePeriodesTilknyttaMaaned() {
-        final UnderlagsperiodeBuilder builder = periode().med(new Aarstall(2000));
         final Underlag aarsunderlag = underlag(
-                builder.kopi().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(Month.OCTOBER),
-                builder.kopi().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(Month.NOVEMBER),
-                builder.kopi().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(Month.DECEMBER)
+                new Aarstall(2000),
+                periode().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(OCTOBER),
+                periode().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(NOVEMBER),
+                periode().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(DECEMBER)
         );
         assertObservasjonsunderlag(aarsunderlag).hasSize(3);
     }
@@ -240,11 +376,11 @@ public class ObservasjonsunderlagTest {
      */
     @Test
     public void skalGenerereFiktivPeriodeUtAaretBasertPaaSisteUnderlagsperiodeISisteSynligeMaanadIkkjeAllePerioderISisteSynligeMaanad() {
-        final UnderlagsperiodeBuilder builder = periode().med(new Aarstall(2015));
         final Underlag aarsunderlag = underlag(
-                builder.kopi().fraOgMed(dato("2015.01.01")).tilOgMed(dato("2015.01.14")).med(Month.JANUARY),
-                builder.kopi().fraOgMed(dato("2015.01.15")).tilOgMed(dato("2015.01.31")).med(Month.JANUARY),
-                builder.kopi().fraOgMed(dato("2015.02.01")).tilOgMed(dato("2015.02.28")).med(Month.FEBRUARY)
+                new Aarstall(2015),
+                periode().fraOgMed(dato("2015.01.01")).tilOgMed(dato("2015.01.14")).med(JANUARY),
+                periode().fraOgMed(dato("2015.01.15")).tilOgMed(dato("2015.01.31")).med(JANUARY),
+                periode().fraOgMed(dato("2015.02.01")).tilOgMed(dato("2015.02.28")).med(FEBRUARY)
                         .med(SistePeriode.INSTANCE)
         );
         final List<Underlag> prMnd = observasjonsunderlag.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
@@ -264,6 +400,10 @@ public class ObservasjonsunderlagTest {
 
     private static UnderlagsperiodeBuilder periode() {
         return new UnderlagsperiodeBuilder();
+    }
+
+    private static Underlag underlag(final Aarstall aarstall, final UnderlagsperiodeBuilder... perioder) {
+        return underlag(perioder).annoter(Aarstall.class, aarstall);
     }
 
     private static Underlag underlag(final UnderlagsperiodeBuilder... perioder) {
@@ -291,21 +431,20 @@ public class ObservasjonsunderlagTest {
     }
 
     private Underlag etAarsunderlag() {
-        final UnderlagsperiodeBuilder builder = periode()
-                .med(new Aarstall(2000));
         return underlag(
-                builder.kopi().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(Month.JANUARY),
-                builder.kopi().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(Month.FEBRUARY),
-                builder.kopi().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(Month.MARCH),
-                builder.kopi().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(Month.APRIL),
-                builder.kopi().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(Month.MAY),
-                builder.kopi().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.06.30")).med(Month.JUNE),
-                builder.kopi().fraOgMed(dato("2000.07.01")).tilOgMed(dato("2000.07.31")).med(Month.JULY),
-                builder.kopi().fraOgMed(dato("2000.08.01")).tilOgMed(dato("2000.08.31")).med(Month.AUGUST),
-                builder.kopi().fraOgMed(dato("2000.09.01")).tilOgMed(dato("2000.09.30")).med(Month.SEPTEMBER),
-                builder.kopi().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(Month.OCTOBER),
-                builder.kopi().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(Month.NOVEMBER),
-                builder.kopi().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(Month.DECEMBER)
+                new Aarstall(2000),
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
+                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.02.29")).med(FEBRUARY),
+                periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(MARCH),
+                periode().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(APRIL),
+                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(MAY),
+                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.06.30")).med(JUNE),
+                periode().fraOgMed(dato("2000.07.01")).tilOgMed(dato("2000.07.31")).med(JULY),
+                periode().fraOgMed(dato("2000.08.01")).tilOgMed(dato("2000.08.31")).med(AUGUST),
+                periode().fraOgMed(dato("2000.09.01")).tilOgMed(dato("2000.09.30")).med(SEPTEMBER),
+                periode().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(OCTOBER),
+                periode().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(NOVEMBER),
+                periode().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(DECEMBER)
         );
     }
 

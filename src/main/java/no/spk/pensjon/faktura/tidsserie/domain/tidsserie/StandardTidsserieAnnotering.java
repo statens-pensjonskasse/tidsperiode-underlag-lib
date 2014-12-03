@@ -1,13 +1,16 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -46,7 +49,12 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         periode.koblingAvType(Maaned.class).ifPresent((Maaned m) -> {
             periode.annoter(Month.class, m.toMonth());
         });
-        markerSisteUnderlagsperiodeSomSistePeriodeVissStillingsforholdetErSluttmeldt(underlag, periode);
+        periode.koblingarAvType(Regelperiode.class).forEach(regelperiode -> {
+            regelperiode.annoter(periode);
+        });
+        periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
+            periode.annoter(AvtaleId.class, avtalekobling.avtale());
+        });
     }
 
     private void annoterLoennForLoennstrinn(Underlagsperiode periode, Loennstrinn loennstrinn) {
@@ -60,12 +68,5 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
 
     private Stillingsendring gjeldende(final StillingsforholdPeriode periode) {
         return periode.gjeldende();
-    }
-
-    private void markerSisteUnderlagsperiodeSomSistePeriodeVissStillingsforholdetErSluttmeldt(
-            final Underlag underlag, final Underlagsperiode periode) {
-        underlag.last().filter(siste -> siste == periode).ifPresent((Underlagsperiode siste) -> {
-            periode.annoter(SistePeriode.class, SistePeriode.INSTANCE);
-        });
     }
 }

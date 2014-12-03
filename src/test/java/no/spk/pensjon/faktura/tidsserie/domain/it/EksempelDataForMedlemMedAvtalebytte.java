@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import org.junit.rules.ExternalResource;
 
@@ -20,8 +21,8 @@ import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem} implementerer ein testregel
- * som tar seg av innlesing av eksempeldata tilknytta eit medlem.
+ * {@link EksempelDataForMedlemMedAvtalebytte} implementerer ein testregel
+ * som tar seg av innlesing av eksempeldata tilknytta eit medlem som har vore gjennom 2 avtalebytte.
  * <p>
  * Regelen baserer seg på å lese inn ei CSV-fil som inneheld eit datasett som simulerer rådataformatet som
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata} deserialiserer informasjon om eit medlem
@@ -29,24 +30,16 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Tarjei Skorgenes
  */
-class EksempelDataForMedlem extends ExternalResource {
+class EksempelDataForMedlemMedAvtalebytte extends ExternalResource {
     /**
      * {@link Stillingsforhold} inneheld ei kortfatta oversikt over stillingsforholda ein forventar skal eksistere
-     * i testdatasettet som {@link EksempelDataForMedlem} leser inn.
+     * i testdatasettet som {@link no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlemMedAvtalebytte} leser inn.
      */
     public static enum Stillingsforhold {
         /**
-         * Stillingsforhold med historikk, aktivt frå 15. august 2005 til 30. juni 2012
+         * Stillingsforhold med historikk, aktivt frå 1. juni 2012.
          */
-        A(999999999999L),
-        /**
-         * Stillingsforhold med historikk, aktivt frå 3. september 2012.
-         */
-        B(888888888888L),
-        /**
-         * Stillingsforhold med medregning, aktivt frå 1. juli 2010 til 31. mai 2016.
-         */
-        C(777777777777L);
+        STILLINGEN(666666666666L);
 
         private final StillingsforholdId id;
 
@@ -60,19 +53,53 @@ class EksempelDataForMedlem extends ExternalResource {
     }
 
     /**
-     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.Stillingsforhold#A
+     * {@link Avtale} inneheld ei kortfatta oversikt over avtalane ein forventar skal eksistere i testdatasettet
+     * som regelen leser inn.
      */
-    public static StillingsforholdId STILLING_A = Stillingsforhold.A.id();
+    public static enum Avtale {
+        /**
+         * Avtalekoblinga som er aktiv frå 1. juni 2012 til og med 30. november 2012.
+         */
+        A(224466),
+        /**
+         * Avtalekoblinga som er aktiv frå 1. desember 2012 til og med 30. juni 2013.
+         */
+        B(222222),
+        /**
+         * Avtalekoblinga som er aktiv frå 1. juli 2013 og er løpande.
+         */
+        C(223344);
+
+        private final AvtaleId id;
+
+        Avtale(final long id) {
+            this.id = new AvtaleId(id);
+        }
+
+        public AvtaleId avtale() {
+            return id;
+        }
+    }
 
     /**
-     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.Stillingsforhold#B
+     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlemMedAvtalebytte.Stillingsforhold#A
      */
-    public static StillingsforholdId STILLING_B = Stillingsforhold.B.id();
+    public static StillingsforholdId STILLING = Stillingsforhold.STILLINGEN.id();
 
     /**
-     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.Stillingsforhold#C
+     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlemMedAvtalebytte.Avtale#A
      */
-    public static StillingsforholdId STILLING_C = Stillingsforhold.C.id();
+    public static AvtaleId A = Avtale.A.avtale();
+
+    /**
+     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlemMedAvtalebytte.Avtale#B
+     */
+    public static AvtaleId B = Avtale.B.avtale();
+
+    /**
+     * @see no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlemMedAvtalebytte.Avtale#C
+     */
+    public static AvtaleId C = Avtale.C.avtale();
 
     private final String ressurs;
 
@@ -81,8 +108,8 @@ class EksempelDataForMedlem extends ExternalResource {
     /**
      * Opprettar ein ny regel som leser inn testdata ei CSV-fil på classpathen.
      */
-    public EksempelDataForMedlem() {
-        ressurs = "/csv/medlem-1-stillingsforhold-3.csv";
+    public EksempelDataForMedlemMedAvtalebytte() {
+        ressurs = "/csv/medlem-1-stillingsforhold-1-avtale-3.csv";
     }
 
     @Override
@@ -136,7 +163,7 @@ class EksempelDataForMedlem extends ExternalResource {
     }
 
     private static BufferedReader open(final String resource) throws IOException {
-        final Optional<InputStream> open = ofNullable(EksempelDataForMedlem.class.getResourceAsStream(resource));
+        final Optional<InputStream> open = ofNullable(EksempelDataForMedlemMedAvtalebytte.class.getResourceAsStream(resource));
         return new BufferedReader(new InputStreamReader(open.orElseThrow(fileNotFound(resource))));
     }
 

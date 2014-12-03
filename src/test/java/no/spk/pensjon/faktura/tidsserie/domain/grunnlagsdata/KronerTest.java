@@ -17,6 +17,13 @@ public class KronerTest {
     public final ExpectedException e = ExpectedException.none();
 
     @Test
+    public void skalLeggeSamanKronebeloepaOgGenerereEitNyttKronebeloep() {
+        assertThat(new Kroner(10).plus(new Kroner(-2))).isEqualTo(new Kroner(8));
+        assertThat(new Kroner(0).plus(new Kroner(1))).isEqualTo(new Kroner(1));
+        assertThat(new Kroner(1).plus(new Kroner(0))).isEqualTo(new Kroner(1));
+    }
+
+    @Test
     public void skalBenytteAvrundaKroneBeloepVedSamanlikning() {
         assertThat(new Kroner(1.5d)).isEqualTo(new Kroner(2d));
         assertThat(new Kroner(1.49d)).isEqualTo(new Kroner(1d));

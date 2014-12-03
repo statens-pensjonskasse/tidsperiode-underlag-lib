@@ -9,6 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
@@ -23,7 +24,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -45,8 +45,10 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.and;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertUnderlagsperioder;
@@ -102,6 +104,70 @@ public class TidsserieUnderlagFacadeIT {
     }
 
     /**
+     * Verifiserer at kvart stillingsforholdunderlag blir annotert med stillingsforholdets {@link StillingsforholdId}.
+     */
+    @Test
+    public void skalAnnotereUnderlagaMedStillingsforholdId() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        final Predicate<Map.Entry<StillingsforholdId, Underlag>> erAnnotertMedStillingsforholdetsId = e ->
+                e
+                        .getValue()
+                        .valgfriAnnotasjonFor(StillingsforholdId.class)
+                        .map((StillingsforholdId id) -> id.equals(e.getKey())).orElse(false);
+        assertThat(
+                underlagene
+                        .entrySet()
+                        .stream()
+                        .filter(erAnnotertMedStillingsforholdetsId.negate())
+                        .map(Map.Entry::getValue)
+                        .collect(toList())
+        ).as("stillingsforholdunderlag som ikkje er annotert med stillingsforholdets id").hasSize(0);
+    }
+
+    /**
+     * Verifiserer at stillingsforholdunderlaget også blir splittar og periodisert på referanseperioders frå og med-dato.
+     */
+    @Test
+    public void skalPeriodisereUnderlagetPaaReferanseperiodersFraOgMedDato() {
+        fasade.addReferansePerioder(new GenerellTidsperiode(dato("2005.08.20"), empty()));
+
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        final Underlag august2005 = underlagene.get(STILLINGSFORHOLD_A)
+                .restrict(
+                        perioderFor(Month.AUGUST, new Aarstall(2005))
+                );
+        assertThat(august2005).as("underlagsperioder for august 2005 for stillingsforhold " + STILLINGSFORHOLD_A)
+                .hasSize(2);
+        assertFraOgMed(august2005.last().get())
+                .isEqualTo(dato("2005.08.20"));
+    }
+
+    /**
+     * Verifiserer at stillingsforholdunderlaget også blir splittar og periodisert dagen etter avslutta
+     * referanseperioders til og med-dato.
+     */
+    @Test
+    public void skalPeriodisereUnderlagetDagenEtterReferanseperiodersTilOgMedDato() {
+        fasade.addReferansePerioder(new GenerellTidsperiode(dato("2005.01.01"), of(dato("2005.08.20"))));
+
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        final Underlag august2005 = underlagene.get(STILLINGSFORHOLD_A)
+                .restrict(
+                        perioderFor(Month.AUGUST, new Aarstall(2005))
+                );
+        assertThat(august2005).as("underlagsperioder for august 2005 for stillingsforhold " + STILLINGSFORHOLD_A)
+                .hasSize(2);
+        assertFraOgMed(august2005.last().get())
+                .isEqualTo(dato("2005.08.21"));
+    }
+
+    /**
      * Verifiserer at dersom annoteringa av underlagsperioder feilar, fører det til at periodiseringa av medlemmet sine
      * stillingsforhold blir umiddelbart avbrutt utan å gå vidare til medlemmets gjennståande stillingsforhold.
      */
@@ -140,9 +206,10 @@ public class TidsserieUnderlagFacadeIT {
                         new Aarstall(tilOgMedAar).atEndOfYear())
         );
 
+        final Predicate<Underlagsperiode> predikat = harAnnotasjon(Aarstall.class);
         assertUnderlagsperioder(
                 underlagene.values(),
-                harAnnotasjon(Aarstall.class).negate()
+                predikat.negate()
         ).isEmpty();
 
         assertAnnotasjonFraUnderlagsperioder(underlagene.values(), Aarstall.class)
@@ -170,9 +237,10 @@ public class TidsserieUnderlagFacadeIT {
                         new Aarstall(2006).atEndOfYear())
         );
 
+        final Predicate<Underlagsperiode> predikat = harAnnotasjon(Month.class);
         assertUnderlagsperioder(
                 underlagene.values(),
-                harAnnotasjon(Month.class).negate()
+                predikat.negate()
         ).isEmpty();
 
         assertAnnotasjonFraUnderlagsperioder(underlagene.values(), Month.class)
@@ -186,7 +254,6 @@ public class TidsserieUnderlagFacadeIT {
                 );
     }
 
-
     /**
      * Verifiserer at underlagsperiodene blir annotert med stillingsprosent henta frå overlappande
      * stillingsforholdperiodes gjeldande stillingsendring.
@@ -197,9 +264,10 @@ public class TidsserieUnderlagFacadeIT {
 
         prosesser(underlagene::put, standardperiode());
 
+        final Predicate<Underlagsperiode> predikat = harAnnotasjon(Stillingsprosent.class);
         assertUnderlagsperioder(
                 underlagene.values(),
-                harAnnotasjon(Stillingsprosent.class).negate()
+                predikat.negate()
         ).isEmpty();
 
         assertAnnotasjonFraUnderlagsperioder(underlagene.values(), Stillingsprosent.class)
@@ -210,6 +278,7 @@ public class TidsserieUnderlagFacadeIT {
                         )
                 );
     }
+
 
     /**
      * Verifiserer at underlagsperiodene blir annotert med lønnstrinn henta frå overlappande
@@ -222,9 +291,10 @@ public class TidsserieUnderlagFacadeIT {
 
         prosesser(underlagene::put, standardperiode());
 
+        final Predicate<Underlagsperiode> predikat = harAnnotasjon(Loennstrinn.class);
         assertUnderlagsperioder(
                 asList(underlagene.get(STILLINGSFORHOLD_A)),
-                harAnnotasjon(Loennstrinn.class).negate()
+                predikat.negate()
         ).isEmpty();
 
         final Function<Stillingsendring, Loennstrinn> mapper = e -> e.loennstrinn().get();
@@ -253,9 +323,10 @@ public class TidsserieUnderlagFacadeIT {
 
         prosesser(underlagene::put, standardperiode());
 
+        final Predicate<Underlagsperiode> predikat = harAnnotasjon(DeltidsjustertLoenn.class);
         assertUnderlagsperioder(
                 asList(underlagene.get(STILLINGSFORHOLD_B)),
-                harAnnotasjon(DeltidsjustertLoenn.class).negate()
+                predikat.negate()
         ).isEmpty();
 
         final Function<Stillingsendring, DeltidsjustertLoenn> mapper = e -> e.loenn().get();
@@ -562,8 +633,8 @@ public class TidsserieUnderlagFacadeIT {
     }
 
     private <T> Iterable<? extends T> fraMedlemsdata(final MedlemsdataOversetter<Stillingsendring> oversetter,
-                                       final Function<Stillingsendring, T> mapper,
-                                       final Predicate<Stillingsendring>... predikater) {
+                                                     final Function<Stillingsendring, T> mapper,
+                                                     final Predicate<Stillingsendring>... predikater) {
         return data
                 .stream()
                 .filter(oversetter::supports)
@@ -571,5 +642,19 @@ public class TidsserieUnderlagFacadeIT {
                 .filter(and(predikater))
                 .map(mapper)
                 .collect(toList());
+    }
+
+    /**
+     * Genererer eit nytt predikat som matchar alle underlagsperioder som tilhøyrer det angitte året og månaden.
+     * <p>
+     * Periodene blir matchar basert på deira årstall og måned-annotasjonar.
+     *
+     * @param month månaden som periodene skal vere annotert med
+     * @param aar   årstallet som periodene skal vere annotert med
+     * @return eit nytt predikat som matchar dei ønska underlagsperiodene
+     */
+    private static Predicate<Underlagsperiode> perioderFor(final Month month, final Aarstall aar) {
+        return p -> p.valgfriAnnotasjonFor(Month.class).map(a -> a.equals(month)).orElse(false) &&
+                p.valgfriAnnotasjonFor(Aarstall.class).map(a -> a.equals(aar)).orElse(false);
     }
 }
