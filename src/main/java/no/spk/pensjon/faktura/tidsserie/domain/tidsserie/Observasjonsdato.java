@@ -93,4 +93,13 @@ public class Observasjonsdato {
     public boolean tilhoeyrer(final Month month) {
         return dato.getMonth().equals(month);
     }
+
+    /**
+     * Returnerer observasjonsdatoens datoverdi.
+     *
+     * @return observasjonsdatoens datoverdi
+     */
+    public LocalDate dato() {
+        return dato;
+    }
 }

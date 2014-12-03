@@ -87,21 +87,40 @@ public class Tidsserie {
      * <p>
      * Algoritma genererer tidsseriane pr stillingsforhold og tek foreløpig ikkje hensyn til om medlemmet har
      * fleire overlappande stillingsforhold.
+     * <p>
+     * Kvar observasjon som genererast blir sendt vidare til <code>publikator</code>. For å unngå at den påvirkar/senkar
+     * ytelsen til prosesseringa anbefalast det sterkt at den utfører vidare behandling eller persistering av
+     * observasjonane asynkront.
      *
-     * @param medlemsdata       medlemsdata for medlemmet som skal prosesserast
-     * @param periode           observasjonsperioda som det skal genererast observasjonar pr siste dag i månaden for
-     * @param publikator        mottar kvar observasjon etterkvart som dei blir generert
-     * @param referanseperioder tidsperiodiserte referanseperioder som skal inkluderast i periodiseringa
-     *                          av stillingsforholdunderlaget
+     * @param publikator publikatoren som vil bli notifisert kvar gang ein ny observasjon blir genrerert i tidsseriane
+     *                   for medlemmet, den er ansvarlig for all vidare behandling/persistering av observasjonane
+     * @see #generer(Medlemsdata, Observasjonsperiode, StillingsforholdUnderlagCallback, Stream)
+     * @see #lagObservator(Observasjonspublikator)
      */
     public void generer(final Medlemsdata medlemsdata, final Observasjonsperiode periode,
                         final Observasjonspublikator<TidsserieObservasjon> publikator,
                         final Stream<Tidsperiode<?>> referanseperioder) {
+        generer(medlemsdata, periode, lagObservator(publikator), referanseperioder);
+    }
+
+    /**
+     * Genererer nye stillingsforholdunderlag for kvart stillingsforhold tilknytta medlemmet og sender dei vidare til
+     * <code>callback</code> for vidare behandling.
+     *
+     * @param medlemsdata       medlemsdata for medlemmet som skal prosesserast
+     * @param periode           observasjonsperioda som det skal genererast observasjonar pr siste dag i månaden for
+     * @param callback          callbacken som forløpande tar i mot og behandlar vidare kvart stillingsforholdunderlag
+     *                          som blir generert for medlemmet
+     * @param referanseperioder tidsperiodiserte referanseperioder som skal inkluderast i periodiseringa
+     *                          av stillingsforholdunderlaget
+     */
+    public void generer(final Medlemsdata medlemsdata, final Observasjonsperiode periode,
+                        final StillingsforholdUnderlagCallback callback,
+                        final Stream<Tidsperiode<?>> referanseperioder) {
         final TidsserieUnderlagFacade fasade = new TidsserieUnderlagFacade();
         fasade.addReferansePerioder(referanseperioder);
         fasade.endreAnnoteringsstrategi(strategi);
-
-        fasade.prosesser(medlemsdata, lagObservator(publikator), periode);
+        fasade.prosesser(medlemsdata, callback, periode);
     }
 
     /**
@@ -114,7 +133,7 @@ public class Tidsserie {
      *                   stillingsforhold den prosesserer
      * @return ein ny callback som vil generere observasjonar for tidsserien
      */
-    StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator<TidsserieObservasjon> publikator) {
+    public StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator<TidsserieObservasjon> publikator) {
         return (stillingsforhold, underlag) -> {
             try {
                 aarsunderlag
