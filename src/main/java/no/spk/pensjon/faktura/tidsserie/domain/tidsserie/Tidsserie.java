@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 
@@ -58,6 +59,28 @@ public class Tidsserie {
 
     private final Aarsunderlag aarsunderlag = new Aarsunderlag();
 
+    private Feilhandtering feilhandtering = (s, u, t) -> {
+        System.err.println("Generering av tidsserie feila for stillingsforhold " + s.id());
+        System.err.println("Observasjonsunderlag: " + u);
+        t.printStackTrace(System.err);
+    };
+
+    /**
+     * Overstyrer feilhandteringsstrategien til tidsserien.
+     * <p>
+     * Alle {@link RuntimeException} eller subtyper av denne som blir kasta under generering av observasjonar
+     * for eit bestemt stillingsforhold, vil medføre at vidare prosessering av stillingsforholdet blir avbrutt
+     * umiddelbart.
+     * <p>
+     * Kva som skal skje med feilen som avbryt prosesseringa blir handtert av feilhandteringsstrategien som ein her
+     * overstyrer.
+     *
+     * @param feilhandtering den nye feilhandteringsstrategien som skal benyttast
+     */
+    public void overstyr(final Feilhandtering feilhandtering) {
+        this.feilhandtering = requireNonNull(feilhandtering, () -> "Feilhandteringstrategien er påkrevd, men var null");
+    }
+
     /**
      * Genererer nye tidsserar for kvart stillingsforhold tilknytta medlemmet og populerer tidsseriane
      * med observasjonar av maskinelt grunnlag pr stillingsforhold pr avtale pr år.
@@ -78,7 +101,21 @@ public class Tidsserie {
         fasade.addReferansePerioder(referanseperioder);
         fasade.endreAnnoteringsstrategi(strategi);
 
-        fasade.prosesser(medlemsdata, (stillingsforhold, underlag) -> {
+        fasade.prosesser(medlemsdata, lagObservator(publikator), periode);
+    }
+
+    /**
+     * Genererer ein ny callback som behandlar stillingsforholdunderlag og genererer månedlige observasjonar ved hjelp
+     * av års- og observasjonsunderlag utleda frå dette.
+     * <p>
+     * Kvar observasjon som blir generert blir publisert via <code>publikator</code>en.
+     *
+     * @param publikator publikatoren mottar alle observasjonane som blir generert av callbacken for kvart
+     *                   stillingsforhold den prosesserer
+     * @return ein ny callback som vil generere observasjonar for tidsserien
+     */
+    StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator<TidsserieObservasjon> publikator) {
+        return (stillingsforhold, underlag) -> {
             try {
                 aarsunderlag
                         .genererUnderlagPrAar(underlag)
@@ -86,9 +123,9 @@ public class Tidsserie {
                         .flatMap(this::genererObservasjonPrAvtale)
                         .forEach(publikator::publiser);
             } catch (final RuntimeException e) {
-                e.printStackTrace(System.err);
+                feilhandtering.handterFeil(stillingsforhold, underlag, e);
             }
-        }, periode);
+        };
     }
 
     /**
