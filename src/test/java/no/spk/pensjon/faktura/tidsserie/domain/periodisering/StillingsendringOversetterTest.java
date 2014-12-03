@@ -12,6 +12,26 @@ public class StillingsendringOversetterTest {
     private final StillingsendringOversetter oversetter = new StillingsendringOversetter();
 
     /**
+     * Verifiserer at dersom funksjonstillegg er tom, kun inneheld whitespace eller er lik 0
+     * så blir det tolka som at ein ikkje har funksjonstillegg.
+     */
+    @Test
+    public void skalTolkeTomtFunksjonstilleggEllerLikKroner0SomHarIkkjeFunksjonstillegg() {
+        assertThat(oversetter.readFunksjonstillegg(asList("0"), 0))
+                .as("stillingsendringas funksjonstillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFunksjonstillegg(asList(""), 0))
+                .as("stillingsendringas funksjonstillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFunksjonstillegg(asList(" "), 0))
+                .as("stillingsendringas funksjonstillegg")
+                .isEqualTo(empty());
+    }
+
+
+    /**
      * Verifiserer at dersom variable tillegg er tom, kun inneheld whitespace eller er lik 0
      * så blir det tolka som at ein ikkje har faste tillegg.
      */

@@ -39,6 +39,8 @@ public class Stillingsendring {
 
     private Optional<Variabletillegg> variabletillegg = empty();
 
+    private Optional<Funksjonstillegg> funksjonstillegg = empty();
+
     /**
      * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
      *
@@ -213,6 +215,27 @@ public class Stillingsendring {
      */
     public Stillingsendring variabletillegg(final Optional<Variabletillegg> variabletillegg) {
         this.variabletillegg = requireNonNull(variabletillegg);
+        return this;
+    }
+
+    /**
+     * Funksjonstillegget i årslønn for stillinga.
+     * <p>
+     * Funksjonstillegget som blir innrapportert skal ikkje deltidsjusterast og blir derfor innrapportert utan å ta
+     * vere kobla på noko vis til stillingas stillingsprosent. Tillegget skal representere totalt funksjonstillegg
+     * for heile premieåret, på samme måte som innrapportert lønn gjeld heile året.
+     *
+     * @return funksjonstillegget for i årslønn for stillinga
+     */
+    public Optional<Funksjonstillegg> funksjonstillegg() {
+        return funksjonstillegg;
+    }
+
+    /**
+     * @see #funksjonstillegg()
+     */
+    public Stillingsendring funksjonstillegg(final Optional<Funksjonstillegg> funksjonstillegg) {
+        this.funksjonstillegg = requireNonNull(funksjonstillegg);
         return this;
     }
 

@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
@@ -55,6 +56,30 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    @Test
+    public void skalAnnotereUnderlagsperioderMedFunksjonstillegg() {
+        final Optional<Funksjonstillegg> expected = of(new Funksjonstillegg(kroner(1_240)));
+        assertAnnotasjon(
+                annoter(
+                        eiTomPeriode()
+                                .fraOgMed(dato("2014.01.01"))
+                                .tilOgMed(dato("2014.01.31"))
+                                .medKobling(
+                                        new StillingsforholdPeriode(dato("2012.09.01"), empty())
+                                                .leggTilOverlappendeStillingsendringer(
+                                                        new Stillingsendring()
+                                                                .aksjonsdato(dato("2012.09.01"))
+                                                                .stillingsprosent(fulltid())
+                                                                .funksjonstillegg(
+                                                                        expected
+                                                                )
+                                                )
+                                )
+                )
+                , Funksjonstillegg.class)
+                .isEqualTo(expected);
     }
 
     @Test

@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.internal;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -26,6 +27,69 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at funksjonstillegg blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
+     * deltidsjusterte årslønna.
+     */
+    @Test
+    public void skalNedjustereFunksjonstilleggEtterAarsfaktor() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.01.01")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(36_500)))
+                        .med(new Funksjonstillegg(kroner(365_000)))
+        ).isEqualTo(kroner(100).plus(kroner(1_000)));
+    }
+
+    /**
+     * Verifiserer at maskinelt grunnlag framleis kan beregnast når underlagsperioda ikkje er annotert med funksjonstillegg
+     * slik at ein slepp å ta annotere perioder med funksjonstillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
+     * <p>
+     * Intensjonen med å unngå å annotere når verdien er lik kr 0, er å oppføre oss konsistent med lønnstrinnhandteringa
+     * for lønnstrinn 0, der vi også hoppar over og ikkje annoterer perioda med eit tomt lønnstrinn.
+     */
+    @Test
+    public void skalIkkjeFeileDersomPeriodeIkkjeErAnnotertMedFunksjonstillegg() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.12.31")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(403_700)))
+                        .uten(Funksjonstillegg.class)
+        ).isEqualTo(kroner(403_700));
+    }
+
+    /**
+     * Verifiserer at funksjonstillegg som er innrapportert blir brukt as is ved beregning av maskinelt grunnlag, uten
+     * å forsøke å deltidjustere dei basert på stillingsprosenten. Dette fordi funksjonstillegg er uavhengig av
+     * stillingsprosent og derfor aldri skal deltidsjusterast.
+     */
+    @Test
+    public void skalIkkjeDeltidsjustereFunksjonstillegg() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.12.31")
+                        .med(new Stillingsprosent(new Prosent("10%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(403_700)))
+                        .med(new Funksjonstillegg(kroner(14_400)))
+        ).isEqualTo(kroner(403_700).plus(kroner(14_400)));
+    }
+
+    /**
+     * Verifiserer at funksjonstillegg blir inkludert i sluttsummen ved beregning av maskinelt grunnlag.
+     */
+    @Test
+    public void skalInkludereFunksjonstilleggIBeregningar() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.12.31")
+                        .med(new Stillingsprosent(new Prosent("100%")))
+                        .med(new Aarstall(2007))
+                        .med(new DeltidsjustertLoenn(kroner(403_700)))
+                        .med(new Funksjonstillegg(kroner(14_400)))
+        ).isEqualTo(kroner(403_700).plus(kroner(14_400)));
+    }
 
     /**
      * Verifiserer at dei variable tillegga blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
@@ -88,11 +152,6 @@ public class MaskineltGrunnlagRegelTest {
                         .med(new DeltidsjustertLoenn(kroner(403_700)))
                         .med(new Variabletillegg(kroner(14_400)))
         ).isEqualTo(kroner(403_700).plus(kroner(14_400)));
-    }
-
-    @Test
-    @Ignore
-    public void skalInkludereFunksjonsTilleggIBeregningar() {
     }
 
     /**

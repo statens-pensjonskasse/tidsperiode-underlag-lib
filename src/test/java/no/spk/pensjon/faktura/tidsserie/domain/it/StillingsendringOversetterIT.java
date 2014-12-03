@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.it;
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
@@ -153,6 +154,19 @@ public class StillingsendringOversetterIT {
     }
 
     /**
+     * Verifiserer at oversettinga hentar innrapporterte funksjonstillegg i lønn frå kolonne nr 14 / index 13.
+     */
+    @Test
+    public void skalHenteUtFunksjonstilleggFraaKolonne14() {
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::funksjonstillegg)
+        ).as("funksjonstillegg frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(13), this::tilFunksjonstillegg)
+                );
+    }
+
+    /**
      * Verifiserer at oversettinga hentar aksjonsdato frå kolonne nr 15 / index 14.
      */
     @Test
@@ -175,6 +189,10 @@ public class StillingsendringOversetterIT {
 
     private Optional<Fastetillegg> tilFastetillegg(final String text) {
         return valgfri(text).map(Long::valueOf).filter(tall -> tall > 0).map(Kroner::new).map(Fastetillegg::new);
+    }
+
+    private Optional<Funksjonstillegg> tilFunksjonstillegg(final String text) {
+        return valgfri(text).map(Long::valueOf).filter(tall -> tall > 0).map(Kroner::new).map(Funksjonstillegg::new);
     }
 
     private Optional<Variabletillegg> tilVariabletillegg(final String text) {

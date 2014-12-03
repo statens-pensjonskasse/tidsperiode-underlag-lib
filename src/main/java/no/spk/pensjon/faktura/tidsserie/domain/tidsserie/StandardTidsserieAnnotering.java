@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
@@ -46,6 +47,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
             periode.annoter(DeltidsjustertLoenn.class, gjeldende(stillingsforhold).loenn());
             periode.annoter(Fastetillegg.class, gjeldende(stillingsforhold).fastetillegg());
             periode.annoter(Variabletillegg.class, gjeldende(stillingsforhold).variabletillegg());
+            periode.annoter(Funksjonstillegg.class, gjeldende(stillingsforhold).funksjonstillegg());
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
             periode.annoter(Aarstall.class, aar.aarstall());
