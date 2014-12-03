@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
@@ -294,6 +295,7 @@ public class TidsserieIT {
                 Stream.concat(
                         Stream.<Tidsperiode<?>>of(
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new MaskineltGrunnlagRegel()),
+                                new Regelperiode<>(dato("1917.01.01"), empty(), new LoennstilleggRegel()),
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new AarsfaktorRegel()),
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new DeltidsjustertLoennRegel()),
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new AntallDagarRegel()),
