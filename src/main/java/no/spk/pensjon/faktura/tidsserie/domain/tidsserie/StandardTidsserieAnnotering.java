@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
@@ -34,7 +35,9 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             periode.annoter(Stillingsprosent.class, gjeldende(stillingsforhold).stillingsprosent());
-            periode.annoter(Loennstrinn.class, gjeldende(stillingsforhold).loennstrinn());
+            gjeldende(stillingsforhold).loennstrinn().ifPresent((Loennstrinn loennstrinn) -> {
+                annoterLoennForLoennstrinn(periode, loennstrinn);
+            });
             periode.annoter(DeltidsjustertLoenn.class, gjeldende(stillingsforhold).loenn());
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
@@ -44,6 +47,15 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
             periode.annoter(Month.class, m.toMonth());
         });
         markerSisteUnderlagsperiodeSomSistePeriodeVissStillingsforholdetErSluttmeldt(underlag, periode);
+    }
+
+    private void annoterLoennForLoennstrinn(Underlagsperiode periode, Loennstrinn loennstrinn) {
+        periode.annoter(Loennstrinn.class, loennstrinn);
+
+        final FinnLoennForLoennstrinn oppslag = new FinnLoennForLoennstrinn(periode, loennstrinn);
+        oppslag.loennForLoennstrinn().ifPresent((LoennstrinnBeloep beloep) -> {
+            periode.annoter(LoennstrinnBeloep.class, beloep);
+        });
     }
 
     private Stillingsendring gjeldende(final StillingsforholdPeriode periode) {

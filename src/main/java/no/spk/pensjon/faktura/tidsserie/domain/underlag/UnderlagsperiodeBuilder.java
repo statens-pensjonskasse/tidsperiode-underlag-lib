@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 
 import java.time.LocalDate;
+import java.util.stream.Stream;
 
 /**
  * Builder for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode}.
@@ -116,6 +117,17 @@ public class UnderlagsperiodeBuilder {
      */
     public UnderlagsperiodeBuilder medKobling(final Tidsperiode<?> kobling) {
         koblingar.add(kobling);
+        return this;
+    }
+
+    /**
+     * Legger til alle koblingane som perioder bygd seinare av builderen skal bli kobla til.
+     *
+     * @param perioder ein straum med tidsperioder som framtidige underlagsperioder skal koblast til
+     * @return <code>this</code>
+     */
+    public UnderlagsperiodeBuilder medKoblingar(Stream<? extends Tidsperiode<?>> perioder) {
+        perioder.forEach(this::medKobling);
         return this;
     }
 

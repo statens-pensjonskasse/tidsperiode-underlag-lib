@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -11,4 +12,28 @@ class Feilmeldingar {
 
     static final Supplier<String> AARSTALL_PAAKREVD = () -> "årstall er påkrevd, men var null";
     static final Supplier<String> MAANED_PAAKREVD = () -> "måned er påkrevd, men var null";
+
+    /**
+     * Oversetting frå <code>rad</code> til
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode} har feila
+     * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
+     *
+     * @param rad input-rada som inneholdt feil antall kolonner for ei statlig lønnstrinnperiode
+     * @return ei feilmelding som beskriv kva som er forventa format på rada og kva den faktisk inneholdt
+     */
+    public static String ugyldigAntallKolonnerForStatligLoennstrinn(final List<String> rad) {
+        return ugyldigAntallKolonner(
+                rad,
+                "stillingsendring",
+                "typeindikator, lønnstrinn, frå og med-dato, til og med-dato, beløp"
+        );
+    }
+
+    private static String ugyldigAntallKolonner(List<String> rad, String type, String kolonner) {
+        return "Rada inneheldt ikkje forventa antall kolonner.\n"
+                + "Ei " + type
+                + " må inneholde følgjande kolonner i angitt rekkefølge:\n"
+                + kolonner + ".\n"
+                + "Rada som feila: " + rad;
+    }
 }

@@ -4,32 +4,43 @@ import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder.grupper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class StandardTidsserieAnnoteringTest {
+    @Rule
+    public final ExpectedException e = ExpectedException.none();
+
     private final StandardTidsserieAnnotering annotator = new StandardTidsserieAnnotering();
 
     private final Underlag underlag = mock(Underlag.class);
@@ -37,6 +48,114 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    /**
+     * Verifiserer at annoteringa feila viss lønnstrinnperiodene er inkonsitente og det eksisterer meir
+     * enn ei lønnstrinnperiode som er gjeldande for eit og samme lønnstrinn innanfor samme tidsrom.
+     */
+    @Test
+    public void skalFeileDersomMeirEnnEiLoennstrinnperiodeErGjeldandeInnanforSammeTidsperiode() {
+        final Loennstrinn loennstrinn = new Loennstrinn(53);
+
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Det er oppdaga fleire lønnstrinnperioder for");
+        e.expectMessage(loennstrinn.toString());
+
+        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2007.01.23"), empty())
+                .leggTilOverlappendeStillingsendringer(
+                        new Stillingsendring()
+                                .stillingsprosent(fulltid())
+                                .aksjonsdato(dato("2007.01.23"))
+                                .aksjonskode("011")
+                                .loennstrinn(of(loennstrinn))
+                );
+        annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2013.02.25"))
+                        .tilOgMed(dato("2013.02.28"))
+                        .medKobling(
+                                stilling
+                        )
+                        .medKoblingar(
+                                grupper(
+                                        Stream.of(
+                                                new StatligLoennstrinnperiode(dato("2009.05.01"), empty(),
+                                                        loennstrinn, new Kroner(150_000)
+                                                ),
+                                                new StatligLoennstrinnperiode(dato("2010.05.01"), empty(),
+                                                        loennstrinn, new Kroner(300_000)
+                                                )
+                                        )
+                                )
+                        )
+        );
+    }
+
+    /**
+     * Verifiserer at underlagsperioder der stillinga er innrapportert med lønnstrinn og der vi har ei kobling til
+     * lønnstrinnperioder, blir annotert med gjeldande lønnstrinnbeløp.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperiodeMedLoennstrinnBeloepForLoennstrinnetDersomStillingaBrukarLoennstrinnOgPeriodaErKoblaTilLoennstrinnPerioder() {
+        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2007.01.23"), empty())
+                .leggTilOverlappendeStillingsendringer(
+                        new Stillingsendring()
+                                .stillingsprosent(fulltid())
+                                .aksjonsdato(dato("2007.01.23"))
+                                .aksjonskode("011")
+                                .loennstrinn(of(loennstrinn(42)))
+                );
+        final Underlag underlag = annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2012.01.01"))
+                        .tilOgMed(dato("2012.06.30"))
+                        .medKobling(
+                                stilling
+                        )
+                        .medKoblingar(
+                                grupper(
+                                        Stream.of(
+                                                new StatligLoennstrinnperiode(dato("2009.05.01"), empty(),
+                                                        loennstrinn(41), kroner(150_000)
+                                                ),
+                                                new StatligLoennstrinnperiode(dato("2010.05.01"), empty(),
+                                                        loennstrinn(42), kroner(300_000)
+                                                ),
+                                                new StatligLoennstrinnperiode(dato("2011.05.01"), empty(),
+                                                        loennstrinn(43), kroner(450_000)
+                                                )
+                                        )
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), LoennstrinnBeloep.class)
+                .isEqualTo(of(new LoennstrinnBeloep(kroner(300_000))));
+    }
+
+    /**
+     * Verifiserer at annoteringa ikkje feilar dersom den ikkje klarer å finne gjeldande lønnstrinnbeløp for
+     * stillingas lønnstrinn.
+     */
+    @Test
+    public void skalIkkjeFeileDersomAnnoteringaIkkjeFinnEitLoennstrinnBeloepForPeriodasLoennstrinn() {
+        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2007.01.23"), empty())
+                .leggTilOverlappendeStillingsendringer(
+                        new Stillingsendring()
+                                .stillingsprosent(fulltid())
+                                .aksjonsdato(dato("2007.01.23"))
+                                .aksjonskode("011")
+                                .loennstrinn(of(new Loennstrinn(42)))
+                );
+        final Underlag underlag = annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2012.01.01"))
+                        .tilOgMed(dato("2012.06.30"))
+                        .medKobling(
+                                stilling
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), LoennstrinnBeloep.class).isEqualTo(empty());
     }
 
     /**

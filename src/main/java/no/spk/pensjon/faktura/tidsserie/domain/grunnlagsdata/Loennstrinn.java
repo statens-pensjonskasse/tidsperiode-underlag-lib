@@ -32,13 +32,33 @@ public class Loennstrinn {
         this(Integer.parseInt(text));
     }
 
+    /**
+     * Konstruerer eit nytt lønnstrinn.
+     *
+     * @param trinn eit tall som indikerer kva for eit lønnstrinn vi skal opprette
+     * @return eit nytt lønnstrinn for det angitte trinnet
+     */
+    public static Loennstrinn loennstrinn(final int trinn) {
+        return new Loennstrinn(trinn);
+    }
+
+    /**
+     * Er verdien av lønnstrinnet lik den angitte verdien?
+     *
+     * @param trinn verdien som lønnstrinnets verdi skal samanliknast mot
+     * @return <code>true</code> viss verdiane er like, <code>false</code> ellers
+     */
+    public boolean erTrinn(final int trinn) {
+        return this.trinn == trinn;
+    }
+
     @Override
     public int hashCode() {
         return trinn;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         }
@@ -49,7 +69,7 @@ public class Loennstrinn {
             return false;
         }
         Loennstrinn other = (Loennstrinn) obj;
-        return trinn == other.trinn;
+        return other.erTrinn(trinn);
     }
 
     @Override
