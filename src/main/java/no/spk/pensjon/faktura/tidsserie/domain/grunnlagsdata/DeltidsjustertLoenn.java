@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public class DeltidsjustertLoenn {
     private static final Supplier<String> VALIDER_BELOEP = () -> "beløp er påkrevd, men var null";
 
-    public final Kroner beloep;
+    private final Kroner beloep;
 
     /**
      * Konstruerer ei ny instans som representerer den deltidsjusterte lønna i kroner.
@@ -33,6 +33,15 @@ public class DeltidsjustertLoenn {
     public DeltidsjustertLoenn(final Kroner beloep) {
         requireNonNull(beloep, VALIDER_BELOEP);
         this.beloep = beloep;
+    }
+
+    /**
+     * Kronebeløpet som representerer den deltidsjusterte årslønna.
+     *
+     * @return kronebeløpet for den deltidsjusterte årslønna
+     */
+    public Kroner beloep() {
+        return beloep;
     }
 
     @Override

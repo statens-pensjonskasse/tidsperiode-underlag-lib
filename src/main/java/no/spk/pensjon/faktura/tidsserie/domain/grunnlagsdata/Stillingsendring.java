@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.time.LocalDate.MIN;
+import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
@@ -31,7 +32,14 @@ public class Stillingsendring {
     private Optional<Stillingsprosent> stillingsprosent = empty();
 
     private Optional<Loennstrinn> loennstrinn = empty();
+
     private Optional<DeltidsjustertLoenn> loenn;
+
+    private Optional<Fastetillegg> fastetillegg = empty();
+
+    private Optional<Variabletillegg> variabletillegg = empty();
+
+    private Optional<Funksjonstillegg> funksjonstillegg = empty();
 
     /**
      * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
@@ -165,6 +173,69 @@ public class Stillingsendring {
      */
     public Stillingsendring loenn(final Optional<DeltidsjustertLoenn> loenn) {
         this.loenn = loenn;
+        return this;
+    }
+
+    /**
+     * Det faste tillegget i årslønn for stillinga.
+     * <p>
+     * Det faste tillegget som blir innrapportert skal vere innrapportert deltidsjustert og det skal representere
+     * totalt fast tillegg for heile premieåret, på samme måte som innrapportert lønn er deltidsjustert og gjeld
+     * heile året.
+     *
+     * @return det faste tillegget i årslønn for stillinga
+     */
+    public Optional<Fastetillegg> fastetillegg() {
+        return fastetillegg;
+    }
+
+    /**
+     * @see #fastetillegg()
+     */
+    public Stillingsendring fastetillegg(final Optional<Fastetillegg> fastetillegg) {
+        this.fastetillegg = requireNonNull(fastetillegg);
+        return this;
+    }
+
+    /**
+     * Det variable tillegget i årslønn for stillinga.
+     * <p>
+     * Det variable tillegget som blir innrapportert skal vere innrapportert deltidsjustert og det skal representere
+     * totalt variabelt tillegg for heile premieåret, på samme måte som innrapportert lønn er deltidsjustert og gjeld
+     * heile året.
+     *
+     * @return det variable tillegget i årslønn for stillinga
+     */
+    public Optional<Variabletillegg> variabletillegg() {
+        return variabletillegg;
+    }
+
+    /**
+     * @see #variabletillegg()
+     */
+    public Stillingsendring variabletillegg(final Optional<Variabletillegg> variabletillegg) {
+        this.variabletillegg = requireNonNull(variabletillegg);
+        return this;
+    }
+
+    /**
+     * Funksjonstillegget i årslønn for stillinga.
+     * <p>
+     * Funksjonstillegget som blir innrapportert skal ikkje deltidsjusterast og blir derfor innrapportert utan å ta
+     * vere kobla på noko vis til stillingas stillingsprosent. Tillegget skal representere totalt funksjonstillegg
+     * for heile premieåret, på samme måte som innrapportert lønn gjeld heile året.
+     *
+     * @return funksjonstillegget for i årslønn for stillinga
+     */
+    public Optional<Funksjonstillegg> funksjonstillegg() {
+        return funksjonstillegg;
+    }
+
+    /**
+     * @see #funksjonstillegg()
+     */
+    public Stillingsendring funksjonstillegg(final Optional<Funksjonstillegg> funksjonstillegg) {
+        this.funksjonstillegg = requireNonNull(funksjonstillegg);
         return this;
     }
 

@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
@@ -92,6 +93,69 @@ public class TidsserieIT {
         observasjonsperiode = new Observasjonsperiode(dato("2005.01.01"), dato("2014.12.31"));
 
         tidsserie = new Tidsserie();
+    }
+
+    /**
+     * Verifiserer at funksjonstillegg blir inkludert ved beregning av maskinelt grunnlag.
+     */
+    @Test
+    public void skalInkludereFunksjonstilleggIMaskineltGrunnlagForKvarObservasjonAv2006FraOgMedFebruar() {
+        final int aar = 2014;
+        assertThat(generer(STILLING_B, aar)).hasSize(12);
+        assertObservasjonAvMaskineltgrunnlag(aar, JANUARY, STILLING_B).isEqualTo(kroner(627_100 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, FEBRUARY, STILLING_B).isEqualTo(kroner(627_100 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, MARCH, STILLING_B).isEqualTo(kroner(627_100 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, APRIL, STILLING_B).isEqualTo(kroner(627_100 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, MAY, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, JUNE, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, JULY, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, AUGUST, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, SEPTEMBER, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, OCTOBER, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, NOVEMBER, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, DECEMBER, STILLING_B).isEqualTo(kroner(635_423 + 12_000));
+    }
+
+    /**
+     * Verifiserer at faste tillegg blir inkludert ved beregning av maskinelt grunnlag.
+     */
+    @Test
+    public void skalInkludereFasteTilleggIMaskineltGrunnlagForKvarObservasjonAv2006FraOgMedFebruar() {
+        final int aar = 2006;
+        assertThat(generer(STILLING_A, aar)).hasSize(12);
+        assertObservasjonAvMaskineltgrunnlag(aar, JANUARY, STILLING_A).isEqualTo(kroner(372_000));
+        assertObservasjonAvMaskineltgrunnlag(aar, FEBRUARY, STILLING_A).isEqualTo(kroner(387_059));
+        assertObservasjonAvMaskineltgrunnlag(aar, MARCH, STILLING_A).isEqualTo(kroner(397_407));
+        assertObservasjonAvMaskineltgrunnlag(aar, APRIL, STILLING_A).isEqualTo(kroner(383_665));
+        assertObservasjonAvMaskineltgrunnlag(aar, MAY, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, JUNE, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, JULY, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, AUGUST, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, SEPTEMBER, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, OCTOBER, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, NOVEMBER, STILLING_A).isEqualTo(kroner(397_855));
+        assertObservasjonAvMaskineltgrunnlag(aar, DECEMBER, STILLING_A).isEqualTo(kroner(397_855));
+    }
+
+    /**
+     * Verifiserer at variable tillegg blir inkludert ved beregning av maskinelt grunnlag.
+     */
+    @Test
+    public void skalInkludereVariableTilleggIMaskineltGrunnlagForKvarObservasjonAv2006FraOgMedFebruar() {
+        final int aar = 2007;
+        assertThat(generer(STILLING_A, aar)).hasSize(12);
+        assertObservasjonAvMaskineltgrunnlag(aar, JANUARY, STILLING_A).isEqualTo(kroner(418_100));
+        assertObservasjonAvMaskineltgrunnlag(aar, FEBRUARY, STILLING_A).isEqualTo(kroner(418_100));
+        assertObservasjonAvMaskineltgrunnlag(aar, MARCH, STILLING_A).isEqualTo(kroner(418_100));
+        assertObservasjonAvMaskineltgrunnlag(aar, APRIL, STILLING_A).isEqualTo(kroner(418_100));
+        assertObservasjonAvMaskineltgrunnlag(aar, MAY, STILLING_A).isEqualTo(kroner(421_725));
+        assertObservasjonAvMaskineltgrunnlag(aar, JUNE, STILLING_A).isEqualTo(kroner(430_461));
+        assertObservasjonAvMaskineltgrunnlag(aar, JULY, STILLING_A).isEqualTo(kroner(430_461));
+        assertObservasjonAvMaskineltgrunnlag(aar, AUGUST, STILLING_A).isEqualTo(kroner(430_461));
+        assertObservasjonAvMaskineltgrunnlag(aar, SEPTEMBER, STILLING_A).isEqualTo(kroner(430_461));
+        assertObservasjonAvMaskineltgrunnlag(aar, OCTOBER, STILLING_A).isEqualTo(kroner(430_461));
+        assertObservasjonAvMaskineltgrunnlag(aar, NOVEMBER, STILLING_A).isEqualTo(kroner(430_461));
+        assertObservasjonAvMaskineltgrunnlag(aar, DECEMBER, STILLING_A).isEqualTo(kroner(430_461));
     }
 
     /**
@@ -231,6 +295,7 @@ public class TidsserieIT {
                 Stream.concat(
                         Stream.<Tidsperiode<?>>of(
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new MaskineltGrunnlagRegel()),
+                                new Regelperiode<>(dato("1917.01.01"), empty(), new LoennstilleggRegel()),
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new AarsfaktorRegel()),
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new DeltidsjustertLoennRegel()),
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new AntallDagarRegel()),

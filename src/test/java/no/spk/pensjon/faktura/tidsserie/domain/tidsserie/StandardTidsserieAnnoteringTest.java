@@ -3,6 +3,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
@@ -10,6 +12,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
@@ -53,6 +56,78 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    @Test
+    public void skalAnnotereUnderlagsperioderMedFunksjonstillegg() {
+        final Optional<Funksjonstillegg> expected = of(new Funksjonstillegg(kroner(1_240)));
+        assertAnnotasjon(
+                annoter(
+                        eiTomPeriode()
+                                .fraOgMed(dato("2014.01.01"))
+                                .tilOgMed(dato("2014.01.31"))
+                                .medKobling(
+                                        new StillingsforholdPeriode(dato("2012.09.01"), empty())
+                                                .leggTilOverlappendeStillingsendringer(
+                                                        new Stillingsendring()
+                                                                .aksjonsdato(dato("2012.09.01"))
+                                                                .stillingsprosent(fulltid())
+                                                                .funksjonstillegg(
+                                                                        expected
+                                                                )
+                                                )
+                                )
+                )
+                , Funksjonstillegg.class)
+                .isEqualTo(expected);
+    }
+
+    @Test
+    public void skalAnnotereUnderlagsperioderMedFastetillegg() {
+        final Optional<Fastetillegg> expected = of(new Fastetillegg(kroner(10_000)));
+        assertAnnotasjon(
+                annoter(
+                        eiTomPeriode()
+                                .fraOgMed(dato("2006.02.01"))
+                                .tilOgMed(dato("2006.02.28"))
+                                .medKobling(
+                                        new StillingsforholdPeriode(dato("2005.08.15"), empty())
+                                                .leggTilOverlappendeStillingsendringer(
+                                                        new Stillingsendring()
+                                                                .aksjonsdato(dato("2005.08.15"))
+                                                                .stillingsprosent(fulltid())
+                                                                .fastetillegg(
+                                                                        expected
+                                                                )
+                                                )
+                                )
+                )
+                , Fastetillegg.class)
+                .isEqualTo(expected);
+    }
+
+    @Test
+    public void skalAnnotereUnderlagsperioderMedVariabletillegg() {
+        final Optional<Variabletillegg> expected = of(new Variabletillegg(kroner(10_000)));
+        assertAnnotasjon(
+                annoter(
+                        eiTomPeriode()
+                                .fraOgMed(dato("2007.01.01"))
+                                .tilOgMed(dato("2007.01.31"))
+                                .medKobling(
+                                        new StillingsforholdPeriode(dato("2007.01.01"), empty())
+                                                .leggTilOverlappendeStillingsendringer(
+                                                        new Stillingsendring()
+                                                                .aksjonsdato(dato("2007.01.01"))
+                                                                .stillingsprosent(fulltid())
+                                                                .variabletillegg(
+                                                                        expected
+                                                                )
+                                                )
+                                )
+                )
+                , Variabletillegg.class)
+                .isEqualTo(expected);
     }
 
     @Test
@@ -371,6 +446,10 @@ public class StandardTidsserieAnnoteringTest {
         periode.kobleTil(new Aar(new Aarstall(1990)));
 
         assertAnnotasjon(annoter(periode), Aarstall.class).isEqualTo(of(new Aarstall(1990)));
+    }
+
+    private Underlagsperiode annoter(final UnderlagsperiodeBuilder builder) {
+        return annoter(builder.bygg());
     }
 
     private Underlagsperiode annoter(final Underlagsperiode periode) {

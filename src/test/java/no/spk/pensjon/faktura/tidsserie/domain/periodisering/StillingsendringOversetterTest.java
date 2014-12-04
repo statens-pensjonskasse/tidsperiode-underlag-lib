@@ -12,6 +12,64 @@ public class StillingsendringOversetterTest {
     private final StillingsendringOversetter oversetter = new StillingsendringOversetter();
 
     /**
+     * Verifiserer at dersom funksjonstillegg er tom, kun inneheld whitespace eller er lik 0
+     * så blir det tolka som at ein ikkje har funksjonstillegg.
+     */
+    @Test
+    public void skalTolkeTomtFunksjonstilleggEllerLikKroner0SomHarIkkjeFunksjonstillegg() {
+        assertThat(oversetter.readFunksjonstillegg(asList("0"), 0))
+                .as("stillingsendringas funksjonstillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFunksjonstillegg(asList(""), 0))
+                .as("stillingsendringas funksjonstillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFunksjonstillegg(asList(" "), 0))
+                .as("stillingsendringas funksjonstillegg")
+                .isEqualTo(empty());
+    }
+
+
+    /**
+     * Verifiserer at dersom variable tillegg er tom, kun inneheld whitespace eller er lik 0
+     * så blir det tolka som at ein ikkje har faste tillegg.
+     */
+    @Test
+    public void skalTolkeTommeVariabletilleggEllerLikKroner0SomHarIkkjeVariableTillegg() {
+        assertThat(oversetter.readVariabletillegg(asList("0"), 0))
+                .as("stillingsendringas variable tillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readVariabletillegg(asList(""), 0))
+                .as("stillingsendringas variable tillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readVariabletillegg(asList(" "), 0))
+                .as("stillingsendringas variable tillegg")
+                .isEqualTo(empty());
+    }
+
+    /**
+     * Verifiserer at dersom faste tillegg er tom, kun inneheld whitespace eller er lik 0
+     * så blir det tolka som at ein ikkje har faste tillegg.
+     */
+    @Test
+    public void skalTolkeTommeFastetilleggEllerLikKroner0SomHarIkkjeFasteTillegg() {
+        assertThat(oversetter.readFastetillegg(asList("0"), 0))
+                .as("stillingsendringas faste tillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFastetillegg(asList(""), 0))
+                .as("stillingsendringas faste tillegg")
+                .isEqualTo(empty());
+
+        assertThat(oversetter.readFastetillegg(asList(" "), 0))
+                .as("stillingsendringas faste tillegg")
+                .isEqualTo(empty());
+    }
+
+    /**
      * Verifiserer at dersom lønnstrinn er tom, kun inneheld whitespace eller er lik 0
      * så blir det tolka som at ein ikkje har lønnstrinn.
      */

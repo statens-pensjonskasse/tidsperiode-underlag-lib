@@ -2,6 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -22,6 +23,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    @Test
+    public void skalIkkjeAvkorteLoennstilleggMedAarsfaktorSidanDetBlirGjortAvLoennstilleggRegelenSjoelv() {
+        assertMaskineltGrunnlag(
+                periode("2013.01.01", "2013.01.01")
+                        .med(new Aarstall(2013))
+                        .med(new DeltidsjustertLoenn(new Kroner(0)))
+                        .med(new Fastetillegg(new Kroner(365_000)))
+        ).isEqualTo(new Kroner(1_000));
+    }
+
+    @Test
+    public void skalBeregneLoennstilleggViaAnnanRegel() {
+        e.expect(PaakrevdAnnotasjonManglarException.class);
+        e.expectMessage(LoennstilleggRegel.class.getSimpleName());
+
+        beregn(
+                periode("2013.01.01", "2013.12.31")
+                        .med(new Aarstall(2013))
+                        .med(new DeltidsjustertLoenn(new Kroner(0)))
+                        .uten(LoennstilleggRegel.class)
+        ).multiply(0d);
+    }
 
     @Test
     public void skalBeregneDeltidsjustertLoennViaAnnanRegel() {
@@ -70,6 +94,7 @@ public class MaskineltGrunnlagRegelTest {
                 .med(new AntallDagarRegel())
                 .med(new AarsfaktorRegel())
                 .med(new DeltidsjustertLoennRegel())
+                .med(new LoennstilleggRegel())
                 .med(new Stillingsprosent(new Prosent("100%")));
     }
 
@@ -80,5 +105,4 @@ public class MaskineltGrunnlagRegelTest {
     private Kroner beregn(final UnderlagsperiodeBuilder periode) {
         return periode.bygg().beregn(MaskineltGrunnlagRegel.class);
     }
-
 }
