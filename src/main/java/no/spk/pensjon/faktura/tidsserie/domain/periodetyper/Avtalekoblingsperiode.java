@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsperiode> {
     private final StillingsforholdId stillingsforhold;
     private final AvtaleId avtale;
+    private final Ordning ordning;
 
     /**
      * Konstruerer ei ny avtalekobling mellom eit stillingsforhold og ein avtale i ei bestemt tidsperiode.
@@ -29,15 +31,16 @@ public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsper
      * @param tilOgMed         til og med-dato for perioda
      * @param stillingsforhold stillingsforholdet avtalekoblinga tilhøyrer
      * @param avtale           avtalen stillingsforholdet er tilknytta innanfor perioda
+     * @param ordning          pensjonsordninga avtalen er tilknytta
      * @throws NullPointerException dersom verdien på eit eller fleire parameter er <code>null</code>
      */
     public Avtalekoblingsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
-                                 final StillingsforholdId stillingsforhold, final AvtaleId avtale) {
+                                 final StillingsforholdId stillingsforhold, final AvtaleId avtale,
+                                 final Ordning ordning) {
         super(fraOgMed, tilOgMed);
-        requireNonNull(stillingsforhold, () -> "stillingsforhold er påkrevd, men var null");
-        requireNonNull(avtale, () -> "avtale er påkrevd, men var null");
-        this.stillingsforhold = stillingsforhold;
-        this.avtale = avtale;
+        this.stillingsforhold = requireNonNull(stillingsforhold, () -> "stillingsforhold er påkrevd, men var null");
+        this.avtale = requireNonNull(avtale, () -> "avtale er påkrevd, men var null");
+        this.ordning = requireNonNull(ordning, () -> "ordning er påkrevd, men var null");
     }
 
     /**
@@ -67,6 +70,15 @@ public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsper
      */
     public AvtaleId avtale() {
         return avtale;
+    }
+
+    /**
+     * Pensjonsordninga avtalen er tilknytta.
+     *
+     * @return pensjonsordninga rdninga avtalen er tilknytta
+     */
+    public Ordning ordning() {
+        return ordning;
     }
 
     @Override

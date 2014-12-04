@@ -3,14 +3,14 @@ package no.spk.pensjon.faktura.tidsserie.domain.it;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiodeOversetter;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class LoennstrinnperioderIT {
     @ClassRule
-    public final static EksempelDataForLoennstrinn data = new EksempelDataForLoennstrinn();
+    public final static EksempelDataForStatligeLoennstrinn data = new EksempelDataForStatligeLoennstrinn();
 
     private final StatligLoennstrinnperiodeOversetter oversetter = new StatligLoennstrinnperiodeOversetter();
 
@@ -43,7 +43,7 @@ public class LoennstrinnperioderIT {
      */
     @Test
     public void skalGruppereOgGenerereEinInstansAvLoennstrinnperioderPrUnikTidsperiode() {
-        final List<Loennstrinnperioder> grupper = grupper(statligeLoennstrinn()).collect(toList());
+        final List<Loennstrinnperioder> grupper = grupper(Ordning.SPK, statligeLoennstrinn()).collect(toList());
         assertThat(grupper)
                 .as("statlige lønnstrinnperioder gruppert på tidsperiode")
                 .hasSize(69); // Antall unike perioder i CSV-fila
@@ -87,15 +87,15 @@ public class LoennstrinnperioderIT {
     private AbstractObjectAssert<?, Optional<LoennstrinnBeloep>> assertLoenn(
             final int loennstrinn, final LocalDate dato) {
         return assertThat(
-                grupper(statligeLoennstrinn())
+                grupper(Ordning.SPK, statligeLoennstrinn())
                         .filter(p -> p.overlapper(dato))
                         .findFirst()
-                        .map(p -> p.loennFor(new Loennstrinn(loennstrinn)))
+                        .map(p -> p.loennFor(new Loennstrinn(loennstrinn), empty()))
                         .get()
         ).as("gjeldande lønn for lønnstrinn " + loennstrinn + " pr " + dato);
     }
 
-    private Stream<StatligLoennstrinnperiode> statligeLoennstrinn() {
+    private Stream<Loennstrinnperiode<?>> statligeLoennstrinn() {
         return data
                 .stream()
                 .filter(oversetter::supports)

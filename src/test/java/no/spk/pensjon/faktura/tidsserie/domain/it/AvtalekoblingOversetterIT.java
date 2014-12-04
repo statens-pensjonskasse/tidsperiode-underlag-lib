@@ -41,7 +41,7 @@ public class AvtalekoblingOversetterIT {
     public void skalFeileMedEinGodBeskrivelseAvFeilenDersomAntallKolonnerErUlik7() {
         e.expect(IllegalArgumentException.class);
         e.expectMessage("Ei avtalekobling må inneholde følgjande kolonner i angitt rekkefølge");
-        e.expectMessage("typeindikator, fødselsdato, personnummer, stillingsforholdnummer, startdato, sluttdato og avtalenummer");
+        e.expectMessage("typeindikator, fødselsdato, personnummer, stillingsforholdnummer, startdato, sluttdato, avtalenummer og ordning");
         e.expectMessage("Rada som feila: ");
         e.expectMessage(emptyList().toString());
 

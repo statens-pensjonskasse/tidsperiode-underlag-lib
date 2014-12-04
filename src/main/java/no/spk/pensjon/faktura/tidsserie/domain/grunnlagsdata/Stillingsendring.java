@@ -31,6 +31,8 @@ public class Stillingsendring {
 
     private Optional<Stillingsprosent> stillingsprosent = empty();
 
+    private Optional<Stillingskode> stillingskode = empty();
+
     private Optional<Loennstrinn> loennstrinn = empty();
 
     private Optional<DeltidsjustertLoenn> loenn;
@@ -277,6 +279,25 @@ public class Stillingsendring {
      */
     public LocalDate registreringsdato() {
         return registreringsdato.orElse(MIN);
+    }
+
+    /**
+     * Stillingsforholdet si stillingskode.
+     * <p>
+     * For apotekordninga er feltet påkrevd for alle stillingar som er innrapportert, både med og uten lønnstrinn.
+     *
+     * @return stillingsendringa si stillingskode
+     */
+    public Optional<Stillingskode> stillingskode() {
+        return stillingskode;
+    }
+
+    /**
+     * @see #stillingskode()
+     */
+    public Stillingsendring stillingskode(final Optional<Stillingskode> stillingskode) {
+        this.stillingskode = requireNonNull(stillingskode);
+        return this;
     }
 
     @Override

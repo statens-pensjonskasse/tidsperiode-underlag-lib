@@ -9,6 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -176,6 +178,19 @@ public class StillingsendringOversetterIT {
         ).as("aksjonskoder frå stillingsendringane")
                 .containsExactlyElementsOf(
                         transform(rad -> rad.get(14), Datoar::dato)
+                );
+    }
+
+    /**
+     * Verifiserer at oversettinga hentar aksjonsdato frå kolonne nr 15 / index 14.
+     */
+    @Test
+    public void skalHenteUtStillingskodeFraKolonne16() {
+        assertThat(
+                transform(oversetter::oversett, Stillingsendring::stillingskode)
+        ).as("stillingskoder frå stillingsendringane")
+                .containsExactlyElementsOf(
+                        transform(rad -> rad.get(15), text -> of(Stillingskode.parse(text)))
                 );
     }
 

@@ -2,6 +2,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -30,18 +32,24 @@ public class FinnLoennForLoennstrinn {
 
     private final Underlagsperiode periode;
 
+    private final Ordning ordning;
+
     private final Loennstrinn loennstrinn;
+
+    private final Optional<Stillingskode> stillingskode;
 
     /**
      * Konstruerer ei ny algoritme som vil slå opp lønnstrinnets lønn
      * frå underlagsperiodas overlappande lønnstrinnperioder.
      *
-     * @param periode     underlagsperioda som inneheld koblingane og tidsperioda som lønna skal hentast ut frå og for
-     * @param loennstrinn lønnstrinnet som lønna skal hentast ut for
+     * @param periode underlagsperioda som inneheld koblingane og tidsperioda som lønna skal hentast ut frå og for
+     * @param ordning pensjonsordninga som regulerer lønnstrinndefinisjonane som skal brukast tilhøyrer
      */
-    public FinnLoennForLoennstrinn(final Underlagsperiode periode, final Loennstrinn loennstrinn) {
+    public FinnLoennForLoennstrinn(final Underlagsperiode periode, final Ordning ordning) {
         this.periode = periode;
-        this.loennstrinn = loennstrinn;
+        this.ordning = ordning;
+        this.loennstrinn = periode.annotasjonFor(Loennstrinn.class);
+        this.stillingskode = periode.valgfriAnnotasjonFor(Stillingskode.class);
     }
 
     /**
@@ -54,9 +62,10 @@ public class FinnLoennForLoennstrinn {
      */
     public Optional<LoennstrinnBeloep> loennForLoennstrinn() {
         return periode.koblingarAvType(Loennstrinnperioder.class)
+                .filter(p -> p.tilhoeyrer(ordning))
                 .filter(this::harLoennFor)
                 .reduce(this::add)
-                .map((Loennstrinnperioder gruppering) -> gruppering.loennFor(loennstrinn))
+                .map((Loennstrinnperioder gruppering) -> gruppering.loennFor(loennstrinn, stillingskode))
                 .flatMap((Optional<LoennstrinnBeloep> loenn) -> loenn);
     }
 
@@ -67,7 +76,7 @@ public class FinnLoennForLoennstrinn {
      * @return <code>true</code> dersom grupperinga inneheld lønn for lønnstrinnet, <code>false</code> ellers
      */
     private boolean harLoennFor(final Loennstrinnperioder gruppering) {
-        return gruppering.harLoennFor(loennstrinn);
+        return gruppering.harLoennFor(loennstrinn, stillingskode);
     }
 
     /**
@@ -97,7 +106,7 @@ public class FinnLoennForLoennstrinn {
             throw new IllegalStateException(
                     meirEnnEiGjeldandeLoennstrinnPeriodeForSammeLoennstrinnPaaSammeTid(
                             periode,
-                            loennstrinn,
+                            ordning, loennstrinn, stillingskode,
                             perioderForLoennstrinn
                                     .stream()
                                     .toArray(Loennstrinnperioder[]::new)

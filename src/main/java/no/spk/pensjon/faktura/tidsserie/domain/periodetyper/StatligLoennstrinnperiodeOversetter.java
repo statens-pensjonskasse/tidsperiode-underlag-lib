@@ -118,7 +118,6 @@ public class StatligLoennstrinnperiodeOversetter {
         );
     }
 
-
     /**
      * Hentar ut den tekstlige verdien frå den angitte indeksen. Dersom verdien er <code>null</code> eller
      * inneheld kun whitespace, eventuelt er heilt tom, blir ein {@link java.util.Optional#empty() tom} verdi returnert.

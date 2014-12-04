@@ -3,6 +3,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -15,7 +17,8 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Tarjei Skorgenes
  */
-public class StatligLoennstrinnperiode extends AbstractTidsperiode<StatligLoennstrinnperiode> {
+public class StatligLoennstrinnperiode extends AbstractTidsperiode<StatligLoennstrinnperiode>
+        implements Loennstrinnperiode<StatligLoennstrinnperiode> {
     private final Loennstrinn trinn;
     private final LoennstrinnBeloep beloep;
 
@@ -35,18 +38,33 @@ public class StatligLoennstrinnperiode extends AbstractTidsperiode<StatligLoenns
         super(fraOgMed, tilOgMed);
         this.trinn = requireNonNull(trinn, () -> "Lønnstrinn er påkrevd, men manglar");
         this.beloep = new LoennstrinnBeloep(
-                requireNonNull(beloep, () -> "Beløp for lønnstrinn " + trinn + " er påkrevd, men manglar")
+                requireNonNull(beloep, () -> "Beløp for " + trinn + " er påkrevd, men manglar")
         );
+    }
+
+    /**
+     * Er lønnstrinnperioda gjeldande for stillingar som jobbar på avtalar tilknytta den aktuelle ordninga?
+     * <p>
+     * Statlige lønnstrinnperioder er kun gjeldande for avtalar tilknytta SPK-ordninga.
+     *
+     * @param ordning pensjonsordninga lønnstrinnperioda skal sjekkast mot
+     * @return <code>true</code> dersom ordning er lik {@link Ordning#SPK}, <code>false</code> ellers
+     */
+    @Override
+    public boolean tilhoeyrer(final Ordning ordning) {
+        return Ordning.SPK.equals(ordning);
     }
 
     /**
      * Inneheld perioda gjeldande lønn for lønnstrinnet?
      *
-     * @param loennstrinn lønnstrinnet som det skal sjekkast mot
+     * @param loennstrinn   lønnstrinnet som det skal sjekkast mot
+     * @param stillingskode blir ignorert, statlige lønnstrinn er definert uavhengig av stillingskode
      * @return <code>true</code> dersom perioda inneheld gjeldande lønn for lønnstrinnet,
      * <code>false</code> ellers
      */
-    public boolean harLoennFor(final Loennstrinn loennstrinn) {
+    @Override
+    public boolean harLoennFor(final Loennstrinn loennstrinn, final Optional<Stillingskode> stillingskode) {
         return trinn.equals(loennstrinn);
     }
 
@@ -64,6 +82,7 @@ public class StatligLoennstrinnperiode extends AbstractTidsperiode<StatligLoenns
      *
      * @return lønna i 100% stilling tilknytta det aktuelle lønnstrinnet
      */
+    @Override
     public LoennstrinnBeloep beloep() {
         return beloep;
     }
