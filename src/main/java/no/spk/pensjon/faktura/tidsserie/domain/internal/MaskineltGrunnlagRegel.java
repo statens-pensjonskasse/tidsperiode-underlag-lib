@@ -23,18 +23,22 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
      */
     @Override
     public Kroner beregn(final Underlagsperiode periode) {
+        final Aarsfaktor aarsfaktor = periode
+                .beregn(AarsfaktorRegel.class);
         return Kroner.min(
-                periode
-                        .beregn(AarsfaktorRegel.class)
+                aarsfaktor
                         .multiply(
-                                periode.beregn(DeltidsjustertLoennRegel.class).beloep()
+                                periode.beregn(DeltidsjustertLoennRegel.class)
                         )
                         .plus(
                                 // Lønstillegga blir justert i henhold til årsfaktor av den andre regelen
                                 periode.beregn(LoennstilleggRegel.class)
-                        ),
-                periode
-                        .beregn(AarsfaktorRegel.class)
+                        )
+                        .plus(
+                                aarsfaktor.multiply(periode.beregn(MedregningsRegel.class))
+                        )
+                ,
+                aarsfaktor
                         .multiply(
                                 periode
                                         .beregn(OevreLoennsgrenseRegel.class)

@@ -56,7 +56,7 @@ public class StillingsforholdId {
 
     @Override
     public String toString() {
-        return id.toString();
+        return "stillingsforhold " + id.toString();
     }
 
     /**

@@ -3,11 +3,13 @@ package no.spk.pensjon.faktura.tidsserie.domain.it;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedregningsOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.junit.Before;
@@ -47,6 +49,7 @@ public class MedlemsdataPeriodiseringIT {
     public void _before() throws IOException {
         oversettere.put(Stillingsendring.class, new StillingsendringOversetter());
         oversettere.put(Avtalekoblingsperiode.class, new AvtalekoblingOversetter());
+        oversettere.put(Medregningsperiode.class, new MedregningsOversetter());
     }
 
     /**
@@ -66,31 +69,15 @@ public class MedlemsdataPeriodiseringIT {
      * stillingsforhold, ikkje ei periodisering som er splitta på alle stillingsforholda sine stillingsendringar.
      */
     @Test
-    @Ignore
     public void skalPeriodiserePrStillingsforhold() {
         final Map<StillingsforholdId, List<StillingsforholdPerioder>> stillingsforholdene = create()
                 .alleStillingsforholdPerioder()
-                .collect(groupingBy(s -> s.id()));
+                .collect(groupingBy(StillingsforholdPerioder::id));
         assertThat(stillingsforholdene).hasSize(3);
 
         assertPerioder(stillingsforholdene, STILLINGSFORHOLD_A).hasSize(14);
-        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_B).hasSize(3);
-        assertPerioder(stillingsforholdene, MEDREGNING_C).hasSize(1);
-    }
-
-    /**
-     * Verifiserer at vi får ut 2 stillingsforhold periodisert kun ut frå stillingsendringar tilknytta kvart enkelt
-     * stillingsforhold, ikkje ei periodisering som er splitta på alle stillingsforholda sine stillingsendringar.
-     */
-    @Test
-    public void skalPeriodiserePrStillingsforholdMenKunForStillingsEndringarInntilMedregningErImplementert() {
-        final Map<StillingsforholdId, List<StillingsforholdPerioder>> stillingsforholdene = create()
-                .alleStillingsforholdPerioder()
-                .collect(groupingBy(s -> s.id()));
-        assertThat(stillingsforholdene).hasSize(2);
-
-        assertPerioder(stillingsforholdene, STILLINGSFORHOLD_A).hasSize(14);
         assertPerioder(stillingsforholdene, STILLINGSFORHOLD_B).hasSize(5);
+        assertPerioder(stillingsforholdene, MEDREGNING_C).hasSize(1);
     }
 
     private Medlemsdata create() {

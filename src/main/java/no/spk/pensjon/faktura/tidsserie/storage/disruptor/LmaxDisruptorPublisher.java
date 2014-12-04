@@ -2,9 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.storage.disruptor;
 
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonspublikator;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieObservasjon;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +48,7 @@ public class LmaxDisruptorPublisher {
         while (!ringBuffer.hasAvailableCapacity(ringBuffer.getBufferSize())) {
             try {
                 if (i++ % 5000000 == 0) {
-                    LoggerFactory.getLogger(getClass()).info("Waiting for the ringbuffer to be drained...");
+                    //LoggerFactory.getLogger(getClass()).info("Waiting for the ringbuffer to be drained...");
                 }
                 Thread.sleep(0, 10000);
             } catch (final InterruptedException e) {

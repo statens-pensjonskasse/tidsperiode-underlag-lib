@@ -2,10 +2,11 @@ package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
-
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +21,8 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.BISTILLING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -44,7 +47,7 @@ public class MedlemsdataTest {
         oversettere.put(Stillingsendring.class, new MedlemsdataOversetter<Stillingsendring>() {
             @Override
             public Stillingsendring oversett(final List<String> rad) {
-                return new Stillingsendring();
+                return new Stillingsendring().stillingsforhold(StillingsforholdId.valueOf(rad.get(3))).aksjonsdato(now());
             }
 
             @Override
@@ -63,6 +66,17 @@ public class MedlemsdataTest {
                 return "1".equals(rad.get(0));
             }
         });
+        oversettere.put(Medregningsperiode.class, new MedlemsdataOversetter<Medregningsperiode>() {
+            @Override
+            public Medregningsperiode oversett(final List<String> rad) {
+                return new Medregningsperiode(now(), of(now()), new Medregning(kroner(10)), BISTILLING, StillingsforholdId.valueOf(rad.get(3)));
+            }
+
+            @Override
+            public boolean supports(List<String> rad) {
+                return "2".equals(rad.get(0));
+            }
+        });
     }
 
     /**
@@ -79,6 +93,26 @@ public class MedlemsdataTest {
         ).create();
         assertThat(data.avtalekoblingar(p -> true).collect(toList())).hasSize(2);
         assertThat(data.avtalekoblingar(p -> false).collect(toList())).hasSize(0);
+    }
+
+    /**
+     * Verifiserer at endringar av type 2 er dei einaste som blir forsøkt konvertert til
+     * {@link Medregningsperiode}.
+     */
+    @Test
+    public void skalKonvertereType2TilMedregning() {
+        final Medlemsdata data = medMedlemsdata(
+                avtalekoblingsdata(),
+                stillingsendringdata(),
+                medregningsdata(),
+                stillingsendringdata(),
+                medregningsdata(),
+                avtalekoblingsdata(),
+                stillingsendringdata(),
+                medregningsdata()
+        )
+                .create();
+        assertThat(data.alleMedregningsperioder()).as("alle medregningsperioder i " + data).hasSize(3);
     }
 
     /**
@@ -150,6 +184,25 @@ public class MedlemsdataTest {
     }
 
     /**
+     * Verifiserer at vi feilar dersom eit stillingsforhold har både medregning og historikk ettersom
+     * dette ikkje er logisk mulig, slike tilfelle skal ha forskjellige stillingsforholdnummer.
+     */
+    @Test
+    public void skalIkkjeTillateStillingsforholdSomHarHistorikkOgMedregning() {
+        final long stillingsforhold = 4321L;
+        e.expect(IllegalStateException.class);
+        e.expectMessage("kan enten vere tilknytta stillingshistorikk eller medregning, ikkje begge deler");
+        medMedlemsdata(
+                stillingsendringdata(stillingsforhold),
+                avtalekoblingsdata(stillingsforhold),
+                medregningsdata(stillingsforhold)
+        ).create()
+                .alleStillingsforholdPerioder()
+                .forEach(p -> {
+                });
+    }
+
+    /**
      * Verifiserer at dersom medlemsdata blir satt opp utan ein oversettar for ei datatype
      * så blir det ikkje kasta nokon exception under konvertering, ein skal handterere denne
      * feilen som om det ikkje er lagt til nokon medlemsdata av den ønska datatypen.
@@ -174,14 +227,30 @@ public class MedlemsdataTest {
     }
 
     private List<String> avtalekoblingsdata() {
-        return asList("1");
+        return avtalekoblingsdata(1L);
+    }
+
+    private List<String> avtalekoblingsdata(final long stillingsforhold) {
+        return rad("1", stillingsforhold);
     }
 
     private List<String> stillingsendringdata() {
-        return asList("0");
+        return stillingsendringdata(1L);
+    }
+
+    private List<String> stillingsendringdata(final long stillingsforhold) {
+        return rad("0", stillingsforhold);
     }
 
     private List<String> medregningsdata() {
-        return asList("2");
+        return medregningsdata(1L);
+    }
+
+    private List<String> medregningsdata(final long stillingsforhold) {
+        return rad("2", stillingsforhold);
+    }
+
+    private List<String> rad(final String type, long stillingsforhold) {
+        return asList(type, "19700101", "12345", Long.toString(stillingsforhold));
     }
 }

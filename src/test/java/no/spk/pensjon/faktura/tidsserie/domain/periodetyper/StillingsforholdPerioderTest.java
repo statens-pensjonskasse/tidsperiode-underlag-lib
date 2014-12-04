@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -52,8 +53,8 @@ public class StillingsforholdPerioderTest {
                                 .stillingsprosent(new Stillingsprosent(new Prosent("50%")))
                 )
         );
-        assertThat(periode.gjeldende()).as("gjeldende stillingsendring for " + periode)
-                .isSameAs(sistRegistrerteEndring);
+        assertThat(periode.gjeldendeEndring().map(Stillingsendring::registreringsdato)).as("gjeldende stillingsendring for " + periode)
+                .isEqualTo(of(sistRegistrerteEndring.registreringsdato()));
     }
 
     /**

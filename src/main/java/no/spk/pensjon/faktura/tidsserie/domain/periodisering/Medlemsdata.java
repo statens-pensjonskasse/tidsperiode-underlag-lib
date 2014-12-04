@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
 
 import java.util.List;
@@ -82,8 +83,8 @@ public class Medlemsdata {
      * @param medlemsdata datasettet som inneholder den medlemsspesifikke informasjonen som skal behandles
      * @param oversettere oversettere som er ansvarlige for å konvertere radene i <code>medlemsdata</code> til sterkt
      *                    typa verdiar ved senere behandling
-     * @throws java.lang.NullPointerException     viss noen av parameterverdiene er <code>null</code>
-     * @throws java.lang.IllegalArgumentException viss <code>medlemsdata</code> ikkje inneheld noko informasjon og er tom
+     * @throws NullPointerException     viss noen av parameterverdiene er <code>null</code>
+     * @throws IllegalArgumentException viss <code>medlemsdata</code> ikkje inneheld noko informasjon og er tom
      */
     public Medlemsdata(final List<List<String>> medlemsdata, final Map<Class<?>, MedlemsdataOversetter<?>> oversettere) {
         requireNonNull(medlemsdata, () -> "medlemsdata er påkrevd, men var null");
@@ -140,22 +141,33 @@ public class Medlemsdata {
      */
     public Stream<StillingsforholdPerioder> alleStillingsforholdPerioder() {
         return allePeriodiserbareStillingsforhold()
-                .map(id -> periodiserStillingsforhold(id))
-                .filter(o -> o.isPresent())
-                .map(o -> o.get());
+                .map(this::periodiserStillingsforhold)
+                .filter(Optional::isPresent)
+                .map(Optional::get);
     }
 
     /**
      * Periodiserer stillingsendringar eller medregningar tilknytta eit bestemt stillingsforhold.
-     * <p>
-     * TODO: Implementere støtte for periodisering basert på medregning.
      *
      * @param stillingsforhold stillingsforholdet som skal periodiserast
      * @return ein periodisert representasjon av stillingsforholdet viss det er tilknytta stillingsendringar eller medregning,
      * eller {@link java.util.Optional#empty()} dersom det ikkje eksisterer nokon informasjon tilknytta stillingsforholdet
+     * @throws IllegalStateException viss det eksisterer både historikk og medregningar som tilhøyrer stillingsforholdet
      */
     private Optional<StillingsforholdPerioder> periodiserStillingsforhold(final StillingsforholdId stillingsforhold) {
-        return periodiserHistorikk(stillingsforhold);
+        final Optional<StillingsforholdPerioder> historikk = periodiserHistorikk(stillingsforhold);
+        final Optional<StillingsforholdPerioder> medregning = periodiserMedregning(stillingsforhold);
+
+        if (medregning.isPresent() && historikk.isPresent()) {
+            throw new IllegalStateException(
+                    stillingsforhold + " kan enten vere tilknytta stillingshistorikk eller medregning, " +
+                            "ikkje begge deler"
+            );
+        }
+        if (medregning.isPresent()) {
+            return medregning;
+        }
+        return historikk;
     }
 
     /**
@@ -168,12 +180,43 @@ public class Medlemsdata {
     }
 
     /**
+     * Hentar ut alle medregningsperioder tilknytta medlemmet.
+     *
+     * @return alle medregningsperioder for medlemmet
+     */
+    Iterable<Medregningsperiode> alleMedregningsperioder() {
+        return finnOgOversett(Medregningsperiode.class).collect(toSet());
+    }
+
+    /**
      * Hentar ut alle avtalekoblingar tilknytta medlemmet.
      *
      * @return alle avtalekoblingar for medlemmet
      */
     Iterable<Avtalekoblingsperiode> alleAvtalekoblingsperioder() {
         return finnOgOversett(Avtalekoblingsperiode.class).collect(toSet());
+    }
+
+    /**
+     * Lokaliserer alle medregningsperioder tilknytta det angitte stillingsforholdet og genererer ei ny samling
+     * stillingsforholdperioder for kvar av desse.
+     * <p>
+     * Periodene som blir returnert blir sortert i henhold til fra og med dato slik at dei kjem i kronologisk
+     * rekkefølge på samme måte som perioder generert basert på stillingshistorikk gjer.
+     *
+     * @param stillingsforhold stillingsforholdet som skal forsøkast periodisert basert på medregning
+     * @return alle stillingsforholdperioder generert for stillingsforholdet basert på medregning, eller ingenting
+     * dersom stillingsforholdet ikkje har nokon medregningar
+     */
+    private Optional<StillingsforholdPerioder> periodiserMedregning(final StillingsforholdId stillingsforhold) {
+        final PeriodiserMedregning algoritme = new PeriodiserMedregning();
+        algoritme.addMedregning(
+                finnOgOversett(Medregningsperiode.class)
+                        .filter(e -> e.tilhoerer(stillingsforhold))
+        );
+        return algoritme
+                .periodiser()
+                .map(list -> new StillingsforholdPerioder(stillingsforhold, list));
     }
 
     /**

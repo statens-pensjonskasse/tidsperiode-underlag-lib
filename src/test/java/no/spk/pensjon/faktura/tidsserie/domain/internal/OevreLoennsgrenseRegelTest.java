@@ -9,9 +9,30 @@ import org.junit.Test;
 
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OevreLoennsgrenseRegelTest {
+    /**
+     * Verifiserer at grenseverdien ikkje blir justert i henhold til årsfaktor, det er øvre grense for totalt maskinelt
+     * grunnlag som skal bli returnert.
+     */
+    @Test
+    public void skalIkkjeAvgrenseOevreGrenseIHenholdTilAarsfaktor() {
+        assertThat(
+                eiPeriode()
+                        .fraOgMed(dato("2007.01.01"))
+                        .tilOgMed(dato("2007.01.31"))
+                        .med(new Grunnbeloep(kroner(20_000)))
+                        .med(Ordning.SPK)
+                        .med(fulltid())
+                        .bygg()
+                        .beregn(OevreLoennsgrenseRegel.class)
+        ).isEqualTo(
+                kroner(240_000)
+        );
+    }
+
     /**
      * Verifiserer at grenseverdien blir deltidsjustert slik at grensa blir lavare enn fulle 12G/10G
      * dersom det er ei deltidssstilling.
