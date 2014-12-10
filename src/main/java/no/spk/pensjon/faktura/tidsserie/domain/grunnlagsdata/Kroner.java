@@ -52,6 +52,17 @@ public final class Kroner implements Comparable<Kroner> {
     }
 
     /**
+     * Returnerer minste beløp av dei to kronebeløpa.
+     *
+     * @param a første kronebeløp
+     * @param b andre kronebeløp
+     * @return eit nytt kronebeløp som inneheld beløpet til den av a og b som inneheld det minste kronebeløpet
+     */
+    public static Kroner min(final Kroner a, final Kroner b) {
+        return new Kroner(Math.min(a.beloep, b.beloep));
+    }
+
+    /**
      * Multipliserer opp beløpet med <code>verdi</code>
      * og returnerer eit nytt beløp.
      *

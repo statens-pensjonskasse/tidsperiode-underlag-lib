@@ -3,7 +3,9 @@ package no.spk.pensjon.faktura.tidsserie.domain.internal;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
@@ -13,6 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -23,6 +26,56 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at lønn blir avgrensa til 12G for stillingar tilknytta SPK-ordninga.
+     */
+    @Test
+    public void skalAvgrenseLoennTilOevregrense12GForStillingarTilknyttaSpkOrdninga() {
+        assertMaskineltGrunnlag(
+                periode("2005.01.01", "2005.12.31")
+                        .med(new Aarstall(2005))
+                        .med(new DeltidsjustertLoenn(new Kroner(2_000_000)))
+                        .med(new Stillingsprosent(fulltid()))
+                        .med(Ordning.SPK)
+                        .med(new Grunnbeloep(new Kroner(50_000)))
+        ).isEqualTo(new Kroner(50_000).multiply(12));
+    }
+
+    /**
+     * Verifiserer at lønn blir avgrensa til 12G for stillingar tilknytta Opera-ordninga.
+     * <p>
+     * Merk at dette er kopiering av oppførsel frå den gamle systemløysinga for faktura fastsats, vi har ikkje funne
+     * nokon plass det er definert kva som er eller om det er ei øvre grense for Opera-ordninga.
+     */
+    @Test
+    public void skalAvgrenseLoennTilOevregrense12GForStillingarTilknyttaOperaOrdningaFordiViIkkjeHarNokoBedreKildeTilInformasjonOmDetteEnnOppfoerselIGamaltSystem() {
+        assertMaskineltGrunnlag(
+                periode("2005.01.01", "2005.12.31")
+                        .med(new Aarstall(2005))
+                        .med(new DeltidsjustertLoenn(new Kroner(3_000_000)))
+                        .med(new Stillingsprosent(fulltid()))
+                        .med(Ordning.OPERA)
+                        .med(new Grunnbeloep(new Kroner(30_000)))
+        ).isEqualTo(new Kroner(30_000).multiply(12));
+    }
+
+    /**
+     * Verifiserer at lønn blir avrensa til 10G for stillingar tilknytta apotekordninga.
+     * <p>
+     * Merk at dette er ei forenkling, perioda før 1. januar 2008 har andre reglar som ikkje er implementert.
+     */
+    @Test
+    public void skalAvgrenseLoennTilOevregrense10GForStillingarTilknyttaApotekordninga() {
+        assertMaskineltGrunnlag(
+                periode("2005.01.01", "2005.12.31")
+                        .med(new Aarstall(2005))
+                        .med(new DeltidsjustertLoenn(new Kroner(2_000_000)))
+                        .med(new Stillingsprosent(fulltid()))
+                        .med(Ordning.POA)
+                        .med(new Grunnbeloep(new Kroner(60_000)))
+        ).isEqualTo(new Kroner(60_000).multiply(10));
+    }
 
     @Test
     public void skalIkkjeAvkorteLoennstilleggMedAarsfaktorSidanDetBlirGjortAvLoennstilleggRegelenSjoelv() {
@@ -70,15 +123,6 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     @Test
-    public void skalBeregneMaskineltGrunnlagLikDeltidsjustertLoennUtenAaTaHensynTilOevreGrenseForLoenn() {
-        assertMaskineltGrunnlag(
-                periode("2012.01.01", "2012.12.31")
-                        .med(new Aarstall(2012))
-                        .med(new DeltidsjustertLoenn(new Kroner(50_000_000)))
-        ).isEqualTo(new Kroner(50_000_000));
-    }
-
-    @Test
     public void skalAvkorteMaskineltGrunnlagUtFraAarsfaktor() {
         assertMaskineltGrunnlag(
                 periode("2011.01.01", "2011.01.31")
@@ -95,7 +139,13 @@ public class MaskineltGrunnlagRegelTest {
                 .med(new AarsfaktorRegel())
                 .med(new DeltidsjustertLoennRegel())
                 .med(new LoennstilleggRegel())
-                .med(new Stillingsprosent(new Prosent("100%")));
+                .med(new Stillingsprosent(fulltid()))
+                .med(new OevreLoennsgrenseRegel())
+                .med(Ordning.SPK)
+                        // Brukar urealistisk høgt beløp for å unngå at det skal påvirke testar som ikkje er fokusert
+                        // på å teste beløp som blir påvirka av grunnbeløpet
+                .med(new Grunnbeloep(kroner(1_000_000)))
+                ;
     }
 
     private AbstractComparableAssert<?, Kroner> assertMaskineltGrunnlag(final UnderlagsperiodeBuilder periode) {
@@ -104,5 +154,9 @@ public class MaskineltGrunnlagRegelTest {
 
     private Kroner beregn(final UnderlagsperiodeBuilder periode) {
         return periode.bygg().beregn(MaskineltGrunnlagRegel.class);
+    }
+
+    private static Prosent fulltid() {
+        return new Prosent("100%");
     }
 }

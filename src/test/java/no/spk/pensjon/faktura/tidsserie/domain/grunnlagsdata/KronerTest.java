@@ -17,6 +17,11 @@ public class KronerTest {
     public final ExpectedException e = ExpectedException.none();
 
     @Test
+    public void skalReturnereMinsteVerdi() {
+        assertThat(Kroner.min(new Kroner(10_000), new Kroner(45))).isEqualTo(new Kroner(45));
+    }
+
+    @Test
     public void skalAvrundeVerdiTilNaermasterHeileKrone() {
         assertThat(new Kroner(1.5d).verdi()).isEqualTo(2L);
         assertThat(new Kroner(1.49d).verdi()).isEqualTo(1L);
@@ -116,7 +121,8 @@ public class KronerTest {
         assertCompareTo(1.49d, 1.5d).isLessThan(0);
         assertCompareTo(0.49d, 0.5d).isLessThan(0);
         assertCompareTo(-0.51d, -0.5d).isLessThan(0);
-        assertCompareTo(-1.51d, -1.5d).isLessThan(0);;
+        assertCompareTo(-1.51d, -1.5d).isLessThan(0);
+        ;
     }
 
     @Test

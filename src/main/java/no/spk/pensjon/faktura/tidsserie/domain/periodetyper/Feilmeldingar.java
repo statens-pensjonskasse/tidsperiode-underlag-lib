@@ -15,6 +15,22 @@ class Feilmeldingar {
 
     /**
      * Oversetting frå <code>rad</code> til
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode} har feila
+     * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
+     *
+     * @param rad input-rada som inneholdt feil antall kolonner for ei omregningsperiode
+     * @return ei feilmelding som beskriv kva som er forventa format på rada og kva den faktisk inneholdt
+     */
+    public static String ugyldigAntallKolonnerForOmregningsperiode(final List<String> rad) {
+        return ugyldigAntallKolonner(
+                rad,
+                "stillingsendring",
+                "typeindikator, frå og med-dato, til og med-dato, grunnbeløp"
+        );
+    }
+
+    /**
+     * Oversetting frå <code>rad</code> til
      * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode} har feila
      * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
      *
