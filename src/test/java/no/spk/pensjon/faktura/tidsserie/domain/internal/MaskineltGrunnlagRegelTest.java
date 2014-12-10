@@ -28,6 +28,25 @@ public class MaskineltGrunnlagRegelTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
+     * Verifiserer at avgrensing til øvre grense blir utført før maskinelt grunnlag blir justert i henhold til årsfaktor.
+     */
+    @Test
+    public void skalAvgrenseMaskineltGrunnlagTilAarsfaktorEtterAvgrensingTilOevreloennsgrense() {
+        assertMaskineltGrunnlag(
+                periode("2005.01.01", "2005.01.31")
+                        .med(new Aarstall(2005))
+                        .med(new DeltidsjustertLoenn(new Kroner(2_000_000)))
+                        .med(new Stillingsprosent(fulltid()))
+                        .med(Ordning.SPK)
+                        .med(new Grunnbeloep(new Kroner(50_000)))
+        ).isEqualTo(
+                new Aarsfaktor(31d / 365d).multiply(
+                        new Kroner(50_000).multiply(12)
+                )
+        );
+    }
+
+    /**
      * Verifiserer at lønn blir avgrensa til 12G for stillingar tilknytta SPK-ordninga.
      */
     @Test

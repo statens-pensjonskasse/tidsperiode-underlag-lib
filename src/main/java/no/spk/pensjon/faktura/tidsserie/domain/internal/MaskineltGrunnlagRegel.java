@@ -34,7 +34,11 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
                                 periode.beregn(LoennstilleggRegel.class)
                         ),
                 periode
-                        .beregn(OevreLoennsgrenseRegel.class)
+                        .beregn(AarsfaktorRegel.class)
+                        .multiply(
+                                periode
+                                        .beregn(OevreLoennsgrenseRegel.class)
+                        )
         );
     }
 }
