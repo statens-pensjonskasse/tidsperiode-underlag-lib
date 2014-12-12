@@ -11,9 +11,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.OmregningsperiodeOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiodeOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
@@ -76,7 +78,12 @@ public class TidsserieAvtalebytteIT {
     public static final EksempelDataForStatligeLoennstrinn loennstrinn = new EksempelDataForStatligeLoennstrinn();
 
     @ClassRule
+    public static final EksempelDataForOmregningsperioder omregningsperioder = new EksempelDataForOmregningsperioder();
+
+    @ClassRule
     public static final EksempelDataForMedlemMedAvtalebytte medlem = new EksempelDataForMedlemMedAvtalebytte();
+
+    private OmregningsperiodeOversetter omregningOversetter = new OmregningsperiodeOversetter();
 
     private StatligLoennstrinnperiodeOversetter loennstrinnOversetter;
 
@@ -247,20 +254,27 @@ public class TidsserieAvtalebytteIT {
         final Observasjonspublikator<TidsserieObservasjon> publikator = observasjonar::add;
         tidsserie.generer(medlemsdata, observasjonsperiode, publikator,
                 Stream.concat(
-                        Stream.<Tidsperiode<?>>of(
-                                new Regelperiode<>(dato("1917.01.01"), empty(), new MaskineltGrunnlagRegel()),
-                                new Regelperiode<>(dato("1917.01.01"), empty(), new LoennstilleggRegel()),
-                                new Regelperiode<>(dato("1917.01.01"), empty(), new AarsfaktorRegel()),
-                                new Regelperiode<>(dato("1917.01.01"), empty(), new DeltidsjustertLoennRegel()),
-                                new Regelperiode<>(dato("1917.01.01"), empty(), new AntallDagarRegel()),
-                                new Regelperiode<>(dato("1917.01.01"), empty(), new AarsLengdeRegel())
+                        Stream.concat(
+                                Stream.<Tidsperiode<?>>of(
+                                        new Regelperiode<>(dato("1917.01.01"), empty(), new MaskineltGrunnlagRegel()),
+                                        new Regelperiode<>(dato("1917.01.01"), empty(), new LoennstilleggRegel()),
+                                        new Regelperiode<>(dato("1917.01.01"), empty(), new AarsfaktorRegel()),
+                                        new Regelperiode<>(dato("1917.01.01"), empty(), new DeltidsjustertLoennRegel()),
+                                        new Regelperiode<>(dato("1917.01.01"), empty(), new AntallDagarRegel()),
+                                        new Regelperiode<>(dato("1917.01.01"), empty(), new AarsLengdeRegel()),
+                                        new Regelperiode<>(dato("2000.01.01"), empty(), new OevreLoennsgrenseRegel())
+                                ),
+                                Loennstrinnperioder.grupper(
+                                        Ordning.SPK, loennstrinn.stream()
+                                                .filter(loennstrinnOversetter::supports)
+                                                .map(loennstrinnOversetter::oversett)
+                                )
+                                        .map(p -> p)
                         ),
-                        Loennstrinnperioder.grupper(
-                                Ordning.SPK, loennstrinn.stream()
-                                        .filter(loennstrinnOversetter::supports)
-                                        .map(loennstrinnOversetter::oversett)
-                        )
-                                .map(p -> p)
+                        omregningsperioder
+                                .stream()
+                                .filter(omregningOversetter::supports)
+                                .map(omregningOversetter::oversett)
                 )
         );
         return observasjonar;

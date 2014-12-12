@@ -5,6 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
@@ -22,6 +23,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnper
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
@@ -63,6 +65,22 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    @Test
+    public void skalAnnotereGrunnbeloepFraOmregningsperiode() {
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                new Omregningsperiode(
+                                        dato("1985.01.01"),
+                                        empty(),
+                                        kroner(10_000)
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Grunnbeloep.class)
+                .isEqualTo(of(new Grunnbeloep(kroner(10_000))));
     }
 
     @Test

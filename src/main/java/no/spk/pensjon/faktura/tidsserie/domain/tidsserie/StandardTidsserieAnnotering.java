@@ -15,6 +15,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
@@ -66,6 +67,9 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         });
         periode.koblingarAvType(Regelperiode.class).forEach(regelperiode -> {
             regelperiode.annoter(periode);
+        });
+        periode.koblingAvType(Omregningsperiode.class).ifPresent(omregning -> {
+            omregning.annoter(periode);
         });
     }
 
