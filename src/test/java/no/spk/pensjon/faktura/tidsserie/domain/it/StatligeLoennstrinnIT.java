@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class StatligeLoennstrinnIT {
     @ClassRule
-    public static final EksempelDataForLoennstrinn data = new EksempelDataForLoennstrinn();
+    public static final EksempelDataForStatligeLoennstrinn data = new EksempelDataForStatligeLoennstrinn();
 
     @Rule
     public final ExpectedException e = ExpectedException.none();
@@ -60,7 +61,7 @@ public class StatligeLoennstrinnIT {
             final UnderlagFactory factory = new UnderlagFactory(
                     new Observasjonsperiode(dato("1948.01.01"), dato("2099.12.31"))
             );
-            factory.addPerioder(perioder.stream().filter((StatligLoennstrinnperiode p) -> p.harLoennFor(trinn)));
+            factory.addPerioder(perioder.stream().filter((StatligLoennstrinnperiode p) -> p.harLoennFor(trinn, Optional.empty())));
             return factory.periodiser();
         };
         assertThat(
@@ -84,7 +85,7 @@ public class StatligeLoennstrinnIT {
     public void skalStoetteKunSittEigetLoennstrinn() {
         assertThat(
                 statligeLoennstrinn()
-                        .filter(p -> !p.harLoennFor(p.trinn()))
+                        .filter(p -> !p.harLoennFor(p.trinn(), Optional.empty()))
                         .collect(toList())
         ).as("lønnstrinnperioder som påstår dei ikkje har lønn for sitt eige lønnstrinn").isEmpty();
 
@@ -94,7 +95,7 @@ public class StatligeLoennstrinnIT {
                     rangeClosed(1, 101)
                             .filter(erTrinn.negate())
                             .mapToObj(Loennstrinn::new)
-                            .filter(p::harLoennFor)
+                            .filter((loennstrinn) -> p.harLoennFor(loennstrinn, Optional.empty()))
                             .collect(toList())
             )
                     .as("uønska lønnstrinn som er støtta av lønnstrinnperioda " + p)

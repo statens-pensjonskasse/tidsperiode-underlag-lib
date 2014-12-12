@@ -20,7 +20,7 @@ public class AvtalekoblingOversetterTest {
         assertThat(
                 oversetter.oversett(
                         asList(
-                                "1;54321012;54321;7654321;1942-03-01 00:00:00.0;;223344".split(";")
+                                "1;54321012;54321;7654321;1942-03-01 00:00:00.0;;223344;3010".split(";")
                         )
                 ).fraOgMed()
         ).isEqualTo(dato("1942.03.01"));
@@ -28,7 +28,7 @@ public class AvtalekoblingOversetterTest {
         assertThat(
                 oversetter.oversett(
                         asList(
-                                "1;54321012;54321;7654321;1942-03-01 00:00:00.0;2010-09-16 00:00:00.012;223344".split(";")
+                                "1;54321012;54321;7654321;1942-03-01 00:00:00.0;2010-09-16 00:00:00.012;223344;3010".split(";")
                         )
                 ).tilOgMed()
         ).isEqualTo(of(dato("2010.09.16")));
@@ -45,7 +45,7 @@ public class AvtalekoblingOversetterTest {
         assertThat(
                 oversetter.oversett(
                         asList(
-                                "1;54321012;54321;7654321;1942-03-01;;223344".split(";")
+                                "1;54321012;54321;7654321;1942-03-01;;223344;3010".split(";")
                         )
                 ).fraOgMed()
         ).isEqualTo(dato("1942.03.01"));
@@ -53,7 +53,7 @@ public class AvtalekoblingOversetterTest {
         assertThat(
                 oversetter.oversett(
                         asList(
-                                "1;54321012;54321;7654321;1942-03-01;2010-09-16;223344".split(";")
+                                "1;54321012;54321;7654321;1942-03-01;2010-09-16;223344;3010".split(";")
                         )
                 ).tilOgMed()
         ).isEqualTo(of(dato("2010.09.16")));

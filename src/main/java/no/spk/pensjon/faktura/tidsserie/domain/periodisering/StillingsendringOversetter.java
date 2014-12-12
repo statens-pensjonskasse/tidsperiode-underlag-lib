@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 
@@ -123,6 +124,12 @@ import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldinga
  * <td>Aksjonsdato, datoen stillingsendringa trer i kraft</td>
  * <td>TORT016.DAT_AKSJON</td>
  * </tr>
+ * <tr>
+ * <td>15</td>
+ * <td>integer</td>
+ * <td>Stillingskode</td>
+ * <td>TORT016.NUM_STILLINGSKODE</td>
+ * </tr>
  * </tbody>
  * </table>
  *
@@ -178,10 +185,16 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
      * Kolonneindeksen aksjonsdato blir henta frå.
      */
     public static final int INDEX_AKSJONSDATO = 14;
+
+    /**
+     * Kolonneindeksen stillingskode blir henta frå.
+     */
+    public static final int INDEX_STILLINGSKODE = 15;
+
     /**
      * Forventa antall kolonner i ei stillingsendringrad.
      */
-    public static final int ANTALL_KOLONNER = INDEX_AKSJONSDATO + 1;
+    public static final int ANTALL_KOLONNER = INDEX_STILLINGSKODE + 1;
 
     private final OversetterSupport support = new OversetterSupport();
 
@@ -194,7 +207,7 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
      */
     @Override
     public Stillingsendring oversett(final List<String> rad) {
-        if (rad.size() != ANTALL_KOLONNER) {
+        if (rad.size() < ANTALL_KOLONNER) {
             throw new IllegalArgumentException(
                     ugyldigAntallKolonnerForStillingsendring(rad)
             );
@@ -205,6 +218,7 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
                 .aksjonskode(read(rad, INDEX_AKSJONSKODE).get())
                 .aksjonsdato(readDato(rad, index).get())
                 .stillingsprosent(read(rad, INDEX_STILLINGSPROSENT).map(Prosent::new).map(Stillingsprosent::new).get())
+                .stillingskode(read(rad, INDEX_STILLINGSKODE).map(Stillingskode::parse))
                 .loennstrinn(readLoennstrinn(rad, INDEX_LOENNSTRINN))
                 .loenn(read(rad, INDEX_LOENN).map(Long::valueOf).map(Kroner::new).map(DeltidsjustertLoenn::new))
                 .fastetillegg(readFastetillegg(rad, INDEX_FASTE_TILLEGG))

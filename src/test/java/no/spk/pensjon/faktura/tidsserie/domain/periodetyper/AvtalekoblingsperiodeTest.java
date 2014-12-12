@@ -8,6 +8,7 @@ import org.junit.rules.ExpectedException;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.of;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
@@ -24,7 +25,7 @@ public class AvtalekoblingsperiodeTest {
         e.expectMessage("stillingsforhold");
         e.expectMessage("er påkrevd, men var null");
 
-        new Avtalekoblingsperiode(now(), of(now()), null, new AvtaleId(1L));
+        new Avtalekoblingsperiode(now(), of(now()), null, new AvtaleId(1L), SPK);
     }
 
     @Test
@@ -33,6 +34,15 @@ public class AvtalekoblingsperiodeTest {
         e.expectMessage("avtale");
         e.expectMessage("er påkrevd, men var null");
 
-        new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), null);
+        new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), null, SPK);
+    }
+
+    @Test
+    public void skalKreveOrdningVedKonstruksjon() {
+        e.expect(NullPointerException.class);
+        e.expectMessage("ordning");
+        e.expectMessage("er påkrevd, men var null");
+
+        new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), new AvtaleId(1L), null);
     }
 }

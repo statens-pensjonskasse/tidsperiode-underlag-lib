@@ -7,7 +7,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
@@ -39,15 +41,22 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
      */
     @Override
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
+        periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
+            periode.annoter(AvtaleId.class, avtalekobling.avtale());
+            periode.annoter(Ordning.class, avtalekobling.ordning());
+        });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             periode.annoter(Stillingsprosent.class, gjeldende(stillingsforhold).stillingsprosent());
-            gjeldende(stillingsforhold).loennstrinn().ifPresent((Loennstrinn loennstrinn) -> {
-                annoterLoennForLoennstrinn(periode, loennstrinn);
-            });
+            periode.annoter(Stillingskode.class, gjeldende(stillingsforhold).stillingskode());
+
             periode.annoter(DeltidsjustertLoenn.class, gjeldende(stillingsforhold).loenn());
             periode.annoter(Fastetillegg.class, gjeldende(stillingsforhold).fastetillegg());
             periode.annoter(Variabletillegg.class, gjeldende(stillingsforhold).variabletillegg());
             periode.annoter(Funksjonstillegg.class, gjeldende(stillingsforhold).funksjonstillegg());
+
+            gjeldende(stillingsforhold).loennstrinn().ifPresent((Loennstrinn loennstrinn) -> {
+                annoterLoennForLoennstrinn(periode, loennstrinn);
+            });
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
             periode.annoter(Aarstall.class, aar.aarstall());
@@ -58,18 +67,19 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         periode.koblingarAvType(Regelperiode.class).forEach(regelperiode -> {
             regelperiode.annoter(periode);
         });
-        periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
-            periode.annoter(AvtaleId.class, avtalekobling.avtale());
-        });
     }
 
     private void annoterLoennForLoennstrinn(Underlagsperiode periode, Loennstrinn loennstrinn) {
         periode.annoter(Loennstrinn.class, loennstrinn);
 
-        final FinnLoennForLoennstrinn oppslag = new FinnLoennForLoennstrinn(periode, loennstrinn);
+        final FinnLoennForLoennstrinn oppslag = new FinnLoennForLoennstrinn(
+                periode,
+                periode.annotasjonFor(Ordning.class)
+        );
         oppslag.loennForLoennstrinn().ifPresent((LoennstrinnBeloep beloep) -> {
-            periode.annoter(LoennstrinnBeloep.class, beloep);
-        });
+                    periode.annoter(LoennstrinnBeloep.class, beloep);
+                }
+        );
     }
 
     private Stillingsendring gjeldende(final StillingsforholdPeriode periode) {

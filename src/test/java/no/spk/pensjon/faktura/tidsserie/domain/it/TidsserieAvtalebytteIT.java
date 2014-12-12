@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.it;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
@@ -72,7 +73,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class TidsserieAvtalebytteIT {
     @ClassRule
-    public static final EksempelDataForLoennstrinn loennstrinn = new EksempelDataForLoennstrinn();
+    public static final EksempelDataForStatligeLoennstrinn loennstrinn = new EksempelDataForStatligeLoennstrinn();
 
     @ClassRule
     public static final EksempelDataForMedlemMedAvtalebytte medlem = new EksempelDataForMedlemMedAvtalebytte();
@@ -255,7 +256,7 @@ public class TidsserieAvtalebytteIT {
                                 new Regelperiode<>(dato("1917.01.01"), empty(), new AarsLengdeRegel())
                         ),
                         Loennstrinnperioder.grupper(
-                                loennstrinn.stream()
+                                Ordning.SPK, loennstrinn.stream()
                                         .filter(loennstrinnOversetter::supports)
                                         .map(loennstrinnOversetter::oversett)
                         )

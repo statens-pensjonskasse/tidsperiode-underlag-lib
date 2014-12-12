@@ -8,15 +8,19 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
@@ -39,6 +43,9 @@ import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder.grupper;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
@@ -56,6 +63,81 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    @Test
+    public void skalAnnotereStillingskode() {
+        final Stillingskode stillingskode = K_STIL_APO_PROVISOR;
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("1990.01.01"))
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        dato("1990.01.01"),
+                                        empty()
+                                )
+                                        .leggTilOverlappendeStillingsendringer(
+                                                eiStillingsendring()
+                                                        .aksjonsdato(dato("1990.01.01"))
+                                                        .stillingskode(of(stillingskode))
+                                        )
+                        )
+        );
+
+        assertAnnotasjon(underlag.toList().get(0), Stillingskode.class)
+                .isEqualTo(of(stillingskode));
+    }
+
+    /**
+     * Verifiserer at oppslag av lønnstrinnbeløp for apotekordninga fungerer viss ein har informasjon om både
+     * lønnstrinn, stillingskode og lønnstrinnperiode for apotekordninga for avtalar tilknytta Apotekordninga.
+     */
+    @Test
+    public void skalAnnotereLoennstrinnBeloepForApotekOrdninga() {
+        final Loennstrinn loennstrinn = new Loennstrinn(12);
+        final Stillingskode stillingskode = K_STIL_APO_PROVISOR;
+        final LoennstrinnBeloep beloep = new LoennstrinnBeloep(
+                new Kroner(10_000)
+        );
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("1990.01.01"))
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        dato("1990.01.01"),
+                                        empty()
+                                )
+                                        .leggTilOverlappendeStillingsendringer(
+                                                eiStillingsendring()
+                                                        .aksjonsdato(dato("1990.01.01"))
+                                                        .stillingskode(of(stillingskode))
+                                                        .loennstrinn(of(loennstrinn))
+                                        )
+                        )
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        new AvtaleId(123456L),
+                                        Ordning.POA
+                                )
+                        )
+                        .medKoblingar(
+                                Loennstrinnperioder.grupper(
+                                        POA,
+                                        new ApotekLoennstrinnperiode(
+                                                dato("1989.04.01"),
+                                                empty(),
+                                                loennstrinn,
+                                                stillingskode,
+                                                beloep
+                                        )
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), LoennstrinnBeloep.class)
+                .isEqualTo(of(beloep));
     }
 
     @Test
@@ -143,7 +225,8 @@ public class StandardTidsserieAnnoteringTest {
                                         dato("2011.01.01"),
                                         Optional.empty(),
                                         new StillingsforholdId(999999L),
-                                        avtaleId
+                                        avtaleId,
+                                        SPK
                                 )
                         )
         );
@@ -168,14 +251,16 @@ public class StandardTidsserieAnnoteringTest {
                                         dato("2011.01.01"),
                                         of(dato("2011.06.30")),
                                         new StillingsforholdId(999999L),
-                                        new AvtaleId(12345L)
+                                        new AvtaleId(12345L),
+                                        SPK
                                 ))
                         .medKobling(
                                 new Avtalekoblingsperiode(
                                         dato("2011.05.01"),
                                         Optional.empty(),
                                         new StillingsforholdId(999999L),
-                                        new AvtaleId(54321L)
+                                        new AvtaleId(54321L),
+                                        SPK
                                 )
                         )
         );
@@ -232,12 +317,13 @@ public class StandardTidsserieAnnoteringTest {
                 eiTomPeriode()
                         .fraOgMed(dato("2013.02.25"))
                         .tilOgMed(dato("2013.02.28"))
+                        .med(SPK)
                         .medKobling(
                                 stilling
                         )
                         .medKoblingar(
                                 grupper(
-                                        Stream.of(
+                                        SPK, Stream.of(
                                                 new StatligLoennstrinnperiode(dato("2009.05.01"), empty(),
                                                         loennstrinn, new Kroner(150_000)
                                                 ),
@@ -268,12 +354,13 @@ public class StandardTidsserieAnnoteringTest {
                 eiTomPeriode()
                         .fraOgMed(dato("2012.01.01"))
                         .tilOgMed(dato("2012.06.30"))
+                        .med(SPK)
                         .medKobling(
                                 stilling
                         )
                         .medKoblingar(
                                 grupper(
-                                        Stream.of(
+                                        SPK, Stream.of(
                                                 new StatligLoennstrinnperiode(dato("2009.05.01"), empty(),
                                                         loennstrinn(41), kroner(150_000)
                                                 ),
@@ -309,6 +396,7 @@ public class StandardTidsserieAnnoteringTest {
                 eiTomPeriode()
                         .fraOgMed(dato("2012.01.01"))
                         .tilOgMed(dato("2012.06.30"))
+                        .med(SPK)
                         .medKobling(
                                 stilling
                         )
@@ -367,7 +455,9 @@ public class StandardTidsserieAnnoteringTest {
      */
     @Test
     public void skalAnnotereUnderlagsperiodeMedLoennstrinnFraTilkoblaStillingsforholdperiode() {
-        final Underlagsperiode periode = eiPeriode().bygg();
+        final Underlagsperiode periode = eiPeriode()
+                .med(SPK)
+                .bygg();
 
         final StillingsforholdPeriode stillingsforhold = new StillingsforholdPeriode(dato("1985.01.01"), empty());
         stillingsforhold.leggTilOverlappendeStillingsendringer(

@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
@@ -18,6 +19,7 @@ import static java.time.LocalDate.now;
 import static java.util.Arrays.asList;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -53,7 +55,7 @@ public class MedlemsdataTest {
         oversettere.put(Avtalekoblingsperiode.class, new MedlemsdataOversetter<Avtalekoblingsperiode>() {
             @Override
             public Avtalekoblingsperiode oversett(List<String> rad) {
-                return new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), new AvtaleId(1L));
+                return new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), new AvtaleId(1L), SPK);
             }
 
             @Override

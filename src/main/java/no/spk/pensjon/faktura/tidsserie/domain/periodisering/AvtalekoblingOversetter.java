@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 
@@ -100,9 +101,14 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
     public static final int INDEX_AVTALE = 6;
 
     /**
+     * Kolonneindeksen ordning blir henta frå.
+     */
+    public static final int INDEX_ORDNING = 7;
+
+    /**
      * Forventa antall kolonner i ei avtalekoblingsrad.
      */
-    public static final int ANTALL_KOLONNER = INDEX_AVTALE + 1;
+    public static final int ANTALL_KOLONNER = INDEX_ORDNING + 1;
 
     private final OversetterSupport support = new OversetterSupport();
 
@@ -115,7 +121,7 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
      */
     @Override
     public Avtalekoblingsperiode oversett(final List<String> rad) {
-        if (rad.size() != ANTALL_KOLONNER) {
+        if (rad.size() < ANTALL_KOLONNER) {
             throw new IllegalArgumentException(
                     ugyldigAntallKolonnerForAvtalekobling(rad)
             );
@@ -124,7 +130,8 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
                 readDato(rad, INDEX_STARTDATO).get(),
                 readDato(rad, INDEX_SLUTTDATO),
                 read(rad, INDEX_STILLINGSFORHOLD).map(StillingsforholdId::valueOf).get(),
-                read(rad, INDEX_AVTALE).map(AvtaleId::valueOf).get()
+                read(rad, INDEX_AVTALE).map(AvtaleId::valueOf).get(),
+                read(rad, INDEX_ORDNING).map(Ordning::valueOf).get()
         );
     }
 

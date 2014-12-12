@@ -15,7 +15,7 @@ class Feilmeldingar {
         return ugyldigAntallKolonner(
                 rad,
                 "avtalekobling",
-                "typeindikator, fødselsdato, personnummer, stillingsforholdnummer, startdato, sluttdato og avtalenummer"
+                "typeindikator, fødselsdato, personnummer, stillingsforholdnummer, startdato, sluttdato, avtalenummer og ordning"
         );
     }
 
