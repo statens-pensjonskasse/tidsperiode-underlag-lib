@@ -36,6 +36,9 @@ public class DeltidsjustertLoennRegel implements BeregningsRegel<Kroner> {
      * <p>
      * For stillingar tilknytta medregning og som dermed ikkje har deltidsjustert lønn, blir kr 0 brukt som verdi for
      * å unngå at regelen skal feile.
+     * <p>
+     * Beregninga genererer alltid den deltidsjusterte årslønna, den avkortar ikkje det genererte beløpet i henhold til
+     * periodas årsfaktor. Det er klienten sitt ansvar å foreta avkortinga til periodas årsfaktor.
      *
      * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
      * @return den deltidsjusterte årslønna som er gjeldande innanfor underlagsperioda

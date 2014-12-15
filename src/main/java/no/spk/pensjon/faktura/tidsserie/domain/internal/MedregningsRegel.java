@@ -17,6 +17,9 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.krone
  * dei einaste fakturerbare medregningstypene.
  * <p>
  * Medregning blir forøvrig kun brukt i SPK-ordninga, i Apotekordninga er ikkje medregning i bruk.
+ * <p>
+ * Beregninga genererer alltid den årlige medregninga, den avkortar ikkje det genererte beløpet i henhold til
+ * periodas årsfaktor. Det er klienten sitt ansvar å foreta avkortinga til periodas årsfaktor.
  *
  * @author Tarjei Skorgenes
  */
