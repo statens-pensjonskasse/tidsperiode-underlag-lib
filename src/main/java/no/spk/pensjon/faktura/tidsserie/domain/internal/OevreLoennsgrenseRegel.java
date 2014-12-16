@@ -24,6 +24,9 @@ public class OevreLoennsgrenseRegel implements BeregningsRegel<Kroner> {
     /**
      * Beregnar kva som er gjeldande øvre grense for årslønn innanfor den aktuelle tidsperioda.
      * <p>
+     * For medregningar er ikkje konseptet øvre grense godt nok definert, regelen returnerer derfor fulltidsgrensa for
+     * ordninga dersom perioda er tilknytta medregning.
+     * <p>
      * NB: Grenseverdien blir ikkje avkorta i henhold til årsfaktor, verdien som blir returnert av regelen er altså
      * gjeldande grenseverdi for eit heilt år, basert på verdiane som er gjeldande innanfor den aktuelle tidsperioda.
      * <p>

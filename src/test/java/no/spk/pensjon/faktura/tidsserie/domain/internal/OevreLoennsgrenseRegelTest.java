@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -13,6 +14,28 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingspro
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OevreLoennsgrenseRegelTest {
+    /**
+     * Verifiserer at øvre lønnsgrense er lik fulltidsgrensa dersom perioda er tilknytta medregning.
+     * <p>
+     * Merk at forventa oppførsel for øvre grense ved medregning ikkje er spesifisert nokon stad, regelsettet som
+     * medregningar skal handterast med er svært lite definert i den gamle løysinga. Vi har valgt å la øvre
+     * lønnsgrense vere gjeldande også for medregning i tidsserien slik at vi har eit sikkerheitsnett i tilfelle med
+     * lav datakvalitet på medregningane.
+     */
+    @Test
+    public void skalBrukeFulltidsgrensaTilOrdningaForMedregningar() {
+        assertThat(
+                eiPeriode()
+                        .med(new Grunnbeloep(kroner(20_000)))
+                        .med(Ordning.SPK)
+                        .med(new Medregning(kroner(5_000_000)))
+                        .bygg()
+                        .beregn(OevreLoennsgrenseRegel.class)
+        ).isEqualTo(
+                kroner(12 * 20_000)
+        );
+    }
+
     /**
      * Verifiserer at grenseverdien ikkje blir justert i henhold til årsfaktor, det er øvre grense for totalt maskinelt
      * grunnlag som skal bli returnert.
