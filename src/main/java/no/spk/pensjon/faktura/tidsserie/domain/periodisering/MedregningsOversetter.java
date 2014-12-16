@@ -51,19 +51,25 @@ import java.util.Optional;
  * <td>TORT014.IDE_SEKV_TORT125</td>
  * </tr>
  * <tr>
- * <td>7</td>
- * <td>2-sifra kode</td>
- * <td>Medregninskoda som nærmare beskriv kva type medregning det er snakk om</td>
- * <td>TORT014.TYP_KODE</td>
- * </tr>
- * <tr>
- * <td>7</td>
- * <td>2-sifra kode</td>
- * <td>Medregninskoda som nærmare beskriv kva type medregning det er snakk om</td>
- * <td>TORT014.TYP_KODE</td>
+ * <td>4</td>
+ * <td>yyyy.MM.dd</td>
+ * <td>Frå og med-dato</td>
+ * <td>TORT014.DAT_FRA</td>
  * </tr>
  * <tr>
  * <td>5</td>
+ * <td>yyyy.MM.dd</td>
+ * <td>Til og med-dato</td>
+ * <td>TORT014.DAT_TIL</td>
+ * </tr>
+ * <tr>
+ * <td>6</td>
+ * <td>2-sifra kode</td>
+ * <td>Medregninskoda som nærmare beskriv kva type medregning det er snakk om</td>
+ * <td>TORT014.TYP_KODE</td>
+ * </tr>
+ * <tr>
+ * <td>7</td>
  * <td>Integer</td>
  * <td>Lønn</td>
  * <td>TORT014.BEL_LONN</td>
