@@ -66,4 +66,13 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     public Medregningskode kode() {
         return kode;
     }
+
+    /**
+     * Stillingsforholdet medregninga er tilknytta.
+     *
+     * @return medregningas stillingsforhold
+     */
+    public StillingsforholdId stillingsforhold() {
+        return stillingsforhold;
+    }
 }

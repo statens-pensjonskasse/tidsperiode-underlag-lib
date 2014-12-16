@@ -10,6 +10,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import java.util.List;
 import java.util.Optional;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForMedregningsperiode;
+
 /**
  * {@link MedregningsOversetter} representerer algoritma
  * for å mappe om og konvertere medregningar til
@@ -125,7 +127,9 @@ public class MedregningsOversetter implements MedlemsdataOversetter<Medregningsp
     @Override
     public Medregningsperiode oversett(final List<String> rad) {
         if (rad.size() < ANTALL_KOLONNER) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(
+                    ugyldigAntallKolonnerForMedregningsperiode(rad)
+            );
         }
         return new Medregningsperiode(
                 read(rad, INDEX_FRA_OG_MED_DATO).map(Datoar::dato).get(),
