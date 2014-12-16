@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
@@ -12,8 +13,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel
 import no.spk.pensjon.faktura.tidsserie.domain.internal.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MedregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.MinstegrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.OmregningsperiodeOversetter;
@@ -106,6 +109,9 @@ public class TidsserieAvtalebytteIT {
         observasjonsperiode = new Observasjonsperiode(dato("2005.01.01"), dato("2014.12.31"));
 
         tidsserie = new Tidsserie();
+        tidsserie.overstyr(avtale -> {
+            return Stream.of(new Avtaleversjon(dato("1917.01.01"), empty(), avtale, Premiestatus.valueOf("AAO-10")));
+        });
     }
 
     /**
@@ -264,7 +270,8 @@ public class TidsserieAvtalebytteIT {
                                         new Regelperiode<>(dato("1917.01.01"), empty(), new AntallDagarRegel()),
                                         new Regelperiode<>(dato("1917.01.01"), empty(), new AarsLengdeRegel()),
                                         new Regelperiode<>(dato("2000.01.01"), empty(), new OevreLoennsgrenseRegel()),
-                                        new Regelperiode<>(dato("2000.01.01"), empty(), new MedregningsRegel())
+                                        new Regelperiode<>(dato("2000.01.01"), empty(), new MedregningsRegel()),
+                                        new Regelperiode<>(dato("2000.01.01"), empty(), new MinstegrenseRegel())
                                 ),
                                 Loennstrinnperioder.grupper(
                                         Ordning.SPK, loennstrinn.stream()

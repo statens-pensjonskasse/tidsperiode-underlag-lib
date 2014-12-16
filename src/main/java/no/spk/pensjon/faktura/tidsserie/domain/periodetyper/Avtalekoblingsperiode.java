@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -55,6 +56,16 @@ public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsper
     }
 
     /**
+     * Annoterer underlagsperioda med ordning og avtalenummer.
+     *
+     * @param periode underlagsperioda som skal annoterast
+     */
+    public void annoter(final Underlagsperiode periode) {
+        periode.annoter(AvtaleId.class, avtale());
+        periode.annoter(Ordning.class, ordning());
+    }
+
+    /**
      * Stillingsforholdet avtalekoblinga tilhøyrer.
      *
      * @return stillingsforholdet avtalekoblinga tilhøyrer
@@ -77,7 +88,7 @@ public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsper
      *
      * @return pensjonsordninga rdninga avtalen er tilknytta
      */
-    public Ordning ordning() {
+    private Ordning ordning() {
         return ordning;
     }
 

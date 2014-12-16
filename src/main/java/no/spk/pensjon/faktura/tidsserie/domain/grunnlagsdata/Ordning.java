@@ -37,6 +37,15 @@ public class Ordning {
         VALUES.add(this);
     }
 
+    /**
+     * Ordningsnummer.
+     *
+     * @return den unike numeriske identifikatoren for ordninga
+     */
+    public Integer kode() {
+        return id;
+    }
+
     @Override
     public int hashCode() {
         return id.hashCode();

@@ -1,8 +1,12 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 
 /**
  * Beregningsregel som reknar ut maskinelt grunnlag for ei {@link Underlagsperiode}.
@@ -27,6 +31,11 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
      */
     @Override
     public Kroner beregn(final Underlagsperiode periode) {
+        if (!periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
+            if (periode.beregn(MinstegrenseRegel.class).erUnderMinstegrensa(periode.annotasjonFor(Stillingsprosent.class))) {
+                return kroner(0);
+            }
+        }
         return periode.beregn(AarsfaktorRegel.class).multiply(
                 Kroner.min(
                         periode.beregn(DeltidsjustertLoennRegel.class)

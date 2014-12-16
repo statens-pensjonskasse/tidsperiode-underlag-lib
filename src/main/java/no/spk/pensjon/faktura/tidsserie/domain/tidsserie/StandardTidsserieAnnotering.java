@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
@@ -15,6 +14,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
@@ -23,6 +23,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.Month;
+
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinære
@@ -44,8 +46,12 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
     @Override
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
         periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
-            periode.annoter(AvtaleId.class, avtalekobling.avtale());
-            periode.annoter(Ordning.class, avtalekobling.ordning());
+            avtalekobling.annoter(periode);
+
+            periode.koblingarAvType(Avtaleversjon.class)
+                    .filter(v -> v.tilhoeyrer(avtalekobling.avtale()))
+                    .reduce(feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon(avtalekobling.avtale(), periode))
+                    .ifPresent(versjon -> versjon.annoter(periode));
         });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             stillingsforhold.gjeldendeEndring().ifPresent(endring -> {

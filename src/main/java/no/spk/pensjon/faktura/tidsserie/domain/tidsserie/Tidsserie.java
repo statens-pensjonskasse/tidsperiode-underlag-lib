@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.AvtaleinformasjonRepository;
 
 /**
  * {@link Tidsserie} representerer algoritma som genererer ein ny tidsserie med observasjonar
@@ -27,7 +28,8 @@ import static java.util.stream.Collectors.reducing;
  * av stillingsforholda som medlemmet har vore aktiv på i løpet av observasjonsperioda. Kvart
  * stillingsforholdunderlag blir periodisert basert på stillingsendringar / medregning og avtalekoblingar. I
  * tillegg blir tidsperiodiserte referansedata som årsperioder, månedsperioder, lønnstrinnperioder,
- * omregningsperioder, regelperioder m.m. inkludert og bidrar til periodiseringa av underlaget.
+ * omregningsperioder, regelperioder og avtalerelaterte periodar for stillingas tilknytt avtalar inkludert og
+ * bidrar til periodiseringa av underlaget.
  * <p>
  * Outputen frå første steg blir eit stillingsforholdunderlag pr stillingsforhold. Dette underlaget er splitta
  * opp i underlagsperioder som alle strekker seg over ei periode på minimum 1 dag og maksimum 1 måned.
@@ -59,11 +61,23 @@ public class Tidsserie {
 
     private final Aarsunderlag aarsunderlag = new Aarsunderlag();
 
+    private AvtaleinformasjonRepository repository = avtale -> Stream.empty();
+
     private Feilhandtering feilhandtering = (s, u, t) -> {
         System.err.println("Generering av tidsserie feila for stillingsforhold " + s.id());
         System.err.println("Observasjonsunderlag: " + u);
         t.printStackTrace(System.err);
     };
+
+    /**
+     * Overstyrer repositoriet som tidsperiodisert avtaleinformasjon blir slått opp via.
+     *
+     * @param repository repositoriet som avtaleinformasjon blir slått opp via
+     * @throws NullPointerException dersom <code>repository</code> er <code>null</code>
+     */
+    public void overstyr(final AvtaleinformasjonRepository repository) {
+        this.repository = requireNonNull(repository, () -> "avtaleinformasjonrepository er påkrevd, men var null");
+    }
 
     /**
      * Overstyrer feilhandteringsstrategien til tidsserien.
@@ -120,6 +134,7 @@ public class Tidsserie {
         final TidsserieUnderlagFacade fasade = new TidsserieUnderlagFacade();
         fasade.addReferansePerioder(referanseperioder);
         fasade.endreAnnoteringsstrategi(strategi);
+        fasade.endreAvtaleinformasjonRepository(repository);
         fasade.prosesser(medlemsdata, callback, periode);
     }
 
