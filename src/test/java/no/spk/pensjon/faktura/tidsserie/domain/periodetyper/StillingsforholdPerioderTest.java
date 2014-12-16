@@ -58,6 +58,17 @@ public class StillingsforholdPerioderTest {
     }
 
     /**
+     * Verifiserer at medregning er påkrevd ved konstruksjon og at ønska feilmelding blir generert viss ein prøver
+     * å sende inn <code>null</code> som verdi.
+     */
+    @Test
+    public void skalKreveMedregningVedKonstruksjon() {
+        e.expect(NullPointerException.class);
+        e.expectMessage("medregning er påkrevd, men var null");
+        new StillingsforholdPeriode(null);
+    }
+
+    /**
      * Verifiserer at stillingsforholdnummer er påkrevd ved konstruksjon slik at ein unngår at alle brukarane av klassa
      * må legge til null-sjekkar kvar gang dei skal prøve å bruke denne verdien seinare.
      */

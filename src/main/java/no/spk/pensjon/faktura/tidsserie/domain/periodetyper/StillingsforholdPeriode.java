@@ -49,8 +49,11 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * @throws NullPointerException viss <code>medregning</code> er <code>null</code>
      */
     public StillingsforholdPeriode(final Medregningsperiode medregning) {
-        super(medregning.fraOgMed(), medregning.tilOgMed());
-        this.medregning = of(requireNonNull(medregning, () -> "medregning er påkrevd, men var null"));
+        super(
+                requireNonNull(medregning, () -> "medregning er påkrevd, men var null").fraOgMed(),
+                medregning.tilOgMed()
+        );
+        this.medregning = of(medregning);
     }
 
     /**
