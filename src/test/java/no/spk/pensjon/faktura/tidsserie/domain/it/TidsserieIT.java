@@ -6,14 +6,17 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.Aarsfaktor;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.MedregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.OmregningsperiodeOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
@@ -22,6 +25,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedregningsOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonspublikator;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie;
@@ -30,7 +34,6 @@ import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.Month;
@@ -60,6 +63,7 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_A;
 import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_B;
+import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_C;
 import static no.spk.pensjon.faktura.tidsserie.domain.it.TidsserieAvtalebytteIT.feilVissMeirEnnEinObservasjonPrMonth;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.and;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -94,6 +98,7 @@ public class TidsserieIT {
         final Map<Class<?>, MedlemsdataOversetter<?>> oversettere = new HashMap<>();
         oversettere.put(Stillingsendring.class, new StillingsendringOversetter());
         oversettere.put(Avtalekoblingsperiode.class, new AvtalekoblingOversetter());
+        oversettere.put(Medregningsperiode.class, new MedregningsOversetter());
         loennstrinnOversetter = new StatligLoennstrinnperiodeOversetter();
 
         medlemsdata = new Medlemsdata(medlem.toList(), oversettere);
@@ -204,14 +209,15 @@ public class TidsserieIT {
      * Verifiserer at totalt antall observasjonar er lik summen av forventa antall observasjonar pr stillingsforhold.
      */
     @Test
-    public void skalGenerereForventaAntallObservasjonarTotaltForMedlemmet() {
-        assertAlleObservasjonar().hasSize(0
-                + 5      // A i 2005
-                + 6 * 12 // A i 2006-2011
-                + 12     // A i 2012
-                + 4      // B i 2012
-                + 2 * 12 // B i 2013-2014
-        );
+    public void skalBeregneForventaMaskineltGrunnlagForKvarObservasjonI2012ForStillingsforholdC() {
+        assertThat(generer(STILLING_C, 2012)).hasSize(6);
+        final Kroner expected = new Aarsfaktor(184d / 366d).multiply(kroner(109_600));
+        assertObservasjonAvMaskineltgrunnlag(2012, JULY, STILLING_C).isEqualTo(expected);
+        assertObservasjonAvMaskineltgrunnlag(2012, AUGUST, STILLING_C).isEqualTo(expected);
+        assertObservasjonAvMaskineltgrunnlag(2012, SEPTEMBER, STILLING_C).isEqualTo(expected);
+        assertObservasjonAvMaskineltgrunnlag(2012, OCTOBER, STILLING_C).isEqualTo(expected);
+        assertObservasjonAvMaskineltgrunnlag(2012, NOVEMBER, STILLING_C).isEqualTo(expected);
+        assertObservasjonAvMaskineltgrunnlag(2012, DECEMBER, STILLING_C).isEqualTo(expected);
     }
 
     /**
@@ -243,20 +249,15 @@ public class TidsserieIT {
 
         assertObservasjonar(2012, STILLING_A).hasSize(12); // januar til desember
         assertObservasjonar(2012, STILLING_B).hasSize(4); // september til desember
+        assertObservasjonar(2012, STILLING_C).hasSize(6); // juli til desember
 
         assertObservasjonar(2013, STILLING_A).hasSize(0); // ikkje lenger aktiv
         assertObservasjonar(2013, STILLING_B).hasSize(12); // heile året
+        assertObservasjonar(2013, STILLING_C).hasSize(12); // heile året
 
         assertObservasjonar(2014, STILLING_A).hasSize(0); // juni til november
         assertObservasjonar(2014, STILLING_B).hasSize(12); // heile året
-    }
-
-    /**
-     * Verifiserer at antall observasjonar som blir generert for stillingsforhold {@link EksempelDataForMedlem#STILLING_C}
-     */
-    @Ignore("Disabla inntil vi får implementert støtte for medregning")
-    @Test
-    public void skalGenerereXXXObservasjonarForStillingC() {
+        assertObservasjonar(2014, STILLING_C).hasSize(12); // heile året
     }
 
     private static AbstractComparableAssert<?, Kroner> assertObservasjonAvMaskineltgrunnlag(List<TidsserieObservasjon> observasjonar, Month month) {
@@ -309,7 +310,8 @@ public class TidsserieIT {
                                         new Regelperiode<>(dato("1917.01.01"), empty(), new DeltidsjustertLoennRegel()),
                                         new Regelperiode<>(dato("1917.01.01"), empty(), new AntallDagarRegel()),
                                         new Regelperiode<>(dato("1917.01.01"), empty(), new AarsLengdeRegel()),
-                                        new Regelperiode<>(dato("2000.01.01"), empty(), new OevreLoennsgrenseRegel())
+                                        new Regelperiode<>(dato("2000.01.01"), empty(), new OevreLoennsgrenseRegel()),
+                                        new Regelperiode<>(dato("2000.01.01"), empty(), new MedregningsRegel())
                                 ),
                                 Loennstrinnperioder.grupper(
                                         Ordning.SPK, loennstrinn.stream()

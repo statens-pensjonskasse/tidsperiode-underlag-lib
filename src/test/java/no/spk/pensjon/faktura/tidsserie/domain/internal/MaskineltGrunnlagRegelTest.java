@@ -5,6 +5,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -26,6 +28,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at maskinelt grunnlag blir avgrensa til 12G også for medregningar.
+     * <p>
+     * Merk at dette er oppførsel som er ulik den gamle løysinga, det blir der ikkje foretatt noko form for avgrensing
+     * oppover slik at skyhøge medregningar der vil medføre skyhøgt maskinelt grunnlag.
+     */
+    @Test
+    public void skalAvgrenseMaskineltGrunnlagTilOevregrense12GOgsaaForMedregningar() {
+        assertMaskineltGrunnlag(
+                periode("2007.01.01", "2007.12.31")
+                        .med(new Aarstall(2007))
+                        .med(new Medregning(kroner(10_000_000)))
+                        .med(Medregningskode.BISTILLING)
+                        .med(Ordning.SPK)
+                        .med(new Grunnbeloep(kroner(50_000)))
+        ).isEqualTo(kroner(12 * 50_000));
+    }
 
     /**
      * Verifiserer at avgrensing til øvre grense blir utført før maskinelt grunnlag blir justert i henhold til årsfaktor.
@@ -120,6 +140,16 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     @Test
+    public void skalInkludereMedregningIMaskineltGrunnlag() {
+        assertMaskineltGrunnlag(
+                periode("2013.01.01", "2013.12.31")
+                        .med(new Aarstall(2013))
+                        .med(new Medregning(kroner(12_000)))
+                        .med(Medregningskode.BISTILLING)
+        ).isEqualTo(kroner(12_000));
+    }
+
+    @Test
     public void skalBeregneDeltidsjustertLoennViaAnnanRegel() {
         e.expect(PaakrevdAnnotasjonManglarException.class);
         e.expectMessage(DeltidsjustertLoennRegel.class.getSimpleName());
@@ -152,6 +182,7 @@ public class MaskineltGrunnlagRegelTest {
 
     private static UnderlagsperiodeBuilder periode(final String fraOgMed, final String tilOgMed) {
         return Support.periode(fraOgMed, tilOgMed)
+                .med(new MedregningsRegel())
                 .med(new MaskineltGrunnlagRegel())
                 .med(new AarsLengdeRegel())
                 .med(new AntallDagarRegel())

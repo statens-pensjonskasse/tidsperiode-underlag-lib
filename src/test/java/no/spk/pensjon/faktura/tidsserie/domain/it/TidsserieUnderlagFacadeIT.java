@@ -11,12 +11,14 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedregningsOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdUnderlagCallback;
@@ -27,7 +29,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -49,7 +50,9 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
+import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_A;
+import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_B;
+import static no.spk.pensjon.faktura.tidsserie.domain.it.EksempelDataForMedlem.STILLING_C;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.and;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertUnderlagsperioder;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertUnderlagsperioderUtanKoblingTil;
@@ -71,11 +74,11 @@ import static org.mockito.Mockito.mock;
  */
 @SuppressWarnings("unchecked")
 public class TidsserieUnderlagFacadeIT {
-    private static final StillingsforholdId STILLINGSFORHOLD_A = valueOf(999999999999L);
+    private static final StillingsforholdId STILLINGSFORHOLD_A = STILLING_A;
 
-    private static final StillingsforholdId STILLINGSFORHOLD_B = valueOf(888888888888L);
+    private static final StillingsforholdId STILLINGSFORHOLD_B = STILLING_B;
 
-    private static final StillingsforholdId STILLINGSFORHOLD_C = valueOf(7777777777777L);
+    private static final StillingsforholdId STILLINGSFORHOLD_C = STILLING_C;
 
     @ClassRule
     public static EksempelDataForMedlem data = new EksempelDataForMedlem();
@@ -96,6 +99,7 @@ public class TidsserieUnderlagFacadeIT {
         oversettere = new HashMap<>();
         oversettere.put(Stillingsendring.class, new StillingsendringOversetter());
         oversettere.put(Avtalekoblingsperiode.class, new AvtalekoblingOversetter());
+        oversettere.put(Medregningsperiode.class, new MedregningsOversetter());
 
         medlem = new Medlemsdata(data.toList(), oversettere);
 
@@ -265,12 +269,16 @@ public class TidsserieUnderlagFacadeIT {
         prosesser(underlagene::put, standardperiode());
 
         final Predicate<Underlagsperiode> predikat = harAnnotasjon(Stillingsprosent.class);
+        final List<Underlag> underlagFraHistorikk = underlagene
+                .values()
+                .stream()
+                .filter(u -> !u.annotasjonFor(StillingsforholdId.class).equals(STILLINGSFORHOLD_C)).collect(toList());
         assertUnderlagsperioder(
-                underlagene.values(),
+                underlagFraHistorikk,
                 predikat.negate()
         ).isEmpty();
 
-        assertAnnotasjonFraUnderlagsperioder(underlagene.values(), Stillingsprosent.class)
+        assertAnnotasjonFraUnderlagsperioder(underlagFraHistorikk, Stillingsprosent.class)
                 .containsOnlyElementsOf(
                         fraMedlemsdata(
                                 stillingsendringOversetter(),
@@ -467,7 +475,7 @@ public class TidsserieUnderlagFacadeIT {
         assertThat(underlag
                         .stream()
                         .findFirst()
-                        .map(p -> p.fraOgMed())
+                        .map(Underlagsperiode::fraOgMed)
                         .get()
         ).as(
                 "fra og med-dato for underlagets første periode (underlag = " + underlag + ")"
@@ -476,31 +484,10 @@ public class TidsserieUnderlagFacadeIT {
     }
 
     /**
-     * Verifiserer at fasada genererer eit underlag for kvart av stillingsforholda med historikk som medlemmet
-     * er eller har vore tilknytta innanfor 10-års perioda frå 1. januar 2005 til 31. desember 2014.
-     * <p>
-     * TODO: Fjern denne når støtte for medregning er implementert.
-     */
-    @Test
-    public void skalGenerereUnderlagPrStillingsforholdMedHistorikk() {
-        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
-
-        prosesser(underlagene::put, standardperiode());
-
-        assertThat(underlagene).hasSize(2);
-
-        assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(5 + 6 * 12 + 6); // 5 mnd i 2005 + 6 fulle år + 6 mnd i 2012
-        assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(4 + 2 * 12); // 4 mnd i 2012 + 2 fulle år
-    }
-
-    /**
      * Verifiserer at fasada genererer eit underlag for kvart av stillingsforholda som medlemmet
      * er eller har vore tilknytta innanfor 10-års perioda frå 1. januar 2005 til 31. desember 2014.
-     * <p>
-     * TODO: Aktiver denne når støtte for medregning er implementert.
      */
     @Test
-    @Ignore
     public void skalGenerereUnderlagPrStillingsforhold() {
         final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
 
@@ -508,9 +495,9 @@ public class TidsserieUnderlagFacadeIT {
 
         assertThat(underlagene).hasSize(3);
 
-        assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(14);
-        assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(3);
-        assertThat(underlagene.get(STILLINGSFORHOLD_C)).hasSize(3);
+        assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(5 + 6 * 12 + 6); // 5 mnd i 2005 + 6 fulle år + 6 mnd i 2012
+        assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(4 + 2 * 12); // 4 mnd i 2012 + 2 fulle år
+        assertThat(underlagene.get(STILLINGSFORHOLD_C)).hasSize(6 + 2 * 12); // 6 mnd i 2012 + 2 fulle år
     }
 
     /**
@@ -522,36 +509,6 @@ public class TidsserieUnderlagFacadeIT {
         final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
 
         // CSV-fila inneheld 1 stillingsforhold som er aktivt mellom 2005 og 2009 og
-        final Observasjonsperiode periode = new Observasjonsperiode(
-                new Aarstall(2005).atStartOfYear(),
-                new Aarstall(2009).atEndOfYear()
-        );
-
-        prosesser(underlagene::put, periode);
-
-        assertThat(underlagene).hasSize(2);
-        underlagene
-                .entrySet()
-                .stream()
-                .filter(e -> !e.getKey().equals(STILLINGSFORHOLD_A))
-                .forEach(e -> {
-                            assertThat(e.getValue()).as("underlag for stillingsforhold " + e.getKey()).isEmpty();
-                        }
-                );
-    }
-
-    /**
-     * Verifiserer at fasada ikkje filtrerer bort tomme underlag som blir generert for stillingsforhold
-     * som ikkje har vore aktive minst ein dag innanfor observasjonsperioda.
-     * <p>
-     * TODO: Aktiver denne når støtte for medregning er implementert.
-     */
-    @Test
-    @Ignore
-    public void skalGenerereTommeUnderlagForStillingsforholdSomIkkjeHarVoreAktiveIObservasjonsperioda() {
-        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
-
-        // CSV-fila inneheld 1 stillingsforhold som er aktivt mellom 2005 og 2009 og 2 som er aktive etter 2009
         final Observasjonsperiode periode = new Observasjonsperiode(
                 new Aarstall(2005).atStartOfYear(),
                 new Aarstall(2009).atEndOfYear()

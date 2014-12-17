@@ -4,12 +4,14 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.junit.Test;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -18,6 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 public class DeltidsjustertLoennRegelTest {
+    @Test
+    public void skalIkkjeFeileBeregingNårDeltidsjustertLoennManglarPaaGrunnAvMedregning() {
+        assertDeltidsjustertLoenn(
+                perioda()
+                        .med(new Medregning(kroner(12_000)))
+        ).isEqualTo(kroner(0));
+    }
+
     @Test
     public void skalKonvertereLoennstrinnTilDeltidsjustertLoennVissLoennstrinnErAnnotertPaaPerioda() {
         assertDeltidsjustertLoenn(
@@ -60,7 +70,7 @@ public class DeltidsjustertLoennRegelTest {
     }
 
     private AbstractComparableAssert<?, Kroner> assertDeltidsjustertLoenn(final UnderlagsperiodeBuilder periode) {
-        return assertThat(periode.bygg().beregn(DeltidsjustertLoennRegel.class).beloep());
+        return assertThat(periode.bygg().beregn(DeltidsjustertLoennRegel.class));
     }
 
     private static UnderlagsperiodeBuilder periode(final String fra, final String til) {

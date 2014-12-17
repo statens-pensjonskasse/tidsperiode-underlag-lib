@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LoennstilleggRegelTest {
 
     /**
-     * Verifiserer at funksjonstillegg blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
+     * Verifiserer at funksjonstillegg ikkje blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
      * deltidsjusterte årslønna.
      */
     @Test
@@ -25,7 +25,7 @@ public class LoennstilleggRegelTest {
         assertLoennstillegg(
                 eiPeriodeSomErEnDagLang()
                         .med(new Funksjonstillegg(kroner(365_000)))
-        ).isEqualTo(kroner(1_000));
+        ).isEqualTo(kroner(365_000));
     }
 
     /**
@@ -69,15 +69,15 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at dei variable tillegga blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
+     * Verifiserer at dei variable tillegga ikkje blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
      * deltidsjusterte årslønna.
      */
     @Test
-    public void skalNedjustereVariableTilleggEtterAarsfaktor() {
+    public void skalIkkjeNedjustereVariableTilleggEtterAarsfaktor() {
         assertLoennstillegg(
                 eiPeriodeSomErEnDagLang()
                         .med(new Variabletillegg(kroner(365_000)))
-        ).isEqualTo(kroner(1_000));
+        ).isEqualTo(kroner(365_000));
     }
 
     /**
@@ -121,15 +121,15 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at dei faste tillegga blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
+     * Verifiserer at dei faste tillegga ikkje blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
      * deltidsjusterte årslønna.
      */
     @Test
-    public void skalNedjustereFasteTilleggEtterAarsfaktor() {
+    public void skalIkkjeNedjustereFasteTilleggEtterAarsfaktor() {
         assertLoennstillegg(
                 eiPeriodeSomErEnDagLang()
                         .med(new Fastetillegg(kroner(365_000)))
-        ).isEqualTo(kroner(1_000));
+        ).isEqualTo(kroner(365_000));
     }
 
     /**

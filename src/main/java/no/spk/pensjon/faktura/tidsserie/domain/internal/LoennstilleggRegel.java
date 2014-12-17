@@ -20,8 +20,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  * tilleggstypen, funksjonstillegg, skal aldri deltidsjusterast og blir innrapportert av arbeidsgivar i henhold til
  * dette.
  * <p>
- * Ettersom dei innrapporterte tillegga representerer årlig lønnstillegg blir beløpa avkorta i henhold til periodas
- * årsfaktor dersom tidsperioda ikkje strekker seg over heile premieåret.
+ * Beregningsregelen returnerer alltid gjeldande årlige tillegg uten å avkorte beløpet i henhold til periodas
+ * årsfaktor. Avkorting i henhold til årsfaktor er det derfor klienten som er ansvarlig for, dette er valgt
+ * fordi ein antar at avkorting til årsfaktor er eit felles ansvar som vil måtte bli utført fleire gangar pr periode
+ * når ein skal gjere mange delberegningar. Ergo blir dette ansvaret plassert ute hos klienten for å hindre at ein skal
+ * måtte beregne årsfaktor fleire gangar pr periode.
  *
  * @author Tarjei Skorgenes
  */
@@ -33,19 +36,16 @@ public class LoennstilleggRegel implements BeregningsRegel<Kroner> {
     private static final Funksjonstillegg INGEN_FUNKSJONSTILLEGG = new Funksjonstillegg(new Kroner(0));
 
     /**
-     * Reknar ut den totale summen av dei tre lønnstillegga som stillinga kan ha i den angitte perioda, kun avkorta
-     * i henhold til periodas årsfaktor.
+     * Reknar ut den totale summen av dei tre lønnstillegga som stillinga har i den angitte perioda.
      *
      * @param periode underlagsperioda som totalt lønnstillegg skal beregnast for
      * @return underlagsperiodas bidrag til premieårets totale lønnstillegg
      */
     @Override
     public Kroner beregn(final Underlagsperiode periode) {
-        return periode.beregn(AarsfaktorRegel.class).multiply(
-                fastetillegg(periode)
-                        .plus(variabletillegg(periode))
-                        .plus(funksjonstillegg(periode))
-        );
+        return fastetillegg(periode)
+                .plus(variabletillegg(periode))
+                .plus(funksjonstillegg(periode));
     }
 
     private Kroner funksjonstillegg(final Underlagsperiode periode) {

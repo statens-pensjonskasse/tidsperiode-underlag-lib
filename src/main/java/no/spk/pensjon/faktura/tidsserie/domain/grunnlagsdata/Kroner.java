@@ -15,6 +15,11 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public final class Kroner implements Comparable<Kroner> {
+    /**
+     * Eit kronebeløp med verdi lik kr 0.
+     */
+    public static final Kroner ZERO = new Kroner(0);
+
     private static final Supplier<String> VALIDER_BELOEP = () -> "beløp er påkrevd, men var null";
 
     private final double beloep;
@@ -48,6 +53,9 @@ public final class Kroner implements Comparable<Kroner> {
      * @return eit nytt kronebeløp
      */
     public static Kroner kroner(final int beloep) {
+        if (beloep == 0) {
+            return ZERO;
+        }
         return new Kroner(beloep);
     }
 

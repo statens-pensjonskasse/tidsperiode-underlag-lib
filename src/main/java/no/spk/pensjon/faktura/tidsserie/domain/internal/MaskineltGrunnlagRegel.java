@@ -16,6 +16,10 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
      * Beregninga som blir foretatt er foreløpig ein forenkla variant som kun tar hensyn til
      * lønnstillegg og deltidsjustert lønn, enten innrapportert frå arbeidsgivar eller utleda basert på
      * innrapportert lønnstrinn som er justert i henhold til stillingsprosent.
+     * <p>
+     * I motsetning til dei andre beregningsreglane, genererer vi her maskinelt grunnlag som er justert i henhold
+     * til periodas årsfaktor slik at klienten kan akkumulere delberegningane for året og ende opp med totalt
+     * maskinelt grunnlag pr år uten å måtte foreta justering av returnert beløp i henhold til periodas årsfaktor.
      *
      * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av
      *                beregningsregelen
@@ -23,22 +27,19 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
      */
     @Override
     public Kroner beregn(final Underlagsperiode periode) {
-        return Kroner.min(
-                periode
-                        .beregn(AarsfaktorRegel.class)
-                        .multiply(
-                                periode.beregn(DeltidsjustertLoennRegel.class).beloep()
-                        )
-                        .plus(
-                                // Lønstillegga blir justert i henhold til årsfaktor av den andre regelen
-                                periode.beregn(LoennstilleggRegel.class)
-                        ),
-                periode
-                        .beregn(AarsfaktorRegel.class)
-                        .multiply(
-                                periode
-                                        .beregn(OevreLoennsgrenseRegel.class)
-                        )
+        return periode.beregn(AarsfaktorRegel.class).multiply(
+                Kroner.min(
+                        periode.beregn(DeltidsjustertLoennRegel.class)
+                                .plus(
+                                        // Lønstillegga blir justert i henhold til årsfaktor av den andre regelen
+                                        periode.beregn(LoennstilleggRegel.class)
+                                )
+                                .plus(
+                                        periode.beregn(MedregningsRegel.class)
+                                ),
+                        periode
+                                .beregn(OevreLoennsgrenseRegel.class)
+                )
         );
     }
 }

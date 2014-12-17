@@ -7,8 +7,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
@@ -38,7 +39,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
      * @param underlag underlaget som perioda inngår i
      * @param periode  underlagsperioda som skal populerast med annotasjonar
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#koblingarAvType(Class)
-     * @see no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode#gjeldende()
+     * @see no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode#gjeldendeEndring()
      */
     @Override
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
@@ -47,16 +48,19 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
             periode.annoter(Ordning.class, avtalekobling.ordning());
         });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
-            periode.annoter(Stillingsprosent.class, gjeldende(stillingsforhold).stillingsprosent());
-            periode.annoter(Stillingskode.class, gjeldende(stillingsforhold).stillingskode());
+            stillingsforhold.gjeldendeEndring().ifPresent(endring -> {
+                periode.annoter(Stillingsprosent.class, endring.stillingsprosent());
+                periode.annoter(Stillingskode.class, endring.stillingskode());
 
-            periode.annoter(DeltidsjustertLoenn.class, gjeldende(stillingsforhold).loenn());
-            periode.annoter(Fastetillegg.class, gjeldende(stillingsforhold).fastetillegg());
-            periode.annoter(Variabletillegg.class, gjeldende(stillingsforhold).variabletillegg());
-            periode.annoter(Funksjonstillegg.class, gjeldende(stillingsforhold).funksjonstillegg());
-
-            gjeldende(stillingsforhold).loennstrinn().ifPresent((Loennstrinn loennstrinn) -> {
-                annoterLoennForLoennstrinn(periode, loennstrinn);
+                periode.annoter(DeltidsjustertLoenn.class, endring.loenn());
+                periode.annoter(Fastetillegg.class, endring.fastetillegg());
+                periode.annoter(Variabletillegg.class, endring.variabletillegg());
+                periode.annoter(Funksjonstillegg.class, endring.funksjonstillegg());
+                endring.loennstrinn().ifPresent(loennstrinn -> annoterLoennForLoennstrinn(periode, loennstrinn));
+            });
+            stillingsforhold.medregning().ifPresent(medregning -> {
+                periode.annoter(Medregning.class, medregning.beloep());
+                periode.annoter(Medregningskode.class, medregning.kode());
             });
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
@@ -73,7 +77,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         });
     }
 
-    private void annoterLoennForLoennstrinn(Underlagsperiode periode, Loennstrinn loennstrinn) {
+    private void annoterLoennForLoennstrinn(final Underlagsperiode periode, final Loennstrinn loennstrinn) {
         periode.annoter(Loennstrinn.class, loennstrinn);
 
         final FinnLoennForLoennstrinn oppslag = new FinnLoennForLoennstrinn(
@@ -86,7 +90,4 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         );
     }
 
-    private Stillingsendring gjeldende(final StillingsforholdPeriode periode) {
-        return periode.gjeldende();
-    }
 }

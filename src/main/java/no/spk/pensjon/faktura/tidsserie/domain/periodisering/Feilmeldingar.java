@@ -27,11 +27,27 @@ class Feilmeldingar {
      * @param rad input-rada som inneholdt feil antall kolonner for ei stillingsendring
      * @return ei feilmelding som beskriv kva som er forventa format på rada og kva den faktisk inneholdt
      */
-    public static String ugyldigAntallKolonnerForStillingsendring(List<String> rad) {
+    public static String ugyldigAntallKolonnerForStillingsendring(final List<String> rad) {
         return ugyldigAntallKolonner(
                 rad,
                 "stillingsendring",
                 "typeindikator, fødselsdato, personnummer, stillingsforhold, aksjonskode, arbeidsgivar, permisjonsavtale, registreringsdato, lønnstrinn, lønn, faste tillegg, variable tillegg, funksjonstillegg og aksjonsdato"
+        );
+    }
+
+    /**
+     * Oversetting frå <code>rad</code> til
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode} har feila
+     * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
+     *
+     * @param rad input-rada som inneholdt feil antall kolonner for ei medregningsperiode
+     * @return ei feilmelding som beskriv kva som er forventa format på rada og kva den faktisk inneholdt
+     */
+    public static String ugyldigAntallKolonnerForMedregningsperiode(final List<String> rad) {
+        return ugyldigAntallKolonner(
+                rad,
+                "medregningsperiode",
+                "typeindikator, fødselsdato, personnummer, stillingsforhold, frå og med-dato, til og med-dato, medregningskode og lønn"
         );
     }
 
