@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
@@ -39,17 +40,24 @@ public class DeltidsjustertLoennRegel implements BeregningsRegel<Kroner> {
      * <p>
      * Beregninga genererer alltid den deltidsjusterte årslønna, den avkortar ikkje det genererte beløpet i henhold til
      * periodas årsfaktor. Det er klienten sitt ansvar å foreta avkortinga til periodas årsfaktor.
+     * <p>
+     * Dersom periodas gjeldande aksjonskode er permisjon utan lønn, blir returnert lønn alltid lik kr 0.
      *
      * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
      * @return den deltidsjusterte årslønna som er gjeldande innanfor underlagsperioda
      * @throws PaakrevdAnnotasjonManglarException dersom {@link LoennstrinnBeloep} eller {@link Stillingsprosent}
      *                                            manglar når {@link Loennstrinn} er annotert på perioda,
-     *                                            eller dersom annotasjon for {@link DeltidsjustertLoenn} manglar
-     *                                            når perioda ikkje er annotert med lønnstrinn
+     *                                            dersom annotasjon for {@link DeltidsjustertLoenn} manglar
+     *                                            når perioda ikkje er annotert med lønnstrinn eller
+     *                                            dersom {@link Aksjonskode} ikkje er annotert på perioda når perioda
+     *                                            ikkje er tilknytta medregning
      */
     @Override
     public Kroner beregn(final Underlagsperiode periode) throws PaakrevdAnnotasjonManglarException {
         if (periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
+            return Kroner.ZERO;
+        }
+        if (periode.annotasjonFor(Aksjonskode.class).equals(Aksjonskode.PERMISJON_UTAN_LOENN)) {
             return Kroner.ZERO;
         }
         final Optional<Loennstrinn> loennstrinn = periode.valgfriAnnotasjonFor(Loennstrinn.class);

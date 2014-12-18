@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
@@ -15,6 +16,16 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.krone
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoennstilleggRegelTest {
+    @Test
+    public void skalGenerereTommeLoennstilleggVissStillingaErUteIPermisjonUtanLoenn() {
+        assertLoennstillegg(
+                eiPeriodeSomErEnDagLang()
+                        .med(new Variabletillegg(kroner(10_000)))
+                        .med(new Fastetillegg(kroner(20_000)))
+                        .med(new Funksjonstillegg(kroner(30_000)))
+                        .med(Aksjonskode.PERMISJON_UTAN_LOENN)
+        ).isEqualTo(kroner(0));
+    }
 
     /**
      * Verifiserer at funksjonstillegg ikkje blir nedjustert i henhold til periodas årsfaktor på samme måte som for den

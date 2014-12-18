@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
@@ -43,6 +44,9 @@ public class LoennstilleggRegel implements BeregningsRegel<Kroner> {
      */
     @Override
     public Kroner beregn(final Underlagsperiode periode) {
+        if (periode.valgfriAnnotasjonFor(Aksjonskode.class).map(Aksjonskode.PERMISJON_UTAN_LOENN::equals).orElse(false)) {
+            return Kroner.ZERO;
+        }
         return fastetillegg(periode)
                 .plus(variabletillegg(periode))
                 .plus(funksjonstillegg(periode));
