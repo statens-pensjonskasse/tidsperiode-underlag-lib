@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
@@ -36,20 +37,20 @@ public class StillingsforholdPerioderTest {
         final Stillingsendring sistRegistrerteEndring = endring()
                 .aksjonsdato(dato("2006.02.01"))
                 .registreringsdato(dato("2012.10.07"))
-                .aksjonskode("021")
-                .stillingsprosent(new Stillingsprosent(new Prosent("50%")));
+                .aksjonskode(Aksjonskode.ENDRINGSMELDING)
+                        .stillingsprosent(new Stillingsprosent(new Prosent("50%")));
         periode.leggTilOverlappendeStillingsendringer(
                 asList(
                         endring()
                                 .aksjonsdato(dato("2006.02.01"))
                                 .registreringsdato(dato("2006.09.15"))
-                                .aksjonskode("011")
+                                .aksjonskode(Aksjonskode.NYTILGANG)
                                 .stillingsprosent(new Stillingsprosent(new Prosent("100%"))),
                         sistRegistrerteEndring,
                         endring()
                                 .aksjonsdato(dato("2006.02.01"))
                                 .registreringsdato(dato("2006.10.07"))
-                                .aksjonskode("011")
+                                .aksjonskode(Aksjonskode.NYTILGANG)
                                 .stillingsprosent(new Stillingsprosent(new Prosent("50%")))
                 )
         );

@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
@@ -86,7 +87,7 @@ public class StillingsendringOversetterIT {
                 transform(oversetter::oversett, Stillingsendring::aksjonskode)
         ).as("aksjonskoder frå stillingsendringane")
                 .containsExactlyElementsOf(
-                        transform(rad -> rad.get(4), s -> s)
+                        transform(rad -> rad.get(4), Aksjonskode::valueOf)
                 );
     }
 

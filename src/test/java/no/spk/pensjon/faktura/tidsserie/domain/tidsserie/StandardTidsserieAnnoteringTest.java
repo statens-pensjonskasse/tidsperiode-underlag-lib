@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
@@ -69,6 +70,29 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
+     * Verifiserer at underlagsperiodene blir annotert med aksjonskode frå stillingsforholdperioda dei overlappar.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperioderMedAksjonskodeFraGjeldandeStillingsendring() {
+        final Aksjonskode aksjonskode = Aksjonskode.NYTILGANG;
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("2005.08.15"))
+                        .tilOgMed(dato("2005.08.31"))
+                        .medKobling(
+                                new StillingsforholdPeriode(dato("2005.08.15"), empty())
+                                        .leggTilOverlappendeStillingsendringer(
+                                                new Stillingsendring()
+                                                        .stillingsprosent(fulltid())
+                                                        .aksjonsdato(dato("2005.08.15"))
+                                                        .aksjonskode(aksjonskode)
+                                        )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Aksjonskode.class).isEqualTo(of(aksjonskode));
+    }
+
+    /**
      * Verifiserer at underlagsperiodene blir annotert med premiestatus dersom perioda er tilknytta ein
      * avtaleversjon som har ein premiestatus.
      */
@@ -103,7 +127,7 @@ public class StandardTidsserieAnnoteringTest {
                         new Stillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(aksjonsdato)
-                                .aksjonskode("021")
+                                .aksjonskode(Aksjonskode.ENDRINGSMELDING)
                 );
         final Underlag underlag = annoterAllePerioder(
                 eiTomPeriode()
@@ -130,7 +154,7 @@ public class StandardTidsserieAnnoteringTest {
                                         new Stillingsendring()
                                                 .stillingsprosent(fulltid())
                                                 .aksjonsdato(sluttDato)
-                                                .aksjonskode("031")
+                                                .aksjonskode(Aksjonskode.SLUTTMELDING)
                                 )
                 );
         final Underlag underlag = annoterAllePerioder(
@@ -165,7 +189,7 @@ public class StandardTidsserieAnnoteringTest {
                         new Stillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(sluttDato)
-                                .aksjonskode("031")
+                                .aksjonskode(Aksjonskode.SLUTTMELDING)
                 );
         final Underlag underlag = annoterAllePerioder(
                 eiTomPeriode()
@@ -439,7 +463,7 @@ public class StandardTidsserieAnnoteringTest {
                         new Stillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(dato("2007.01.23"))
-                                .aksjonskode("011")
+                                .aksjonskode(Aksjonskode.NYTILGANG)
                                 .loennstrinn(of(loennstrinn))
                 );
         annoterAllePerioder(
@@ -476,7 +500,7 @@ public class StandardTidsserieAnnoteringTest {
                         new Stillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(dato("2007.01.23"))
-                                .aksjonskode("011")
+                                .aksjonskode(Aksjonskode.NYTILGANG)
                                 .loennstrinn(of(loennstrinn(42)))
                 );
         final Underlag underlag = annoterAllePerioder(
@@ -518,7 +542,7 @@ public class StandardTidsserieAnnoteringTest {
                         new Stillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(dato("2007.01.23"))
-                                .aksjonskode("011")
+                                .aksjonskode(Aksjonskode.NYTILGANG)
                                 .loennstrinn(of(new Loennstrinn(42)))
                 );
         final Underlag underlag = annoterAllePerioder(

@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
@@ -215,7 +216,7 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
         final int index = INDEX_AKSJONSDATO;
         return new Stillingsendring()
                 .stillingsforhold(read(rad, INDEX_STILLINGSFORHOLD).map(StillingsforholdId::valueOf).get())
-                .aksjonskode(read(rad, INDEX_AKSJONSKODE).get())
+                .aksjonskode(read(rad, INDEX_AKSJONSKODE).map(Aksjonskode::valueOf).orElse(Aksjonskode.UKJENT))
                 .aksjonsdato(readDato(rad, index).get())
                 .stillingsprosent(read(rad, INDEX_STILLINGSPROSENT).map(Prosent::new).map(Stillingsprosent::new).get())
                 .stillingskode(read(rad, INDEX_STILLINGSKODE).map(Stillingskode::parse))

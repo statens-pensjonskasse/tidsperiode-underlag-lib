@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -7,6 +9,7 @@ import java.util.stream.Stream;
 import static java.time.LocalDate.MIN;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -27,7 +30,7 @@ public class Stillingsendring {
 
     private Optional<LocalDate> aksjonsdato = empty();
 
-    private Optional<String> aksjonskode = empty();
+    private Optional<Aksjonskode> aksjonskode = of(Aksjonskode.UKJENT);
 
     private Optional<Stillingsprosent> stillingsprosent = empty();
 
@@ -77,20 +80,21 @@ public class Stillingsendring {
     /**
      * Aksjonskoden som indikerer hvilken type stillingsendring det er snakk om.
      *
-     * @param text en tekstlig representasjon av en 3-sifra tallkode som representerer endringstypen
+     * @param aksjonskode aksjonskoda som representerer kva type stillingsendring det er snakk om
      * @return <code>this</code>
+     * @throws NullPointerException dersom <code>aksjonskode</code> er <code>null</code>
      */
-    public Stillingsendring aksjonskode(final String text) {
-        this.aksjonskode = ofNullable(text);
+    public Stillingsendring aksjonskode(final Aksjonskode aksjonskode) {
+        this.aksjonskode = of(requireNonNull(aksjonskode, () -> "aksjonskode er påkrevd, men var null"));
         return this;
     }
 
     /**
      * Aksjonskoden som indikerer hvilken type stillingsendring det er snakk om.
      *
-     * @return en tekstlig representasjon av en 3-sifra tallkode som representerer endringstypen
+     * @return aksjonskoda som representerer kva type stillingsendring det er snakk om
      */
-    public String aksjonskode() {
+    public Aksjonskode aksjonskode() {
         return aksjonskode.get();
     }
 
@@ -130,7 +134,7 @@ public class Stillingsendring {
      * <code>false</code> ellers
      */
     public boolean erSluttmelding() {
-        return "031".equals(aksjonskode.orElse(null));
+        return Aksjonskode.SLUTTMELDING.equals(aksjonskode());
     }
 
     /**
@@ -298,6 +302,36 @@ public class Stillingsendring {
     public Stillingsendring stillingskode(final Optional<Stillingskode> stillingskode) {
         this.stillingskode = requireNonNull(stillingskode);
         return this;
+    }
+
+    /**
+     * Annoterer underlagsperioda med stillingsendringas verdiar som er påkrevd for beregning av maskinelt grunnlag.
+     * <p>
+     * Følgjande verdiar blir forsøkt annotert på perioda viss stillingsendringa har ein ikkje-tom verdi for dei:
+     * <ul></ul>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent}</li>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode}</li>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn}</li>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg}</li>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg}</li>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg}</li>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode}</li>
+     * </ul>
+     * <p>
+     * Merk at lønnstrinn ikkje blir annotert, det må handterast av klienten.
+     *
+     * @param periode underlagsperioda som skal annoterast
+     */
+    public void annoter(final Underlagsperiode periode) {
+        periode.annoter(Aksjonskode.class, aksjonskode());
+
+        periode.annoter(Stillingsprosent.class, stillingsprosent());
+        periode.annoter(Stillingskode.class, stillingskode());
+
+        periode.annoter(DeltidsjustertLoenn.class, loenn());
+        periode.annoter(Fastetillegg.class, fastetillegg());
+        periode.annoter(Variabletillegg.class, variabletillegg());
+        periode.annoter(Funksjonstillegg.class, funksjonstillegg());
     }
 
     @Override

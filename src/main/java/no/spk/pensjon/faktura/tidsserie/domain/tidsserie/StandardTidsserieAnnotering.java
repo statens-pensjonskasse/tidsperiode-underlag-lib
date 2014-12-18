@@ -80,13 +80,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             stillingsforhold.gjeldendeEndring().ifPresent(endring -> {
-                periode.annoter(Stillingsprosent.class, endring.stillingsprosent());
-                periode.annoter(Stillingskode.class, endring.stillingskode());
-
-                periode.annoter(DeltidsjustertLoenn.class, endring.loenn());
-                periode.annoter(Fastetillegg.class, endring.fastetillegg());
-                periode.annoter(Variabletillegg.class, endring.variabletillegg());
-                periode.annoter(Funksjonstillegg.class, endring.funksjonstillegg());
+                endring.annoter(periode);
                 endring.loennstrinn().ifPresent(loennstrinn -> annoterLoennForLoennstrinn(periode, loennstrinn));
             });
             stillingsforhold.medregning().ifPresent(medregning -> {
