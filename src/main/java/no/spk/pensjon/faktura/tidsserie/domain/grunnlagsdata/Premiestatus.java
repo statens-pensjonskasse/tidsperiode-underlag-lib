@@ -28,6 +28,11 @@ public final class Premiestatus {
      */
     public static final Premiestatus AAO_02 = new Premiestatus("AAO-02");
 
+    /**
+     * Premiestatus for avtaleversjonar som manglar premiestatus.
+     */
+    public static final Premiestatus UKJENT = new Premiestatus("UKJENT");
+
     private final String kode;
 
     private Premiestatus(final String kode) {
@@ -38,19 +43,33 @@ public final class Premiestatus {
     }
 
     /**
+     * Premiestatuskoda som identifiserer og skiller premiestatusen frå andre premiestatusar.
+     *
+     * @return premiestatuskoda
+     */
+    public String kode() {
+        return kode;
+    }
+
+    /**
      * Konverterer <code>kode</code> til ein ny eller tidligare definert premiestatus.
      * <p>
      * Dersom det er predefinert ein premiestatus med den angitte koda, vil denne bli returnert. Viss det ikkje
      * tidligare har blitt definert ein premiestatus for den angitte koda blir det generert ein ny premiestatus.
+     * <p>
+     * Dersom <code>kode</code> er tom, kun inneheld whitespace eller er <code>null</code> blir {@link #UKJENT}
+     * alltid returnert.
      * <p>
      * Oppslaget vil cache opp til 100 forskjellige premiestatusar, blir det forsøkt definert fleire enn det vil denne
      * metoda returnere ein ny instans kvar gang ei kode som ikkje er blant dei 100, blir forsøkt slått opp.
      *
      * @param kode ein streng som skal konverterast til ein premiestatus
      * @return premiestatusen for den aktuelle koda
-     * @throws NullPointerException dersom <code>kode</code> er <code>null</code>
      */
     public static Premiestatus valueOf(final String kode) {
+        if (kode == null || kode.trim().isEmpty()) {
+            return UKJENT;
+        }
         return VALUES
                 .stream()
                 .filter(status -> status.harKode(kode))

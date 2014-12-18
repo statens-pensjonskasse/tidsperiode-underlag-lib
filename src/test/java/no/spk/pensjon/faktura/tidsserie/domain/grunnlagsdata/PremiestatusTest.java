@@ -22,4 +22,12 @@ public class PremiestatusTest {
 
         assertThat(Premiestatus.valueOf("XYZ")).isNotEqualTo(Premiestatus.valueOf("ZYX"));
     }
+
+    @Test
+    public void skalReturnereUkjentPremiestatusVissTekstErTomEllerKunInneheldWhitespace() {
+        assertThat(Premiestatus.valueOf("")).isEqualTo(Premiestatus.UKJENT);
+        assertThat(Premiestatus.valueOf("   ")).isEqualTo(Premiestatus.UKJENT);
+        assertThat(Premiestatus.valueOf("\t")).isEqualTo(Premiestatus.UKJENT);
+        assertThat(Premiestatus.valueOf(null)).isEqualTo(Premiestatus.UKJENT);
+    }
 }

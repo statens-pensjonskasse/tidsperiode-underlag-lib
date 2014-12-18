@@ -9,6 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
@@ -23,6 +24,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.Month;
+import java.util.Optional;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon;
 
@@ -34,6 +36,29 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.fe
  * @author Tarjei Skorgenes
  */
 public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Annoteringsstrategi {
+    /**
+     * Populerer underlaget og underlagets underlagsperioder med annotasjonar.
+     * <p>
+     * Kvar underlagsperiode blir først annotert via {@link #annoter(Underlag, Underlagsperiode)}.
+     * <p>
+     * Deretter  blir siste underlagsperiode blir annotert med {@link SistePeriode} slik at seinare prosesseringa
+     * kjapt skal kunne sjekke opp om det eksisterer nokon fleire underlagsperioder i underlaget.
+     * <p>
+     * Dersom siste underlagsperiode er annotert med premiestatus blir underlaget annotert med denne heilt til slutt.
+     *
+     * @param underlag underlaget som skal annoterast
+     */
+    @Override
+    public void annoter(final Underlag underlag) {
+        underlag.stream().forEach((Underlagsperiode periode) -> annoter(underlag, periode));
+        final Optional<Underlagsperiode> sistePeriode = underlag.last();
+        sistePeriode.ifPresent(periode -> {
+            periode.annoter(SistePeriode.class, SistePeriode.INSTANCE);
+            periode.valgfriAnnotasjonFor(Premiestatus.class)
+                    .ifPresent(premiestatus -> underlag.annoter(Premiestatus.class, premiestatus));
+        });
+    }
+
     /**
      * Annoterer underlagsperioda basert på gjeldande stillingsendring viss perioda
      * er tilknytta eit stillingsforhold

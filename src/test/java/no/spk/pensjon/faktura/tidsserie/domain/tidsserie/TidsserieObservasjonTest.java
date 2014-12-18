@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Rule;
@@ -10,8 +11,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,6 +106,7 @@ public class TidsserieObservasjonTest {
         private Long stillingsforhold;
         private Long avtale;
         private Kroner maskineltgrunnlag;
+        private Optional<Premiestatus> premiestatus = empty();
 
         private TidsserieObservasjonBuilder(final LocalDate dato) {
             this.dato = dato;
@@ -120,6 +125,11 @@ public class TidsserieObservasjonTest {
             return this;
         }
 
+        public TidsserieObservasjonBuilder premiestatus(final String kode) {
+            this.premiestatus = of(Premiestatus.valueOf(kode));
+            return this;
+        }
+
         public TidsserieObservasjonBuilder maskineltgrunnlag(final int beloep) {
             this.maskineltgrunnlag = Kroner.kroner(beloep);
             return this;
@@ -134,7 +144,8 @@ public class TidsserieObservasjonTest {
                     new StillingsforholdId(stillingsforhold),
                     new AvtaleId(avtale),
                     new Observasjonsdato(dato),
-                    maskineltgrunnlag
+                    maskineltgrunnlag,
+                    premiestatus
             );
         }
 

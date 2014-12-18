@@ -115,18 +115,15 @@ public class TidsserieUnderlagFacade {
      * Annoterer stillingsforholdunderlaget og underlagsperiodene som det inneheld med informasjon henta frå
      * kvar underlagsperiodes koblingar.
      * <p>
-     * Dersom underlagets tilknytta stillingsforhold blir avslutta innanfor observasjonsperioda, vil siste
-     * underlagsperiode bli annotert med {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.SistePeriode} slik
-     * at seinare prosesseringa kjapt skal kunne sjekke opp om det eksisterer nokon fleire underlagsperioder i
-     * underlaget.
+     * Ansvaret for detaljane i korleis underlaget og -periodene blir annotert blir delegert til annoteringsstrategien
+     * fasade er satt opp til å bruke.
      *
      * @param stillingsforholdunderlag eit underlag som kun inneheld underlagsperioder tilkobla eit stillingsforhold
      * @return <code>stillingsforholdunderlag</code>
      * @see Annoteringsstrategi
      */
     Underlag annoter(final Underlag stillingsforholdunderlag) {
-        stillingsforholdunderlag.forEach(periode -> annotator.annoter(stillingsforholdunderlag, periode));
-        stillingsforholdunderlag.last().ifPresent(sistePeriode -> sistePeriode.annoter(SistePeriode.class, SistePeriode.INSTANCE));
+        annotator.annoter(stillingsforholdunderlag);
         return stillingsforholdunderlag;
     }
 
@@ -236,6 +233,20 @@ public class TidsserieUnderlagFacade {
          * @see Underlagsperiode#annoter(Class, Object)
          */
         public void annoter(final Underlag underlag, final Underlagsperiode periode);
+
+        /**
+         * Populerer underlaget med annotasjonar ut frå tilstand henta frå underlagets underlagsperioder.
+         * <p>
+         * Annoteringa av underlaget blir utført etter at alle perioder har blitt annotert via
+         * {@link #annoter(Underlag, Underlagsperiode)} slik at annotasjonar kan bli henta frå perioder og lagt på
+         * underlaget viss det er ønskelig.
+         * <p>
+         * Standardoppførsel er å ikkje legge til nokon annotasjonar på underlaget eller på underlagsperiodene.
+         *
+         * @param underlag underlaget som skal annoterast
+         */
+        public default void annoter(final Underlag underlag) {
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
@@ -225,7 +226,8 @@ public class Tidsserie {
                 observasjonsunderlag.annotasjonFor(StillingsforholdId.class),
                 p.annotasjonFor(AvtaleId.class),
                 observasjonsunderlag.annotasjonFor(Observasjonsdato.class),
-                p.beregn(MaskineltGrunnlagRegel.class)
+                p.beregn(MaskineltGrunnlagRegel.class),
+                observasjonsunderlag.valgfriAnnotasjonFor(Premiestatus.class)
         );
     }
 }
