@@ -338,7 +338,7 @@ public class Stillingsendring {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("Stillingsendring, registrert ").append(registreringsdato).append(", gjeldende fra ").append(aksjonsdato).append("\n");
+        builder.append("Stillingsendring, registrert ").append(registreringsdato).append(", med aksjonsdato ").append(aksjonsdato).append("\n");
         Stream.of(
                 line("Aksjonskode: ", aksjonskode),
                 line("Stillingsbrøk: ", stillingsprosent),

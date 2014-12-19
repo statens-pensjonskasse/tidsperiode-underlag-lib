@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static java.time.LocalDate.MAX;
 import static java.util.Arrays.asList;
@@ -106,11 +107,19 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
     /**
      * Returnerer gjeldende stillingsendring for stillingsforholdperioder som er basert på stillingshistorikk.
      * <p>
-     * I situasjoner der stillingsperioden kun har tilknyttet en endring vil denne alltid være gjeldende endring for perioden.
+     * I situasjoner der en har mer enn en endring vil sist registrerte endring som ikke er en sluttmelding, bli brukt
+     * som gjeldende endring. Sluttmeldinger blir ignorert fordi det ikke vil være mulig å vite hva som er gjeldende
+     * aksjonskode for perioden dersom man plukker sluttmeldingen som gjeldende endring.
      * <p>
-     * I situasjoner der en har mer enn en endring vil sist registrerte endring bli brukt som gjeldende endring. Dette er
-     * en forenkling som ikke nødvendigvis er funksjonelt ønskelig. Det gjennstår å finne gode konflikthåndteringsstrategier
-     * for å velge rett endring for desse situasjonene.
+     * I situasjoner der stillingsperioden kun har tilknyttet en endring vil denne alltid være gjeldende endring for
+     * perioden, selv om endringen er en sluttmelding. Dette impliserer at dersom stillingsforholdet er registrert med
+     * kun en stillingsendring og det er en sluttmelding så vil den 1 dag lange perioden aldri kunne bli tolket som
+     * permisjon uten lønn eller andre spesielle typer perioder der aksjonskode regulerer hvordan perioden skal beregnes.
+     * <p>
+     * Det å bruke sist registrerte endring er forøvrig en forenkling som ikke nødvendigvis er funksjonelt ønskelig.
+     * Det gjennstår å finne gode konflikthåndteringsstrategier for å velge "rett" endring for slike situasjonar
+     * ettersom det i 90% av tilfellene vil vere en indikasjon på at stillingens historikk er inkonsistent eller
+     * mangelfull.
      * <p>
      * Dersom stillingsforholdet er basert på medregning har ikkje perioden noen gjeldende stillingsendring.
      *
@@ -118,10 +127,14 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * eller {@link Optional#empty()} dersom stillingsforholdet er basert på medregning
      */
     public Optional<Stillingsendring> gjeldendeEndring() {
+        if (gjeldendeVerdier.size() == 1) {
+            return of(gjeldendeVerdier.get(0));
+        }
         final Comparator<Stillingsendring> comparator = Comparator
                 .comparing((Stillingsendring e) -> ofNullable(e.registreringsdato()).orElse(MAX))
                 .reversed();
-        return gjeldendeVerdier.stream().sorted(comparator).findFirst();
+        final Predicate<Stillingsendring> erSluttmelding = Stillingsendring::erSluttmelding;
+        return gjeldendeVerdier.stream().filter(erSluttmelding.negate()).sorted(comparator).findFirst();
     }
 
     /**
