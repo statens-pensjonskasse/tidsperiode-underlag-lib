@@ -318,7 +318,8 @@ public class Stillingsendring {
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode}</li>
      * </ul>
      * <p>
-     * Merk at lønnstrinn ikkje blir annotert, det må handterast av klienten.
+     * Merk at lønnstrinn ikkje blir annotert, det må handterast av klienten ettersom det er ønskelig å handtere både
+     * lønnstrinn og lønnstrinnbeløp samtidig.
      *
      * @param periode underlagsperioda som skal annoterast
      */
