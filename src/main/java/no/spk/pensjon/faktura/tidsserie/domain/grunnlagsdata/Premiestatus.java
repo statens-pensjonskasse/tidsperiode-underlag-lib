@@ -1,7 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public final class Premiestatus {
-    private static final Set<Premiestatus> VALUES = new HashSet<>();
+    private static final ConcurrentHashMap<Premiestatus, Object> VALUES = new ConcurrentHashMap<>(20);
 
     /**
      * Grunnskular.
@@ -38,7 +40,7 @@ public final class Premiestatus {
     private Premiestatus(final String kode) {
         this.kode = requireNonNull(kode, () -> "premiestatus er påkrevd, men var null");
         if (VALUES.size() < 100) {
-            VALUES.add(this);
+            VALUES.put(this, this);
         }
     }
 
@@ -71,6 +73,7 @@ public final class Premiestatus {
             return UKJENT;
         }
         return VALUES
+                .keySet()
                 .stream()
                 .filter(status -> status.harKode(kode))
                 .findFirst()
