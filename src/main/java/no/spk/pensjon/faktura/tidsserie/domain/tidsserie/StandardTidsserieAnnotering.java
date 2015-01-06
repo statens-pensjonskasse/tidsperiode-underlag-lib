@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
@@ -10,11 +9,13 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
@@ -23,6 +24,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.Month;
+import java.util.Optional;
+
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinære
@@ -32,6 +36,29 @@ import java.time.Month;
  * @author Tarjei Skorgenes
  */
 public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Annoteringsstrategi {
+    /**
+     * Populerer underlaget og underlagets underlagsperioder med annotasjonar.
+     * <p>
+     * Kvar underlagsperiode blir først annotert via {@link #annoter(Underlag, Underlagsperiode)}.
+     * <p>
+     * Deretter  blir siste underlagsperiode blir annotert med {@link SistePeriode} slik at seinare prosesseringa
+     * kjapt skal kunne sjekke opp om det eksisterer nokon fleire underlagsperioder i underlaget.
+     * <p>
+     * Dersom siste underlagsperiode er annotert med premiestatus blir underlaget annotert med denne heilt til slutt.
+     *
+     * @param underlag underlaget som skal annoterast
+     */
+    @Override
+    public void annoter(final Underlag underlag) {
+        underlag.stream().forEach((Underlagsperiode periode) -> annoter(underlag, periode));
+        final Optional<Underlagsperiode> sistePeriode = underlag.last();
+        sistePeriode.ifPresent(periode -> {
+            periode.annoter(SistePeriode.class, SistePeriode.INSTANCE);
+            periode.valgfriAnnotasjonFor(Premiestatus.class)
+                    .ifPresent(premiestatus -> underlag.annoter(Premiestatus.class, premiestatus));
+        });
+    }
+
     /**
      * Annoterer underlagsperioda basert på gjeldande stillingsendring viss perioda
      * er tilknytta eit stillingsforhold
@@ -44,8 +71,12 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
     @Override
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
         periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
-            periode.annoter(AvtaleId.class, avtalekobling.avtale());
-            periode.annoter(Ordning.class, avtalekobling.ordning());
+            avtalekobling.annoter(periode);
+
+            periode.koblingarAvType(Avtaleversjon.class)
+                    .filter(v -> v.tilhoeyrer(avtalekobling.avtale()))
+                    .reduce(feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon(avtalekobling.avtale(), periode))
+                    .ifPresent(versjon -> versjon.annoter(periode));
         });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             stillingsforhold.gjeldendeEndring().ifPresent(endring -> {

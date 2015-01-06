@@ -35,6 +35,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -65,6 +66,116 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med premiestatus dersom perioda er tilknytta ein
+     * avtaleversjon som har ein premiestatus.
+     */
+    @Test
+    public void skalAnnoterePeriodeMedPremiestatusFraOverlappandeAvtaleversjon() {
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene ikkje blir annotert med premiestatus dersom perioda ikkje er tilknytta ein
+     * avtaleversjon.
+     */
+    @Test
+    public void skalIkkjeAnnoterePeriodeMedPremiestatusDersomPeriodaIkkjeOverlapparEinAvtaleversjon() {
+    }
+
+    /**
+     * Verifiserer at annoteringa feilar dersom ei periode er tilknytta meir enn ein avtaleversjon.
+     */
+    @Test
+    public void skalFeileDersomUnderlagsperiodeOverlapparMeirEnnEinAvtaleversjon() {
+    }
+
+    /**
+     * Verifiserer at vi ikkje annoterer nokon underlagsperioder som siste periode dersom stillingsforholdet
+     * ikkje har noko sluttmelding.
+     */
+    @Test
+    public void skalIkkjeAnnotereSistePeriodeDersomStillingsforholdErAktivt() {
+        final LocalDate aksjonsdato = dato("2012.06.30");
+        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2005.08.15"), of(aksjonsdato))
+                .leggTilOverlappendeStillingsendringer(
+                        new Stillingsendring()
+                                .stillingsprosent(fulltid())
+                                .aksjonsdato(aksjonsdato)
+                                .aksjonskode("021")
+                );
+        final Underlag underlag = annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2012.01.01"))
+                        .tilOgMed(aksjonsdato)
+                        .medKobling(
+                                stilling
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
+    }
+
+    /**
+     * Verifiserer at det kun er siste underlagsperiode som blir annotert med {@link SistePeriode} sjølv om
+     * det er to eller fleire underlagsperioder som overlappar stillingsforholdperioda som inneheld sluttmeldinga.
+     */
+    @Test
+    public void skalKunAnnotereSisteUnderlagsperiodeSjoelvOmStillingsperiodeMedSluttmeldingOverlapparFleireUnderlagsperioder() {
+        final LocalDate sluttDato = dato("2012.06.30");
+        final UnderlagsperiodeBuilder builder = eiTomPeriode()
+                .medKobling(
+                        new StillingsforholdPeriode(dato("2005.08.15"), of(sluttDato))
+                                .leggTilOverlappendeStillingsendringer(
+                                        new Stillingsendring()
+                                                .stillingsprosent(fulltid())
+                                                .aksjonsdato(sluttDato)
+                                                .aksjonskode("031")
+                                )
+                );
+        final Underlag underlag = annoterAllePerioder(
+                builder.kopi()
+                        .fraOgMed(dato("2012.01.01"))
+                        .tilOgMed(dato("2012.04.30")),
+                builder.kopi()
+                        .fraOgMed(dato("2012.05.01"))
+                        .tilOgMed(dato("2012.05.31")),
+                builder.kopi()
+                        .fraOgMed(dato("2012.06.01"))
+                        .tilOgMed(sluttDato)
+        );
+        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(empty());
+        assertAnnotasjon(underlag.toList().get(1), SistePeriode.class).isEqualTo(empty());
+        assertAnnotasjon(underlag.toList().get(2), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
+    }
+
+
+    /**
+     * Verifiserer at siste underlagsperiode i stillingsforholdunderlaget, blir annotert med
+     * {@link SistePeriode} dersom den overlappande stillingsforholdperioda inneheld ei sluttmelding.
+     * <p>
+     * Ein underliggande antagelse her er at siste underlagsperiode løper fram til og med den overlappande stillingsforholdperiodas
+     * til og med-dato.
+     */
+    @Test
+    public void skalAnnotereSisteUnderlagsperiodeMedSistePeriodeVissOverlappandeStillingsforholdsperiodeInneheldEiSluttmelding() {
+        final LocalDate sluttDato = dato("2012.06.30");
+        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2005.08.15"), of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        new Stillingsendring()
+                                .stillingsprosent(fulltid())
+                                .aksjonsdato(sluttDato)
+                                .aksjonskode("031")
+                );
+        final Underlag underlag = annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2012.01.01"))
+                        .tilOgMed(sluttDato)
+                        .medKobling(
+                                stilling
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
     }
 
     @Test
@@ -571,7 +682,7 @@ public class StandardTidsserieAnnoteringTest {
                         .stream()
                         .map(UnderlagsperiodeBuilder::bygg)
         );
-        nyttUnderlag.stream().forEach((Underlagsperiode periode) -> annotator.annoter(nyttUnderlag, periode));
+        annotator.annoter(nyttUnderlag);
         return nyttUnderlag;
     }
 

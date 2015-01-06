@@ -8,7 +8,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -28,6 +30,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom stillingsforholdet er under minstegrensa
+     * i perioda som blir beregna.
+     */
+    @Test
+    public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUnderMinstegrensa() {
+        assertMaskineltGrunnlag(
+                periode("2008.04.01", "2008.04.30")
+                        .med(new Aarstall(2008))
+                        .med(new DeltidsjustertLoenn(kroner(75_000)))
+                        .med(new Stillingsprosent(new Prosent("15%")))
+        ).isEqualTo(kroner(0));
+    }
+
+    /**
+     * Verifiserer at minstegrensa blir ignorert for medregningar sidan minstegrensehandteringa for bistillingar og
+     * tillegg annan arbeidsgivar ikkje er veldefinert korleis skal fungere innanfor dei forenklingane som fastsats-
+     * metodikken implementerer.
+     */
+    @Test
+    public void skalIkkjeTaHensynTilMinstegrensaVedMedregning() {
+        assertMaskineltGrunnlag(
+                periode("2008.01.01", "2008.12.31")
+                        .med(new Aarstall(2008))
+                        .med(new Medregning(kroner(75_000)))
+                        .med(Medregningskode.BISTILLING)
+        ).isEqualTo(kroner(75_000));
+
+        assertMaskineltGrunnlag(
+                periode("2008.01.01", "2008.12.31")
+                        .med(new Aarstall(2008))
+                        .med(new Medregning(kroner(5_000)))
+                        .med(Medregningskode.TILLEGG_ANNEN_ARBGIV)
+        ).isEqualTo(kroner(5_000));
+    }
 
     /**
      * Verifiserer at maskinelt grunnlag blir avgrensa til 12G også for medregningar.
@@ -111,6 +149,7 @@ public class MaskineltGrunnlagRegelTest {
                         .med(new Aarstall(2005))
                         .med(new DeltidsjustertLoenn(new Kroner(2_000_000)))
                         .med(new Stillingsprosent(fulltid()))
+                        .med(Stillingskode.K_STIL_APO_FARMASOYT)
                         .med(Ordning.POA)
                         .med(new Grunnbeloep(new Kroner(60_000)))
         ).isEqualTo(new Kroner(60_000).multiply(10));
@@ -162,16 +201,6 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     @Test
-    public void skalBeregneMaskineltGrunnlagLikDeltidsjustertLoennUtenAaTaHensynTilMinstegrense() {
-        assertMaskineltGrunnlag(
-                periode("2012.01.01", "2012.12.31")
-                        .med(new Aarstall(2012))
-                        .med(new DeltidsjustertLoenn(new Kroner(50_000)))
-                        .med(new Stillingsprosent(new Prosent("10%")))
-        ).isEqualTo(new Kroner(50_000));
-    }
-
-    @Test
     public void skalAvkorteMaskineltGrunnlagUtFraAarsfaktor() {
         assertMaskineltGrunnlag(
                 periode("2011.01.01", "2011.01.31")
@@ -191,10 +220,12 @@ public class MaskineltGrunnlagRegelTest {
                 .med(new LoennstilleggRegel())
                 .med(new Stillingsprosent(fulltid()))
                 .med(new OevreLoennsgrenseRegel())
+                .med(Premiestatus.valueOf("AAO-07"))
                 .med(Ordning.SPK)
                         // Brukar urealistisk høgt beløp for å unngå at det skal påvirke testar som ikkje er fokusert
                         // på å teste beløp som blir påvirka av grunnbeløpet
                 .med(new Grunnbeloep(kroner(1_000_000)))
+                .med(new MinstegrenseRegel())
                 ;
     }
 

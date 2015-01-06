@@ -182,7 +182,7 @@ public class TidsserieUnderlagFacadeIT {
         final RuntimeException expected = new NullPointerException();
         doAnswer(a -> {
             throw expected;
-        }).when(annotator).annoter(any(Underlag.class), any(Underlagsperiode.class));
+        }).when(annotator).annoter(any(Underlag.class));
         fasade.endreAnnoteringsstrategi(annotator);
 
         final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();

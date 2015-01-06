@@ -1,7 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
@@ -29,6 +31,8 @@ public class TidsserieUnderlagFacade {
     private final Set<Tidsperiode<?>> referanseperioder = new HashSet<>();
 
     private Annoteringsstrategi annotator = new IngenAnnotering();
+
+    private AvtaleinformasjonRepository avtalar = new IngenAvtaleinformasjon();
 
     /**
      * Bygger opp underlag for kvart unike stillingsforhold som medlemmet er eller har vore tilknytta innanfor
@@ -67,6 +71,13 @@ public class TidsserieUnderlagFacade {
                     factory.addPerioder(s.perioder());
                     factory.addPerioder(medlem.avtalekoblingar(s::tilhoeyrer));
 
+                    factory.addPerioder(
+                            medlem
+                                    .avtalekoblingar(s::tilhoeyrer)
+                                    .map(Avtalekoblingsperiode::avtale)
+                                    .flatMap(this.avtalar::finn)
+                    );
+
                     factory.addPerioder(observerbare.stream().flatMap(Aar::maaneder));
                     factory.addPerioder(observerbare);
 
@@ -104,18 +115,15 @@ public class TidsserieUnderlagFacade {
      * Annoterer stillingsforholdunderlaget og underlagsperiodene som det inneheld med informasjon henta frå
      * kvar underlagsperiodes koblingar.
      * <p>
-     * Dersom underlagets tilknytta stillingsforhold blir avslutta innanfor observasjonsperioda, vil siste
-     * underlagsperiode bli annotert med {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.SistePeriode} slik
-     * at seinare prosesseringa kjapt skal kunne sjekke opp om det eksisterer nokon fleire underlagsperioder i
-     * underlaget.
+     * Ansvaret for detaljane i korleis underlaget og -periodene blir annotert blir delegert til annoteringsstrategien
+     * fasade er satt opp til å bruke.
      *
      * @param stillingsforholdunderlag eit underlag som kun inneheld underlagsperioder tilkobla eit stillingsforhold
      * @return <code>stillingsforholdunderlag</code>
      * @see Annoteringsstrategi
      */
     Underlag annoter(final Underlag stillingsforholdunderlag) {
-        stillingsforholdunderlag.forEach(periode -> annotator.annoter(stillingsforholdunderlag, periode));
-        stillingsforholdunderlag.last().ifPresent(sistePeriode -> sistePeriode.annoter(SistePeriode.class, SistePeriode.INSTANCE));
+        annotator.annoter(stillingsforholdunderlag);
         return stillingsforholdunderlag;
     }
 
@@ -197,6 +205,19 @@ public class TidsserieUnderlagFacade {
     }
 
     /**
+     * Endrar repository for oppslag av avtaleinformasjon.
+     * <p>
+     * Fasadas standardstrategi for oppslag av tidsperiodisert avtaleinformasjon er å ikkje slå opp noko
+     * ekstra informasjon om dei avtalane som kvart enkelt stillingsforhold er tilknytta via sine avtalekoblingar.
+     *
+     * @param repository det nye repositoriet for oppslag av tidsperiodisert avtaleinformasjon
+     * @throws NullPointerException dersom <code>repository</code> er <code>null</code>
+     */
+    public void endreAvtaleinformasjonRepository(final AvtaleinformasjonRepository repository) {
+        this.avtalar = requireNonNull(repository, () -> "avtaleinformasjonrepository er påkrevd, men var null");
+    }
+
+    /**
      * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi}
      * representerer ein strategi for å annotere
      * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode underlagsperiode}.
@@ -212,6 +233,20 @@ public class TidsserieUnderlagFacade {
          * @see Underlagsperiode#annoter(Class, Object)
          */
         public void annoter(final Underlag underlag, final Underlagsperiode periode);
+
+        /**
+         * Populerer underlaget med annotasjonar ut frå tilstand henta frå underlagets underlagsperioder.
+         * <p>
+         * Annoteringa av underlaget blir utført etter at alle perioder har blitt annotert via
+         * {@link #annoter(Underlag, Underlagsperiode)} slik at annotasjonar kan bli henta frå perioder og lagt på
+         * underlaget viss det er ønskelig.
+         * <p>
+         * Standardoppførsel er å ikkje legge til nokon annotasjonar på underlaget eller på underlagsperiodene.
+         *
+         * @param underlag underlaget som skal annoterast
+         */
+        public default void annoter(final Underlag underlag) {
+        }
     }
 
     /**
@@ -220,6 +255,29 @@ public class TidsserieUnderlagFacade {
     private static class IngenAnnotering implements Annoteringsstrategi {
         @Override
         public void annoter(final Underlag underlag, final Underlagsperiode periode) {
+        }
+    }
+
+    /**
+     * {@link AvtaleinformasjonRepository} representerer eit repository for oppslag av avtalerelatert informasjon
+     * som kan variere over tid.
+     *
+     * @author Tarjei Skorgenes
+     */
+    public static interface AvtaleinformasjonRepository {
+        /**
+         * Slår opp all tidsperiodisert informasjon som er relevant for tidsseriegenereringa for ein bestemt avtale.
+         *
+         * @param avtale avtalen det skal slåast opp tidsperiodisert avtaleinformasjon om
+         * @return ein straum med all avtalerelatert informasjon tilknytta <code>avtale</code>
+         */
+        Stream<Tidsperiode<?>> finn(final AvtaleId avtale);
+    }
+
+    private static class IngenAvtaleinformasjon implements AvtaleinformasjonRepository {
+        @Override
+        public Stream<Tidsperiode<?>> finn(final AvtaleId avtale) {
+            return Stream.empty();
         }
     }
 }

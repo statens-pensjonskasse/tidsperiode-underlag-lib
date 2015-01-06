@@ -3,9 +3,11 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 import java.time.Month;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -44,6 +46,8 @@ public class TidsserieObservasjon {
      */
     public final Kroner maskineltGrunnlag;
 
+    private final Optional<Premiestatus> premiestatus;
+
     /**
      * Konstruerer ein ny observasjon av totalt maskinelt grunnlag for eit stillingsforhold på ein bestemt avtale
      * der observasjonen er utført på eit observasjonsunderlag for den angitte observasjonsdatoen.
@@ -53,14 +57,17 @@ public class TidsserieObservasjon {
      * @param observasjonsdato  datoen observasjonen er simulert utført
      * @param maskineltGrunnlag det maskinelle grunnlaget for alle periodene stillingsforholdet har vore aktivt på
      *                          avtalen innanfor premieåret observasjonen er utført for
+     * @param premiestatus      avtalens premiestatus
      * @throws NullPointerException dersom nokon av parameterverdiane er <code>null</code>
      */
     public TidsserieObservasjon(final StillingsforholdId stillingsforhold, final AvtaleId avtale,
-                                final Observasjonsdato observasjonsdato, final Kroner maskineltGrunnlag) {
+                                final Observasjonsdato observasjonsdato, final Kroner maskineltGrunnlag,
+                                final Optional<Premiestatus> premiestatus) {
         this.stillingsforhold = requireNonNull(stillingsforhold);
         this.avtale = requireNonNull(avtale);
         this.observasjonsdato = requireNonNull(observasjonsdato);
         this.maskineltGrunnlag = requireNonNull(maskineltGrunnlag);
+        this.premiestatus = requireNonNull(premiestatus);
     }
 
     /**
@@ -70,6 +77,15 @@ public class TidsserieObservasjon {
      */
     public AvtaleId avtale() {
         return avtale;
+    }
+
+    /**
+     * Avtalens premiestatus pr siste periode i observasjonsunderlaget.
+     * <p>
+     *     Merk at verdien er valgfri sidan avtalane ikkje er påkrevd å alltid ha ein premiestatus.
+     */
+    public Optional<Premiestatus> premiestatus() {
+        return premiestatus;
     }
 
     /**
@@ -141,11 +157,17 @@ public class TidsserieObservasjon {
                 that -> ofNullable(this.observasjonsdato).equals(ofNullable(that.observasjonsdato)),
                 () -> feilmeldingForskjelligVerdi(other, "observasjonsdatoar")
         );
+        valider(
+                other,
+                that -> premiestatus.equals(that.premiestatus),
+                () -> feilmeldingForskjelligVerdi(other, "premiestatus")
+        );
         return new TidsserieObservasjon(
                 stillingsforhold,
                 avtale,
                 observasjonsdato,
-                maskineltGrunnlag.plus(other.maskineltGrunnlag)
+                maskineltGrunnlag.plus(other.maskineltGrunnlag),
+                premiestatus
         );
     }
 
