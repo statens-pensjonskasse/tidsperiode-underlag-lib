@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
@@ -30,6 +31,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MaskineltGrunnlagRegelTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom gjeldande aksjonskode for stillingsforholdet
+     * er permisjon utan lønn.
+     */
+    @Test
+    public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUteIPermisjonUtanLoenn() {
+        assertMaskineltGrunnlag(
+                periode("2008.04.01", "2008.04.30")
+                        .med(new Aarstall(2008))
+                        .med(new DeltidsjustertLoenn(kroner(75_000)))
+                        .med(fulltid())
+                        .med(Aksjonskode.PERMISJON_UTAN_LOENN)
+        ).isEqualTo(kroner(0));
+    }
 
     /**
      * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom stillingsforholdet er under minstegrensa
@@ -219,6 +235,7 @@ public class MaskineltGrunnlagRegelTest {
                 .med(new DeltidsjustertLoennRegel())
                 .med(new LoennstilleggRegel())
                 .med(new Stillingsprosent(fulltid()))
+                .med(Aksjonskode.ENDRINGSMELDING)
                 .med(new OevreLoennsgrenseRegel())
                 .med(Premiestatus.valueOf("AAO-07"))
                 .med(Ordning.SPK)

@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
@@ -20,6 +21,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 public class DeltidsjustertLoennRegelTest {
+    @Test
+    public void skalGenerereTomLoennVissStillingaErUteIPermisjonUtanLoenn() {
+        assertDeltidsjustertLoenn(
+                perioda()
+                        .med(new DeltidsjustertLoenn(kroner(100_000)))
+                        .med(Aksjonskode.PERMISJON_UTAN_LOENN)
+        ).isEqualTo(kroner(0));
+    }
+
     @Test
     public void skalIkkjeFeileBeregingNårDeltidsjustertLoennManglarPaaGrunnAvMedregning() {
         assertDeltidsjustertLoenn(
@@ -62,11 +72,12 @@ public class DeltidsjustertLoennRegelTest {
         assertDeltidsjustertLoenn(
                 periode("2001.01.01", "2001.01.01")
                         .med(new DeltidsjustertLoenn(new Kroner(365_000)))
+                        .med(Aksjonskode.ENDRINGSMELDING)
         ).isEqualTo(new Kroner(365_000));
     }
 
     private UnderlagsperiodeBuilder perioda() {
-        return periode("2010.01.01", "2010.12.31");
+        return periode("2010.01.01", "2010.12.31").med(Aksjonskode.ENDRINGSMELDING);
     }
 
     private AbstractComparableAssert<?, Kroner> assertDeltidsjustertLoenn(final UnderlagsperiodeBuilder periode) {
