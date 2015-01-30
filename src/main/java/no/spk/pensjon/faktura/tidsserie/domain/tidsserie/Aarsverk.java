@@ -2,6 +2,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * {@link Aarsverk} representerer 1 års arbeidsinnsats for eit stillingsforhold som har 100% stillingsprosent
  * gjennom heile året.
@@ -10,11 +12,29 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
  */
 public class Aarsverk {
     /**
+     * Konstant som representerer eit 0% eller tomt årsverk.
+     */
+    public static final Aarsverk ZERO = new Aarsverk(new Prosent(0d));
+
+    private final Prosent verdi;
+
+    /**
+     * Opprettar eit nytt årsverk, basert på ei måling angitt i prosent av 1 årsverk.
+     *
+     * @param verdi antall årsverk angitt i prosent
+     * @throws NullPointerException if <code>verdi</code> er <code>null</code>
+     */
+    public Aarsverk(final Prosent verdi) {
+        requireNonNull(verdi, "verdi er påkrevd, men var null");
+        this.verdi = verdi;
+    }
+
+    /**
      * Hentar ut antall årsverk som ein prosentverdi sett i forhold til 1 årsverk.
      *
      * @return antall årsverk i prosent
      */
     public Prosent tilProsent() {
-        return new Prosent(0d);
+        return verdi;
     }
 }
