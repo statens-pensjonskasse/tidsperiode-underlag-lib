@@ -53,6 +53,18 @@ public class Prosent {
     }
 
     /**
+     * Legger saman verdien av dei to prosentverdiane.
+     *
+     * @param other prosenten som vi skal legge saman verdien med
+     * @return ein ny prosent som inneheld summen av dei to prosentane
+     */
+    public Prosent plus(final Prosent other) {
+        return new Prosent(
+                verdi + other.verdi
+        );
+    }
+
+    /**
      * Konverterer prosentsatsen til en numerisk representasjon som et tall mellom 0.0 og 1.0.
      * <br>
      * Eksempel:
@@ -92,6 +104,13 @@ public class Prosent {
      */
     public boolean equals(final Prosent other, final int antallDesimalar) {
         return avrund(this, antallDesimalar) == avrund(other, antallDesimalar);
+    }
+
+    /**
+     * @see #Prosent(String)
+     */
+    public static Prosent prosent(final String text) {
+        return new Prosent(text);
     }
 
     private long avrund(final Prosent other, final int antallDesimalar) {

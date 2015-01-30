@@ -30,11 +30,31 @@ public class Aarsverk {
     }
 
     /**
+     * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent#Prosent(String)
+     * @see #Aarsverk(no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent)
+     */
+    public static Aarsverk aarsverk(final Prosent verdi) {
+        return new Aarsverk(verdi);
+    }
+
+    /**
      * Hentar ut antall årsverk som ein prosentverdi sett i forhold til 1 årsverk.
      *
      * @return antall årsverk i prosent
      */
     public Prosent tilProsent() {
         return verdi;
+    }
+
+    /**
+     * Legger saman verdien av dei to årsverka.
+     *
+     * @param other årsverket som vi skal legge saman verdien med
+     * @return eit nytt årsverk som inneheld summen av dei to årsverk som er lagt saman
+     */
+    public Aarsverk plus(final Aarsverk other) {
+        return new Aarsverk(
+                verdi.plus(other.verdi)
+        );
     }
 }
