@@ -13,6 +13,11 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public class Prosent {
+    /**
+     * 0%.
+     */
+    public static final Prosent ZERO = new Prosent(0d);
+
     private static final Supplier<String> VALIDER_TEKST = () -> "prosentsatsen er påkrevd, men var null";
 
     private final double verdi;
@@ -61,6 +66,18 @@ public class Prosent {
     public Prosent plus(final Prosent other) {
         return new Prosent(
                 verdi + other.verdi
+        );
+    }
+
+    /**
+     * Multipliserer saman dei to prosentane.
+     *
+     * @param other den andre prosenten som vi skal multipliserast med
+     * @return ein ny prosent som inneheld resultatet av multiplikasjonen
+     */
+    public Prosent multiply(final Prosent other) {
+        return new Prosent(
+                this.verdi * other.verdi
         );
     }
 

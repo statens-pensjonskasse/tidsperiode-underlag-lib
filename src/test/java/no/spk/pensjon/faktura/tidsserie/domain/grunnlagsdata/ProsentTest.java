@@ -86,6 +86,12 @@ public class ProsentTest {
     @Test
     public void skalLeggeSamanVerdiane() {
         assertThat(prosent("12.459%").plus(prosent("26.315%")).toDouble())
-                .isEqualTo(prosent("38.774%").toDouble(), offset(0.0001));
+                .isEqualTo(prosent("38.774%").toDouble(), PRESISJON);
+    }
+
+    @Test
+    public void skalMultiplisereSamanVerdiane() {
+        assertThat(prosent("10%").multiply(prosent("10%")).toDouble())
+                .isEqualTo(prosent("1%").toDouble(), PRESISJON);
     }
 }

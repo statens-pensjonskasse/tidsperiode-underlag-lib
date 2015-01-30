@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -17,7 +18,9 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.offset;
 
 /**
  * Enheitstestar for {@link TidsserieObservasjon}.
@@ -27,6 +30,45 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TidsserieObservasjonTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    @Test
+    public void skalKombinereAarsverkVedSamanslaaingAvToObservasjonar() {
+        final TidsserieObservasjon a = einObservasjon().bygg()
+                .registrerMaaling(Aarsverk.class, new Aarsverk(prosent("10%")));
+        final TidsserieObservasjon b = einObservasjon().bygg()
+                .registrerMaaling(Aarsverk.class, new Aarsverk(prosent("10%")));
+
+        assertThat(a.plus(b).maaling(Aarsverk.class).get().tilProsent().toDouble())
+                .isEqualTo(prosent("20%").toDouble(), offset(0.0001));
+    }
+
+    @Test
+    public void skalTaVarePaaRegistrerteMaalingar() {
+        final TidsserieObservasjon observasjon = einObservasjon()
+                .bygg();
+
+        final Integer expected = 123;
+        observasjon.registrerMaaling(Integer.class, expected);
+        assertThat(observasjon.maaling(Integer.class)).isEqualTo(of(expected));
+    }
+
+    @Test
+    public void skalTaVarePaaSistRegistrerteMaalingar() {
+        final TidsserieObservasjon observasjon = einObservasjon()
+                .bygg();
+
+        final Integer expected = 123;
+        observasjon.registrerMaaling(Integer.class, 2);
+        observasjon.registrerMaaling(Integer.class, expected);
+        assertThat(observasjon.maaling(Integer.class)).isEqualTo(of(expected));
+    }
+
+    @Test
+    public void skalTaVarePaaVerdiBasertPaaAngittTypeIkkjeVerdiensKlasse() {
+        final TidsserieObservasjon o = einObservasjon().bygg().registrerMaaling(Object.class, "yada yada");
+        assertThat(o.maaling(String.class)).isEqualTo(empty());
+        assertThat(o.maaling(Object.class)).isEqualTo(of("yada yada"));
+    }
 
     @Test
     public void skalFeileDersomEinLeggerSamanObservasjonarMedForskjelligAvtale() {
@@ -136,10 +178,10 @@ public class TidsserieObservasjonTest {
         }
 
         public TidsserieObservasjon bygg() {
-            requireNonNull(dato);
-            requireNonNull(stillingsforhold);
-            requireNonNull(avtale);
-            requireNonNull(maskineltgrunnlag);
+            requireNonNull(dato, "observasjonsdato er påkrevd, men var null");
+            requireNonNull(stillingsforhold, "stillingsforhold er påkrevd, men var null");
+            requireNonNull(avtale, "avtale er påkrevd, men var null");
+            requireNonNull(maskineltgrunnlag, "maskinelt grunnlag er påkrevd, men var null");
             return new TidsserieObservasjon(
                     new StillingsforholdId(stillingsforhold),
                     new AvtaleId(avtale),
@@ -158,5 +200,17 @@ public class TidsserieObservasjonTest {
     private static AbstractBooleanAssert<?> assertTilhoeyrer(final TidsserieObservasjon observasjon, final Aarstall aarstall) {
         return assertThat(observasjon.tilhoeyrer(aarstall)).
                 as("Tilhøyrer " + observasjon + ", årstall " + 2008 + "?");
+    }
+
+
+    /**
+     * Ein tilfeldig observasjon for testar som ikkje er interessert i stillingsforhold, avtale, observasjonsdato
+     * eller maskinelt grunnlag.
+     */
+    private static TidsserieObservasjonBuilder einObservasjon() {
+        return observasjon("2005.08.31")
+                .stilling(1)
+                .avtale(2)
+                .maskineltgrunnlag(0);
     }
 }

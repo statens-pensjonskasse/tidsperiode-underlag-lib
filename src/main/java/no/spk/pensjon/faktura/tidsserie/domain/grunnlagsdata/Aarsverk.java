@@ -1,12 +1,10 @@
-package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
-
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * {@link Aarsverk} representerer 1 års arbeidsinnsats for eit stillingsforhold som har 100% stillingsprosent
- * gjennom heile året.
+ * gjennom eit heilt år.
  *
  * @author Tarjei Skorgenes
  */

@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public class Stillingsprosent {
-    public final Prosent prosent;
+    private final Prosent prosent;
 
     /**
      * Konstruerer ein ny stillingsprosent.
@@ -22,6 +22,15 @@ public class Stillingsprosent {
         if (prosent.toDouble() < 0.0) {
             throw new IllegalArgumentException("stillingsprosent må vere positiv, men var " + prosent);
         }
+    }
+
+    /**
+     * Stillingsstørrelsen i prosent.
+     *
+     * @return stillingsstørrelsen i prosent.
+     */
+    public Prosent prosent() {
+        return prosent;
     }
 
     @Override

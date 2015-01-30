@@ -1,8 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsverkRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
@@ -228,6 +230,7 @@ public class Tidsserie {
                 observasjonsunderlag.annotasjonFor(Observasjonsdato.class),
                 p.beregn(MaskineltGrunnlagRegel.class),
                 observasjonsunderlag.valgfriAnnotasjonFor(Premiestatus.class)
-        );
+        )
+                .registrerMaaling(Aarsverk.class, p.beregn(AarsverkRegel.class));
     }
 }

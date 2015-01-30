@@ -47,7 +47,7 @@ public class OevreLoennsgrenseRegel implements BeregningsRegel<Kroner> {
             return fulltidsgrense;
         }
         final Stillingsprosent stillingsprosent = periode.annotasjonFor(Stillingsprosent.class);
-        return fulltidsgrense.multiply(stillingsprosent.prosent);
+        return fulltidsgrense.multiply(stillingsprosent.prosent());
     }
 
     private Kroner grenseForFulltidsstilling(final Underlagsperiode periode) {

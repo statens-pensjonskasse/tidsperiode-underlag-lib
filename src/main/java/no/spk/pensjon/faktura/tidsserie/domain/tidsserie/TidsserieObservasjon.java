@@ -1,12 +1,14 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 import java.time.Month;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -16,8 +18,8 @@ import static java.util.Optional.ofNullable;
 
 /**
  * {@link TidsserieObservasjon} representerer ein observasjon som inngår som eit innslag
- * i ein {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie} generert ut frå alle stillingsforhold tilknytta {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata} for ein
- * medlem.
+ * i ein {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie} generert ut frå alle stillingsforhold
+ * tilknytta {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata} for eit medlem.
  * <p>
  * Kvar observasjon blir generert basert på eit
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag observasjonsunderlag}. Observasjonen
@@ -25,10 +27,16 @@ import static java.util.Optional.ofNullable;
  * samme stillingsforhold og avtale som observasjonen. Dette impliserer at obserasjonsunderlag for årstall der
  * eit stillingsforhold har bytta avtale, vil føre til at det blir generert to observasjonar tilknytta samme
  * stillingsforhold, men tilknytta forskjellige avtalar.
+ * <p>
+ * Kvar observasjon består av to delar, ein del som identifiserer eller grupperer observasjonen basert på
+ * informasjon om observasjonsdato, stillinga eller avtalen, og ein annan del som består av ei eller fleire målingar
+ * som er gjort basert på alle underlagsperioder som inngår i observasjonsdatoens observasjonsunderlag.
  *
  * @author Tarjei Skorgenes
  */
 public class TidsserieObservasjon {
+    private final HashMap<Class<?>, Object> maalingar = new HashMap<>(6);
+
     /**
      * Stillingsforholdet observasjonen er utført av og for.
      */
@@ -168,7 +176,15 @@ public class TidsserieObservasjon {
                 observasjonsdato,
                 maskineltGrunnlag.plus(other.maskineltGrunnlag),
                 premiestatus
-        );
+        )
+                .registrerMaaling(
+                        Aarsverk.class,
+                        aarsverk().plus(other.aarsverk())
+                );
+    }
+
+    private Aarsverk aarsverk() {
+        return maaling(Aarsverk.class).orElse(Aarsverk.ZERO);
     }
 
     @Override
@@ -206,6 +222,20 @@ public class TidsserieObservasjon {
      * målingar av den angitte typen
      */
     public <T> Optional<T> maaling(final Class<T> type) {
-        return Optional.empty();
+        return ofNullable((T) maalingar.get(type));
+    }
+
+    /**
+     * Registrerer / legger til verdien av ei måling som er utført basert på observasjonens observasjonsunderlag.
+     *
+     * @param <T>          kva type måling som har blitt utført
+     * @param <V>          verditypen til målinga
+     * @param maalingsType kva type måling som har blitt utført
+     * @param verdi        verdien av målinga
+     * @return <code>this</code>
+     */
+    public <T, V extends T> TidsserieObservasjon registrerMaaling(final Class<T> maalingsType, final V verdi) {
+        maalingar.put(maalingsType, verdi);
+        return this;
     }
 }

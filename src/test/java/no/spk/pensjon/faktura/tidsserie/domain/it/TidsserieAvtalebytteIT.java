@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsverkRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.LoennstilleggRegel;
@@ -271,7 +272,8 @@ public class TidsserieAvtalebytteIT {
                                         new Regelperiode<>(dato("1917.01.01"), empty(), new AarsLengdeRegel()),
                                         new Regelperiode<>(dato("2000.01.01"), empty(), new OevreLoennsgrenseRegel()),
                                         new Regelperiode<>(dato("2000.01.01"), empty(), new MedregningsRegel()),
-                                        new Regelperiode<>(dato("2000.01.01"), empty(), new MinstegrenseRegel())
+                                        new Regelperiode<>(dato("2000.01.01"), empty(), new MinstegrenseRegel()),
+                                        new Regelperiode<>(dato("2000.01.01"), empty(), new AarsverkRegel())
                                 ),
                                 Loennstrinnperioder.grupper(
                                         Ordning.SPK, loennstrinn.stream()

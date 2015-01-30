@@ -1,6 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 import java.text.NumberFormat;
 
@@ -14,7 +16,7 @@ import java.text.NumberFormat;
  * @author Tarjei Skorgenes
  */
 public class Aarsfaktor {
-    private final double verdi;
+    private final Prosent verdi;
 
     /**
      * Konstruerer ein ny årsfaktor.
@@ -29,7 +31,7 @@ public class Aarsfaktor {
         if (verdi > 1d) {
             throw new IllegalArgumentException("årsfaktor må vere mindre enn eller lik 1, men var " + verdi);
         }
-        this.verdi = verdi;
+        this.verdi = new Prosent(verdi);
     }
 
     /**
@@ -42,7 +44,7 @@ public class Aarsfaktor {
     public String toString() {
         final NumberFormat format = NumberFormat.getNumberInstance();
         format.setMaximumFractionDigits(4);
-        return format.format(verdi);
+        return format.format(verdi.toDouble());
     }
 
     /**
@@ -53,7 +55,7 @@ public class Aarsfaktor {
      * @return årsfaktor-verdien
      */
     double verdi() {
-        return verdi;
+        return verdi.toDouble();
     }
 
     /**
@@ -65,5 +67,15 @@ public class Aarsfaktor {
      */
     public Kroner multiply(final Kroner beloep) {
         return beloep.multiply(verdi);
+    }
+
+    /**
+     * Reknar ut antall årsverk basert på gjeldande årsfaktor og den angitte stillingsprosenten.
+     *
+     * @param deltid gjeldande stillingsprosent for perioda årsfaktoren er beregna for
+     * @return antall årsverk
+     */
+    public Aarsverk multiply(final Prosent deltid) {
+        return new Aarsverk(verdi.multiply(deltid));
     }
 }

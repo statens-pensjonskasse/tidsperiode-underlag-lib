@@ -1,6 +1,5 @@
-package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
+package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
