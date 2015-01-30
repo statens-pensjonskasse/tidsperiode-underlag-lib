@@ -82,7 +82,7 @@ public class TidsserieObservasjon {
     /**
      * Avtalens premiestatus pr siste periode i observasjonsunderlaget.
      * <p>
-     *     Merk at verdien er valgfri sidan avtalane ikkje er påkrevd å alltid ha ein premiestatus.
+     * Merk at verdien er valgfri sidan avtalane ikkje er påkrevd å alltid ha ein premiestatus.
      */
     public Optional<Premiestatus> premiestatus() {
         return premiestatus;
@@ -195,5 +195,17 @@ public class TidsserieObservasjon {
                 + ".\n"
                 + "Observasjon 1: " + this + "\n"
                 + "Observasjon 2: " + other + "\n";
+    }
+
+    /**
+     * Hentar ut eller genererer ei måling av den angitte datatypen frå observasjonen.
+     *
+     * @param <T>  datatypen som det skal hentast ut ei måling av
+     * @param type datatypen som det skal hentast ut ei måling av
+     * @return verdien av den angitte målingstypen, eller {@link Optional#empty() ingenting} dersom observasjonen ikkje støttar
+     * målingar av den angitte typen
+     */
+    public <T> Optional<T> maaling(final Class<T> type) {
+        return Optional.empty();
     }
 }
