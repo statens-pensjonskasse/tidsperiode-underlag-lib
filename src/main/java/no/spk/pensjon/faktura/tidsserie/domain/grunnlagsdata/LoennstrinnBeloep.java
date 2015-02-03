@@ -30,7 +30,7 @@ public class LoennstrinnBeloep {
      */
     public DeltidsjustertLoenn deltidsJuster(final Stillingsprosent stillingsprosent) {
         return new DeltidsjustertLoenn(
-                bruttoloenn.multiply(stillingsprosent.prosent)
+                bruttoloenn.multiply(stillingsprosent.prosent())
         );
     }
 

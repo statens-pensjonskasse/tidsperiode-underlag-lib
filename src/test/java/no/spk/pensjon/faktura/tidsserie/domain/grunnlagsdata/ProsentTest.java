@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
@@ -21,23 +22,23 @@ public class ProsentTest {
 
     @Test
     public void skalTillateMellomromVedKonverteringFraTekstTilProsent() {
-        assertThat(new Prosent("45 %").toDouble()).isEqualTo(0.45d, PRESISJON);
+        assertThat(prosent("45 %").toDouble()).isEqualTo(0.45d, PRESISJON);
     }
 
     @Test
     public void skalTillateKommaVedKonverteringFraTekstTilProsent() {
-        assertThat(new Prosent("45,4 %").toDouble()).isEqualTo(0.454d, PRESISJON);
+        assertThat(prosent("45,4 %").toDouble()).isEqualTo(0.454d, PRESISJON);
     }
 
     @Test
     public void skalTillatePunktumVedKonverteringFraTekstTilProsent() {
-        assertThat(new Prosent("31.7 %").toDouble()).isEqualTo(0.317d, PRESISJON);
+        assertThat(prosent("31.7 %").toDouble()).isEqualTo(0.317d, PRESISJON);
     }
 
     @Test
     public void skalFeilVissAntallKommaErMeirEnn1() {
         e.expect(NumberFormatException.class);
-        new Prosent("100.0,1%");
+        prosent("100.0,1%");
     }
 
     @Test
@@ -45,29 +46,29 @@ public class ProsentTest {
         e.expect(NullPointerException.class);
         e.expectMessage("er påkrevd");
         e.expectMessage("men var null");
-        new Prosent(null);
+        prosent(null);
     }
 
     @Test
     public void skalFeilVissAntallPunktumErMeirEnn1() {
         e.expect(NumberFormatException.class);
-        new Prosent("100..1%");
+        prosent("100..1%");
     }
 
     @Test
     public void skalFeileDersomTekstenInneheldeUstoettaTegn() {
         e.expect(NumberFormatException.class);
-        new Prosent("ABCD %");
+        prosent("ABCD %");
     }
 
     @Test
     public void skalRepresentere100ProsentSom1Komma0() {
-        assertThat(new Prosent("100%").toDouble()).isEqualTo(1.0, PRESISJON);
+        assertThat(prosent("100%").toDouble()).isEqualTo(1.0, PRESISJON);
     }
 
     @Test
     public void skalRepresentere0ProsentSom0Komma0() {
-        assertThat(new Prosent("0%").toDouble()).isEqualTo(0.0, PRESISJON);
+        assertThat(prosent("0%").toDouble()).isEqualTo(0.0, PRESISJON);
     }
 
     @Test
@@ -77,8 +78,20 @@ public class ProsentTest {
 
     @Test
     public void skalViseProsentsatsFormatertViaToStringForEnklareLoggingOgDebugging() {
-        assertThat(new Prosent("100%").toString()).isEqualTo("100%");
+        assertThat(prosent("100%").toString()).isEqualTo("100%");
         assertThat(new Prosent(100d).toString()).isEqualTo("10000%");
         assertThat(new Prosent(-2.000149d).toString()).isEqualTo("-200,015%");
+    }
+
+    @Test
+    public void skalLeggeSamanVerdiane() {
+        assertThat(prosent("12.459%").plus(prosent("26.315%")).toDouble())
+                .isEqualTo(prosent("38.774%").toDouble(), PRESISJON);
+    }
+
+    @Test
+    public void skalMultiplisereSamanVerdiane() {
+        assertThat(prosent("10%").multiply(prosent("10%")).toDouble())
+                .isEqualTo(prosent("1%").toDouble(), PRESISJON);
     }
 }

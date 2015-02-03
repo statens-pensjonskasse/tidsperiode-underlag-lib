@@ -35,7 +35,7 @@ public class Minstegrense {
      * <code>false</code> om den er lik eller større enn grenseverdien
      */
     public boolean erUnderMinstegrensa(final Stillingsprosent stillingsprosent) {
-        return grense.toDouble() > stillingsprosent.prosent.toDouble();
+        return grense.toDouble() > stillingsprosent.prosent().toDouble();
     }
 
     @Override

@@ -13,6 +13,11 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public class Prosent {
+    /**
+     * 0%.
+     */
+    public static final Prosent ZERO = new Prosent(0d);
+
     private static final Supplier<String> VALIDER_TEKST = () -> "prosentsatsen er påkrevd, men var null";
 
     private final double verdi;
@@ -50,6 +55,30 @@ public class Prosent {
      */
     public Prosent(final double verdi) {
         this.verdi = verdi;
+    }
+
+    /**
+     * Legger saman verdien av dei to prosentverdiane.
+     *
+     * @param other prosenten som vi skal legge saman verdien med
+     * @return ein ny prosent som inneheld summen av dei to prosentane
+     */
+    public Prosent plus(final Prosent other) {
+        return new Prosent(
+                verdi + other.verdi
+        );
+    }
+
+    /**
+     * Multipliserer saman dei to prosentane.
+     *
+     * @param other den andre prosenten som vi skal multipliserast med
+     * @return ein ny prosent som inneheld resultatet av multiplikasjonen
+     */
+    public Prosent multiply(final Prosent other) {
+        return new Prosent(
+                this.verdi * other.verdi
+        );
     }
 
     /**
@@ -92,6 +121,13 @@ public class Prosent {
      */
     public boolean equals(final Prosent other, final int antallDesimalar) {
         return avrund(this, antallDesimalar) == avrund(other, antallDesimalar);
+    }
+
+    /**
+     * @see #Prosent(String)
+     */
+    public static Prosent prosent(final String text) {
+        return new Prosent(text);
     }
 
     private long avrund(final Prosent other, final int antallDesimalar) {
