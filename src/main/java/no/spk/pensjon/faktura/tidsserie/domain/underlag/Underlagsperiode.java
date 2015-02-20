@@ -173,13 +173,22 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
     }
 
     /**
-     * Opprettar ein ny builder som inneheld ein kopi av all tilstand frå underlagsperioda.
+     * Genererer en modifisert kopi av underlagsperioden, inkludert annotasjonane.
+     * <p>
+     * Den nye perioda arvar ikkje frå og med- og til og med-dato til perioda, dei angitte datoane blir brukt
+     * som nye datoar for kopien.
+     * <p>
+     * Kopien vil bli generert uten noen kopi av originalens periodekoblinger, kun en kopi av originalens annotasjoner.
      *
-     * @return ein ny builder med ein kopi av periodas tilstand
+     * @param fraOgMed kopiens fra og med-dato
+     * @param tilOgMed kopiens til og med-dato
+     * @return en modifisert kopi av underlagsperioden og dens annotasjoner
      */
-    public UnderlagsperiodeBuilder kopi() {
-        return new UnderlagsperiodeBuilder(koblingar, annotasjonar)
-                .fraOgMed(fraOgMed())
-                .tilOgMed(tilOgMed().get());
+    public Underlagsperiode kopierUtenKoblinger(final LocalDate fraOgMed, final LocalDate tilOgMed) {
+        return new Underlagsperiode(
+                fraOgMed,
+                tilOgMed
+        )
+                .annoterFra(this);
     }
 }

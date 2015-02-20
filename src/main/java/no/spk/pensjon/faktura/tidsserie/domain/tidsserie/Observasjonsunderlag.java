@@ -147,8 +147,7 @@ class Observasjonsunderlag {
         return synligePerioderFramTilOgMed(aarsunderlag, month)
                 .reduce((a, b) -> b)
                 .filter((Underlagsperiode p) -> !p.valgfriAnnotasjonFor(SistePeriode.class).isPresent())
-                .map((Underlagsperiode p) -> nyFiktivPeriodeUtAaret(p)
-                )
+                .map(this::nyFiktivPeriodeUtAaret)
                 .map(Stream::of)
                 .orElse(Stream.empty());
     }
@@ -185,13 +184,16 @@ class Observasjonsunderlag {
      * @return ei ny fiktiv periode
      */
     private Underlagsperiode nyFiktivPeriodeUtAaret(final Underlagsperiode periode) {
-        final LocalDate gamalTilOgMed = periode.tilOgMed().get();
+        final LocalDate tilOgMed = periode.tilOgMed().get();
         return periode
-                .kopi()
-                .fraOgMed(gamalTilOgMed.plusDays(1))
-                .tilOgMed(gamalTilOgMed.with(lastDayOfYear()))
-                .med(FiktivPeriode.FIKTIV)
-                .bygg();
+                .kopierUtenKoblinger(
+                        tilOgMed.plusDays(1),
+                        tilOgMed.with(lastDayOfYear())
+                )
+                .annoter(
+                        FiktivPeriode.class,
+                        FiktivPeriode.FIKTIV
+                );
     }
 
     private static Predicate<Underlag> isEmpty() {

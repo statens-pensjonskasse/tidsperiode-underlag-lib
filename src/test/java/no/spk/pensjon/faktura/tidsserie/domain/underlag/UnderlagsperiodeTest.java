@@ -2,7 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -24,19 +23,47 @@ public class UnderlagsperiodeTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at all tilstand frå underlagsperioda blir med når ein kopi blir bygd.
+     * Verifiserer at all tilstand fr<E5> underlagsperioda blir med n<E5>r ein kopi blir bygd.
      */
     @Test
-    public void skalKopiereOverAllTilstandFraaUnderlagsPerioda() {
+    public void skalTaMedAlleAnnotasjonarTilUnderlagsperiodaEinKopiererFra() {
         final Underlagsperiode kilde = create("2000.01.01", "2014.12.31");
         kilde.annoter(Object.class, new Object());
-        kilde.kobleTil(new GenerellTidsperiode(dato("2004.03.17"), empty()));
+        kilde.annoter(String.class, "Hello World!");
 
-        final Underlagsperiode kopi = kilde.kopi().bygg();
-        assertThat(kopi.fraOgMed()).isEqualTo(kilde.fraOgMed());
-        assertThat(kopi.tilOgMed()).isEqualTo(kilde.tilOgMed());
+        final Underlagsperiode kopi = kilde.kopierUtenKoblinger(kilde.fraOgMed(), kilde.tilOgMed().get());
         assertThat(kopi.annotasjonFor(Object.class)).isEqualTo(kilde.annotasjonFor(Object.class));
-        assertThat(kopi.koblingAvType(GenerellTidsperiode.class)).isEqualTo(kilde.koblingAvType(GenerellTidsperiode.class));
+        assertThat(kopi.annotasjonFor(String.class)).isEqualTo(kilde.annotasjonFor(String.class));
+    }
+
+    /**
+     * Verifiserer at den kopierte underlagsperioda ikkje beheld datoane til perioda kopien blir danna frå.
+     */
+    @Test
+    public void skalIkkjeTaMedFraOgMedOgTilOgMedDatoTilUnderlagsperiodaEinKopiererFra() {
+        final Underlagsperiode kilde = eiPeriode();
+        final Underlagsperiode kopi = kilde.kopierUtenKoblinger(dato("2050.01.01"), dato("2099.01.01"));
+        assertThat(kopi.fraOgMed()).as("fra og med-dato for periodekopi")
+                .isNotEqualTo(kilde.fraOgMed()).isEqualTo(dato("2050.01.01"));
+        assertThat(kopi.tilOgMed()).as("til og med-dato for periodekopi")
+                .isNotEqualTo(kilde.tilOgMed()).isEqualTo(of(dato("2099.01.01")));
+    }
+
+    /**
+     * Verifiserer at koblingane til kildeperioda ikkje blir kopiert over på
+     * den nye periode når ein lagar ein kopi.
+     */
+    @Test
+    public void skalIkkjeTaMedKoblingarFraUnderlagsperiodaEinKopiererFra() {
+        final GenerellTidsperiode kobling = new GenerellTidsperiode(dato("1917.01.01"), empty());
+
+        final Underlagsperiode kilde = eiPeriode();
+        kilde.kobleTil(kobling);
+
+        final Underlagsperiode kopi = kilde.kopierUtenKoblinger(dato("1900.01.01"), dato("2999.01.01"));
+        assertThat(kopi.koblingAvType(GenerellTidsperiode.class))
+                .as("kobling av type GenerellTidsperiode på den kopierte perioda")
+                .isEqualTo(empty());
     }
 
     /**
