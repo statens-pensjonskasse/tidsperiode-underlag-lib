@@ -17,7 +17,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.internal.MedregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MinstegrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.internal.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.OmregningsperiodeOversetter;
