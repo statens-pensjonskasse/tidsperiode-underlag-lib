@@ -45,7 +45,7 @@ import static java.util.stream.Collectors.toSet;
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}. Dette blir automatisk utført for alle
  * medlemsdata som har verdien <code>0</code> som sin typeindikator.
  * <p>
- * Sjå {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter} for meir detaljert
+ * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter} for meir detaljert
  * informasjon om konktrakta på formatet som slike endringar må oppfylle.
  * <p>
  * <h4>Avtalekobling</h4>
@@ -54,7 +54,7 @@ import static java.util.stream.Collectors.toSet;
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}. Dette blir automatisk utført for
  * alle medlemsdata som har verdien <code>1</code> som sin typeindikator.
  * <p>
- * Sjå {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter} for meir detaljert
+ * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter} for meir detaljert
  * informasjon om konktrakta på formatet som slike endringar må oppfylle.
  *
  * @author Tarjei Skorgenes

@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import java.util.List;
 
@@ -48,6 +48,55 @@ class Feilmeldingar {
                 rad,
                 "medregningsperiode",
                 "typeindikator, fødselsdato, personnummer, stillingsforhold, frå og med-dato, til og med-dato, medregningskode og lønn"
+        );
+    }
+
+
+    /**
+     * Oversetting frå <code>rad</code> til
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode} har feila
+     * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
+     *
+     * @param rad input-rada som inneholdt feil antall kolonner for ei omregningsperiode
+     * @return ei feilmelding som beskriv kva som er forventa format på rada og kva den faktisk inneholdt
+     */
+    public static String ugyldigAntallKolonnerForOmregningsperiode(final List<String> rad) {
+        return ugyldigAntallKolonner(
+                rad,
+                "stillingsendring",
+                "typeindikator, frå og med-dato, til og med-dato, grunnbeløp"
+        );
+    }
+
+    /**
+     * Oversetting frå <code>rad</code> til
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode} har feila
+     * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
+     *
+     * @param rad input-rada som inneholdt feil antall kolonner for ei statlig lønnstrinnperiode
+     * @return ei feilmelding som beskriv kva som er forventa format på rada og kva den faktisk inneholdt
+     */
+    public static String ugyldigAntallKolonnerForStatligLoennstrinn(final List<String> rad) {
+        return ugyldigAntallKolonner(
+                rad,
+                "stillingsendring",
+                "typeindikator, lønnstrinn, frå og med-dato, til og med-dato, beløp"
+        );
+    }
+
+    /**
+     * Oversetting frå <code>rad</code> til
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode} har feila
+     * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
+     *
+     * @param rad input-rada som inneholdt feil antall kolonner for ei statlig lønnstrinnperiode
+     * @return ei feilmelding som beskriv kva som er forventa format på rada og kva den faktisk inneholdt
+     */
+    public static String ugyldigAntallKolonnerForApotekLoennstrinn(final List<String> rad) {
+        return ugyldigAntallKolonner(
+                rad,
+                "stillingsendring",
+                "typeindikator, frå og med-dato, til og med-dato, lønnstrinn, stillingskode, beløp"
         );
     }
 

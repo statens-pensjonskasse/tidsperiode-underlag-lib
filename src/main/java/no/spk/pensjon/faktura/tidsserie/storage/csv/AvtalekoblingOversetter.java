@@ -1,18 +1,19 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForAvtalekobling;
+import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldigAntallKolonnerForAvtalekobling;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter} representerer algoritma
+ * {@link AvtalekoblingOversetter} representerer algoritma
  * for å mappe om og konvertere avtalekoblingar til
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
  * <p>

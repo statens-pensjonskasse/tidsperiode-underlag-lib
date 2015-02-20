@@ -6,15 +6,14 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiod
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedregningsOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;

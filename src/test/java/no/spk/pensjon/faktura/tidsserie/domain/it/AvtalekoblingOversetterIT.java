@@ -4,7 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integrasjonstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter}.
+ * Integrasjonstestar for {@link no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter}.
  *
  * @author Tarjei Skorgenes
  */

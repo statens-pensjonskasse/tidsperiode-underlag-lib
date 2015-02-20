@@ -1,22 +1,22 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode;
 
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.ugyldigAntallKolonnerForApotekLoennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldigAntallKolonnerForApotekLoennstrinn;
 
 /**
  * {@link ApotekLoennstrinnperiodeOversetter} representerer algoritma
  * for å mappe om og konvertere statlige lønnstrinn til
- * {@link ApotekLoennstrinnperiode}
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode}
  * <p>
  * Informasjon henta frå lønnstrinnperioder tilknytta Apotekordninga skal inneholde følgjande verdiar, alle representert
  * som tekst:
@@ -119,7 +119,7 @@ public class ApotekLoennstrinnperiodeOversetter {
     }
 
     /**
-     * Oversetter innholdet i <code>rad</code> til ei ny {@link ApotekLoennstrinnperiode}.
+     * Oversetter innholdet i <code>rad</code> til ei ny {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode}.
      *
      * @param rad ei lønnstrinnperiode, sjå klassedefinisjonen for informasjon om forventa kolonner og format
      * @return ei ny lønnstrinnperiode for Apotekordninga

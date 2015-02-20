@@ -13,7 +13,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integrasjonstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter}.
+ * Integrasjonstestar for {@link no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter}.
  *
  * @author Tarjei Skorgenes
  */

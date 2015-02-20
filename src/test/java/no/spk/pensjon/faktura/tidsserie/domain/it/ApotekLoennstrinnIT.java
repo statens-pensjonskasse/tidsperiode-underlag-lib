@@ -4,7 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiodeOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.ApotekLoennstrinnperiodeOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;

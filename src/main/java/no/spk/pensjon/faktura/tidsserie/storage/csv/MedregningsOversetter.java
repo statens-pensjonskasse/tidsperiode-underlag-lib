@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
@@ -6,11 +6,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 
 import java.util.List;
 import java.util.Optional;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForMedregningsperiode;
+import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldigAntallKolonnerForMedregningsperiode;
 
 /**
  * {@link MedregningsOversetter} representerer algoritma

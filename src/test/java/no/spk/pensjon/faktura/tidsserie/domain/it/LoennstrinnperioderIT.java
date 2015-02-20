@@ -7,7 +7,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiodeOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.StatligLoennstrinnperiodeOversetter;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.ClassRule;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import org.junit.Test;
 

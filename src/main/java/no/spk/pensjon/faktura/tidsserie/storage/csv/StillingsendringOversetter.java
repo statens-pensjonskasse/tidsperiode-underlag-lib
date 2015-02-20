@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
@@ -12,15 +12,16 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.periodisering.Feilmeldingar.ugyldigAntallKolonnerForStillingsendring;
+import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldigAntallKolonnerForStillingsendring;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter} representerer algoritma
+ * {@link StillingsendringOversetter} representerer algoritma
  * for å mappe om og konvertere stillingshistorikk til
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}
  * <p>

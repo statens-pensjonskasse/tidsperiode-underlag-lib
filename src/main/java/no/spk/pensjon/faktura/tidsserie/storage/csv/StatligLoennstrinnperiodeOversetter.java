@@ -1,19 +1,20 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
 
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.ugyldigAntallKolonnerForStatligLoennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldigAntallKolonnerForStatligLoennstrinn;
 
 /**
  * {@link StatligLoennstrinnperiodeOversetter} representerer algoritma
  * for å mappe om og konvertere statlige lønnstrinn til
- * {@link StatligLoennstrinnperiode}
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode}
  * <p>
  * Informasjon henta frå statlige lønnstrinnperioder skal inneholde følgjande verdiar, alle representert som tekst:
  * <table>
@@ -99,7 +100,7 @@ public class StatligLoennstrinnperiodeOversetter {
     }
 
     /**
-     * Oversetter innholdet i <code>rad</code> til ei ny {@link StatligLoennstrinnperiode}.
+     * Oversetter innholdet i <code>rad</code> til ei ny {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode}.
      *
      * @param rad ei statlig lønnstrinnperiode, sjå klassedefinisjonen for informasjon om forventa kolonner og format
      * @return ei ny statlig lønnstrinnperiode
