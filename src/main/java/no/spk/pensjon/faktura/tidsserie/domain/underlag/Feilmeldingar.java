@@ -7,15 +7,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 class Feilmeldingar {
-    static String feilmeldingForMeirEnnEiKobling(final Class<?> type, final Set<?> koblingar) {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Underlagsperioda er kobla til meir enn ei tidsperiode av type ");
-        builder.append(type.getSimpleName());
-        builder.append(", vi forventa berre 1 kobling av denne typen.\n");
-        builder.append("Koblingar:\n");
-        koblingar.forEach(k -> builder.append("- ").append(k).append('\n'));
-        return builder.toString();
-    }
 
     /**
      * Genererer feilmeldinga som skal bli brukt når underlaget oppdagar at eksisterer overlappande underlagsperioder
