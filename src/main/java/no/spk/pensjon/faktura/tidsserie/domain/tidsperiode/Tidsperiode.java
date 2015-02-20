@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -6,7 +6,7 @@ import java.util.Optional;
 import static java.time.LocalDate.MAX;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode} representerer ei tidsperiode.
+ * {@link Tidsperiode} representerer ei tidsperiode.
  * <p>
  * Tidsperioda kan enten vere lukka eller løpande. Ei lukka tidsperioder er ei periode som har ein til og med-dato.
  * Ei løpande tidsperiode er ei periode som har ein tom til og med-dato.

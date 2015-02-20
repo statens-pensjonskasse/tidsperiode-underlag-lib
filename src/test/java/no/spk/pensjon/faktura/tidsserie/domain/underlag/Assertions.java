@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import org.assertj.core.api.AbstractListAssert;
 
 import java.util.Collection;

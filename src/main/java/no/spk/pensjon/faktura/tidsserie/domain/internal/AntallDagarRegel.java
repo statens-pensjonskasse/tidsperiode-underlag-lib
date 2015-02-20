@@ -1,12 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar.antallDagarMellom;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
 
 /**
- * Beregningsregel som reknar ut {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar} som ei
+ * Beregningsregel som reknar ut {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar} som ei
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode} strekker seg over.
  *
  * @author Tarjei Skorgenes

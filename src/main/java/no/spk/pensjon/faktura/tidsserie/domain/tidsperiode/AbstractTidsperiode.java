@@ -1,12 +1,9 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.sjekkForVrengteDatoar;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.FRA_OG_MED_PAAKREVD;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.TIL_OG_MED_PAAKREVD;
 
 public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements Tidsperiode<T> {
     protected final LocalDate fraOgMed;
@@ -19,10 +16,14 @@ public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements T
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
      */
     protected AbstractTidsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
-        requireNonNull(fraOgMed, FRA_OG_MED_PAAKREVD);
-        requireNonNull(tilOgMed, TIL_OG_MED_PAAKREVD);
+        requireNonNull(fraOgMed, () -> "fra og med-dato er påkrevd, men var null");
+        requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null");
         tilOgMed.ifPresent(tilDato -> {
-            sjekkForVrengteDatoar(fraOgMed, tilDato);
+            if (fraOgMed.isAfter(tilDato)) {
+                throw new IllegalArgumentException("fra og med-dato kan ikkje vere etter til og med-dato, men "
+                        + fraOgMed + " er etter " + tilDato
+                );
+            }
         });
         this.tilOgMed = tilOgMed;
         this.fraOgMed = fraOgMed;

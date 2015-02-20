@@ -1,6 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -22,7 +22,7 @@ public class Aarsunderlag {
      * Genererer eit nytt årsunderlag for kvart årstall som underlagsperioder i <code>underlag</code> er annotert med
      * <p>
      * Ei forutsetning for at genereringa skal fungere er at alle underlagsperioder har ein annotasjon av type
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.Aarstall}. Ei eller fleire perioder utan denne annotasjonen
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall}. Ei eller fleire perioder utan denne annotasjonen
      * vil føre til at genereringa feilar.
      *
      * @param underlag eit underlag med perioder tilknytta eit bestemt stillingsforhold
@@ -54,7 +54,7 @@ public class Aarsunderlag {
 
     /**
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)
-     * @see no.spk.pensjon.faktura.tidsserie.domain.Aarstall
+     * @see no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall
      */
     private static Aarstall aarstallForPeriode(final Underlagsperiode periode) {
         return periode.annotasjonFor(Aarstall.class);

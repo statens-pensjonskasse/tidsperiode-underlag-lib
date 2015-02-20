@@ -30,19 +30,4 @@ public class Datoar {
         }
         return yyyyMMddFormat.parse(text).query(localDate());
     }
-
-    /**
-     * Verifiserer at frå og med-dato aldri kan vere etter til og med-dato.
-     *
-     * @param fraOgMed frå og med-dato
-     * @param tilOgMed til og med-dato
-     * @throws IllegalArgumentException viss <code>fraOgMed</code> er etter <code>tilOgMed</code>
-     */
-    public static void sjekkForVrengteDatoar(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        if (fraOgMed.isAfter(tilOgMed)) {
-            throw new IllegalArgumentException("fra og med-dato kan ikkje vere etter til og med-dato, men "
-                    + fraOgMed + " er etter " + tilOgMed
-            );
-        }
-    }
 }

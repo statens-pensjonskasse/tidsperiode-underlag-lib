@@ -1,8 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;

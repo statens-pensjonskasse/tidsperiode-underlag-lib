@@ -1,6 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 
 import java.time.LocalDate;
 import java.util.Set;

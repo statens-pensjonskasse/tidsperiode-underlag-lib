@@ -1,7 +1,11 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.junit.Rule;
@@ -28,7 +32,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar}.
  *
  * @author Tarjei Skorgenes
  */

@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

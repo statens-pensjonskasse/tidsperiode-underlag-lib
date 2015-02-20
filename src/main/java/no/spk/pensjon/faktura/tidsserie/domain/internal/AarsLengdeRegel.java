@@ -1,11 +1,12 @@
 package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar.antallDagarMellom;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
 
 /**
  * Beregningsregel som reknar ut lengda på året

@@ -1,6 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
-
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -10,10 +8,9 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.AARSTALL_PAAKREVD;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar} representerer ei tidsperiode
+ * {@link Aar} representerer ei tidsperiode
  * som strekker seg frå 1. januar til 31. desember i eit bestemt årstall og som igjen er bygd
  * opp av 12 månedsperioder.
  *
@@ -32,7 +29,7 @@ public class Aar implements Tidsperiode<Aar> {
      */
     public Aar(final Aarstall aar) {
         this.aar = aar;
-        requireNonNull(aar, AARSTALL_PAAKREVD);
+        requireNonNull(aar, () -> "årstall er påkrevd, men var null");
         asList(Month.values())
                 .stream()
                 .map(m -> new Maaned(aar, m))

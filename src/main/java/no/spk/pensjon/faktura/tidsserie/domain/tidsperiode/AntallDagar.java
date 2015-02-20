@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar} representerer lengda på ei tidsperiode.
+ * {@link AntallDagar} representerer lengda på ei tidsperiode.
  * <br>
  * Antall dagar skal aldri vere kortare enn 1 dag, 0 eller negative verdiar blir ikkje godtatt.
  *
@@ -38,11 +38,11 @@ public class AntallDagar {
     }
 
     /**
-     * Konstruerer ein ny {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar}.
+     * Konstruerer ein ny {@link AntallDagar}.
      *
      * @param antall verdi for antall dagar
      * @return nytt verdiobjekt som inneheld verdi for antall dagar
-     * @see no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagar#AntallDagar(int)
+     * @see AntallDagar#AntallDagar(int)
      */
     public static AntallDagar antallDagar(final int antall) {
         return new AntallDagar(antall);

@@ -1,6 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,7 +11,6 @@ import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.TIL_OG_MED_PAAKREVD;
 
 /**
  * {@link Observasjonsperiode} representerer
@@ -30,7 +31,7 @@ public class Observasjonsperiode extends AbstractTidsperiode<Observasjonsperiode
      * @throws NullPointerException dersom nokon av datoane er <code>null</code>
      */
     public Observasjonsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        super(fraOgMed, ofNullable(requireNonNull(tilOgMed, TIL_OG_MED_PAAKREVD)));
+        super(fraOgMed, ofNullable(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
     }
 
     /**

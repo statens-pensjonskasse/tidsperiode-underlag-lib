@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -7,7 +7,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.GenerellTidsperiode} representerer ei vanlig
+ * {@link GenerellTidsperiode} representerer ei vanlig
  * tidsperiode som ikkje er av nokon bestemt type.
  *
  * @author Tarjei Skorgenes

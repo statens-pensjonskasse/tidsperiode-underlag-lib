@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -7,7 +7,7 @@ import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.Aarstall} representerer eit årstall.
+ * {@link Aarstall} representerer eit årstall.
  *
  * @author Tarjei Skorgenes
  */

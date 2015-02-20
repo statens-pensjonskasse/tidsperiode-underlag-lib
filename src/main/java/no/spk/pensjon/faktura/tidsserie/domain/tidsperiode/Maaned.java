@@ -1,6 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
-
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -9,12 +7,10 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.AARSTALL_PAAKREVD;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Feilmeldingar.MAANED_PAAKREVD;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned} representerer ein bestemt måned
- * som ligg innanfor eit {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar}.
+ * {@link Maaned} representerer ein bestemt måned
+ * som ligg innanfor eit {@link Aar}.
  *
  * @author Tarjei Skorgenes
  */
@@ -33,8 +29,8 @@ public class Maaned extends AbstractTidsperiode<Maaned> {
     public Maaned(final Aarstall aar, final Month maaned) {
         super(
                 dato(
-                        requireNonNull(aar, AARSTALL_PAAKREVD),
-                        requireNonNull(maaned, MAANED_PAAKREVD)
+                        requireNonNull(aar, () -> "årstall er påkrevd, men var null"),
+                        requireNonNull(maaned, () -> "måned er påkrevd, men var null")
                 ).with(firstDayOfMonth()),
                 of(dato(aar, maaned).with(lastDayOfMonth()))
         );

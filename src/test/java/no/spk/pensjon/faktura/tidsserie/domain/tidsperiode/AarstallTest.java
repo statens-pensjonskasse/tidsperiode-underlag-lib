@@ -1,5 +1,6 @@
-package no.spk.pensjon.faktura.tidsserie.domain;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
@@ -12,7 +13,7 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.Aarstall}
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall}
  *
  * @author Tarjei Skorgenes
  */
