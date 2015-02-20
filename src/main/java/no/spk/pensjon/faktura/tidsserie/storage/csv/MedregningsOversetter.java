@@ -5,7 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
 /**
  * {@link MedregningsOversetter} representerer algoritma
  * for å mappe om og konvertere medregningar til
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode}
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode}
  * <p>
  * Informasjon henta frå medregningane skal inneholde følgjande verdiar, alle representert som tekst:
  * <table>

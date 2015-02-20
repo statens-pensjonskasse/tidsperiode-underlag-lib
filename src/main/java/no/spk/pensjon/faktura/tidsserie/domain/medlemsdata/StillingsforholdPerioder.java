@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
@@ -9,7 +9,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder} representerer ei periodisering
+ * {@link StillingsforholdPerioder} representerer ei periodisering
  * av alle stillingsendringar eller medregningar tilknytta eit bestemt stillingsforhold.
  *
  * @author Tarjei Skorgenes

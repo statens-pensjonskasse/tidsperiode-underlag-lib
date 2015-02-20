@@ -202,7 +202,7 @@ public class StillingsendringOversetter implements MedlemsdataOversetter<Stillin
 
     /**
      * Oversetter innholdet i <code>rad</code> til ei ny
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode}.
      *
      * @param rad avtalekoblinga i tabellformat
      * @return ei ny avtalekoblingsperiode populert med verdiar frå <code>rad</code>

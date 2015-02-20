@@ -2,7 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import org.junit.Test;
 
 import java.util.List;

@@ -1,8 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

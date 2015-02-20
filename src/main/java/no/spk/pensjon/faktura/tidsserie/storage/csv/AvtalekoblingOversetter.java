@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.storage.csv;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
 
 import java.time.LocalDate;
@@ -15,7 +15,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
 /**
  * {@link AvtalekoblingOversetter} representerer algoritma
  * for å mappe om og konvertere avtalekoblingar til
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode}.
  * <p>
  * Ei avtalekobling skal inneholde følgjande verdiar, alle representert som tekst:
  * <table>
@@ -115,7 +115,7 @@ public class AvtalekoblingOversetter implements MedlemsdataOversetter<Avtalekobl
 
     /**
      * Oversetter innholdet i <code>rad</code> til ei ny
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode}.
      *
      * @param rad avtalekoblinga i tabellformat
      * @return ei ny avtalekoblingsperiode populert med verdiar frå <code>rad</code>

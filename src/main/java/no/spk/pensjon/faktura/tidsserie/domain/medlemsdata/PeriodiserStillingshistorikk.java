@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class PeriodiserStillingshistorikk {
 
     /**
      * Legger til stillingsendringer som skal benyttes av {@link #periodiser()} når den periodiserer
-     * og konstruerer nye {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode perioder}.
+     * og konstruerer nye {@link StillingsforholdPeriode perioder}.
      *
      * @param endringer stillingsendringer som skal periodiseres
      * @return <code>this</code>

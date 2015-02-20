@@ -8,12 +8,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -60,7 +60,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
      * @param underlag underlaget som perioda inngår i
      * @param periode  underlagsperioda som skal populerast med annotasjonar
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#koblingarAvType(Class)
-     * @see no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode#gjeldendeEndring()
+     * @see no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode#gjeldendeEndring()
      */
     @Override
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {

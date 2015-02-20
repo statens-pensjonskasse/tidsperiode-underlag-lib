@@ -1,7 +1,8 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,7 +12,7 @@ import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode}.
  *
  * @author Tarjei Skorgenes
  */

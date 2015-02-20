@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
@@ -12,7 +12,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode} representerer avtalen
+ * {@link Avtalekoblingsperiode} representerer avtalen
  * eit stillingsforhold er tilknytta i ei bestemt tidsperiode.
  * <p>
  * Sjølv om det i PUMA i dag ikkje er vanlig å finne fleire avtalekoblingsperioder for samme stillingsforhold

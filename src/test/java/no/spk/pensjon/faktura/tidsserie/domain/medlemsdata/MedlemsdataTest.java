@@ -4,8 +4,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -116,7 +114,7 @@ public class MedlemsdataTest {
 
     /**
      * Verifiserer at endringar av type 1 er dei einaste som blir forsøkt konvertert til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}.
+     * {@link Avtalekoblingsperiode}.
      */
     @Test
     public void skalKonvertereType1TilAvtalekobling() {

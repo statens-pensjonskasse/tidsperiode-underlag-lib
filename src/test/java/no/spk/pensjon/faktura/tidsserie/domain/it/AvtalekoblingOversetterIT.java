@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.it;
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
 import org.junit.ClassRule;
 import org.junit.Rule;

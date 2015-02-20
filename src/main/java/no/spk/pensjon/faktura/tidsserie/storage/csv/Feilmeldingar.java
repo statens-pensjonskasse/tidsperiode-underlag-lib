@@ -5,7 +5,7 @@ import java.util.List;
 class Feilmeldingar {
     /**
      * Oversetting frå <code>rad</code> til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode} har feila
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode} har feila
      * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
      *
      * @param rad input-rada som inneholdt feil antall kolonner for ei avtalekobling
@@ -37,7 +37,7 @@ class Feilmeldingar {
 
     /**
      * Oversetting frå <code>rad</code> til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode} har feila
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode} har feila
      * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
      *
      * @param rad input-rada som inneholdt feil antall kolonner for ei medregningsperiode

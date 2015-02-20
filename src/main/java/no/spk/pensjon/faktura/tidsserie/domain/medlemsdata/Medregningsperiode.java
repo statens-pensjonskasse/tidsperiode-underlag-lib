@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;

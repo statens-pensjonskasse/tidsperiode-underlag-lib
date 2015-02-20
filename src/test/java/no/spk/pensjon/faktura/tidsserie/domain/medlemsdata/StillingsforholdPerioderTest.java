@@ -1,10 +1,12 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,7 +21,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingspro
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder}.
  *
  * @author Tarjei Skorgenes
  */

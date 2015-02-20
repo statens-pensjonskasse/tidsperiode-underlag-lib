@@ -2,9 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +48,7 @@ import static java.util.stream.Collectors.toSet;
  * <h4>Avtalekobling</h4>
  * <p>
  * Informasjon henta frå stillingsforholdets avtalekoblingar blir mappa om og representert som
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode}. Dette blir automatisk utført for
+ * {@link Avtalekoblingsperiode}. Dette blir automatisk utført for
  * alle medlemsdata som har verdien <code>1</code> som sin typeindikator.
  * <p>
  * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter} for meir detaljert
@@ -130,7 +127,7 @@ public class Medlemsdata {
      * Periodiserer alle unike stillingsforhold som vi har stillingsendringar tilknytta.
      * <p>
      * For kvart stillingsforhold blir alle tilknytta stillingsendringar henta ut og brukt for å bygge opp
-     * ein ny instans av {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder} for kvart
+     * ein ny instans av {@link StillingsforholdPerioder} for kvart
      * stillingsforhold.
      * <p>
      * For stillingsforhold som ikkje har nokon stillingsendringar men som har medregning vil det foreløpig ikkje blir
