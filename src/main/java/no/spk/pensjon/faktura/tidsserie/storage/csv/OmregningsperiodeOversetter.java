@@ -2,7 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
 /**
  * {@link OmregningsperiodeOversetter} representerer algoritma
  * for å mappe om og konvertere omregningsperioder til
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode}
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode}
  * <p>
  * Informasjon henta frå statlige lønnstrinnperioder skal inneholde følgjande verdiar, alle representert som tekst:
  * <table>
@@ -91,7 +91,7 @@ public class OmregningsperiodeOversetter {
     }
 
     /**
-     * Oversetter innholdet i <code>rad</code> til ei ny {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode}.
+     * Oversetter innholdet i <code>rad</code> til ei ny {@link no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode}.
      *
      * @param rad ei omregningsperiode, sjå klassedefinisjonen for informasjon om forventa kolonner og format
      * @return ei ny omregningsperiode

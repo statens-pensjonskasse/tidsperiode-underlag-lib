@@ -12,8 +12,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;

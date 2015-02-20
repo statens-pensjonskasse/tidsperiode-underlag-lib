@@ -1,6 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -11,7 +10,7 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode}.
+ * Enheitstestar for {@link Observasjonsperiode}.
  *
  * @author Tarjei Skorgenes
  */

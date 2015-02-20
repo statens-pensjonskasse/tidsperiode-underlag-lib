@@ -54,7 +54,7 @@ class Feilmeldingar {
 
     /**
      * Oversetting frå <code>rad</code> til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode} har feila
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode} har feila
      * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
      *
      * @param rad input-rada som inneholdt feil antall kolonner for ei omregningsperiode
@@ -70,7 +70,7 @@ class Feilmeldingar {
 
     /**
      * Oversetting frå <code>rad</code> til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode} har feila
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode} har feila
      * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
      *
      * @param rad input-rada som inneholdt feil antall kolonner for ei statlig lønnstrinnperiode
@@ -86,7 +86,7 @@ class Feilmeldingar {
 
     /**
      * Oversetting frå <code>rad</code> til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode} har feila
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.loennsdata.ApotekLoennstrinnperiode} har feila
      * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
      *
      * @param rad input-rada som inneholdt feil antall kolonner for ei statlig lønnstrinnperiode

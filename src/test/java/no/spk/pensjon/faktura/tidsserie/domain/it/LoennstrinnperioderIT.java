@@ -4,9 +4,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.StatligLoennstrinnperiodeOversetter;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.ClassRule;
@@ -21,7 +21,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder.grupper;
+import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -39,7 +39,7 @@ public class LoennstrinnperioderIT {
      * Verifiserer at grupperinga ser på alle
      * {@link StatligLoennstrinnperiode statlige lønnstrinnperioder} sine tidsperioder
      * og slår alle med samme frå og med- og til og med-dato saman til ein ny instans av
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder}.
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder}.
      */
     @Test
     public void skalGruppereOgGenerereEinInstansAvLoennstrinnperioderPrUnikTidsperiode() {

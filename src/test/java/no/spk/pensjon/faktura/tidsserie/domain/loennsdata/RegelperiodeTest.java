@@ -1,6 +1,7 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.loennsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.internal.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -12,7 +13,7 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link Regelperiode}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.Regelperiode}.
  *
  * @author Tarjei Skorgenes
  */

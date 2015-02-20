@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodetyper;
+package no.spk.pensjon.faktura.tidsserie.domain.internal;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode} representerer perioda ein
+ * {@link Regelperiode} representerer perioda ein
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel} er gjeldande i.
  * <p>
  * Ettersom beregningsreglane kan endre seg over tid, enten fordi SPK endrar metodikk eller på grunn av endringar
