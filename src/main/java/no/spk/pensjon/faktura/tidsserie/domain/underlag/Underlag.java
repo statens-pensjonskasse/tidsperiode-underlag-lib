@@ -192,14 +192,9 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
     }
 
     @Override
-    public Underlag annoterFra(final Annoterbar<?> kilde) {
-        annotasjonar.addAll(kilde.annotasjonar());
+    public Underlag annoterFra(final Underlag kilde) {
+        annotasjonar.addAll(kilde.annotasjonar);
         return this;
-    }
-
-    @Override
-    public Annotasjonar annotasjonar() {
-        return annotasjonar;
     }
 
     /**

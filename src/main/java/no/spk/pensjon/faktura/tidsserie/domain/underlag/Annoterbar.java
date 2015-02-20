@@ -58,12 +58,5 @@ interface Annoterbar<S extends Annoterbar<S>> {
      * @param kilde eit annotebart objekt som annotasjonane skal kopierast frå
      * @return <code>this</code>
      */
-    S annoterFra(final Annoterbar<?> kilde);
-
-    /**
-     * Returnerer alle annotasjonane som objektet er annotert med.
-     *
-     * @return alle annotasjonane som objektet er annotert med.
-     */
-    Annotasjonar annotasjonar();
+    S annoterFra(final S kilde);
 }

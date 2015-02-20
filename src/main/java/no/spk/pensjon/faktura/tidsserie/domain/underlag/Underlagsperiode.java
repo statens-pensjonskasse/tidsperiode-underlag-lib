@@ -136,14 +136,9 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
     }
 
     @Override
-    public Underlagsperiode annoterFra(final Annoterbar<?> kilde) {
-        annotasjonar.addAll(kilde.annotasjonar());
+    public Underlagsperiode annoterFra(final Underlagsperiode kilde) {
+        annotasjonar.addAll(kilde.annotasjonar);
         return this;
-    }
-
-    @Override
-    public Annotasjonar annotasjonar() {
-        return annotasjonar;
     }
 
     /**
