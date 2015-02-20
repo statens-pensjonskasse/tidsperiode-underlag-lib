@@ -11,7 +11,7 @@ import java.util.Optional;
  * @param <S> typen til objektet som implementerer grensesnittet (aka. <code>this</code>).
  * @author Tarjei Skorgenes
  */
-interface Annoterbar<S extends Annoterbar<S>> {
+public interface Annoterbar<S extends Annoterbar<S>> {
     /**
      * Annoterer objektet med den angitte typen og verdien.
      * <p>

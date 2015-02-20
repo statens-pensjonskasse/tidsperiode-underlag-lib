@@ -1,8 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -55,7 +55,7 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
      *
      * @param periode underlagsperioda som skal annoterast
      */
-    public void annoter(final Underlagsperiode periode) {
+    public void annoter(final Annoterbar<?> periode) {
         periode.annoter(gjeldandeRegel.getClass(), gjeldandeRegel);
     }
 

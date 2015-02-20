@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
@@ -154,10 +155,10 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * Annoterer underlagsperioda med grunnlagsdata frå stillingsforholdet gjeldande endring eller medregning.
      *
      * @param periode underlagsperioda som skal annoterast med grunnlagsdata
-     * @see Medregningsperiode#annoter(Underlagsperiode)
-     * @see Stillingsendring#annoter(Underlagsperiode)
+     * @see Medregningsperiode#annoter(Annoterbar)
+     * @see Stillingsendring#annoter(Annoterbar)
      */
-    public void annoter(final Underlagsperiode periode) {
+    public void annoter(final Annoterbar<?> periode) {
         gjeldendeEndring().ifPresent(endring -> {
             endring.annoter(periode);
         });

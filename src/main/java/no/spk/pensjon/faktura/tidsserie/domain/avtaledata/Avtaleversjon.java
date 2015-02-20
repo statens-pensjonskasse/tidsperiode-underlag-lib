@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
@@ -43,7 +44,7 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> {
      *
      * @param periode perioda som skal annoterast med premiestatus
      */
-    public void annoter(final Underlagsperiode periode) {
+    public void annoter(final Annoterbar<?> periode) {
         periode.annoter(Premiestatus.class, status);
     }
 

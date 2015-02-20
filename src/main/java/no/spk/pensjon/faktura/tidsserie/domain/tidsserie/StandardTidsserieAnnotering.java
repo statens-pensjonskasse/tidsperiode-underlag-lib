@@ -57,7 +57,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
      * @param underlag underlaget som perioda inngår i
      * @param periode  underlagsperioda som skal populerast med annotasjonar
      * @see Underlagsperiode#koblingarAvType(Class)
-     * @see StillingsforholdPeriode#annoter(Underlagsperiode)
+     * @see StillingsforholdPeriode#annoter(no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar)
      */
     @Override
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {

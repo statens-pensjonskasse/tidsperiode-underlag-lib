@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
@@ -61,7 +62,7 @@ public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsper
      *
      * @param periode underlagsperioda som skal annoterast
      */
-    public void annoter(final Underlagsperiode periode) {
+    public void annoter(final Annoterbar<?> periode) {
         periode.annoter(AvtaleId.class, avtale());
         periode.annoter(Ordning.class, ordning());
     }

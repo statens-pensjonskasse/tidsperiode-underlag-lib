@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.loennsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
@@ -35,7 +36,7 @@ public class Omregningsperiode extends AbstractTidsperiode<Omregningsperiode> {
      * @param periode underlagsperioda som skal annoterast med grunnbeløp
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep
      */
-    public void annoter(final Underlagsperiode periode) {
+    public void annoter(final Annoterbar<?> periode) {
         periode.annoter(Grunnbeloep.class, grunnbeloep);
     }
 

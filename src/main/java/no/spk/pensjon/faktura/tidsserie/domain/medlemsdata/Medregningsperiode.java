@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
@@ -85,7 +86,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode
      */
-    public void annoter(final Underlagsperiode periode) {
+    public void annoter(final Annoterbar<?> periode) {
         periode.annoter(Medregning.class, beloep());
         periode.annoter(Medregningskode.class, kode());
     }

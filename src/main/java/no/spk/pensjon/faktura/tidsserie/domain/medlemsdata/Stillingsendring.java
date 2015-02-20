@@ -9,6 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
@@ -330,7 +331,7 @@ public class Stillingsendring {
      *
      * @param periode underlagsperioda som skal annoterast
      */
-    void annoter(final Underlagsperiode periode) {
+    void annoter(final Annoterbar<?> periode) {
         periode.annoter(Aksjonskode.class, aksjonskode());
 
         periode.annoter(Stillingsprosent.class, stillingsprosent());
