@@ -54,7 +54,7 @@ class Koblingar {
      *
      * @param periode underlagsperioda som koblingane skal leggast til på
      */
-    void kobleTil(final Underlagsperiode periode) {
+    void kobleTil(final HarKoblingar periode) {
         koblingar
                 .values()
                 .stream()
