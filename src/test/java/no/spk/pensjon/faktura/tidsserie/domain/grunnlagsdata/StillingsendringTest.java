@@ -14,6 +14,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
 
@@ -62,14 +63,14 @@ public class StillingsendringTest {
      * og gjeldande lønnstrinnbeløp blir annotert som ei atomisk enheit.
      */
     @Test
-    public void skalIkkjeAnnotereUnderlagsperioderMedLoennstrinn() {
+    public void skalAnnotereUnderlagsperioderMedLoennstrinn() {
         final Underlagsperiode periodeUtanLoennstrinn = eiPeriode();
         eiEndring().annoter(periodeUtanLoennstrinn);
         assertAnnotasjon(periodeUtanLoennstrinn, Loennstrinn.class).isEqualTo(empty());
 
         final Underlagsperiode periodeMedLoennstrinn = eiPeriode();
-        eiEndring().loennstrinn(of(Loennstrinn.loennstrinn(45))).annoter(periodeMedLoennstrinn);
-        assertAnnotasjon(periodeMedLoennstrinn, Loennstrinn.class).isEqualTo(empty());
+        eiEndring().loennstrinn(of(loennstrinn(45))).annoter(periodeMedLoennstrinn);
+        assertAnnotasjon(periodeMedLoennstrinn, Loennstrinn.class).isEqualTo(of(loennstrinn(45)));
     }
 
     @Test

@@ -316,10 +316,8 @@ public class Stillingsendring {
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg}</li>
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg}</li>
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode}</li>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn}</li>
      * </ul>
-     * <p>
-     * Merk at lønnstrinn ikkje blir annotert, det må handterast av klienten ettersom det er ønskelig å handtere både
-     * lønnstrinn og lønnstrinnbeløp samtidig.
      *
      * @param periode underlagsperioda som skal annoterast
      */
@@ -333,6 +331,8 @@ public class Stillingsendring {
         periode.annoter(Fastetillegg.class, fastetillegg());
         periode.annoter(Variabletillegg.class, variabletillegg());
         periode.annoter(Funksjonstillegg.class, funksjonstillegg());
+
+        periode.annoter(Loennstrinn.class, loennstrinn());
     }
 
     @Override

@@ -1,19 +1,16 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -75,11 +72,9 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             stillingsforhold.gjeldendeEndring().ifPresent(endring -> {
                 endring.annoter(periode);
-                endring.loennstrinn().ifPresent(loennstrinn -> annoterLoennForLoennstrinn(periode, loennstrinn));
             });
             stillingsforhold.medregning().ifPresent(medregning -> {
-                periode.annoter(Medregning.class, medregning.beloep());
-                periode.annoter(Medregningskode.class, medregning.kode());
+                medregning.annoter(periode);
             });
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
@@ -94,19 +89,15 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
         periode.koblingAvType(Omregningsperiode.class).ifPresent(omregning -> {
             omregning.annoter(periode);
         });
+        periode.valgfriAnnotasjonFor(Loennstrinn.class).ifPresent(loennstrinn -> {
+            annoterLoennForLoennstrinn(periode);
+        });
     }
 
-    private void annoterLoennForLoennstrinn(final Underlagsperiode periode, final Loennstrinn loennstrinn) {
-        periode.annoter(Loennstrinn.class, loennstrinn);
-
-        final FinnLoennForLoennstrinn oppslag = new FinnLoennForLoennstrinn(
-                periode,
-                periode.annotasjonFor(Ordning.class)
-        );
-        oppslag.loennForLoennstrinn().ifPresent((LoennstrinnBeloep beloep) -> {
-                    periode.annoter(LoennstrinnBeloep.class, beloep);
-                }
-        );
+    private void annoterLoennForLoennstrinn(final Underlagsperiode periode) {
+        new FinnLoennForLoennstrinn(periode)
+                .loennForLoennstrinn()
+                .ifPresent(beloep -> periode.annoter(LoennstrinnBeloep.class, beloep));
     }
 
 }
