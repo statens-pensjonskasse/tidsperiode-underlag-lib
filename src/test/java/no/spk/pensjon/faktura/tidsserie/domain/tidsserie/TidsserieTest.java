@@ -32,7 +32,7 @@ public class TidsserieTest {
     private Feilhandtering feilhandtering;
 
     @Mock
-    private Observasjonspublikator<TidsserieObservasjon> publikator;
+    private Observasjonspublikator publikator;
 
     @Test
     public void skalDelegereFeilhandteringTilEgenStrategi() {

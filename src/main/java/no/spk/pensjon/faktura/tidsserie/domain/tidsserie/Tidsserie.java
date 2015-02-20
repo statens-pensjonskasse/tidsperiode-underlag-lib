@@ -115,7 +115,7 @@ public class Tidsserie {
      * @see #lagObservator(Observasjonspublikator)
      */
     public void generer(final Medlemsdata medlemsdata, final Observasjonsperiode periode,
-                        final Observasjonspublikator<TidsserieObservasjon> publikator,
+                        final Observasjonspublikator publikator,
                         final Stream<Tidsperiode<?>> referanseperioder) {
         generer(medlemsdata, periode, lagObservator(publikator), referanseperioder);
     }
@@ -151,7 +151,7 @@ public class Tidsserie {
      *                   stillingsforhold den prosesserer
      * @return ein ny callback som vil generere observasjonar for tidsserien
      */
-    public StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator<TidsserieObservasjon> publikator) {
+    public StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator publikator) {
         return (stillingsforhold, underlag) -> {
             try {
                 aarsunderlag
