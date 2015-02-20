@@ -2,7 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 /**
  * {@link Observasjonspublikator} representerer ein ut-port eller -adapter
- * for observasjonar generert av {@link Tidsserie} for kvar måned i observasjonsunderlaget
+ * for observasjonar generert av {@link TidsserieFacade} for kvar måned i observasjonsunderlaget
  * tilknytta eit bestemt stillingsforhold, avtale, år og måned.
  * <p>
  * Publikatoren blir forventa å ta seg av vidare prosessering eller persistering av observasjonen.
@@ -21,8 +21,9 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
  */
 public interface Observasjonspublikator {
     /**
-     * Publiserer ein observasjon utført på eit observasjonsunderlag
-     * av og som skal inkluderast i ein {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie}.
+     * Publiserer ein observasjon som skal inkluderast i ein tidsserie,
+     * basert på ei eller fleire beregningar utført på eit observasjonsunderlag for ein
+     * bestemt observasjonsdato.
      *
      * @param event observasjonen som skal inngå som ein del av tidsserien
      */

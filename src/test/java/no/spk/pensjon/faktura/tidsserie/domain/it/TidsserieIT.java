@@ -31,7 +31,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.StatligLoennstrinnperiodeOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonspublikator;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieFacade;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieObservasjon;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
@@ -81,7 +81,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
 /**
- * Integrasjonstest av {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie}
+ * Integrasjonstest av {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieFacade}
  *
  * @author Tarjei Skorgenes
  */
@@ -103,7 +103,7 @@ public class TidsserieIT {
 
     private Medlemsdata medlemsdata;
 
-    private Tidsserie tidsserie;
+    private TidsserieFacade tidsserie;
 
     @Before
     public void _before() {
@@ -117,7 +117,7 @@ public class TidsserieIT {
 
         observasjonsperiode = new Observasjonsperiode(dato("2005.01.01"), dato("2014.12.31"));
 
-        tidsserie = new Tidsserie();
+        tidsserie = new TidsserieFacade();
         tidsserie.overstyr(avtale -> Stream.of(new Avtaleversjon(dato("1917.01.01"), empty(), avtale, Premiestatus.valueOf("AAO-10"))));
     }
 

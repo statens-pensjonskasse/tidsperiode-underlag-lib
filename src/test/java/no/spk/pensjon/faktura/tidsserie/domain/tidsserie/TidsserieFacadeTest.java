@@ -20,13 +20,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
- * Enheitstestar for {@link Tidsserie}.
+ * Enheitstestar for {@link TidsserieFacade}.
  *
  * @author Tarjei Skorgenes
  */
 @RunWith(MockitoJUnitRunner.class)
-public class TidsserieTest {
-    private final Tidsserie tidsserie = new Tidsserie();
+public class TidsserieFacadeTest {
+    private final TidsserieFacade tidsserie = new TidsserieFacade();
 
     @Mock
     private Feilhandtering feilhandtering;

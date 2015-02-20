@@ -4,11 +4,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -24,10 +24,10 @@ import static java.util.stream.Collectors.reducing;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory.AvtaleinformasjonRepository;
 
 /**
- * {@link Tidsserie} representerer algoritma som genererer ein ny tidsserie med observasjonar
- * for kvart stillingsforhold, avtale og observsjonsdato for kvart medlem.
+ * {@link TidsserieFacade} representerer ei fasade som genererer ein ny tidsserie med observasjonar
+ * basert på medlems-, avtale- og lønnsdata tilknytta eit medlem.
  * <p>
- * Første steg ved generering av tidsseriar for medlemmet er generering av stillingsforholdunderlag for kvart
+ * Første steg i genereringa av tidsseriar for medlemmet er generering av stillingsforholdunderlag for kvart
  * av stillingsforholda som medlemmet har vore aktiv på i løpet av observasjonsperioda. Kvart
  * stillingsforholdunderlag blir periodisert basert på stillingsendringar / medregning og avtalekoblingar. I
  * tillegg blir tidsperiodiserte referansedata som årsperioder, månedsperioder, lønnstrinnperioder,
@@ -57,7 +57,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Stillingsforhold
  *
  * @author Tarjei Skorgenes
  */
-public class Tidsserie {
+public class TidsserieFacade {
     private final StandardTidsserieAnnotering strategi = new StandardTidsserieAnnotering();
 
     private final ObservasjonsunderlagFactory observasjonsunderlagFactory = new ObservasjonsunderlagFactory();

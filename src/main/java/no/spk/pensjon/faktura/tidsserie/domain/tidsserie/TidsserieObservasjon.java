@@ -18,7 +18,7 @@ import static java.util.Optional.ofNullable;
 
 /**
  * {@link TidsserieObservasjon} representerer ein observasjon som inngår som eit innslag
- * i ein {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie} generert ut frå alle stillingsforhold
+ * i ein {@link TidsserieFacade} generert ut frå alle stillingsforhold
  * tilknytta {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata} for eit medlem.
  * <p>
  * Kvar observasjon blir generert basert på eit

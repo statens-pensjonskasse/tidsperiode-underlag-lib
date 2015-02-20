@@ -29,7 +29,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonspublikator;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieFacade;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieObservasjon;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractListAssert;
@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
-import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -73,7 +72,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.and;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integrasjonstest av {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie}, fokusert på handtering av
+ * Integrasjonstest av {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieFacade}, fokusert på handtering av
  * stillingsforhold som har vore gjennom eit eller fleire avtalebytte.
  *
  * @author Tarjei Skorgenes
@@ -96,7 +95,7 @@ public class TidsserieAvtalebytteIT {
 
     private Medlemsdata medlemsdata;
 
-    private Tidsserie tidsserie;
+    private TidsserieFacade tidsserie;
 
     @Before
     public void _before() {
@@ -109,7 +108,7 @@ public class TidsserieAvtalebytteIT {
 
         observasjonsperiode = new Observasjonsperiode(dato("2005.01.01"), dato("2014.12.31"));
 
-        tidsserie = new Tidsserie();
+        tidsserie = new TidsserieFacade();
         tidsserie.overstyr(avtale -> {
             return Stream.of(new Avtaleversjon(dato("1917.01.01"), empty(), avtale, Premiestatus.valueOf("AAO-10")));
         });
