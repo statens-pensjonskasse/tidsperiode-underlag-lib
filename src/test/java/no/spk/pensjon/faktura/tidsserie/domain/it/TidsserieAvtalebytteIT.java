@@ -240,12 +240,13 @@ public class TidsserieAvtalebytteIT {
         );
     }
 
+    @SuppressWarnings("unchecked")
     private static Predicate<TidsserieObservasjon> tilhoeyrerAvtalar(final AvtaleId... avtale) {
         return and(
                 asList(avtale)
                         .stream()
                         .map(TidsserieAvtalebytteIT::tilhoeyrerAvtale)
-                        .toArray((IntFunction<Predicate<TidsserieObservasjon>[]>) (value) -> new Predicate[value])
+                        .toArray(Predicate[]::new)
         );
     }
 

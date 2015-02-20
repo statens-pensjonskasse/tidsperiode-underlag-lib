@@ -60,6 +60,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
      * @see StillingsforholdPeriode#annoter(no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar)
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
         periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
             avtalekobling.annoter(periode);

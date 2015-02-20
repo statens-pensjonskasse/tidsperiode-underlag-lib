@@ -2,8 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.storage.disruptor;
 
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.dsl.Disruptor;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonspublikator;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieObservasjon;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;

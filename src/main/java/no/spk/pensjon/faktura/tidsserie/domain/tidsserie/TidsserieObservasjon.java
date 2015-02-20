@@ -221,6 +221,7 @@ public class TidsserieObservasjon {
      * @return verdien av den angitte målingstypen, eller {@link Optional#empty() ingenting} dersom observasjonen ikkje støttar
      * målingar av den angitte typen
      */
+    @SuppressWarnings("unchecked")
     public <T> Optional<T> maaling(final Class<T> type) {
         return ofNullable((T) maalingar.get(type));
     }

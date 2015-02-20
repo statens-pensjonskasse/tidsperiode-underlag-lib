@@ -327,7 +327,7 @@ public class TidsserieIT {
         assertObservasjonAvAarsverk(2012, DECEMBER, STILLING_A).isEqualTo(aarsverkSlutt.toDouble(), presisjon);
     }
 
-    private AbstractDoubleAssert assertObservasjonAvAarsverk(int aarstall, Month month, StillingsforholdId stilling) {
+    private AbstractDoubleAssert<?> assertObservasjonAvAarsverk(int aarstall, Month month, StillingsforholdId stilling) {
         final Optional<Aarsverk> aarsverk = observasjonFor(generer(stilling, aarstall), month).get().maaling(Aarsverk.class);
         assertThat(aarsverk.isPresent()).as("er det gjort ei måling av årsverk for " + month + " " + aarstall + "?").isTrue();
         return assertThat(aarsverk.get().tilProsent().toDouble())
