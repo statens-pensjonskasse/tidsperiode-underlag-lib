@@ -30,22 +30,22 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.paakre
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link Aarsunderlag}.
+ * Enheitstestar for {@link AarsunderlagFactory}.
  *
  * @author Tarjei Skorgenes
  */
-public class AarsunderlagTest {
+public class AarsunderlagFactoryTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
-    private final Aarsunderlag aarsunderlag = new Aarsunderlag();
+    private final AarsunderlagFactory aarsunderlagFactory = new AarsunderlagFactory();
 
     /**
      * Verifiserer at årsunderlaget kopierer over alle annotasjonar frå stillingsforholdunderlaget det er generert frå.
      */
     @Test
     public void skalKopiereAlleAnnotasjonarFraaStillingsforholdUnderlaget() {
-        final List<Underlag> alle = aarsunderlag.genererUnderlagPrAar(
+        final List<Underlag> alle = aarsunderlagFactory.genererUnderlagPrAar(
                 etFlerAarigStillingsforholdUnderlag()
                         .annoter(StillingsforholdId.class, new StillingsforholdId(92272722L))
                         .annoter(String.class, "Hello World!")
@@ -74,7 +74,7 @@ public class AarsunderlagTest {
      */
     @Test
     public void skalAnnotereAarsunderlagMedAarstall() {
-        final List<Underlag> alle = aarsunderlag.genererUnderlagPrAar(
+        final List<Underlag> alle = aarsunderlagFactory.genererUnderlagPrAar(
                 etFlerAarigStillingsforholdUnderlag()
         )
                 .collect(toList());
@@ -95,7 +95,7 @@ public class AarsunderlagTest {
      */
     @Test
     public void skalKunInneholdeUnderlagsperioderTilknyttaEitAarOmGangen() {
-        final List<Underlag> alle = aarsunderlag
+        final List<Underlag> alle = aarsunderlagFactory
                 .genererUnderlagPrAar(
                         etFlerAarigStillingsforholdUnderlag()
                 )
@@ -130,7 +130,7 @@ public class AarsunderlagTest {
                                 new Aar(new Aarstall(2001))
                         )
         );
-        final List<Underlag> alle = aarsunderlag.genererUnderlagPrAar(underlag).collect(toList());
+        final List<Underlag> alle = aarsunderlagFactory.genererUnderlagPrAar(underlag).collect(toList());
         assertAarsunderlag(alle.stream()).hasSize(1);
         assertUnikeAnnotasjonsverdiar(alle.get(0), Aarstall.class).contains(new Aarstall(2000));
     }
@@ -142,7 +142,7 @@ public class AarsunderlagTest {
     @Test
     public void skalFeileDersomInputUnderlagetsPerioderManglarAarstallAnnotasjon() {
         e.expect(PaakrevdAnnotasjonManglarException.class);
-        aarsunderlag.genererUnderlagPrAar(
+        aarsunderlagFactory.genererUnderlagPrAar(
                 underlag(
                         periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.10.12"))
                                 .med(new Aarstall(2000)),

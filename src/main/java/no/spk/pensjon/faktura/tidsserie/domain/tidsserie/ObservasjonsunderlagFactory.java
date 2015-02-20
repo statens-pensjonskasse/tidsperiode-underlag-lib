@@ -16,7 +16,7 @@ import static java.util.stream.Stream.concat;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonsdato.forSisteDag;
 
 /**
- * {@link Observasjonsunderlag} representerer
+ * {@link ObservasjonsunderlagFactory} representerer
  * algoritma for å generere eit nytt underlag som kan benyttast for å utføre ein observasjon for heile året basert
  * på kun dei endringane som har aksjonsdato fram til og med siste dag i måneden ein utfører observasjonen.
  * <p>
@@ -36,7 +36,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonsdato
  *
  * @author Tarjei Skorgenes
  */
-class Observasjonsunderlag {
+class ObservasjonsunderlagFactory {
     /**
      * Genererer eit nytt observasjonsunderlag for kvar unike måned i <code>aarsunderlag</code>.
      *

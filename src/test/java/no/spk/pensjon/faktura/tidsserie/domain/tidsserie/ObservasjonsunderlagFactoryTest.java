@@ -43,16 +43,16 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.paakre
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonsunderlag}.
+ * Enheitstestar for {@link ObservasjonsunderlagFactory}.
  *
  * @author Tarjei Skorgenes
  */
-public class ObservasjonsunderlagTest {
+public class ObservasjonsunderlagFactoryTest {
 
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
-    private final Observasjonsunderlag observasjonsunderlag = new Observasjonsunderlag();
+    private final ObservasjonsunderlagFactory observasjonsunderlagFactory = new ObservasjonsunderlagFactory();
 
     /**
      * Verifiserer at kvart observasjonsunderlag får kopiert inn alle annotasjonane frå årsunderlaget.
@@ -62,7 +62,7 @@ public class ObservasjonsunderlagTest {
         final Underlag aarsunderlag = etAarsunderlag()
                 .annoter(StillingsforholdId.class, new StillingsforholdId(18971237L))
                 .annoter(Integer.class, 123456789);
-        final List<Underlag> alle = observasjonsunderlag.genererUnderlagPrMaaned(
+        final List<Underlag> alle = observasjonsunderlagFactory.genererUnderlagPrMaaned(
                 aarsunderlag
         )
                 .collect(toList());
@@ -90,7 +90,7 @@ public class ObservasjonsunderlagTest {
      */
     @Test
     public void skalAnnotereObservasjonsunderlagMedAarstall() {
-        final List<Underlag> alle = observasjonsunderlag.genererUnderlagPrMaaned(
+        final List<Underlag> alle = observasjonsunderlagFactory.genererUnderlagPrMaaned(
                 underlag(
                         new Aarstall(2000),
                         periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
@@ -128,7 +128,7 @@ public class ObservasjonsunderlagTest {
      */
     @Test
     public void skalIkkjeGenerereNokonObservasjonsunderlagVissAarsunderlagErTomt() {
-        assertThat(observasjonsunderlag
+        assertThat(observasjonsunderlagFactory
                         .genererUnderlagPrMaaned(new Underlag(Stream.empty()).annoter(Aarstall.class, new Aarstall(2007))).collect(toList())
         )
                 .as("observasjonsunderlag generert frå tomt årsunderlage")
@@ -145,7 +145,7 @@ public class ObservasjonsunderlagTest {
         final Underlag aarsunderlag = etAarsunderlag();
         assertObservasjonsunderlag(aarsunderlag).hasSize(12);
 
-        final List<Underlag> prMnd = observasjonsunderlag
+        final List<Underlag> prMnd = observasjonsunderlagFactory
                 .genererUnderlagPrMaaned(aarsunderlag)
                 .collect(toList());
         rangeClosed(JANUARY.getValue(), NOVEMBER.getValue())
@@ -177,7 +177,7 @@ public class ObservasjonsunderlagTest {
                 periode().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(DECEMBER)
                         .med(SistePeriode.INSTANCE)
         );
-        final Underlag observasjonsunderlagDesember = observasjonsunderlag
+        final Underlag observasjonsunderlagDesember = observasjonsunderlagFactory
                 .genererUnderlagPrMaaned(aarsunderlag)
                 .reduce(this::last)
                 .get();
@@ -208,7 +208,7 @@ public class ObservasjonsunderlagTest {
                         .med(SistePeriode.INSTANCE)
         );
         assertThat(
-                observasjonsunderlag
+                observasjonsunderlagFactory
                         .genererUnderlagPrMaaned(aarsunderlag)
                         .reduce(this::last)
                         .get()
@@ -224,7 +224,7 @@ public class ObservasjonsunderlagTest {
     @Test
     public void skalIkkjeGenerereFiktivPeriodeUtAaretIObservasjonsunderlagetForDesember() {
         assertThat(
-                observasjonsunderlag
+                observasjonsunderlagFactory
                         .genererUnderlagPrMaaned(etAarsunderlag())
                         .reduce(this::last)
                         .get()
@@ -255,7 +255,7 @@ public class ObservasjonsunderlagTest {
                         .med(SistePeriode.INSTANCE)
         );
 
-        final List<Underlag> prMnd = observasjonsunderlag.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
+        final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
         rangeClosed(JANUARY.getValue(), APRIL.getValue())
                 .forEach(nr -> {
                     // Forventar at mnd nr X inneheld X synlige månedar + 1 fiktiv periode for resten av året
@@ -281,7 +281,7 @@ public class ObservasjonsunderlagTest {
                 periode().fraOgMed(dato("2001.12.01")).tilOgMed(dato("2001.12.31")).med(new Aarstall(2001)).med(DECEMBER),
                 periode().fraOgMed(dato("2002.01.01")).tilOgMed(dato("2002.01.31")).med(new Aarstall(2002)).med(JANUARY)
         );
-        observasjonsunderlag.genererUnderlagPrMaaned(underlag);
+        observasjonsunderlagFactory.genererUnderlagPrMaaned(underlag);
     }
 
     /**
@@ -339,7 +339,7 @@ public class ObservasjonsunderlagTest {
                 periode().fraOgMed(dato("2012.06.10")).tilOgMed(dato("2012.06.15"))
                         .med(JUNE).med(SistePeriode.INSTANCE)
         );
-        final List<Underlag> prMnd = observasjonsunderlag.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
+        final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
 
         // 5 synlige periode + ei fiktiv periode ut året
         assertObservasjonsunderlagMedFiktivPeriode(prMnd, 4).hasSize(5 + 1);
@@ -383,7 +383,7 @@ public class ObservasjonsunderlagTest {
                 periode().fraOgMed(dato("2015.02.01")).tilOgMed(dato("2015.02.28")).med(FEBRUARY)
                         .med(SistePeriode.INSTANCE)
         );
-        final List<Underlag> prMnd = observasjonsunderlag.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
+        final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
         assertObservasjonsunderlagMedFiktivPeriode(prMnd, 0).hasSize(3);
         assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 1).hasSize(3);
         assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 2).hasSize(3);
@@ -426,7 +426,7 @@ public class ObservasjonsunderlagTest {
     }
 
     private Stream<Underlag> generer(final Underlag aarsunderlag) {
-        return observasjonsunderlag
+        return observasjonsunderlagFactory
                 .genererUnderlagPrMaaned(aarsunderlag);
     }
 

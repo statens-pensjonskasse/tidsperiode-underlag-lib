@@ -21,12 +21,12 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.fe
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinære
- * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi strategien}
+ * {@link StillingsforholdunderlagFactory.Annoteringsstrategi strategien}
  * som bør brukast når ein skal annotere underlagsperioder som blir brukt til å generere ein ny tidsserie.
  *
  * @author Tarjei Skorgenes
  */
-public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Annoteringsstrategi {
+public class StandardTidsserieAnnotering implements StillingsforholdunderlagFactory.Annoteringsstrategi {
     /**
      * Populerer underlaget og underlagets underlagsperioder med annotasjonar.
      * <p>

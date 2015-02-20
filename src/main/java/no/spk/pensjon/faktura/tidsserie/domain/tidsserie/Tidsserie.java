@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.AvtaleinformasjonRepository;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory.AvtaleinformasjonRepository;
 
 /**
  * {@link Tidsserie} representerer algoritma som genererer ein ny tidsserie med observasjonar
@@ -60,9 +60,9 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderla
 public class Tidsserie {
     private final StandardTidsserieAnnotering strategi = new StandardTidsserieAnnotering();
 
-    private final Observasjonsunderlag observasjonsunderlag = new Observasjonsunderlag();
+    private final ObservasjonsunderlagFactory observasjonsunderlagFactory = new ObservasjonsunderlagFactory();
 
-    private final Aarsunderlag aarsunderlag = new Aarsunderlag();
+    private final AarsunderlagFactory aarsunderlagFactory = new AarsunderlagFactory();
 
     private AvtaleinformasjonRepository repository = avtale -> Stream.empty();
 
@@ -134,7 +134,7 @@ public class Tidsserie {
     public void generer(final Medlemsdata medlemsdata, final Observasjonsperiode periode,
                         final StillingsforholdUnderlagCallback callback,
                         final Stream<Tidsperiode<?>> referanseperioder) {
-        final TidsserieUnderlagFacade fasade = new TidsserieUnderlagFacade();
+        final StillingsforholdunderlagFactory fasade = new StillingsforholdunderlagFactory();
         fasade.addReferansePerioder(referanseperioder);
         fasade.endreAnnoteringsstrategi(strategi);
         fasade.endreAvtaleinformasjonRepository(repository);
@@ -154,9 +154,9 @@ public class Tidsserie {
     public StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator publikator) {
         return (stillingsforhold, underlag) -> {
             try {
-                aarsunderlag
+                aarsunderlagFactory
                         .genererUnderlagPrAar(underlag)
-                        .flatMap(observasjonsunderlag::genererUnderlagPrMaaned)
+                        .flatMap(observasjonsunderlagFactory::genererUnderlagPrMaaned)
                         .flatMap(this::genererObservasjonPrAvtale)
                         .forEach(publikator::publiser);
             } catch (final RuntimeException e) {

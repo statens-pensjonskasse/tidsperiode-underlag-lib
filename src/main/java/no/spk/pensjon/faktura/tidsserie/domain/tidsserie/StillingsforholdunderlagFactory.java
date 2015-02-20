@@ -2,13 +2,13 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -21,13 +21,36 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link TidsserieUnderlagFacade} tilbyr ein høg-nivå API
- * for å bygge opp {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag} for bruk ved generering
- * av tidsseriar for prognosegenerering i forenkla fastsats.
+ * {@link StillingsforholdunderlagFactory} inneheld algoritma som bygger opp stillingsforholdunderlag.
+ * <p>
+ * Algoritma går iterativt gjennom medlemmet sine
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder} og bygger eit nytt underlag
+ * basert på det, observasjonsperioda og alle referanseperioder som det skal kombinerast og periodiserast basert på.
+ * <p>
+ * Når underlaget er bygd opp blir det deretter filtrert ned til eit nytt stillingsforholdunderlag som kun inneheld
+ * underlagsperioder der stillingsforholdet er aktivt.
+ * <p>
+ * For å unngå at ein må holde på underlaga for alle stillingsforholda til medlemmet i minne på samme tid,
+ * mottar klienten ein callback kvar gang eit nytt stillingsforholdunderlag er ferdig generert.
+ * <h2>Annotering</h2>
+ * Før stillingsforholdunderlaget blir sendt til klienten, kan underlaget og underlagsperiodene bli annotert med
+ * grunnlagsdata. Som standardoppførsel blir inga annotert utført, klienten
+ * kan {@link #endreAnnoteringsstrategi(Annoteringsstrategi) plugge inn} ein alternativ {@link Annoteringsstrategi}
+ * viss det er ønskelig annotere underlagsperiodene med grunnlagsdata.
+ * <h2>Avtaledata</h2>
+ * Ettersom antall avtaleperioder for alle avtalar som til ei kvar tid er gyldige, er i størrelsesorden mange tusen
+ * perioder, er det ikkje ønskelig å legge alle desse til i periodiseringa for eit enkelt stillingsforhold.
+ * Derimot er det ønskelig å legge til alle avtaleperioder for alle avtalar stillingsforholdet har vore tilknytta.
+ * <p>
+ * Klienten kan {@link #endreAvtaleinformasjonRepository(AvtaleinformasjonRepository) plugge inn} eit lager som gir
+ * tilgang til tidsperiodisert avtaleinformasjon basert på avtalenummera stillingaforholda har vore tilknytta.
+ * <p>
+ * Merk at det er heilt essensielt for ytelsen til prosesseringa at denne informasjonen ikkje krever eksterne oppslage
+ * som medfører I/O mot disk eller over nettet.
  *
  * @author Tarjei Skorgenes
  */
-public class TidsserieUnderlagFacade {
+public class StillingsforholdunderlagFactory {
     private final Set<Tidsperiode<?>> referanseperioder = new HashSet<>();
 
     private Annoteringsstrategi annotator = new IngenAnnotering();
@@ -218,7 +241,7 @@ public class TidsserieUnderlagFacade {
     }
 
     /**
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi}
+     * {@link StillingsforholdunderlagFactory.Annoteringsstrategi}
      * representerer ein strategi for å annotere
      * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode underlagsperiode}.
      *

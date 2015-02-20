@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * {@link Aarsunderlag} representerer
+ * {@link AarsunderlagFactory} representerer
  * algoritma for å splitte opp eit stillingsforholdunderlag i eit eller fleire underlag, med eit underlag pr år.
  * <p>
  * Årsunderlag er påkrevd for å kunne gjere beregningar av maskinelt grunnlag ettersom ein kun skal benytte perioder
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  *
  * @author Tarjei Skorgenes
  */
-public class Aarsunderlag {
+public class AarsunderlagFactory {
     /**
      * Genererer eit nytt årsunderlag for kvart årstall som underlagsperioder i <code>underlag</code> er annotert med
      * <p>
@@ -34,7 +34,7 @@ public class Aarsunderlag {
                 .annoter(Aarstall.class, aar);
         return underlag
                 .stream()
-                .map(Aarsunderlag::aarstallForPeriode)
+                .map(AarsunderlagFactory::aarstallForPeriode)
                 .distinct()
                 .map(nyttUnderlagForAarstall);
 

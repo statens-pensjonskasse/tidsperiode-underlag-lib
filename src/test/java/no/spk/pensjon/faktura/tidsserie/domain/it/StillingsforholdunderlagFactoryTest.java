@@ -22,8 +22,8 @@ import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdUnderlagCallback;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieUnderlagFacade.Annoteringsstrategi;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory.Annoteringsstrategi;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import org.assertj.core.api.AbstractListAssert;
@@ -68,12 +68,12 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 /**
- * Integrasjonstestar for something.
+ * Integrasjonstestar for {@link StillingsforholdunderlagFactory}.
  *
  * @author Tarjei Skorgenes
  */
 @SuppressWarnings("unchecked")
-public class TidsserieUnderlagFacadeIT {
+public class StillingsforholdunderlagFactoryTest {
     private static final StillingsforholdId STILLINGSFORHOLD_A = STILLING_A;
 
     private static final StillingsforholdId STILLINGSFORHOLD_B = STILLING_B;
@@ -90,7 +90,7 @@ public class TidsserieUnderlagFacadeIT {
 
     private Map<Class<?>, MedlemsdataOversetter<?>> oversettere;
 
-    private TidsserieUnderlagFacade fasade;
+    private StillingsforholdunderlagFactory fasade;
 
     private Medlemsdata medlem;
 
@@ -103,7 +103,7 @@ public class TidsserieUnderlagFacadeIT {
 
         medlem = new Medlemsdata(data.toList(), oversettere);
 
-        fasade = new TidsserieUnderlagFacade();
+        fasade = new StillingsforholdunderlagFactory();
         fasade.endreAnnoteringsstrategi(annotator);
     }
 
