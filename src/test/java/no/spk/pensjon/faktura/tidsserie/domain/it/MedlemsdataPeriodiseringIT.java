@@ -7,8 +7,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import org.assertj.core.api.AbstractIterableAssert;
@@ -27,7 +27,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsfor
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integrasjonstest som verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata}
+ * Integrasjonstest som verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata}
  * er i stand til å bygge opp
  * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode stillingsforholdperioder} ut
  * frå {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring} tilnytta medlemmet.
@@ -52,7 +52,7 @@ public class MedlemsdataPeriodiseringIT {
     }
 
     /**
-     * Verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata#allePeriodiserbareStillingsforhold()}
+     * Verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata#allePeriodiserbareStillingsforhold()}
      * klarer å finne dei 3 unike stillingsforholda som medlem-1-stillingsforhold-3.csv inneheld.
      */
     @Test

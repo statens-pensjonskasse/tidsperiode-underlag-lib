@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * som tar seg av innlesing av eksempeldata tilknytta eit medlem som har vore gjennom 2 avtalebytte.
  * <p>
  * Regelen baserer seg på å lese inn ei CSV-fil som inneheld eit datasett som simulerer rådataformatet som
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata} deserialiserer informasjon om eit medlem
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata} deserialiserer informasjon om eit medlem
  * frå.
  *
  * @author Tarjei Skorgenes

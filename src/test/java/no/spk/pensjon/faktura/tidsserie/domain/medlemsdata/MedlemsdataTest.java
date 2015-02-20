@@ -1,7 +1,6 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
@@ -26,7 +25,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningsk
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata}.
  *
  * @author Tarjei Skorgenes
  */

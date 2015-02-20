@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.PeriodiserStillingshistorikk} representerer
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.PeriodiserStillingshistorikk} representerer
  * algoritmen for og stillingsendringene som skal periodiseres og danne nye {@link StillingsforholdPeriode}.
  *
  * @author Tarjei Skorgenes

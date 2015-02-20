@@ -1,9 +1,9 @@
-package no.spk.pensjon.faktura.tidsserie.domain.periodisering;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import java.util.List;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter} representerer
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter} representerer
  * oversettingsalgoritma som genererer ein sterkt typa representasjon av eit medlemsspesifikk datasett av
  * ein bestemt type.
  *
