@@ -2,7 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import org.junit.Before;
 import org.junit.Rule;
@@ -131,7 +130,7 @@ public class MedlemsdataTest {
 
     /**
      * Verifiserer at endringar av type 0 er dei einaste som blir forsøkt konvertert til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}.
+     * {@link Stillingsendring}.
      */
     @Test
     public void skalKonvertereType0TilStillingsendring() {

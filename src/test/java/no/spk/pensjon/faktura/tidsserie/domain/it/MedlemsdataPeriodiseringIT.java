@@ -1,6 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integrasjonstest som verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata}
  * er i stand til å bygge opp
  * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode stillingsforholdperioder} ut
- * frå {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring} tilnytta medlemmet.
+ * frå {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring} tilnytta medlemmet.
  *
  * @author Tarjei Skorgenes
  */

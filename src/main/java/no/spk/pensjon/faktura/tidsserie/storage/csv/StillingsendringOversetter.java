@@ -7,7 +7,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -23,7 +23,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
 /**
  * {@link StillingsendringOversetter} representerer algoritma
  * for å mappe om og konvertere stillingshistorikk til
- * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring}
  * <p>
  * Informasjon henta frå stillingshistorikken skal inneholde følgjande verdiar, alle representert som tekst:
  * <table>

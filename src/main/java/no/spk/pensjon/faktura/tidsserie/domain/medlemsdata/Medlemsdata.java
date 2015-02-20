@@ -1,6 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 import java.util.List;
@@ -39,7 +38,7 @@ import static java.util.stream.Collectors.toSet;
  * <h4>Stillingshistorikk</h4>
  * <p>
  * Informasjon henta frå stillingshistorikken blir mappa om og representert som
- * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring}. Dette blir automatisk utført for alle
+ * {@link Stillingsendring}. Dette blir automatisk utført for alle
  * medlemsdata som har verdien <code>0</code> som sin typeindikator.
  * <p>
  * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter} for meir detaljert

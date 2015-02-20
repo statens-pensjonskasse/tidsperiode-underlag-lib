@@ -56,8 +56,8 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
      *
      * @param underlag underlaget som perioda inngår i
      * @param periode  underlagsperioda som skal populerast med annotasjonar
-     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#koblingarAvType(Class)
-     * @see no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode#gjeldendeEndring()
+     * @see Underlagsperiode#koblingarAvType(Class)
+     * @see StillingsforholdPeriode#annoter(Underlagsperiode)
      */
     @Override
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
@@ -70,12 +70,7 @@ public class StandardTidsserieAnnotering implements TidsserieUnderlagFacade.Anno
                     .ifPresent(versjon -> versjon.annoter(periode));
         });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
-            stillingsforhold.gjeldendeEndring().ifPresent(endring -> {
-                endring.annoter(periode);
-            });
-            stillingsforhold.medregning().ifPresent(medregning -> {
-                medregning.annoter(periode);
-            });
+            stillingsforhold.annoter(periode);
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
             periode.annoter(Aarstall.class, aar.aarstall());

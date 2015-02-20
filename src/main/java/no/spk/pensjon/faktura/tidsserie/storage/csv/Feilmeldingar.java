@@ -21,7 +21,7 @@ class Feilmeldingar {
 
     /**
      * Oversetting frå <code>rad</code> til
-     * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring} har feila
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring} har feila
      * fordi antall kolonner i <code>rad</code> ikkje var som forventa.
      *
      * @param rad input-rada som inneholdt feil antall kolonner for ei stillingsendring

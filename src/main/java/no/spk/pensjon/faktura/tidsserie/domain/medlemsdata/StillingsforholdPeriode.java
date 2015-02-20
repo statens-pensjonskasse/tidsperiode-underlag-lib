@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -146,7 +146,23 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * @return medregningsperioden som stillingsforholdperioden er basert på, eller {@link Optional#empty()} dersom
      * stillingsforholdet er basert på historikk
      */
-    public Optional<Medregningsperiode> medregning() {
+    private Optional<Medregningsperiode> medregning() {
         return medregning;
+    }
+
+    /**
+     * Annoterer underlagsperioda med grunnlagsdata frå stillingsforholdet gjeldande endring eller medregning.
+     *
+     * @param periode underlagsperioda som skal annoterast med grunnlagsdata
+     * @see Medregningsperiode#annoter(Underlagsperiode)
+     * @see Stillingsendring#annoter(Underlagsperiode)
+     */
+    public void annoter(final Underlagsperiode periode) {
+        gjeldendeEndring().ifPresent(endring -> {
+            endring.annoter(periode);
+        });
+        medregning().ifPresent(medregning -> {
+            medregning.annoter(periode);
+        });
     }
 }

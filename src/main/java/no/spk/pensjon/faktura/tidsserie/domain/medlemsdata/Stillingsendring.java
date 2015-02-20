@@ -1,5 +1,14 @@
-package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
+package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
@@ -321,7 +330,7 @@ public class Stillingsendring {
      *
      * @param periode underlagsperioda som skal annoterast
      */
-    public void annoter(final Underlagsperiode periode) {
+    void annoter(final Underlagsperiode periode) {
         periode.annoter(Aksjonskode.class, aksjonskode());
 
         periode.annoter(Stillingsprosent.class, stillingsprosent());

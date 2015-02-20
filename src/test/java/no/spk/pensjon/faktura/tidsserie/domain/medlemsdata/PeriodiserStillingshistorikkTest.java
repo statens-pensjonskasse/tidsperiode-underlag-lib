@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
 import org.junit.Test;
 
 import java.util.List;
@@ -11,7 +10,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring.stillingsendring;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring.stillingsendring;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 

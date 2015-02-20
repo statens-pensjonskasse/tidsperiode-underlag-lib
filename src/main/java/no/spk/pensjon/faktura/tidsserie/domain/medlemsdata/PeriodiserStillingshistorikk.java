@@ -1,7 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
