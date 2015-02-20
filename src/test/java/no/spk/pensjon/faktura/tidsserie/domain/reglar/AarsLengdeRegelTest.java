@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
@@ -10,11 +10,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagar;
-import static no.spk.pensjon.faktura.tidsserie.domain.internal.Support.periode;
+import static no.spk.pensjon.faktura.tidsserie.domain.reglar.Support.periode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel}.
  *
  * @author Tarjei Skorgenes
  */

@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import org.junit.Rule;
@@ -8,7 +8,7 @@ import org.junit.rules.ExpectedException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.Aarsfaktor}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor}.
  *
  * @author Tarjei Skorgenes
  */

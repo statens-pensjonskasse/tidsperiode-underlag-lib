@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
@@ -24,7 +24,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.krone
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel}.
  *
  * @author Tarjei Skorgenes
  */

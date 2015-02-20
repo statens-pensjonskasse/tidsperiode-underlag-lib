@@ -1,6 +1,5 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;

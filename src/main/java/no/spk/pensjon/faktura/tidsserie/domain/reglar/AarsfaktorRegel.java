@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
@@ -6,7 +6,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonMangla
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
- * Beregningsregel som reknar ut {@link no.spk.pensjon.faktura.tidsserie.domain.internal.Aarsfaktor}en til ei
+ * Beregningsregel som reknar ut {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor}en til ei
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode}.
  *
  * @author Tarjei Skorgenes
@@ -16,8 +16,8 @@ public class AarsfaktorRegel implements BeregningsRegel<Aarsfaktor> {
      * Beregnar årsfaktoren ut frå lengda på tidsperioda underlagsperioda strekker seg over
      * og lengda på året underlagsperioda ligg innanfor.
      * <br>
-     * Året lengde blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel}
-     * og lengda på perioda blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel}.
+     * Året lengde blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel}
+     * og lengda på perioda blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AntallDagarRegel}.
      *
      * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av
      *                beregningsregelen

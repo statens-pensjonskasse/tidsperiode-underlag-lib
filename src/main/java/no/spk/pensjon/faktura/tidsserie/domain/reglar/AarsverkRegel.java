@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
@@ -39,7 +39,7 @@ public class AarsverkRegel implements BeregningsRegel<Aarsverk> {
      * @param periode underlagsperioda som er annotert med stillingsprosent og årsfaktorregel
      * @return antall årsverk for perioda
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent
-     * @see no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel
+     * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel
      */
     @Override
     public Aarsverk beregn(final Underlagsperiode periode) {

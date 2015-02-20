@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
@@ -25,8 +25,8 @@ public class AntallDagarRegel implements BeregningsRegel<AntallDagar> {
      *
      * @param periode underlagsperioda som beregningsregelen skal beregne lengda på
      * @return antall dagar underlagsperioda strekker seg over
-     * @see no.spk.pensjon.faktura.tidsserie.domain.internal.Aarsfaktor
-     * @see no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel
+     * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor
+     * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel
      */
     @Override
     public AntallDagar beregn(final Underlagsperiode periode) {

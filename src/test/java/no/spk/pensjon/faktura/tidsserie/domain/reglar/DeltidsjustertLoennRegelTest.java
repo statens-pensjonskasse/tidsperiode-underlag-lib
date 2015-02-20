@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
@@ -16,7 +16,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.krone
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel}.
  *
  * @author Tarjei Skorgenes
  */

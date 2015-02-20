@@ -1,7 +1,11 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AntallDagarRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractDoubleAssert;
@@ -17,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Offset.offset;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AarsverkRegel}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel}.
  *
  * @author Tarjei Skorgenes
  */

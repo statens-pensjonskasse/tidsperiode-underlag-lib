@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -12,7 +12,7 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.MinstegrenseRegel}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.MinstegrenseRegel}.
  *
  * @author Tarjei Skorgenes
  */

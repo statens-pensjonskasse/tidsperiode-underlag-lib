@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
@@ -7,7 +7,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import java.text.NumberFormat;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.internal.Aarsfaktor} representerer kor stor andel av eit bestemt
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor} representerer kor stor andel av eit bestemt
  * år ei tidsperiode overlappar.
  * <p>
  * Årsfaktoren er avgrensa til kun å kunne dekke perioder frå 1 til 365 dagar, årsfaktoren kan ikkje dekke meir enn

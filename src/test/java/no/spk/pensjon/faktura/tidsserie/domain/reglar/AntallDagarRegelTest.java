@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.internal;
+package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -6,11 +6,11 @@ import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Test;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagar;
-import static no.spk.pensjon.faktura.tidsserie.domain.internal.Support.periode;
+import static no.spk.pensjon.faktura.tidsserie.domain.reglar.Support.periode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel}.
+ * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AntallDagarRegel}.
  *
  * @author Tarjei Skorgenes
  */
