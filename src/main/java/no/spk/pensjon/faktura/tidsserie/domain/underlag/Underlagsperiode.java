@@ -22,7 +22,8 @@ import static java.util.Optional.of;
  *
  * @author Tarjei Skorgenes
  */
-public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> implements Annoterbar<Underlagsperiode>,HarKoblingar {
+public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
+        implements HarKoblingar, Annoterbar<Underlagsperiode>, Beregningsperiode<Underlagsperiode> {
     private final Koblingar koblingar = new Koblingar();
 
     private final Annotasjonar annotasjonar = new Annotasjonar();
@@ -40,14 +41,7 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
         super(fraOgMed, of(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
     }
 
-    /**
-     * Slår opp ein beregningsregel av ei bestemt type og brukar den for å gjere ei bestemt type beregning
-     * ut frå underlagsperiodas annoterte fakta.
-     *
-     * @param regelType kva type beregningsregel som skal brukast
-     * @return resultatet frå beregningsregelen basert på underlagsperiodas tilstand
-     * @throws PaakrevdAnnotasjonManglarException dersom perioda ikkje er annotert med ein regel av den angitte typen
-     */
+    @Override
     public <T> T beregn(final Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException {
         return annotasjonFor(regelType).beregn(this);
     }
@@ -69,8 +63,7 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
 
     @Override
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
-        return annotasjonar
-                .lookup(type)
+        return valgfriAnnotasjonFor(type)
                 .orElseThrow(() -> new PaakrevdAnnotasjonManglarException(this, type));
     }
 
@@ -89,15 +82,6 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
     public Underlagsperiode annoterFra(final Underlagsperiode kilde) {
         annotasjonar.addAll(kilde.annotasjonar);
         return this;
-    }
-
-    /**
-     * Frå og med-datoen til underlagsperioda.
-     *
-     * @return første dag i underlagsperioda
-     */
-    public LocalDate fraOgMed() {
-        return fraOgMed;
     }
 
     /**

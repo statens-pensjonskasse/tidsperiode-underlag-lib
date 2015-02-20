@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
@@ -30,7 +31,7 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
      * @return underlagsperiodas andel av det totale maskinelle grunnlaget for premieåret
      */
     @Override
-    public Kroner beregn(final Underlagsperiode periode) {
+    public Kroner beregn(final Beregningsperiode<?> periode) {
         if (!periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
             if (periode.beregn(MinstegrenseRegel.class).erUnderMinstegrensa(periode.annotasjonFor(Stillingsprosent.class))) {
                 return kroner(0);

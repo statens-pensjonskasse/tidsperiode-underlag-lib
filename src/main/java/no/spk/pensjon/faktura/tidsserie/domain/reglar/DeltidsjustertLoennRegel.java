@@ -8,6 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -53,7 +54,7 @@ public class DeltidsjustertLoennRegel implements BeregningsRegel<Kroner> {
      *                                            ikkje er tilknytta medregning
      */
     @Override
-    public Kroner beregn(final Underlagsperiode periode) throws PaakrevdAnnotasjonManglarException {
+    public Kroner beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
         if (periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
             return Kroner.ZERO;
         }

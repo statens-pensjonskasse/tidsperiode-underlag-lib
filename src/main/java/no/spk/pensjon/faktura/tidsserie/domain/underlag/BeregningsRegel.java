@@ -5,10 +5,10 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
  * av resultat som baserer seg på grunnlagsdata som kan variere over tid og som normalt er tilgjengelig via
  * tidsperiodserte datatyper.
  * <p>
- * Beregningsregelens oppgåve er å anta at underlagsperiodas tilstand inneheld alle verdiar som er påkrevd
+ * Beregningsregelens oppgåve er å anta at beregningsperiodas tilstand inneheld alle verdiar som er påkrevd
  * for å utføre ei bestemt type beregning og at den garanterer at desse vil vere konstante innanfor heile periodas
  * varigheit. Dermed slepp regelen å forholde seg til tidsdimensjonen og kan fokuserer på å slå opp påkrevde verdiar
- * frå underlagsperioda, enten via annotasjonar eller ved å be andre beregningsreglar om å beregne påkrevde delresultat.
+ * frå perioda, enten via annotasjonar eller ved å be andre beregningsreglar om å beregne påkrevde delresultat.
  *
  * @param <T> typen på resultatet frå beregninga regelen implementerer
  * @author Tarjei Skorgenes
@@ -17,8 +17,8 @@ public interface BeregningsRegel<T> {
     /**
      * Beregnar ein verdi som ut frå tidsperiodiserte data annotert eller utregna basert på underlagsperiodas tilstand.
      *
-     * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
+     * @param periode beregningsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
      * @return resultatet som beregningsregelen har rekna ut basert på underlagsperiodas tilstand
      */
-    T beregn(final Underlagsperiode periode);
+    T beregn(final Beregningsperiode<?> periode);
 }

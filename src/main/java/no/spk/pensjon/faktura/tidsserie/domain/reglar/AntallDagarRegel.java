@@ -2,6 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
@@ -29,7 +30,7 @@ public class AntallDagarRegel implements BeregningsRegel<AntallDagar> {
      * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel
      */
     @Override
-    public AntallDagar beregn(final Underlagsperiode periode) {
+    public AntallDagar beregn(final Beregningsperiode<?> periode) {
         return antallDagarMellom(
                 periode.fraOgMed(),
                 periode.tilOgMed().get()

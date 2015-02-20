@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -27,7 +28,7 @@ public class AarsLengdeRegel implements BeregningsRegel<AntallDagar> {
      * @see Aarstall#atEndOfYear()
      */
     @Override
-    public AntallDagar beregn(final Underlagsperiode periode) throws PaakrevdAnnotasjonManglarException {
+    public AntallDagar beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
         final Aarstall aar = periode.annotasjonFor(Aarstall.class);
         return antallDagarMellom(
                 aar.atStartOfYear(),

@@ -6,7 +6,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
 /**
  * {@link OevreLoennsgrenseRegel} representerer regelen som avgjer kva som er øvre grense for lønna som
@@ -41,7 +41,7 @@ public class OevreLoennsgrenseRegel implements BeregningsRegel<Kroner> {
      * @return gjeldande øvre grense for maskinelt grunnlag innanfor den aktuelle perioda
      */
     @Override
-    public Kroner beregn(final Underlagsperiode periode) {
+    public Kroner beregn(final Beregningsperiode<?> periode) {
         final Kroner fulltidsgrense = grenseForFulltidsstilling(periode);
         if (periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
             return fulltidsgrense;
@@ -50,7 +50,7 @@ public class OevreLoennsgrenseRegel implements BeregningsRegel<Kroner> {
         return fulltidsgrense.multiply(stillingsprosent.prosent());
     }
 
-    private Kroner grenseForFulltidsstilling(final Underlagsperiode periode) {
+    private Kroner grenseForFulltidsstilling(final Beregningsperiode<?> periode) {
         if (erOrdning(periode, Ordning.SPK)) {
             return periode.annotasjonFor(Grunnbeloep.class).multiply(12);
         }
@@ -65,7 +65,7 @@ public class OevreLoennsgrenseRegel implements BeregningsRegel<Kroner> {
         return new Kroner(0);
     }
 
-    private boolean erOrdning(final Underlagsperiode periode, final Ordning ordning) {
+    private boolean erOrdning(final Beregningsperiode<?> periode, final Ordning ordning) {
         return ordning.equals(periode.annotasjonFor(Ordning.class));
     }
 }

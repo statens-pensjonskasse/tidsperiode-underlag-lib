@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
@@ -42,7 +43,7 @@ public class AarsverkRegel implements BeregningsRegel<Aarsverk> {
      * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel
      */
     @Override
-    public Aarsverk beregn(final Underlagsperiode periode) {
+    public Aarsverk beregn(final Beregningsperiode<?> periode) {
         if (periode.fraOgMed().getYear() != periode.tilOgMed().get().getYear()) {
             throw new IllegalStateException(
                     "årsverk kan kun beregnast for underlagsperioder som startar og sluttar innanfor samme årstall.\n" +

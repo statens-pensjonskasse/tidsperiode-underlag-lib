@@ -5,6 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
@@ -51,7 +52,7 @@ public class MinstegrenseRegel implements BeregningsRegel<Minstegrense> {
      * @throws IllegalStateException dersom perioda er tilknytta ei anna ordning enn SPK-, Apotek- eller Opera-ordningane
      */
     @Override
-    public Minstegrense beregn(final Underlagsperiode periode) {
+    public Minstegrense beregn(final Beregningsperiode<?> periode) {
         final Ordning ordning = periode.annotasjonFor(Ordning.class);
         if (Ordning.OPERA.equals(ordning)) {
             return MINSTEGRENSE_OPERA;
@@ -63,7 +64,7 @@ public class MinstegrenseRegel implements BeregningsRegel<Minstegrense> {
         throw new IllegalStateException("Minstegrense er ikkje definert for " + ordning + ", minstegrensereglane er kun definert for SPK-, POA- og Opera-ordningane");
     }
 
-    private Minstegrense minstegrenseForStatligeStillingar(final Underlagsperiode periode) {
+    private Minstegrense minstegrenseForStatligeStillingar(final Beregningsperiode<?>  periode) {
         final Premiestatus premiestatus = periode.annotasjonFor(Premiestatus.class);
         if (premiestatus.equals(Premiestatus.AAO_01)) {
             return MINSTEGRENSE_SPK_PEDAGOG;
@@ -74,7 +75,7 @@ public class MinstegrenseRegel implements BeregningsRegel<Minstegrense> {
         return MINSTEGRENSE_SPK_GENERELL;
     }
 
-    private Minstegrense minstegrenseForApotek(final Underlagsperiode periode) {
+    private Minstegrense minstegrenseForApotek(final Beregningsperiode<?>  periode) {
         final Stillingskode stillingskode = periode.annotasjonFor(Stillingskode.class);
         if (stillingskode.erFarmasoyt()) {
             return MINSTEGRENSE_APOTEK_FARMASOEYT;

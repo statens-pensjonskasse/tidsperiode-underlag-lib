@@ -6,6 +6,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
@@ -43,7 +44,7 @@ public class LoennstilleggRegel implements BeregningsRegel<Kroner> {
      * @return underlagsperiodas bidrag til premieårets totale lønnstillegg
      */
     @Override
-    public Kroner beregn(final Underlagsperiode periode) {
+    public Kroner beregn(final Beregningsperiode<?> periode) {
         if (periode.valgfriAnnotasjonFor(Aksjonskode.class).map(Aksjonskode.PERMISJON_UTAN_LOENN::equals).orElse(false)) {
             return Kroner.ZERO;
         }
@@ -52,15 +53,15 @@ public class LoennstilleggRegel implements BeregningsRegel<Kroner> {
                 .plus(funksjonstillegg(periode));
     }
 
-    private Kroner funksjonstillegg(final Underlagsperiode periode) {
+    private Kroner funksjonstillegg(final Beregningsperiode<?>  periode) {
         return periode.valgfriAnnotasjonFor(Funksjonstillegg.class).orElse(INGEN_FUNKSJONSTILLEGG).beloep();
     }
 
-    private Kroner variabletillegg(final Underlagsperiode periode) {
+    private Kroner variabletillegg(final Beregningsperiode<?>  periode) {
         return periode.valgfriAnnotasjonFor(Variabletillegg.class).orElse(INGEN_VARIABLE_TILLEGG).beloep();
     }
 
-    private Kroner fastetillegg(final Underlagsperiode periode) {
+    private Kroner fastetillegg(final Beregningsperiode<?>  periode) {
         return periode.valgfriAnnotasjonFor(Fastetillegg.class).orElse(INGEN_FASTE_TILLEGG).beloep();
     }
 }

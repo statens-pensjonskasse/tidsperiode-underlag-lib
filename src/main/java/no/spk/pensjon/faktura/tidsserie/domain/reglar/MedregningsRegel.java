@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class MedregningsRegel implements BeregningsRegel<Kroner> {
      * @return medregningas beløp viss den er fakturerbar, ellers eit beløp lik kr 0
      */
     @Override
-    public Kroner beregn(final Underlagsperiode periode) {
+    public Kroner beregn(final Beregningsperiode<?> periode) {
         final Optional<Medregning> medregning = periode.valgfriAnnotasjonFor(Medregning.class);
         return medregning.map(m -> {
             if (periode.annotasjonFor(Medregningskode.class).erFakturerbar()) {

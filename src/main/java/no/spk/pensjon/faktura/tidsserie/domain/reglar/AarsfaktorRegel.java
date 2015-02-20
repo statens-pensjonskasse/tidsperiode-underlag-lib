@@ -2,6 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -28,7 +29,7 @@ public class AarsfaktorRegel implements BeregningsRegel<Aarsfaktor> {
      * @see AarsLengdeRegel
      */
     @Override
-    public Aarsfaktor beregn(final Underlagsperiode periode) throws PaakrevdAnnotasjonManglarException {
+    public Aarsfaktor beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
         final AntallDagar dagarIPeriode = periode.beregn(AntallDagarRegel.class);
         final AntallDagar antallDagarIAaret = periode.beregn(AarsLengdeRegel.class);
         final double verdi = dagarIPeriode.verdi() / (double) antallDagarIAaret.verdi();
