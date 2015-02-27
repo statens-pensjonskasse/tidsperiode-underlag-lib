@@ -1,6 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain;
 
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractObjectAssert;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public final class Assertions {
     /**
-     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode#tilOgMed()}.
+     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode#tilOgMed()}.
      *
      * @param periode underlagsperioda som til og med-dato skal hentast frå
      * @return ein ny asserter for til og med-datoen til perioda
@@ -26,7 +26,7 @@ public final class Assertions {
     }
 
     /**
-     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode#fraOgMed()}.
+     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode#fraOgMed()}.
      *
      * @param periode underlagsperioda som fra og med-dato skal hentast frå
      * @return ein ny asserter for fra og med-datoen til perioda

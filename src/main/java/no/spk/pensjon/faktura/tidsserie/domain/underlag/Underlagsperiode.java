@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.AbstractTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
-import static java.util.stream.Collectors.toSet;
-import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingForMeirEnnEiKobling;
 
 /**
  * Ei tidsperiode som inngår som ein del av eit underlag.
@@ -24,7 +22,8 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  *
  * @author Tarjei Skorgenes
  */
-public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> implements Annoterbar<Underlagsperiode> {
+public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
+        implements HarKoblingar, Annoterbar<Underlagsperiode>, Beregningsperiode<Underlagsperiode> {
     private final Koblingar koblingar = new Koblingar();
 
     private final Annotasjonar annotasjonar = new Annotasjonar();
@@ -42,85 +41,29 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
         super(fraOgMed, of(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
     }
 
-    /**
-     * Slår opp ein beregningsregel av ei bestemt type og brukar den for å gjere ei bestemt type beregning
-     * ut frå underlagsperiodas annoterte fakta.
-     *
-     * @param regelType kva type beregningsregel som skal brukast
-     * @return resultatet frå beregningsregelen basert på underlagsperiodas tilstand
-     * @throws PaakrevdAnnotasjonManglarException dersom perioda ikkje er annotert med ein regel av den angitte typen
-     */
+    @Override
     public <T> T beregn(final Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException {
         return annotasjonFor(regelType).beregn(this);
     }
 
-    /**
-     * Koblar saman underlagsperioda med ei tidsperiode som overlappar underlagsperioda heilt eller delvis.
-     * <p>
-     * Det er både mulig og tillatt å koble opp ei underlagsperiode mot fleire tidsperioder av samme type. Brukarane av
-     * av underlaget er den som skal styre korvidt fleire tilkobla perioder av samme type er funksjonelt sett tillatt
-     * eller ikkje frå bruksmønster til bruksmønster.
-     * <p>
-     * Av ytelsesmessige årsaker verifiserer ikkje underlagsperioda at <code>kobling</code> faktisk overlappar
-     * underlagsperioda, det er opp til klienten å handheve denne kontrakta.
-     *
-     * @param kobling ei tidsperiode som underlagsperioda skal koblast opp mot
-     */
+    @Override
     public void kobleTil(final Tidsperiode<?> kobling) {
         koblingar.add(kobling);
     }
 
-    /**
-     * Hentar ut koblinga underlagsperioda muligens har til ei tidsperiode av den angitte typen.
-     * <p>
-     * Denne metoda er primært ei hjelpemetode for å forenkle klientar som har ei forventning til at underlagsperioder
-     * kun skal kunne vere tilkobla 0 eller 1 tidsperioder av den bestemte typen. I det generelle tilfellet der
-     * underlagsperioder funksjonelt sett kan vere kobla til fleire perioder av samme type, må
-     * {@link #koblingarAvType(Class)} brukast framfor denne metoda.
-     * <p>
-     * Dersom denne metoda blir brukt, antas det derfor at klienten forventar at viss underlagsperioda er kobla opp mot
-     * meir enn ei periode av den angitte typen så indikerer dette dårlig datakvalitet. Alternativt at klienten er
-     * feilaktig implementert. Det blir derfor kasta ein exception for å sikre at klienten blir gjort oppmerksom på
-     * problemet og kan handtere dette på eit eller anna vis.
-     * <p>
-     * Dersom underlagsperioda ikkje er kobla opp til ei periode av den angitte typen er det ikkje ein feil,
-     * ingen exception vil bli kasta i denne situasjonen.
-     *
-     * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
-     * @return den eine tidsperioda av den angitte typen som underlagsperioda er tilkobla, eller eit
-     * {@link Optional#empty() tomt} svar viss perioda ikkje er kobla til ei tidsperioda av den angitte typen
-     * @throws IllegalStateException dersom perioda er tilkobla meir enn ei tidsperiode av den angitte typen
-     */
+    @Override
     public <T extends Tidsperiode<T>> Optional<T> koblingAvType(final Class<T> type) {
-        return koblingarAvType(type).reduce((a, b) -> {
-            // Dersom det eksisterer meir enn 1 kobling av samme type blir denne metoda kalla, ergo feilar vi alltid her
-            // Dersom det kun eksisterer ei kobling, eller ingen koblingar, kjem vi aldri inn hit
-            throw new IllegalStateException(
-                    feilmeldingForMeirEnnEiKobling(
-                            type,
-                            koblingarAvType(type).collect(toSet())
-                    )
-            );
-        });
+        return koblingar.koblingAvType(type);
     }
 
-    /**
-     * Hentar ut alle koblingar underlagsperioda har til tidsperioder av den angitte typen.
-     * <p>
-     * Dersom underlagsperioda ikkje er kobla opp til ei periode av den angitte typen er det ikkje ein feil,
-     * ingen exception vil bli kasta i denne situasjonen.
-     *
-     * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
-     * @return ein straum som inneheld alle dei tilkobla periodene av den angitte typen
-     */
+    @Override
     public <T extends Tidsperiode<?>> Stream<T> koblingarAvType(final Class<T> type) {
-        return koblingar.get(type);
+        return koblingar.koblingarAvType(type);
     }
 
     @Override
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
-        return annotasjonar
-                .lookup(type)
+        return valgfriAnnotasjonFor(type)
                 .orElseThrow(() -> new PaakrevdAnnotasjonManglarException(this, type));
     }
 
@@ -136,23 +79,9 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
     }
 
     @Override
-    public Underlagsperiode annoterFra(final Annoterbar<?> kilde) {
-        annotasjonar.addAll(kilde.annotasjonar());
+    public Underlagsperiode annoterFra(final Underlagsperiode kilde) {
+        annotasjonar.addAll(kilde.annotasjonar);
         return this;
-    }
-
-    @Override
-    public Annotasjonar annotasjonar() {
-        return annotasjonar;
-    }
-
-    /**
-     * Frå og med-datoen til underlagsperioda.
-     *
-     * @return første dag i underlagsperioda
-     */
-    public LocalDate fraOgMed() {
-        return fraOgMed;
     }
 
     /**
@@ -173,13 +102,22 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode> impl
     }
 
     /**
-     * Opprettar ein ny builder som inneheld ein kopi av all tilstand frå underlagsperioda.
+     * Genererer en modifisert kopi av underlagsperioden, inkludert annotasjonane.
+     * <p>
+     * Den nye perioda arvar ikkje frå og med- og til og med-dato til perioda, dei angitte datoane blir brukt
+     * som nye datoar for kopien.
+     * <p>
+     * Kopien vil bli generert uten noen kopi av originalens periodekoblinger, kun en kopi av originalens annotasjoner.
      *
-     * @return ein ny builder med ein kopi av periodas tilstand
+     * @param fraOgMed kopiens fra og med-dato
+     * @param tilOgMed kopiens til og med-dato
+     * @return en modifisert kopi av underlagsperioden og dens annotasjoner
      */
-    public UnderlagsperiodeBuilder kopi() {
-        return new UnderlagsperiodeBuilder(koblingar, annotasjonar)
-                .fraOgMed(fraOgMed())
-                .tilOgMed(tilOgMed().get());
+    public Underlagsperiode kopierUtenKoblinger(final LocalDate fraOgMed, final LocalDate tilOgMed) {
+        return new Underlagsperiode(
+                fraOgMed,
+                tilOgMed
+        )
+                .annoterFra(this);
     }
 }

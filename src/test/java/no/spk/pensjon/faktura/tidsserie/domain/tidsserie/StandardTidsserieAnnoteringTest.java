@@ -1,6 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
@@ -10,24 +9,28 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Aar;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.ApotekLoennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Maaned;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Omregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.ApotekLoennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -51,7 +54,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder.grupper;
+import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -67,6 +70,54 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med medregningskode frå stillingsforholdperioder tilknytta
+     * medregning.
+     */
+    @Test
+    public void skalAnnotereMedMedregningskodeFråStillingsforholdperioderTilknyttaMedregning() {
+        final Medregningskode expected = Medregningskode.BISTILLING;
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        new Medregningsperiode(
+                                                dato("1917.01.01"),
+                                                of(dato("2015.12.31")),
+                                                new Medregning(kroner(10_000)),
+                                                expected,
+                                                new StillingsforholdId(1L)
+                                        )
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Medregningskode.class).isEqualTo(of(expected));
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med medregningskode frå stillingsforholdperioder tilknytta
+     * medregning.
+     */
+    @Test
+    public void skalAnnotereMedMedregningsbeløpFråStillingsforholdperioderTilknyttaMedregning() {
+        final Medregning expected = new Medregning(kroner(10_000));
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        new Medregningsperiode(
+                                                dato("1917.01.01"),
+                                                of(dato("2015.12.31")),
+                                                expected,
+                                                Medregningskode.BISTILLING,
+                                                new StillingsforholdId(1L)
+                                        )
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Medregning.class).isEqualTo(of(expected));
     }
 
     /**

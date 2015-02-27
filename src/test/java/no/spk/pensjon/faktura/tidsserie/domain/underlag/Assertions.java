@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import org.assertj.core.api.AbstractListAssert;
 
 import java.util.Collection;
@@ -120,7 +120,7 @@ public class Assertions {
      * @param type annotasjonstypen som objektet er annotert med ein verdi for
      * @return eit predikat som matchar objektet som er annotert med ein verdi av den angitte typen
      */
-    public static <S extends Annoterbar<S>> Predicate<S> harAnnotasjon(final Class<?> type) {
+    public static <S extends HarAnnotasjonar> Predicate<S> harAnnotasjon(final Class<?> type) {
         return objekt -> objekt.valgfriAnnotasjonFor(type).isPresent();
     }
 
@@ -164,9 +164,9 @@ public class Assertions {
      * @param <T>  verditypen til annotasjonen som skal hentast ut
      * @param type annotasjonstypen som verdien skal hentast ut for
      * @return ein funksjon som hentar ut verdien som det annoterbare objektet er annotert med for den angitte typen
-     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar#annotasjonFor(Class)
+     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.HarAnnotasjonar#annotasjonFor(Class)
      */
-    public static <T, S extends Annoterbar<S>> Function<S, T> paakrevdAnnotasjon(final Class<T> type) {
+    public static <T, S extends HarAnnotasjonar> Function<S, T> paakrevdAnnotasjon(final Class<T> type) {
         return objekt -> objekt.annotasjonFor(type);
     }
 }

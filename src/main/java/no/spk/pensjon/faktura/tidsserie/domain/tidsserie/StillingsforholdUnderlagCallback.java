@@ -5,7 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 
 /**
  * {@link StillingsforholdUnderlagCallback} representerer
- * kontrakta mellom {@link TidsserieUnderlagFacade}
+ * kontrakta mellom {@link StillingsforholdunderlagFactory}
  * og klientar av den som ønskjer å behandle/prosessere underlag avgrensa til eit og eit stillingsforhold
  * om gangen.
  * <p>

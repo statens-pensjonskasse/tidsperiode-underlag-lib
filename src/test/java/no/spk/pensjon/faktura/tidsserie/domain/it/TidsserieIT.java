@@ -1,41 +1,41 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsLengdeRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.Aarsfaktor;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsfaktorRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.AarsverkRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.AntallDagarRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.DeltidsjustertLoennRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.LoennstilleggRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.MaskineltGrunnlagRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.MedregningsRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.MinstegrenseRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.internal.OevreLoennsgrenseRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtaleversjon;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.OmregningsperiodeOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiodeOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Tidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedregningsOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AntallDagarRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.LoennstilleggRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.MedregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.MinstegrenseRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.OevreLoennsgrenseRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.OmregningsperiodeOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.StatligLoennstrinnperiodeOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Observasjonspublikator;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieFacade;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieObservasjon;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractListAssert;
@@ -81,7 +81,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
 /**
- * Integrasjonstest av {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie}
+ * Integrasjonstest av {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.TidsserieFacade}
  *
  * @author Tarjei Skorgenes
  */
@@ -103,7 +103,7 @@ public class TidsserieIT {
 
     private Medlemsdata medlemsdata;
 
-    private Tidsserie tidsserie;
+    private TidsserieFacade tidsserie;
 
     @Before
     public void _before() {
@@ -117,7 +117,7 @@ public class TidsserieIT {
 
         observasjonsperiode = new Observasjonsperiode(dato("2005.01.01"), dato("2014.12.31"));
 
-        tidsserie = new Tidsserie();
+        tidsserie = new TidsserieFacade();
         tidsserie.overstyr(avtale -> Stream.of(new Avtaleversjon(dato("1917.01.01"), empty(), avtale, Premiestatus.valueOf("AAO-10"))));
     }
 
@@ -327,7 +327,7 @@ public class TidsserieIT {
         assertObservasjonAvAarsverk(2012, DECEMBER, STILLING_A).isEqualTo(aarsverkSlutt.toDouble(), presisjon);
     }
 
-    private AbstractDoubleAssert assertObservasjonAvAarsverk(int aarstall, Month month, StillingsforholdId stilling) {
+    private AbstractDoubleAssert<?> assertObservasjonAvAarsverk(int aarstall, Month month, StillingsforholdId stilling) {
         final Optional<Aarsverk> aarsverk = observasjonFor(generer(stilling, aarstall), month).get().maaling(Aarsverk.class);
         assertThat(aarsverk.isPresent()).as("er det gjort ei måling av årsverk for " + month + " " + aarstall + "?").isTrue();
         return assertThat(aarsverk.get().tilProsent().toDouble())
@@ -346,10 +346,6 @@ public class TidsserieIT {
                 .reduce(feilVissMeirEnnEinObservasjonPrMonth(month, observasjonar));
         assertThat(observasjon.isPresent()).as("eksisterer det ein observasjon for " + month + "?").isTrue();
         return observasjon;
-    }
-
-    private AbstractListAssert<?, ? extends List<TidsserieObservasjon>, TidsserieObservasjon> assertAlleObservasjonar() {
-        return assertObservasjonar(o -> true).as("alle observasjonar i tidsserien");
     }
 
     private AbstractListAssert<?, ? extends List<TidsserieObservasjon>, TidsserieObservasjon> assertObservasjonar(
@@ -378,7 +374,7 @@ public class TidsserieIT {
 
     private List<TidsserieObservasjon> generer() {
         final List<TidsserieObservasjon> observasjonar = new ArrayList<>();
-        final Observasjonspublikator<TidsserieObservasjon> publikator = observasjonar::add;
+        final Observasjonspublikator publikator = observasjonar::add;
         tidsserie.generer(medlemsdata, observasjonsperiode, publikator,
                 Stream.concat(
                         Stream.concat(

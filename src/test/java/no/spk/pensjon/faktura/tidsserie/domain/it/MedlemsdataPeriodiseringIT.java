@@ -1,20 +1,19 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Medregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPerioder;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.AvtalekoblingOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedlemsdataOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.MedregningsOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.periodisering.StillingsendringOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -28,10 +27,10 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsfor
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integrasjonstest som verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata}
+ * Integrasjonstest som verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata}
  * er i stand til å bygge opp
- * {@link no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StillingsforholdPeriode stillingsforholdperioder} ut
- * frå {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsendring} tilnytta medlemmet.
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode stillingsforholdperioder} ut
+ * frå {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring} tilnytta medlemmet.
  *
  * @author Tarjei Skorgenes
  */
@@ -53,7 +52,7 @@ public class MedlemsdataPeriodiseringIT {
     }
 
     /**
-     * Verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata#allePeriodiserbareStillingsforhold()}
+     * Verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata#allePeriodiserbareStillingsforhold()}
      * klarer å finne dei 3 unike stillingsforholda som medlem-1-stillingsforhold-3.csv inneheld.
      */
     @Test

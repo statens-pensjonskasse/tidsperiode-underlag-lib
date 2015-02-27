@@ -94,7 +94,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  *
  * @author Tarjei Skorgenes
  */
-public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag> {
+public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag>, HarAnnotasjonar {
     private final ArrayList<Underlagsperiode> perioder = new ArrayList<>();
 
     private final Annotasjonar annotasjonar = new Annotasjonar();
@@ -172,7 +172,6 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
         return perioder.stream().reduce((a, b) -> b);
     }
 
-
     @Override
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
         return annotasjonar
@@ -192,14 +191,9 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
     }
 
     @Override
-    public Underlag annoterFra(final Annoterbar<?> kilde) {
-        annotasjonar.addAll(kilde.annotasjonar());
+    public Underlag annoterFra(final Underlag kilde) {
+        annotasjonar.addAll(kilde.annotasjonar);
         return this;
-    }
-
-    @Override
-    public Annotasjonar annotasjonar() {
-        return annotasjonar;
     }
 
     /**

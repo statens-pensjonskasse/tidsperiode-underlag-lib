@@ -1,11 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -135,12 +135,8 @@ public class TidsserieObservasjonTest {
                 .isFalse();
     }
 
-    private static TidsserieObservasjonBuilder observasjon(String observasjonsdato) {
+    private static TidsserieObservasjonBuilder observasjon(final String observasjonsdato) {
         return new TidsserieObservasjonBuilder(dato(observasjonsdato));
-    }
-
-    private static TidsserieObservasjonBuilder observasjon() {
-        return new TidsserieObservasjonBuilder();
     }
 
     private static class TidsserieObservasjonBuilder {

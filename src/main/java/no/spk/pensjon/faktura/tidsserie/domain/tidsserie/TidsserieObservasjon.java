@@ -1,11 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 
 import java.time.Month;
 import java.util.HashMap;
@@ -18,8 +18,8 @@ import static java.util.Optional.ofNullable;
 
 /**
  * {@link TidsserieObservasjon} representerer ein observasjon som inngår som eit innslag
- * i ein {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Tidsserie} generert ut frå alle stillingsforhold
- * tilknytta {@link no.spk.pensjon.faktura.tidsserie.domain.periodisering.Medlemsdata} for eit medlem.
+ * i ein {@link TidsserieFacade} generert ut frå alle stillingsforhold
+ * tilknytta {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata} for eit medlem.
  * <p>
  * Kvar observasjon blir generert basert på eit
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag observasjonsunderlag}. Observasjonen
@@ -221,6 +221,7 @@ public class TidsserieObservasjon {
      * @return verdien av den angitte målingstypen, eller {@link Optional#empty() ingenting} dersom observasjonen ikkje støttar
      * målingar av den angitte typen
      */
+    @SuppressWarnings("unchecked")
     public <T> Optional<T> maaling(final Class<T> type) {
         return ofNullable((T) maalingar.get(type));
     }

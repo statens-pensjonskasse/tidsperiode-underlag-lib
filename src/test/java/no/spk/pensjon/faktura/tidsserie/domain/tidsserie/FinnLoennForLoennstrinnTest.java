@@ -4,7 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
-import no.spk.pensjon.faktura.tidsserie.domain.periodetyper.StatligLoennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Rule;
@@ -20,7 +20,7 @@ import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
-import static no.spk.pensjon.faktura.tidsserie.domain.periodetyper.Loennstrinnperioder.grupper;
+import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FinnLoennForLoennstrinnTest {
@@ -41,6 +41,7 @@ public class FinnLoennForLoennstrinnTest {
         assertLoennForLoennstrinn(
                 eiPeriode
                         .kopi()
+                        .med(Ordning.SPK)
                         .med(loennstrinn)
                 ,
                 loennstrinn
@@ -63,6 +64,7 @@ public class FinnLoennForLoennstrinnTest {
         new FinnLoennForLoennstrinn(
                 eiPeriode
                         .kopi()
+                        .med(Ordning.SPK)
                         .med(loennstrinn)
                         .medKoblingar(
                                 Stream.of(
@@ -78,8 +80,6 @@ public class FinnLoennForLoennstrinnTest {
                                 ).flatMap(gruppe -> gruppe)
                         )
                         .bygg()
-                ,
-                Ordning.SPK
         )
                 .loennForLoennstrinn();
     }
@@ -97,6 +97,7 @@ public class FinnLoennForLoennstrinnTest {
         assertLoennForLoennstrinn(
                 eiPeriode
                         .kopi()
+                        .med(Ordning.SPK)
                         .med(loennstrinn)
                         .medKoblingar(
                                 grupper(Ordning.SPK,
@@ -125,7 +126,7 @@ public class FinnLoennForLoennstrinnTest {
 
     private static AbstractObjectAssert<?, Optional<LoennstrinnBeloep>> assertLoennForLoennstrinn(
             final UnderlagsperiodeBuilder builder, final Loennstrinn loennstrinn) {
-        return assertThat(new FinnLoennForLoennstrinn(builder.bygg(), Ordning.SPK).loennForLoennstrinn())
+        return assertThat(new FinnLoennForLoennstrinn(builder.bygg()).loennForLoennstrinn())
                 .as("lønn for lønnstrinn " + loennstrinn);
     }
 }
