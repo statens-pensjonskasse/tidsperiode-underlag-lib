@@ -26,7 +26,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  *
  * @author Tarjei Skorgenes
  */
-public class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublikator {
+class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublikator {
     private final Consumer<TidsserieObservasjon> consumer;
 
     /**
@@ -35,18 +35,8 @@ public class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjon
      * @param consumer publikatoren som er ansvarlig for vidare prosessering og behandling av aggregerte observasjonar
      * @throws NullPointerException viss <code>consumer</code> er <code>null</code>
      */
-    public GenererObservasjonPrStillingsforholdOgAvtale(final Consumer<TidsserieObservasjon> consumer) {
+    GenererObservasjonPrStillingsforholdOgAvtale(final Consumer<TidsserieObservasjon> consumer) {
         this.consumer = requireNonNull(consumer, "consumer er påkrevd, men var null");
-    }
-
-    /**
-     * Videresender observasjonen til consumeren publikatoren er satt opp med.
-     *
-     * @param event observasjonen som skal inngå som ein del av tidsserien
-     */
-    @Override
-    public void publiser(final TidsserieObservasjon event) {
-        consumer.accept(event);
     }
 
     /**
@@ -56,10 +46,11 @@ public class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjon
      *
      * @param observasjonsunderlag alle observasjonsunderlaga som blir generert for ein tidsserie
      */
+    @Override
     public void publiser(final Stream<Underlag> observasjonsunderlag) {
         observasjonsunderlag
                 .flatMap(this::genererObservasjonPrAvtale)
-                .forEach(this::publiser);
+                .forEach(consumer::accept);
     }
 
     /**

@@ -259,7 +259,7 @@ public class TidsserieAvtalebytteIT {
 
     private List<TidsserieObservasjon> generer() {
         final ArrayList<TidsserieObservasjon> observasjonar = new ArrayList<>();
-        final Observasjonspublikator publikator = observasjonar::add;
+        final Observasjonspublikator publikator = tidsserie.lagObservasjonsaggregatorPrStillingsforholdOgAvtale(observasjonar::add);
         tidsserie.generer(medlemsdata, observasjonsperiode, publikator,
                 Stream.concat(
                         Stream.concat(

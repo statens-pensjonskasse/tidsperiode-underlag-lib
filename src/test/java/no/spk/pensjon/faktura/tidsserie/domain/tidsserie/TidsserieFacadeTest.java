@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
@@ -31,15 +32,14 @@ public class TidsserieFacadeTest {
     @Mock
     private Feilhandtering feilhandtering;
 
-    @Mock
-    private Observasjonspublikator publikator;
-
     @Test
     public void skalDelegereFeilhandteringTilEgenStrategi() {
         final StillingsforholdId id = new StillingsforholdId(1L);
         tidsserie.overstyr(feilhandtering);
 
-        final StillingsforholdUnderlagCallback callback = tidsserie.lagObservator(publikator);
+        // Enkelt consumer som slurpar til seg alle underlaga slik at den forventa feilen i årsunderlag-genereringa blir trigga
+        final Observasjonspublikator consumer = s -> s.toArray();
+        final StillingsforholdUnderlagCallback callback = tidsserie.lagObservasjonsunderlagGenerator(consumer);
         callback.prosesser(id,
                 new Underlag(
                         Stream.of(

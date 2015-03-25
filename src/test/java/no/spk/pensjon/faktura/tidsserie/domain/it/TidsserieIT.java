@@ -374,7 +374,7 @@ public class TidsserieIT {
 
     private List<TidsserieObservasjon> generer() {
         final List<TidsserieObservasjon> observasjonar = new ArrayList<>();
-        final Observasjonspublikator publikator = observasjonar::add;
+        final Observasjonspublikator publikator = tidsserie.lagObservasjonsaggregatorPrStillingsforholdOgAvtale(observasjonar::add);
         tidsserie.generer(medlemsdata, observasjonsperiode, publikator,
                 Stream.concat(
                         Stream.concat(

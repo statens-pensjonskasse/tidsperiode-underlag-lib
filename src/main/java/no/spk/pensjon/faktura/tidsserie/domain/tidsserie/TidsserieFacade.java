@@ -1,10 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory.AvtaleinformasjonRepository;
 
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
@@ -88,25 +87,23 @@ public class TidsserieFacade {
     }
 
     /**
-     * Genererer nye tidsserar for kvart stillingsforhold tilknytta medlemmet og populerer tidsseriane
-     * med observasjonar av maskinelt grunnlag pr stillingsforhold pr avtale pr år.
+     * Genererer observasjonsunderlag for kvart av medlemmets stillingsforhold.
      * <p>
-     * Algoritma genererer tidsseriane pr stillingsforhold og tek foreløpig ikkje hensyn til om medlemmet har
-     * fleire overlappande stillingsforhold.
+     * Algoritma genererer eit observasjonsunderlag pr stillingsforhold pr måned pr år stillingsforholdet er aktivt.
      * <p>
-     * Kvar observasjon som genererast blir sendt vidare til <code>publikator</code>. For å unngå at den påvirkar/senkar
-     * ytelsen til prosesseringa anbefalast det sterkt at den utfører vidare behandling eller persistering av
-     * observasjonane asynkront.
+     * Kvart observasjonsunderlag som genererast blir sendt vidare til <code>publikator</code>. For å unngå at den
+     * påvirkar/senkar ytelsen til prosesseringa anbefalast det sterkt at den utfører vidare tung behandling eller
+     * persistering av observasjonane asynkront.
      *
-     * @param publikator publikatoren som vil bli notifisert kvar gang ein ny observasjon blir genrerert i tidsseriane
-     * for medlemmet, den er ansvarlig for all vidare behandling/persistering av observasjonane
+     * @param publikator publikatoren som straumen av observasjonsunderlag vil bli sendt vidare til,
+     * den er ansvarlig for all vidare behandling/persistering av observasjonane
      * @see #generer(Medlemsdata, Observasjonsperiode, StillingsforholdUnderlagCallback, Stream)
-     * @see #lagObservator(Observasjonspublikator)
+     * @see #lagObservasjonsunderlagGenerator(Observasjonspublikator)
      */
     public void generer(final Medlemsdata medlemsdata, final Observasjonsperiode periode,
             final Observasjonspublikator publikator,
             final Stream<Tidsperiode<?>> referanseperioder) {
-        generer(medlemsdata, periode, lagObservator(publikator), referanseperioder);
+        generer(medlemsdata, periode, lagObservasjonsunderlagGenerator(publikator), referanseperioder);
     }
 
     /**
@@ -131,20 +128,19 @@ public class TidsserieFacade {
     }
 
     /**
-     * Genererer ein ny callback som behandlar stillingsforholdunderlag og genererer månedlige observasjonar ved hjelp
-     * av års- og observasjonsunderlag utleda frå dette.
+     * Genererer ein ny callback som behandlar stillingsforholdunderlag og genererer
+     * månedlige observasjonsunderlag utleda frå dette.
      * <p>
-     * Kvar observasjon som blir generert blir publisert via <code>publikator</code>en.
+     * Kvart observasjonsunderlag som blir generert blir publisert via <code>publikator</code>en.
      *
-     * @param publikator publikatoren mottar alle observasjonane som blir generert av callbacken for kvart
+     * @param publikator publikatoren mottar alle observasjonsunderlaga som blir generert av callbacken for kvart
      * stillingsforhold den prosesserer
-     * @return ein ny callback som vil generere observasjonar for tidsserien
+     * @return ein ny callback som vil generere observasjonsunderlag for stillingsforholdet
      */
-    public StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator publikator) {
-        final GenererObservasjonPrStillingsforholdOgAvtale aggregator = new GenererObservasjonPrStillingsforholdOgAvtale(publikator::publiser);
+    public StillingsforholdUnderlagCallback lagObservasjonsunderlagGenerator(final Observasjonspublikator publikator) {
         return (stillingsforhold, underlag) -> {
             try {
-                aggregator.publiser(
+                publikator.publiser(
                         aarsunderlagFactory
                                 .genererUnderlagPrAar(underlag)
                                 .flatMap(observasjonsunderlagFactory::genererUnderlagPrMaaned)
@@ -155,4 +151,16 @@ public class TidsserieFacade {
         };
     }
 
+    /**
+     * Genererer ein ny callback som behandlar observasjonsunderlag og genererer månedlige observasjonar for kvar avtale
+     * underlagets stillingsforhold har vore aktivt på i løpet av premieåret.
+     * <p>
+     * Dei aggregerte obserasjonane blir så sendt vidare til <code>consumer</code> for vidare behandling og/eller persistering.
+     *
+     * @param consumer mottakar av alle observasjonane som blir generert av aggregatoren for kvart observasjonsunderlag den prosesserer
+     * @return ein ny publikator som observerer, aggregerer og videresender dei aggregerte observasjonane til <code>consumer</code>
+     */
+    public Observasjonspublikator lagObservasjonsaggregatorPrStillingsforholdOgAvtale(final Consumer<TidsserieObservasjon> consumer) {
+        return new GenererObservasjonPrStillingsforholdOgAvtale(consumer);
+    }
 }
