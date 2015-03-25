@@ -1,27 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
-
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory.AvtaleinformasjonRepository;
+
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 
 /**
  * {@link TidsserieFacade} representerer ei fasade som genererer ein ny tidsserie med observasjonar
@@ -52,8 +40,9 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Stillingsforhold
  * eller for månedar der observasjonsdato ligg etter stillingsforholdet sluttdato viss stillinga blir avslutta
  * i løpet av året.
  * <p>
- * Siste steg i tidsseriegenereringa er å utføre ein eller fleire observasjonar for kvart av observasjonsunderlaga
- * og publisere observasjonane for vidare bearbeiding eller persistering via ein observasjonspublikator.
+ * Siste steg i tidsseriegenereringa er å fortløpande publisere observasjonsunderlaga som blir generert, til ein
+ * observasjonspublikator som er ansvarlig for å prosessere underlaga og periodene dei inneheld og generere dei
+ * endelige observasjonane av desse.
  *
  * @author Tarjei Skorgenes
  */
@@ -110,13 +99,13 @@ public class TidsserieFacade {
      * observasjonane asynkront.
      *
      * @param publikator publikatoren som vil bli notifisert kvar gang ein ny observasjon blir genrerert i tidsseriane
-     *                   for medlemmet, den er ansvarlig for all vidare behandling/persistering av observasjonane
+     * for medlemmet, den er ansvarlig for all vidare behandling/persistering av observasjonane
      * @see #generer(Medlemsdata, Observasjonsperiode, StillingsforholdUnderlagCallback, Stream)
      * @see #lagObservator(Observasjonspublikator)
      */
     public void generer(final Medlemsdata medlemsdata, final Observasjonsperiode periode,
-                        final Observasjonspublikator publikator,
-                        final Stream<Tidsperiode<?>> referanseperioder) {
+            final Observasjonspublikator publikator,
+            final Stream<Tidsperiode<?>> referanseperioder) {
         generer(medlemsdata, periode, lagObservator(publikator), referanseperioder);
     }
 
@@ -124,16 +113,16 @@ public class TidsserieFacade {
      * Genererer nye stillingsforholdunderlag for kvart stillingsforhold tilknytta medlemmet og sender dei vidare til
      * <code>callback</code> for vidare behandling.
      *
-     * @param medlemsdata       medlemsdata for medlemmet som skal prosesserast
-     * @param periode           observasjonsperioda som det skal genererast observasjonar pr siste dag i månaden for
-     * @param callback          callbacken som forløpande tar i mot og behandlar vidare kvart stillingsforholdunderlag
-     *                          som blir generert for medlemmet
+     * @param medlemsdata medlemsdata for medlemmet som skal prosesserast
+     * @param periode observasjonsperioda som det skal genererast observasjonar pr siste dag i månaden for
+     * @param callback callbacken som forløpande tar i mot og behandlar vidare kvart stillingsforholdunderlag
+     * som blir generert for medlemmet
      * @param referanseperioder tidsperiodiserte referanseperioder som skal inkluderast i periodiseringa
-     *                          av stillingsforholdunderlaget
+     * av stillingsforholdunderlaget
      */
     public void generer(final Medlemsdata medlemsdata, final Observasjonsperiode periode,
-                        final StillingsforholdUnderlagCallback callback,
-                        final Stream<Tidsperiode<?>> referanseperioder) {
+            final StillingsforholdUnderlagCallback callback,
+            final Stream<Tidsperiode<?>> referanseperioder) {
         final StillingsforholdunderlagFactory fasade = new StillingsforholdunderlagFactory();
         fasade.addReferansePerioder(referanseperioder);
         fasade.endreAnnoteringsstrategi(strategi);
@@ -148,89 +137,22 @@ public class TidsserieFacade {
      * Kvar observasjon som blir generert blir publisert via <code>publikator</code>en.
      *
      * @param publikator publikatoren mottar alle observasjonane som blir generert av callbacken for kvart
-     *                   stillingsforhold den prosesserer
+     * stillingsforhold den prosesserer
      * @return ein ny callback som vil generere observasjonar for tidsserien
      */
     public StillingsforholdUnderlagCallback lagObservator(final Observasjonspublikator publikator) {
+        final GenererObservasjonPrStillingsforholdOgAvtale aggregator = new GenererObservasjonPrStillingsforholdOgAvtale(publikator::publiser);
         return (stillingsforhold, underlag) -> {
             try {
-                aarsunderlagFactory
-                        .genererUnderlagPrAar(underlag)
-                        .flatMap(observasjonsunderlagFactory::genererUnderlagPrMaaned)
-                        .flatMap(this::genererObservasjonPrAvtale)
-                        .forEach(publikator::publiser);
+                aggregator.publiser(
+                        aarsunderlagFactory
+                                .genererUnderlagPrAar(underlag)
+                                .flatMap(observasjonsunderlagFactory::genererUnderlagPrMaaned)
+                );
             } catch (final RuntimeException e) {
                 feilhandtering.handterFeil(stillingsforhold, underlag, e);
             }
         };
     }
 
-    /**
-     * Genererer ein ny observasjon pr avtale som er stillingsforholdet er aktivt på i løpet av premieåret
-     * som <code>observasjonsunderlag</code> inneheld underlagsperioder for.
-     * <p>
-     * For observasjonsunderlag der alle periodene er tilknytta ein go samme avtale, vil det kun bli returnert ein
-     * observasjon.
-     * <p>
-     * For observasjonsunderlag der stillingsforholdet har vore gjennom eit eller fleire avtalebytte i løpet
-     * av premieåret, vil det bli returnert ein observaasjon pr avtale som stillingsforholdet har vore
-     * tilknytta i løpet av premieåret som observasjonsunderlaget representerer.
-     *
-     * @param observasjonsunderlag eit observasjonsunderlag som det skal genererast ein eller fleire
-     *                             observasjonar av for tidsserien
-     * @return ein straum med ein observasjon for stillingsforhold som ikkje har vore gjennom eit avtalebytte i
-     * løpet av premieåret, eller ein straum med ein observasjon pr avtale stillingsforholdet har vore innom i
-     * løpet av premieåret for stillingsforhold som har vore gjennom eit eller fleire avtalebytte
-     */
-    private Stream<TidsserieObservasjon> genererObservasjonPrAvtale(final Underlag observasjonsunderlag) {
-        return observasjonsunderlag
-                .stream()
-                .map(observerPeriode(observasjonsunderlag))
-                .collect(summerPrAvtale())
-                .values()
-                .stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get);
-    }
-
-    /**
-     * Opprettar ein ny {@link Collector} som blir brukt for å gruppere og summere alle
-     * {@link TidsserieObservasjon observasjonar} på periodenivå basert på kvar periodeobservasjon sin avtale.
-     *
-     * @return ein ny collector som grupperer periodeobservasjonane pr avtale og slår dei saman til ein observasjon som
-     * inneheld avtalens totalresultat for heile premieåret
-     * @see java.util.stream.Collectors#groupingBy(Function, Collector)
-     * @see TidsserieObservasjon#plus(TidsserieObservasjon)
-     */
-    private static Collector<TidsserieObservasjon, ?, Map<AvtaleId, Optional<TidsserieObservasjon>>> summerPrAvtale() {
-        return groupingBy(
-                TidsserieObservasjon::avtale,
-                reducing(TidsserieObservasjon::plus)
-        );
-    }
-
-    /**
-     * Genererer ein ny funksjon som genererer ein ny tidsserie-observasjon for ei underlagsperiode.
-     * <p>
-     * Observasjonane generert av denne metoda må seinare grupperast pr avtale og summerast saman
-     * for å sitte igjen med ein total observasjon av avtalen for heile premieåret.
-     * <p>
-     * For underlag tilknytta stillingsforhold som har vore gjennom eit eller fleire avtalebytte,
-     * vil grupperinga sikre at maskinelt grunnlag og dei andre målingane som inngår i tidsserien, blir summert
-     * pr avtale slik at det blir generert eit innslag i tidsserien for kvar avtale stillingsforholdet har vore
-     * aktivt på i løpet av kvart premieår.
-     *
-     * @param observasjonsunderlag observasjonsunderlaget som stillingsforhold og observasjonsdato blir henta frå
-     * @return ein ny funksjon som vil generere ein tidsserieobservasjon pr underlagsperiode den blir kalla på
-     */
-    private static Function<Underlagsperiode, TidsserieObservasjon> observerPeriode(final Underlag observasjonsunderlag) {
-        return p -> new TidsserieObservasjon(
-                observasjonsunderlag.annotasjonFor(StillingsforholdId.class),
-                p.annotasjonFor(AvtaleId.class),
-                observasjonsunderlag.annotasjonFor(Observasjonsdato.class),
-                p.beregn(MaskineltGrunnlagRegel.class),
-                observasjonsunderlag.valgfriAnnotasjonFor(Premiestatus.class)
-        )
-                .registrerMaaling(Aarsverk.class, p.beregn(AarsverkRegel.class));
-    }
 }

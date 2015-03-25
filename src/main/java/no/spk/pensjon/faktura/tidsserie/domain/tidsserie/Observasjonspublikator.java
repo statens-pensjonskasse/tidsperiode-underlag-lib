@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
+
 /**
  * {@link Observasjonspublikator} representerer ein ut-port eller -adapter
  * for observasjonar generert av {@link TidsserieFacade} for kvar måned i observasjonsunderlaget
