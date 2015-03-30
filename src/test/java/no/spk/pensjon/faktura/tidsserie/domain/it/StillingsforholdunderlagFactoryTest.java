@@ -1,31 +1,32 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
-import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
-import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
-import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdUnderlagCallback;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory.Annoteringsstrategi;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
+import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -105,6 +106,18 @@ public class StillingsforholdunderlagFactoryTest {
 
         fasade = new StillingsforholdunderlagFactory();
         fasade.endreAnnoteringsstrategi(annotator);
+    }
+
+    /**
+     * Verifiserer at alle periodene i stillingsforholdunderlaget blir kobla opp mot sine respektive
+     * medlemsperioder.
+     */
+    @Test
+    public void skalKobleTilMedlemsperioderPaaAlleUnderlagsperiodene() {
+        final Map<StillingsforholdId, Underlag> underlagene = new HashMap<>();
+        prosesser(underlagene::put, standardperiode());
+
+        assertUnderlagsperioderUtanKoblingTil(underlagene, Medlemsperiode.class).isEmpty();
     }
 
     /**
@@ -497,7 +510,7 @@ public class StillingsforholdunderlagFactoryTest {
 
         assertThat(underlagene.get(STILLINGSFORHOLD_A)).hasSize(5 + 6 * 12 + 6); // 5 mnd i 2005 + 6 fulle år + 6 mnd i 2012
         assertThat(underlagene.get(STILLINGSFORHOLD_B)).hasSize(4 + 2 * 12); // 4 mnd i 2012 + 2 fulle år
-        assertThat(underlagene.get(STILLINGSFORHOLD_C)).hasSize(6 + 2 * 12); // 6 mnd i 2012 + 2 fulle år
+        assertThat(underlagene.get(STILLINGSFORHOLD_C)).hasSize(1 + 6 + 2 * 12); // 1 medlemsendring i 2012 + 6 mnd i 2012 + 2 fulle år
     }
 
     /**

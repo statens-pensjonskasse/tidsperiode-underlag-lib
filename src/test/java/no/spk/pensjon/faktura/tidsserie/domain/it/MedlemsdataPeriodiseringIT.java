@@ -1,14 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.MedregningsOversetter;
 import no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter;
 import org.assertj.core.api.AbstractIterableAssert;
@@ -23,7 +24,6 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -63,6 +63,14 @@ public class MedlemsdataPeriodiseringIT {
                 .containsOnly(STILLINGSFORHOLD_A, STILLINGSFORHOLD_B, MEDREGNING_C);
     }
 
+    @Test
+    public void skalPeriodisereMedlemBasertPAaAlleStillingsendringarOgMedregningar() {
+        final Medlemsdata medlem = create();
+
+        final Medlemsperioder perioder = medlem.periodiser().get();
+        assertThat(perioder.stream().collect(toList())).hasSize(21);
+    }
+
     /**
      * Verifiserer at vi får ut 3 stillingsforhold periodisert kun ut frå stillingsendringar tilknytta kvart enkelt
      * stillingsforhold, ikkje ei periodisering som er splitta på alle stillingsforholda sine stillingsendringar.
@@ -86,6 +94,6 @@ public class MedlemsdataPeriodiseringIT {
     private static AbstractIterableAssert<?, ? extends Iterable<StillingsforholdPeriode>, StillingsforholdPeriode> assertPerioder(final Map<StillingsforholdId, List<StillingsforholdPerioder>> alleStillingsforhold, final StillingsforholdId id) {
         final List<StillingsforholdPerioder> stillingsforhold = alleStillingsforhold.get(id);
         assertThat(stillingsforhold).as("periodisering av stillingsforhold " + id).isNotNull().hasSize(1);
-        return assertThat(stillingsforhold.get(0).perioder());
+        return assertThat(stillingsforhold.get(0).stream().collect(toList()));
     }
 }

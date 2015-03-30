@@ -4,7 +4,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
@@ -15,7 +17,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -87,13 +91,18 @@ public class StillingsforholdunderlagFactory {
     public void prosesser(final Medlemsdata medlem, final StillingsforholdUnderlagCallback callback,
                           final Observasjonsperiode observasjonsperiode) {
         final Collection<Aar> observerbare = observasjonsperiode.overlappendeAar();
+        final Medlemsperioder medlemsperioder = medlem.periodiser()
+                .orElseThrow(feilmeldingForMedlemSomKunHarAvtalekobling());
         medlem
-                .alleStillingsforholdPerioder()
-                .forEach(s -> {
+                .allePeriodiserbareStillingsforhold()
+                .map(medlemsperioder::stillingsforhold)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEach((StillingsforholdPerioder s) -> {
                     final UnderlagFactory factory = new UnderlagFactory(observasjonsperiode);
-                    factory.addPerioder(s.perioder());
+                    factory.addPerioder(s.stream());
+                    factory.addPerioder(medlemsperioder.stream());
                     factory.addPerioder(medlem.avtalekoblingar(s::tilhoeyrer));
-
                     factory.addPerioder(
                             medlem
                                     .avtalekoblingar(s::tilhoeyrer)
@@ -238,6 +247,12 @@ public class StillingsforholdunderlagFactory {
      */
     public void endreAvtaleinformasjonRepository(final AvtaleinformasjonRepository repository) {
         this.avtalar = requireNonNull(repository, () -> "avtaleinformasjonrepository er påkrevd, men var null");
+    }
+
+    private static Supplier<IllegalStateException> feilmeldingForMedlemSomKunHarAvtalekobling() {
+        return () -> new IllegalStateException(
+                "Eit medlem må ha minst ei stillingsendring eller medregning, det kan ikkje kun ha avtalekoblingar"
+        );
     }
 
     /**

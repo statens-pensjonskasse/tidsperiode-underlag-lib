@@ -1,8 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import static java.util.Optional.ofNullable;
 public class StillingsforholdPeriode extends AbstractTidsperiode<StillingsforholdPeriode> {
     private final ArrayList<Stillingsendring> gjeldendeVerdier = new ArrayList<>();
 
-    private Optional<Medregningsperiode> medregning = empty();
+    private final Optional<Medregningsperiode> medregning;
 
     /**
      * Konstruerer ei ny periode for eit stillingsforhold.
@@ -43,6 +43,7 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      */
     public StillingsforholdPeriode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         super(fraOgMed, tilOgMed);
+        this.medregning = empty();
     }
 
     /**
@@ -75,7 +76,7 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * @return alle stillingsendringer som har en aksjonsdato som perioden overlapper, er garantert å inneholde minst
      * en endring
      */
-    public Iterable<Stillingsendring> endringer() {
+    Iterable<Stillingsendring> endringer() {
         return unmodifiableList(gjeldendeVerdier);
     }
 
@@ -128,7 +129,7 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * @return stillingsendringen som er utvalgt til å representere gjeldende tilstand for stillingsforholde i perioden,
      * eller {@link Optional#empty()} dersom stillingsforholdet er basert på medregning
      */
-    public Optional<Stillingsendring> gjeldendeEndring() {
+    Optional<Stillingsendring> gjeldendeEndring() {
         if (gjeldendeVerdier.size() == 1) {
             return of(gjeldendeVerdier.get(0));
         }
@@ -165,5 +166,33 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
         medregning().ifPresent(medregning -> {
             medregning.annoter(periode);
         });
+    }
+
+    /**
+     * Tilhøyrer denne perioda stillingsforholdet identifisert av <code>id</code>?
+     *
+     * @param id stillingsforholdnummeret som perioda skal sjekkast mot
+     * @return <code>true</code> dersom perioda tilhøyrer stillingsforholdet identifisert av <code>id</code>,
+     * <code>false</code> ellers
+     * @throws IllegalStateException dersom perioda er i ei ugyldig tilstand og verken har medregning eller stillingsendring(ar)
+     */
+    public boolean tilhoeyrer(final StillingsforholdId id) {
+        if (medregning.isPresent()) {
+            return medregning.get().tilhoerer(id);
+        }
+        return gjeldendeEndring()
+                .orElseThrow(
+                        () -> new IllegalStateException(
+                                "Stillingsforholdperioda "
+                                        + this + " er i ei ugyldig tilstand, "
+                                        + "den har verken ei medregning eller ei stillingsendring"
+                        )
+                )
+                .tilhoerer(id);
+    }
+
+    @Override
+    public String toString() {
+        return "SP[" + fraOgMed() + "," + tilOgMed().map(Object::toString).orElse("->") + "]";
     }
 }

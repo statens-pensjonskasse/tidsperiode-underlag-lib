@@ -1,13 +1,12 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -36,6 +35,74 @@ public class GenerellTidsperiodeTest {
 
     public GenerellTidsperiodeTest() {
         this.factory = (fraOgMed, tilOgMed) -> new GenerellTidsperiode(fraOgMed, tilOgMed);
+    }
+
+    @Test
+    public void skalVereUlikeDersomFraaOgMedDatoaneErUlike() {
+        final Comparator<Tidsperiode<?>> sortering = Tidsperiode.kronologiskSorteringAvTidsperioder();
+        assertThat(
+                sortering.compare(
+                        create("2004.01.01", "2005.01.02"),
+                        create("2004.02.01", "2005.01.02")
+                )
+        ).isLessThan(0);
+
+        assertThat(
+                sortering.compare(
+                        create("2004.02.01", "2005.01.02"),
+                        create("2004.01.01", "2005.01.02")
+                )
+        ).isGreaterThan(0);
+    }
+
+    @Test
+    public void skalVereUlikeDersomFraaOgMedDatoaneErLikeMenTilOgMedDatoaneErUlike() {
+        final Comparator<Tidsperiode<?>> sortering = Tidsperiode.kronologiskSorteringAvTidsperioder();
+        assertThat(
+                sortering.compare(
+                        create("2004.01.01", "2005.01.02"),
+                        create("2004.01.01", "2005.02.02")
+                )
+        ).isLessThan(0);
+
+        assertThat(
+                sortering.compare(
+                        create("2004.01.01", "2005.02.02"),
+                        create("2004.01.01", "2005.01.02")
+                )
+        ).isGreaterThan(0);
+
+        assertThat(
+                sortering.compare(
+                        create(dato("2004.01.01"), of(dato("2005.01.02"))),
+                        create(dato("2004.01.01"), empty())
+                )
+        ).isLessThan(0);
+
+        assertThat(
+                sortering.compare(
+                        create(dato("2004.01.01"), empty()),
+                        create(dato("2004.01.01"), of(dato("2005.01.02")))
+                )
+        ).isGreaterThan(0);
+    }
+
+    @Test
+    public void skalVereLikeDersomBaadeFraaOgMedOgTilOgMedDatoaneErLike() {
+        final Comparator<Tidsperiode<?>> sortering = Tidsperiode.kronologiskSorteringAvTidsperioder();
+        assertThat(
+                sortering.compare(
+                        create(dato("2004.01.01"), empty()),
+                        create(dato("2004.01.01"), empty())
+                )
+        ).isEqualTo(0);
+
+        assertThat(
+                sortering.compare(
+                        create("2004.01.01", "2005.01.01"),
+                        create("2004.01.01", "2005.01.01")
+                )
+        ).isEqualTo(0);
     }
 
     /**
