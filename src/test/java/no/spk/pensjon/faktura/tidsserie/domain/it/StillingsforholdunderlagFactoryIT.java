@@ -74,7 +74,7 @@ import static org.mockito.Mockito.mock;
  * @author Tarjei Skorgenes
  */
 @SuppressWarnings("unchecked")
-public class StillingsforholdunderlagFactoryTest {
+public class StillingsforholdunderlagFactoryIT {
     private static final StillingsforholdId STILLINGSFORHOLD_A = STILLING_A;
 
     private static final StillingsforholdId STILLINGSFORHOLD_B = STILLING_B;
