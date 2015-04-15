@@ -1,9 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
+import static java.time.LocalDate.MAX;
+import static java.util.Comparator.comparing;
+
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Optional;
 
-import static java.time.LocalDate.MAX;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 
 /**
  * {@link Tidsperiode} representerer ei tidsperiode.
@@ -49,5 +53,23 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
      */
     default boolean overlapper(final LocalDate dato) {
         return !(dato.isBefore(fraOgMed()) || dato.isAfter(tilOgMed().orElse(MAX)));
+    }
+
+    /**
+     * Ei algoritme som sorterer tidsperioder kronologisk basert på frå og med- og til og med-dato.
+     * <p>
+     * Perioder som har ulik frå og med-dato blir sortert kun basert på denne.
+     * <p>
+     * Dersom periodene startar samtidig blir dei sortert på til og med-dato.
+     * <p>
+     * Perioder som er løpande blir sortert som om deira til og med-dato er lik {@link LocalDate#MAX}
+     *
+     * @return ei kronologisk sorteringsrekkefølge for tidsperioder
+     * @see Tidsperiode#fraOgMed()
+     * @see Tidsperiode#tilOgMed()
+     */
+    static Comparator<Tidsperiode<?>> kronologiskSorteringAvTidsperioder() {
+        return comparing((Tidsperiode<?> p) -> p.fraOgMed())
+                .thenComparing((Tidsperiode<?> p) -> p.tilOgMed().orElse(LocalDate.MAX));
     }
 }

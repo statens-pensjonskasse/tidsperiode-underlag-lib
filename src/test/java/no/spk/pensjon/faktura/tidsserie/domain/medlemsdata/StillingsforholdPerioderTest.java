@@ -1,21 +1,24 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder}.
@@ -27,101 +30,67 @@ public class StillingsforholdPerioderTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at gjeldande stillingsendring kan vere ei sluttmelding viss stillingsforholdet kun inneheld ei
-     * sluttmelding og det ikkje eksisterer nokon ingen andre stillingsendringar.
+     * Verifiserer at frå og med- og til og med-dato blir henta frå henholdsvis første og siste periode.
      */
     @Test
-    public void skalBrukeSluttmeldingSomGjeldandeEndringDersomStillingaIkkjeInneheldNokonAndreStillingsendringar() {
-        final StillingsforholdPeriode periode = new StillingsforholdPeriode(dato("2006.02.01"), of(dato("2006.02.01")));
+    public void skalHenteStillingsforholdetSinFraaOgMedOgTilOgMedDatoFraaFoersteOgSistePeriode() {
+        final LocalDate fraOgMed = dato("2005.08.15");
+        final Optional<LocalDate> tilogMed = empty();
 
-        final Stillingsendring sluttmelding = endring()
-                .aksjonsdato(dato("2006.02.01"))
-                .registreringsdato(dato("2006.03.01"))
-                .aksjonskode(Aksjonskode.SLUTTMELDING)
-                .stillingsprosent(fulltid());
-        periode.leggTilOverlappendeStillingsendringer(
-                sluttmelding
-        );
-        assertThat(periode.gjeldendeEndring()).as("gjeldende stillingsendring for " + periode)
-                .isEqualTo(of(sluttmelding));
-    }
+        final StillingsforholdPerioder stillingsforhold = new StillingsforholdPerioder(
+                new StillingsforholdId(2L),
+                Stream.of(
+                        new StillingsforholdPeriode(fraOgMed, of(dato("2005.12.31"))),
+                        new StillingsforholdPeriode(dato("2006.01.01"), of(dato("2015.12.01"))),
+                        new StillingsforholdPeriode(dato("2012.12.02"), tilogMed)
 
-
-    /**
-     * Verifiserer at gjeldande stillingsendring aldri kan peike til ei sluttmelding viss periode inneheld meir enn
-     * ei stillingsendring.
-     * <p>
-     * Bakgrunnen for denne begrensinga er at viss ein plukkar ei sluttmelding som gjeldande stillingsendring
-     * for ei periode så misser ein muligheita til å vite kva som har vore gjeldande aksjonskode for perioda.
-     * <p>
-     * Det vil kunne gi effektar som at ein ikkje er i stand til å sjå at medlemmet har vore ute i permisjon utan
-     * lønn heile siste periode av stillingsforholdet før det var avslutta og dermed får beregna ei langt høgare
-     * lønn for perioda enn det som ville blitt beregna om ein ikkje hadde plukka sluttmeldinga som gjeldande endring.
-     */
-    @Test
-    public void skalBrukeSistRegistrerteStillingsendringSomIkkjeErSluttmelding() {
-        final StillingsforholdPeriode periode = new StillingsforholdPeriode(dato("2006.02.01"), of(dato("2006.12.31")));
-
-        final Stillingsendring permisjon = endring()
-                .aksjonsdato(dato("2006.02.01"))
-                .registreringsdato(dato("2006.03.01"))
-                .aksjonskode(Aksjonskode.PERMISJON_UTAN_LOENN)
-                .stillingsprosent(fulltid());
-        periode.leggTilOverlappendeStillingsendringer(
-                asList(
-                        permisjon,
-                        endring()
-                                .aksjonsdato(dato("2006.12.31"))
-                                .registreringsdato(dato("2007.02.15"))
-                                .aksjonskode(Aksjonskode.SLUTTMELDING)
-                                .stillingsprosent(fulltid())
                 )
         );
-        assertThat(periode.gjeldendeEndring()).as("gjeldende stillingsendring for " + periode)
-                .isEqualTo(of(permisjon));
+        assertThat(stillingsforhold.fraOgMed()).as("stillingsforholdet sin fra og med-dato").isEqualTo(fraOgMed);
+        assertThat(stillingsforhold.tilOgMed()).as("stillingsforholdet sin til og med-dato").isEqualTo(tilogMed);
     }
 
     /**
-     * Verifiserer at gjeldande stillingsendring blir plukka basert på kva endring som er nyligast registrert, under
-     * antagelsen om at den trulig er mest korrekt.
+     * Verifiserer at det ikkje er mulig  å opprette ein ny instans av StillingsforholdPerioder utan 1 eller fleire
+     * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode}r.
      */
     @Test
-    public void skalBrukeSistRegistrerteStillingsendringSomGjeldendeEndringVissPeriodenOverlapperMerEnnEnEndring() {
-        final StillingsforholdPeriode periode = new StillingsforholdPeriode(dato("2006.02.01"), empty());
+    public void skalKreveMinstEiPeriodeVedKonstruksjon() {
+        assumeAssertionsEnabled();
 
-        final Stillingsendring sistRegistrerteEndring = endring()
-                .aksjonsdato(dato("2006.02.01"))
-                .registreringsdato(dato("2012.10.07"))
-                .aksjonskode(Aksjonskode.ENDRINGSMELDING)
-                .stillingsprosent(new Stillingsprosent(new Prosent("50%")));
-        periode.leggTilOverlappendeStillingsendringer(
-                asList(
-                        endring()
-                                .aksjonsdato(dato("2006.02.01"))
-                                .registreringsdato(dato("2006.09.15"))
-                                .aksjonskode(Aksjonskode.NYTILGANG)
-                                .stillingsprosent(new Stillingsprosent(new Prosent("100%"))),
-                        sistRegistrerteEndring,
-                        endring()
-                                .aksjonsdato(dato("2006.02.01"))
-                                .registreringsdato(dato("2006.10.07"))
-                                .aksjonskode(Aksjonskode.NYTILGANG)
-                                .stillingsprosent(new Stillingsprosent(new Prosent("50%")))
-                )
-        );
-        assertThat(periode.gjeldendeEndring().map(Stillingsendring::registreringsdato)).as("gjeldende stillingsendring for " + periode)
-                .isEqualTo(of(sistRegistrerteEndring.registreringsdato()));
+        try {
+            new StillingsforholdPerioder(new StillingsforholdId(1L), Stream.empty());
+            fail("StillingsforholdPerioder skal kreve minst 1 periode ved konstruksjon, men feila ikkje når vi sendte inn 0 perioder");
+        } catch (final AssertionError e) {
+            // Brukar ikkje ExpectedException her sidan den ikkje plukkar opp dersom feilmeldinga som blir kasta er
+            // noko anna enn forventa når det er AssertionError som blir kasta
+            assertThat(e).hasMessageContaining("Forventa minst 1 stillingsforholdperiode, men var 0");
+        }
     }
 
     /**
-     * Verifiserer at medregning er påkrevd ved konstruksjon og at ønska feilmelding blir generert viss ein prøver
-     * å sende inn <code>null</code> som verdi.
+     * Verifiserer at det blir verifisert at periodene blir sendt inn i kronologisk sortert rekkefølge.
+     * <p>
+     * Merk at dette kravet av ytelsesmessige hensyn kun gjeld når assertions er aktivert.
      */
     @Test
-    public void skalKreveMedregningVedKonstruksjon() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("medregning er påkrevd, men var null");
-        new StillingsforholdPeriode(null);
+    public void skalKreveAtPeriodeneErSortertKronologisk() {
+        assumeAssertionsEnabled();
+
+        try {
+            new StillingsforholdPerioder(
+                    new StillingsforholdId(1L),
+                    Stream.of(
+                            new StillingsforholdPeriode(dato("2000.01.01"), empty()),
+                            new StillingsforholdPeriode(dato("1917.01.01"), of(dato("1999.12.31")))
+                    )
+            );
+            fail("StillingsforholdPerioder skal kreve at periodene er sortert, men den gjorde ikkje det");
+        } catch (final AssertionError e) {
+            // Brukar ikkje ExpectedException her sidan den ikkje plukkar opp dersom feilmeldinga som blir kasta er
+            // noko anna enn forventa når det er AssertionError som blir kasta
+            assertThat(e).hasMessageContaining("Stillingsforholdperiodene må vere sortert i kronologisk rekkefølge, men var ikkje det");
+        }
     }
 
     /**
@@ -143,7 +112,7 @@ public class StillingsforholdPerioderTest {
     public void skalKrevePerioderVedKonstruksjon() {
         e.expect(NullPointerException.class);
         e.expectMessage("perioder er påkrevd, men var null");
-        new StillingsforholdPerioder(new StillingsforholdId(1l), null);
+        new StillingsforholdPerioder(new StillingsforholdId(1l), (List) null);
     }
 
     @Test
@@ -155,10 +124,16 @@ public class StillingsforholdPerioderTest {
                         )
                 )
         );
-        assertThat(stillingsforhold.perioder()).hasSize(1);
+        assertThat(stillingsforhold.stream().collect(toList())).hasSize(1);
     }
 
     private static Stillingsendring endring() {
         return new Stillingsendring();
+    }
+
+    private static void assumeAssertionsEnabled() {
+        boolean assertsEnabled = false;
+        assert assertsEnabled = true; // http://stackoverflow.com/questions/13029915/how-to-programmatically-test-if-assertions-are-enabled
+        assumeTrue("Testen blir kun verifisert når assertions er aktivert", assertsEnabled);
     }
 }

@@ -292,6 +292,25 @@ public class Medlemsdata {
         return ofNullable((MedlemsdataOversetter<T>) oversettere.get(datatype));
     }
 
+    /**
+     * Bygger opp medlemsperioder basert på alle medlemmets stillingsendringar og medregningar.
+     * <p>
+     * Avtalekoblingar blir utelatt sidan dei primært har med avtalen og medlemmets stillingsforhold å gjere, ikkje
+     * tilstanda til sjølve medlemmet.
+     *
+     * @return alle medlemmet sine medlemsperioder, eller ingenting om medlemmet kun har avtalekoblingar
+     * utan nokon stillingsendringar eller medregningar
+     */
+    public Optional<Medlemsperioder> periodiser() {
+        return new PeriodiserMedlem()
+                .addStillingsforholdperioder(
+                        alleStillingsforholdPerioder()
+                                .flatMap(StillingsforholdPerioder::stream)
+                )
+                .periodiser()
+                .map(Medlemsperioder::new);
+    }
+
     private static class NullOversetter<T> implements MedlemsdataOversetter<T> {
         @Override
         public T oversett(List<String> rad) {
