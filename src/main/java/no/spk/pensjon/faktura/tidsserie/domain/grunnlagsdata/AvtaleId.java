@@ -54,6 +54,13 @@ public class AvtaleId {
     }
 
     /**
+     * @see #valueOf(long)
+     */
+    public static AvtaleId avtaleId(final long id) {
+        return valueOf(id);
+    }
+
+    /**
      * @see #AvtaleId(Long)
      */
     public static AvtaleId valueOf(long id) {

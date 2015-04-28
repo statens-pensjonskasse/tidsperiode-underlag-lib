@@ -80,7 +80,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     }
 
     /**
-     * Annoterer underlagsperioda med informasjon om medregningskode og medregna beløp.
+     * Annoterer underlagsperioda med informasjon om medregningskode, medregna beløp og stillingsforhold.
      *
      * @param periode underlagsperioda som skal annoterast
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning
@@ -89,5 +89,6 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     public void annoter(final Annoterbar<?> periode) {
         periode.annoter(Medregning.class, beloep());
         periode.annoter(Medregningskode.class, kode());
+        periode.annoter(StillingsforholdId.class, stillingsforhold);
     }
 }

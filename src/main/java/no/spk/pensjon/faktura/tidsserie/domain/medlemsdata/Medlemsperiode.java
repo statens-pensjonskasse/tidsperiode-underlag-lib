@@ -1,12 +1,23 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
  * {@link Medlemsperiode} representerer ei tidsperiode der det ikkje skjer nokon lønns- eller stillingsrelaterte
@@ -62,5 +73,80 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
     @Override
     public String toString() {
         return "MP[" + fraOgMed + "," + tilOgMed().map(Object::toString).orElse("->") + "]";
+    }
+
+    /**
+     * Annoterer underlagsperioda med informasjon om kva stillingar
+     * medlemmet er aktivt på innanfor medlemsperioda.
+     *
+     * @param periode underlagsperioda som skal annoterast
+     */
+    public void annoter(final Annoterbar<?> periode) {
+        periode.annoter(AktiveStillingar.class, aktiveStillingar());
+    }
+
+    /**
+     * Opprettar eit nytt sett med aktive stillingar basert på stillingsforholdperiodene som er tilknytta medlemsperioda.
+     * <p>
+     * Dersom medlemmet innanfor perioda ikkje har nokon aktive stillingar på avtalar tilknytta SPK, blir ingenting
+     * returnert.
+     *
+     * @return ein ny instans av aktive stillingar med informasjon om kvart stillingsforhold medlemmet er aktivt på
+     * innanfor medlemsperioda, eller {@link Optional#empty() ingenting} dersom medlememt er inaktiv i perioda
+     */
+    Optional<AktiveStillingar> aktiveStillingar() {
+        if (stillingsforhold.isEmpty()) {
+            return empty();
+        }
+        return of(
+                new AktiveStillingsforhold(
+                        stillingsforhold()
+                )
+        );
+    }
+
+    /**
+     * Aktive stillingar gir oversikt over kva stillingsforhold medlemmet er aktivt på innanfor ei bestemt
+     * medlemsperiode.
+     */
+    private static class AktiveStillingsforhold implements AktiveStillingar {
+        private final List<StillingsforholdPeriode> stillingar = new ArrayList<>();
+
+        AktiveStillingsforhold(final Stream<StillingsforholdPeriode> stillingsforhold) {
+            stillingsforhold.forEach(stillingar::add);
+
+            if (stillingar.isEmpty()) {
+                throw new IllegalStateException(
+                        "Kan ikkje opprette aktive stillingar for medlemsperiode der ingen stillingar er aktive"
+                );
+            }
+        }
+
+        @Override
+        public Optional<StillingsforholdId> stoersteStilling() {
+            return stoersteStilling(s -> true);
+        }
+
+        @Override
+        public Optional<StillingsforholdId> stoersteStilling(final Predicate<StillingsforholdId> filter) {
+            return stillingar()
+                    .filter(p -> filter.test(p.stillingsforhold()))
+                    .filter(p -> !p.erMedregning())
+                    .findFirst()
+                    .map(AktivStilling::stillingsforhold);
+        }
+
+        @Override
+        public Stream<AktivStilling> stillingar() {
+            final Comparator<AktivStilling> sortering = comparing(e -> e.stillingsprosent().orElse(Prosent.ZERO).toDouble());
+            return stillingar
+                    .stream()
+                    .map(p -> new AktivStilling(
+                                    p.stillingsforhold(),
+                                    p.gjeldendeEndring().map(Stillingsendring::stillingsprosent).map(Stillingsprosent::prosent)
+                            )
+                    )
+                    .sorted(sortering.reversed());
+        }
     }
 }

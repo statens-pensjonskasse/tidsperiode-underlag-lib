@@ -122,6 +122,10 @@ public class TidsserieIT {
     }
 
     /**
+     * Verifiserer at alle underlagsperiodene
+     */
+
+    /**
      * Verifiserer at funksjonstillegg blir inkludert ved beregning av maskinelt grunnlag.
      */
     @Test

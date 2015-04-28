@@ -1,9 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
  * Rolle-interface for tidsperiodekoblingane som ei underlagsperiode har til tidsperioidene den overlappar.
@@ -47,6 +48,12 @@ interface HarKoblingar {
      * @throws IllegalStateException dersom perioda er tilkobla meir enn ei tidsperiode av den angitte typen
      */
     <T extends Tidsperiode<T>> Optional<T> koblingAvType(Class<T> type);
+
+    /**
+     * @see #koblingAvType(Class, Predicate)
+     * @params predikat filter som blir køyrt på koblingane før ønska enkeltperiode blir forsøkt henta ut
+     */
+    <T extends Tidsperiode<T>> Optional<T> koblingAvType(Class<T> type, final Predicate<T> predikat);
 
     /**
      * Hentar ut alle koblingar underlagsperioda har til tidsperioder av den angitte typen.

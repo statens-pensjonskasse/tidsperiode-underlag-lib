@@ -5,6 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
@@ -40,6 +41,26 @@ public class StillingsendringTest {
     public void skalFeileDersomStillingsprosentManglar() {
         e.expect(NoSuchElementException.class);
         new Stillingsendring().annoter(eiPeriode());
+    }
+
+    /**
+     * Verifiserer at stillingsforhold blir annotert på perioda viss stillingsendringa er tilknytta eit
+     * stillingsforhold.
+     */
+    @Test
+    public void skalAnnotereMedStillingsforhold() {
+        final Underlagsperiode periode = eiPeriode();
+
+        final StillingsforholdId expected = new StillingsforholdId(1L);
+        eiEndring().stillingsforhold(expected).annoter(periode);
+
+        assertAnnotasjon(periode, StillingsforholdId.class).isEqualTo(of(expected));
+
+        final Underlagsperiode utenStillingsforhold = eiPeriode();
+        eiEndring()
+                .annoter(utenStillingsforhold);
+
+        assertAnnotasjon(utenStillingsforhold, StillingsforholdId.class).isEqualTo(empty());
     }
 
     @Test
