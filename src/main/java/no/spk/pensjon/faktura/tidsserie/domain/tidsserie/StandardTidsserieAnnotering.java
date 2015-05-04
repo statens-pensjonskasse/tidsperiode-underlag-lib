@@ -77,6 +77,9 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
         periode.koblingAvType(Medlemsperiode.class).ifPresent(medlem -> {
             medlem.annoter(periode);
         });
+        periode.koblingAvType(MedlemsavtalarPeriode.class).ifPresent(p -> {
+            p.annoter(periode);
+        });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
             periode.annoter(Aarstall.class, aar.aarstall());
         });
