@@ -70,8 +70,11 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
      *
      * @param avtale avtalebyggaren som inneheld avtaletilstanda som skal oppdaterast
      */
-    public void populer(final AvtaleBuilder avtale) {
-        avtale.addProdukt(produkt);
+    public AvtaleBuilder populer(final AvtaleBuilder avtale) {
+        if (erFakturerbar()) {
+            avtale.addProdukt(produkt);
+        }
+        return avtale;
     }
 
     public AvtaleId avtale() {
@@ -147,5 +150,15 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
                 ", medlemspremieProsent=" + medlemspremieProsent +
                 ", administrasjonsgebyrProsent=" + administrasjonsgebyrProsent +
                 '}';
+    }
+
+    private boolean erFakturerbar() {
+        if (produkt.equals(Produkt.GRU)) {
+            return produktinfo == 35 || produktinfo == 36;
+        }
+        if (produkt.equals(Produkt.YSK)) {
+            return produktinfo != 79;
+        }
+        return true;
     }
 }
