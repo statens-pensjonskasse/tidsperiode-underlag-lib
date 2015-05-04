@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
@@ -16,18 +17,35 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
 
     final AvtaleId avtaleId;
     final Produkt produkt;
+    final int produktinfo;
     final Prosent arbeidsgiverpremieProsent;
     final Prosent medlemspremieProsent;
     final Prosent administrasjonsgebyrProsent;
+    final Kroner arbeidsgiverpremieBeloep;
+    final Kroner medlemspremieBeloep;
+    final Kroner administrasjonsgebyrBeloep;
 
-    public Avtaleprodukt(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, AvtaleId avtaleId, Produkt produkt, Prosent arbeidsgiverpremieProsent,
-            Prosent medlemspremieProsent, Prosent administrasjonsgebyrProsent) {
+    public Avtaleprodukt(LocalDate fraOgMed,
+            Optional<LocalDate> tilOgMed,
+            AvtaleId avtaleId,
+            Produkt produkt,
+            int produktinfo,
+            Prosent arbeidsgiverpremieProsent,
+            Prosent medlemspremieProsent,
+            Prosent administrasjonsgebyrProsent,
+            Kroner arbeidsgiverpremieBeloep,
+            Kroner medlemspremieBeloep,
+            Kroner administrasjonsgebyrBeloep) {
         super(fraOgMed, tilOgMed);
         this.avtaleId = avtaleId;
         this.produkt = produkt;
         this.arbeidsgiverpremieProsent = arbeidsgiverpremieProsent;
         this.medlemspremieProsent = medlemspremieProsent;
         this.administrasjonsgebyrProsent = administrasjonsgebyrProsent;
+        this.produktinfo = produktinfo;
+        this.arbeidsgiverpremieBeloep = arbeidsgiverpremieBeloep;
+        this.medlemspremieBeloep = medlemspremieBeloep;
+        this.administrasjonsgebyrBeloep = administrasjonsgebyrBeloep;
     }
 
     /**
@@ -76,6 +94,21 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
         return administrasjonsgebyrProsent;
     }
 
+    public Kroner arbeidsgiverpremieBeloep() {
+        return arbeidsgiverpremieBeloep;
+    }
+
+    public Kroner medlemspremieBeloep() {
+        return medlemspremieBeloep;
+    }
+
+    public Kroner administrasjonsgebyrBeloep() {
+        return administrasjonsgebyrBeloep;
+    }
+
+    public int produktinfo() {
+        return produktinfo;
+    }
 
     @Override
     public boolean equals(Object o) {

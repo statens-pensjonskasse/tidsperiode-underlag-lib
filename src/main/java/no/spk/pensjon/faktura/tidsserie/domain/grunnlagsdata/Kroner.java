@@ -59,6 +59,15 @@ public final class Kroner implements Comparable<Kroner> {
         return new Kroner(beloep);
     }
 
+    public static Kroner kroner(final String beloepString) {
+        requireNonNull(beloepString, VALIDER_BELOEP);
+        double beloep = Double.parseDouble(beloepString);
+        if (beloep == 0) {
+            return ZERO;
+        }
+        return new Kroner(beloep);
+    }
+
     /**
      * Returnerer minste beløp av dei to kronebeløpa.
      *

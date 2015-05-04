@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
@@ -24,7 +25,7 @@ public class AvtaleproduktOversetterTest extends TestCase {
         assertThat(
                 oversetter.oversett(
                         asList(
-                                "AVTALEPRODUKT;100001;PEN;2007.01.01;2010.08.31;11;0.00;0.00;10.00".split(";")
+                                "AVTALEPRODUKT;100001;PEN;2007.01.01;2010.08.31;11;0.00;0.00;10.00;200;200.5;0.00".split(";")
                         )
                 )
         ).isEqualTo(new Avtaleprodukt(
@@ -32,16 +33,20 @@ public class AvtaleproduktOversetterTest extends TestCase {
                 Optional.of(LocalDate.of(2010, 8, 31)),
                 AvtaleId.valueOf("100001"),
                 Produkt.PEN,
+                11,
                 Prosent.ZERO,
                 Prosent.ZERO,
-                Prosent.prosent("10%")));
+                Prosent.prosent("10%"),
+                Kroner.kroner("200"),
+                Kroner.kroner("200.5"),
+                Kroner.kroner(0)));
     }
 
     public void testUkjentProduktstrengSkalGiUkjentProduktEnum() throws Exception {
         assertThat(
                 oversetter.oversett(
                         asList(
-                                "AVTALEPRODUKT;100001;XXX;2007.01.01;2010.08.31;11;0.00;0.00;10.00".split(";")
+                                "AVTALEPRODUKT;100001;XXX;2007.01.01;2010.08.31;11;0.00;0.00;10.00;0;0;0".split(";")
                         )
                 ).produkt()
         ).isEqualTo(Produkt.UKJ);

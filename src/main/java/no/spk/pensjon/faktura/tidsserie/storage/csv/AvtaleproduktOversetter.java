@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
@@ -19,9 +20,13 @@ public class AvtaleproduktOversetter {
     public static final int INDEX_PRODUKT = 2;
     public static final int INDEX_FRA_OG_MED_DATO = 3;
     public static final int INDEX_TIL_OG_MED_DATO = 4;
-    public static final int INDEX_ARBEIDSGIVERPREMIE_PROSENT= 6;
-    public static final int INDEX_MEDLEMSPREMIE_PROSENT= 7;
-    public static final int INDEX_ADMINISTRASJONSGEBYR_PROSENT= 8;
+    public static final int INDEX_PRODUKTINFO = 5;
+    public static final int INDEX_ARBEIDSGIVERPREMIE_PROSENT = 6;
+    public static final int INDEX_MEDLEMSPREMIE_PROSENT = 7;
+    public static final int INDEX_ADMINISTRASJONSGEBYR_PROSENT = 8;
+    public static final int INDEX_ARBEIDSGIVERPREMIE_BELOEP = 9;
+    public static final int INDEX_MEDLEMSPREMIE_BELOEP = 10;
+    public static final int INDEX_ADMINISTRASJONSGEBYR_BELOEP = 11;
 
     private static final int ANTALL_KOLONNER = INDEX_ADMINISTRASJONSGEBYR_PROSENT + 1;
 
@@ -40,9 +45,13 @@ public class AvtaleproduktOversetter {
                 read(rad, INDEX_TIL_OG_MED_DATO).map(Datoar::dato),
                 read(rad, INDEX_AVTALE).map(AvtaleId::valueOf).get(),
                 read(rad, INDEX_PRODUKT).map(Produkt::fraKode).get(),
+                read(rad, INDEX_PRODUKTINFO).map(Integer::parseInt).get(),
                 read(rad, INDEX_ARBEIDSGIVERPREMIE_PROSENT).map(Prosent::prosent).get(),
                 read(rad, INDEX_MEDLEMSPREMIE_PROSENT).map(Prosent::prosent).get(),
-                read(rad, INDEX_ADMINISTRASJONSGEBYR_PROSENT).map(Prosent::prosent).get()
+                read(rad, INDEX_ADMINISTRASJONSGEBYR_PROSENT).map(Prosent::prosent).get(),
+                read(rad, INDEX_ARBEIDSGIVERPREMIE_BELOEP).map(Kroner::kroner).get(),
+                read(rad, INDEX_MEDLEMSPREMIE_BELOEP).map(Kroner::kroner).get(),
+                read(rad, INDEX_ADMINISTRASJONSGEBYR_BELOEP).map(Kroner::kroner).get()
         );
     }
 
