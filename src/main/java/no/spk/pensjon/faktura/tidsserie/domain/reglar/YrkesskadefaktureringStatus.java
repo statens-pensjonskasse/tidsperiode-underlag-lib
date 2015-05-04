@@ -11,4 +11,8 @@ public class YrkesskadefaktureringStatus {
         this.stillingsforhold = stillingsforhold;
         this.andel = andel;
     }
+
+    public Prosent andel() {
+        return andel;
+    }
 }
