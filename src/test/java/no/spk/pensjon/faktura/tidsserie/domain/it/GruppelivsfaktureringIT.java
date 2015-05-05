@@ -1,25 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import static java.util.Optional.of;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
-import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
@@ -33,7 +14,90 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.toList;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.PERMISJON_UTAN_LOENN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class GruppelivsfaktureringIT {
+    /**
+     * Verifiserer at aktive stillingar som er ute i permisjon utan lønn, ikkje blir plukka som fakturerbare for
+     * gruppeliv.
+     */
+    @Test
+    public void skalIgnorereStillingarSomErUteIPermisjonUtanLoennVedPlukkingAvKvaPerioderSomErFakturerbareForGruppeliv() {
+        final LocalDate startDato = dato("2015.01.01");
+        final LocalDate sluttDato = dato("2015.12.31");
+
+        final StillingsforholdId stilling1 = stillingsforhold(1L);
+        final StillingsforholdId stilling2 = stillingsforhold(2L);
+
+        final StillingsforholdPeriode stoerste = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .aksjonskode(PERMISJON_UTAN_LOENN)
+                                .stillingsforhold(stilling1)
+                                .stillingsprosent(new Stillingsprosent(prosent("100%")))
+                );
+        final StillingsforholdPeriode minste = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .stillingsforhold(stilling2)
+                                .stillingsprosent(new Stillingsprosent(prosent("20%")))
+                );
+
+        final Stream<StillingsforholdPeriode> stillingsperioder = Stream.of(minste, stoerste);
+
+        final Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> resultat = beregnPerioder(
+                medlemsavtalar()
+                        .fraOgMed(startDato)
+                        .tilOgMed(of(sluttDato))
+                        .addAvtale(
+                                stilling1,
+                                avtale(
+                                        avtaleId(123456L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(GRU)
+                        )
+                        .addAvtale(
+                                stilling2,
+                                avtale(
+                                        avtaleId(234567L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(GRU)
+                        ),
+                stillingsperioder
+        );
+
+        assertErFakturerbar(resultat, stilling1.id())
+                .as("er underlagsperioda med størst stillingsprosent men permisjon utan lønn fakturerbar for GRU?")
+                .isEqualTo(of(false));
+        assertErFakturerbar(resultat, stilling2.id())
+                .as("er underlagsperioda med lavast stillingsprosent og gruppeliv fakturerbar for GRU?")
+                .isEqualTo(of(true));
+    }
+
     /**
      * Verifiserer at det kun er underlagsperioda tilhøyrande stillinga med nest høgaste stillingsprosent
      * som blir fakturert når medlemmet har 2+ parallelle stillingar der den største er tilknytta ein avtale uten
@@ -50,21 +114,21 @@ public class GruppelivsfaktureringIT {
 
         final StillingsforholdPeriode stoerste = new StillingsforholdPeriode(startDato, of(sluttDato))
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .aksjonsdato(startDato)
                                 .stillingsforhold(stilling1)
                                 .stillingsprosent(new Stillingsprosent(prosent("100%")))
                 );
         final StillingsforholdPeriode nestStoerste = new StillingsforholdPeriode(startDato, of(sluttDato))
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .aksjonsdato(startDato)
                                 .stillingsforhold(stilling2)
                                 .stillingsprosent(new Stillingsprosent(prosent("30%")))
                 );
         final StillingsforholdPeriode minste = new StillingsforholdPeriode(startDato, of(sluttDato))
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .aksjonsdato(startDato)
                                 .stillingsforhold(stilling3)
                                 .stillingsprosent(new Stillingsprosent(prosent("20%")))
@@ -128,14 +192,14 @@ public class GruppelivsfaktureringIT {
 
         final StillingsforholdPeriode stoerste = new StillingsforholdPeriode(startDato, of(sluttDato))
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .aksjonsdato(startDato)
                                 .stillingsforhold(stilling1)
                                 .stillingsprosent(new Stillingsprosent(prosent("30%")))
                 );
         final StillingsforholdPeriode minste = new StillingsforholdPeriode(startDato, of(sluttDato))
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .aksjonsdato(startDato)
                                 .stillingsforhold(stilling2)
                                 .stillingsprosent(new Stillingsprosent(prosent("20%")))
@@ -191,14 +255,14 @@ public class GruppelivsfaktureringIT {
 
         final StillingsforholdPeriode foreste = new StillingsforholdPeriode(startDato, of(sluttDato))
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .aksjonsdato(startDato)
                                 .stillingsforhold(stilling1)
                                 .stillingsprosent(stillingsprosent)
                 );
         final StillingsforholdPeriode siste = new StillingsforholdPeriode(startDato, of(sluttDato))
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .aksjonsdato(startDato)
                                 .stillingsforhold(stilling2)
                                 .stillingsprosent(stillingsprosent)
@@ -237,6 +301,11 @@ public class GruppelivsfaktureringIT {
         )
                 .as("stillingsforhold som er fakturerbare for GRU i den aktuelle perioden")
                 .hasSize(1);
+    }
+
+    private static Stillingsendring eiStillingsendring() {
+        return new Stillingsendring()
+                .aksjonskode(Aksjonskode.ENDRINGSMELDING);
     }
 
     private static Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> beregnPerioder(

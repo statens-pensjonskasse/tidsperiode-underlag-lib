@@ -141,10 +141,14 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
             final Comparator<AktivStilling> sortering = comparing(e -> e.stillingsprosent().orElse(Prosent.ZERO).toDouble());
             return stillingar
                     .stream()
-                    .map(p -> new AktivStilling(
-                                    p.stillingsforhold(),
-                                    p.gjeldendeEndring().map(Stillingsendring::stillingsprosent).map(Stillingsprosent::prosent)
-                            )
+                    .map(p -> {
+                                final Optional<Stillingsendring> gjeldende = p.gjeldendeEndring();
+                                return new AktivStilling(
+                                        p.stillingsforhold(),
+                                        gjeldende.map(Stillingsendring::stillingsprosent).map(Stillingsprosent::prosent),
+                                        gjeldende.map(Stillingsendring::aksjonskode)
+                                );
+                            }
                     )
                     .sorted(sortering.reversed());
         }

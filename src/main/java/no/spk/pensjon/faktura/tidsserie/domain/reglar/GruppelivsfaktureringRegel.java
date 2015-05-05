@@ -1,10 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.ZERO;
-
-import java.util.function.Predicate;
-
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
@@ -13,6 +8,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
+
+import java.util.function.Predicate;
+
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.PERMISJON_UTAN_LOENN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.ZERO;
 
 /**
  * Regel med strategien som styrer kva underlagsperioder som skal fakturerast for gruppelivsproduktet.
@@ -48,6 +49,9 @@ public class GruppelivsfaktureringRegel implements BeregningsRegel<Gruppelivsfak
      * reell stillingsstørrelse i forkant av denne oppjusteringa, medfører det at stillinga med den
      * høgaste reelle stillingsstørrelsen endar opp med 100% av fordelinga og blir einaste fakturerbare stilling for
      * perioda.
+     * <p>
+     * Aktive stillingar som i perioda er ute i permisjon utan lønn, blir ignorert sidan dei ikkje skal betale
+     * gruppelivspremie for perioda.
      *
      * @param periode beregningsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av
      *                beregningsregelen
@@ -59,6 +63,10 @@ public class GruppelivsfaktureringRegel implements BeregningsRegel<Gruppelivsfak
     public GruppelivsfaktureringStatus beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
         final Medlemsavtalar avtalar = periode.annotasjonFor(Medlemsavtalar.class);
         final Predicate<AktivStilling> harGruppeliv = s -> avtalar.betalarTilSPKFor(s.stillingsforhold(), GRU);
+        final Predicate<AktivStilling> permisjonUtanLoenn = s -> s
+                .aksjonskode()
+                .filter(PERMISJON_UTAN_LOENN::equals)
+                .isPresent();
 
         final StillingsforholdId stilling = periode.annotasjonFor(StillingsforholdId.class);
         return new GruppelivsfaktureringStatus(
@@ -66,6 +74,7 @@ public class GruppelivsfaktureringRegel implements BeregningsRegel<Gruppelivsfak
                 periode.annotasjonFor(AktiveStillingar.class)
                         .stillingar()
                         .filter(harGruppeliv)
+                        .filter(permisjonUtanLoenn.negate())
                         .map(this::oppjusterTilFulltid)
                         .reduce(
                                 new Stillingsfordeling(),
@@ -78,10 +87,6 @@ public class GruppelivsfaktureringRegel implements BeregningsRegel<Gruppelivsfak
     }
 
     private AktivStilling oppjusterTilFulltid(final AktivStilling stilling) {
-        return new AktivStilling(
-                stilling.stillingsforhold(),
-                stilling
-                        .stillingsprosent()
-                        .map(p -> FULLTID));
+        return stilling.juster(FULLTID);
     }
 }
