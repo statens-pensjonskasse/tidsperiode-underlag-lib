@@ -15,4 +15,8 @@ public class YrkesskadefaktureringStatus {
     public Prosent andel() {
         return andel;
     }
+
+    public StillingsforholdId stillingsforhold() {
+        return stillingsforhold;
+    }
 }

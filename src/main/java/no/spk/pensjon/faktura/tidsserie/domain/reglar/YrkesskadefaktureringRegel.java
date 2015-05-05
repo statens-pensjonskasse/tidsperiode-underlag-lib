@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.PERMISJON_UTAN_LOENN;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.ZERO;
 
@@ -17,6 +18,10 @@ public class YrkesskadefaktureringRegel implements BeregningsRegel<Yrkesskadefak
     public YrkesskadefaktureringStatus beregn(final Beregningsperiode<?> periode) {
         final Medlemsavtalar avtalar = periode.annotasjonFor(Medlemsavtalar.class);
         final Predicate<AktivStilling> harYrkesskade = s -> avtalar.betalarTilSPKFor(s.stillingsforhold(), YSK);
+        final Predicate<AktivStilling> permisjonUtanLoenn = s -> s
+                .aksjonskode()
+                .filter(PERMISJON_UTAN_LOENN::equals)
+                .isPresent();
 
         final StillingsforholdId stilling = periode.annotasjonFor(StillingsforholdId.class);
         return new YrkesskadefaktureringStatus(
@@ -24,6 +29,7 @@ public class YrkesskadefaktureringRegel implements BeregningsRegel<Yrkesskadefak
                 periode.annotasjonFor(AktiveStillingar.class)
                         .stillingar()
                         .filter(harYrkesskade)
+                        .filter(permisjonUtanLoenn.negate())
                         .reduce(
                                 new Stillingsfordeling(),
                                 Stillingsfordeling::leggTil,
