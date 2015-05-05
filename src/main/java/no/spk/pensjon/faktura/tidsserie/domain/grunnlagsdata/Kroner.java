@@ -1,10 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
+import static java.util.Objects.requireNonNull;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.function.Supplier;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner} representerer eit beløp angitt i norske kroner.
@@ -53,15 +53,6 @@ public final class Kroner implements Comparable<Kroner> {
      * @return eit nytt kronebeløp
      */
     public static Kroner kroner(final int beloep) {
-        if (beloep == 0) {
-            return ZERO;
-        }
-        return new Kroner(beloep);
-    }
-
-    public static Kroner kroner(final String beloepString) {
-        requireNonNull(beloepString, VALIDER_BELOEP);
-        double beloep = Double.parseDouble(beloepString);
         if (beloep == 0) {
             return ZERO;
         }

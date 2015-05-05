@@ -146,10 +146,6 @@ public class Prosent {
         return Math.round(100d * other.verdi * Math.pow(10, antallDesimalar));
     }
 
-    public static boolean equals(Prosent prosent, Prosent prosent2) {
-        return prosent != null ? prosent.equals(prosent2, 2) : prosent2 == null;
-    }
-
     public boolean isGreaterThan(final Prosent other) {
         return verdi > other.verdi;
     }

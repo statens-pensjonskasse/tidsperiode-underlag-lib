@@ -8,9 +8,9 @@ import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 public class AvtaleproduktOversetter {
@@ -49,13 +49,21 @@ public class AvtaleproduktOversetter {
                 read(rad, INDEX_ARBEIDSGIVERPREMIE_PROSENT).map(Prosent::prosent).get(),
                 read(rad, INDEX_MEDLEMSPREMIE_PROSENT).map(Prosent::prosent).get(),
                 read(rad, INDEX_ADMINISTRASJONSGEBYR_PROSENT).map(Prosent::prosent).get(),
-                read(rad, INDEX_ARBEIDSGIVERPREMIE_BELOEP).map(Kroner::kroner).get(),
-                read(rad, INDEX_MEDLEMSPREMIE_BELOEP).map(Kroner::kroner).get(),
-                read(rad, INDEX_ADMINISTRASJONSGEBYR_BELOEP).map(Kroner::kroner).get()
+                read(rad, INDEX_ARBEIDSGIVERPREMIE_BELOEP).map(this::kroner).get(),
+                read(rad, INDEX_MEDLEMSPREMIE_BELOEP).map(this::kroner).get(),
+                read(rad, INDEX_ADMINISTRASJONSGEBYR_BELOEP).map(this::kroner).get()
         );
     }
 
     private Optional<String> read(final List<String> rad, final int index) {
         return ofNullable(rad.get(index)).map(String::trim).filter(t -> !t.isEmpty());
+    }
+
+    public Kroner kroner(final String beloepString) {
+        double beloep = Double.parseDouble(beloepString);
+        if (beloep == 0) {
+            return Kroner.ZERO;
+        }
+        return new Kroner(beloep);
     }
 }

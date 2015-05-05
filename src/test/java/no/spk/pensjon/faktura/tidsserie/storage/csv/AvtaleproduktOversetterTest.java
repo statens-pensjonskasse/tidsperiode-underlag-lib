@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 import junit.framework.TestCase;
@@ -28,7 +28,7 @@ public class AvtaleproduktOversetterTest extends TestCase {
                                 "AVTALEPRODUKT;100001;PEN;2007.01.01;2010.08.31;11;0.00;0.00;10.00;200;200.5;0.00".split(";")
                         )
                 )
-        ).isEqualTo(new Avtaleprodukt(
+        ).isEqualToComparingFieldByField(new Avtaleprodukt(
                 LocalDate.of(2007, 1, 1),
                 Optional.of(LocalDate.of(2010, 8, 31)),
                 AvtaleId.valueOf("100001"),
@@ -37,9 +37,9 @@ public class AvtaleproduktOversetterTest extends TestCase {
                 Prosent.ZERO,
                 Prosent.ZERO,
                 Prosent.prosent("10%"),
-                Kroner.kroner("200"),
-                Kroner.kroner("200.5"),
-                Kroner.kroner(0)));
+                new Kroner(200),
+                new Kroner(200.5),
+                Kroner.ZERO));
     }
 
     public void testUkjentProduktstrengSkalGiUkjentProduktEnum() throws Exception {

@@ -6,10 +6,8 @@ import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.assertBetalarTilSPKFor;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.assertPremiestatus;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.eiAvtalekobling;
@@ -25,10 +23,10 @@ import java.util.List;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+
 import org.junit.Test;
 
 public class MedlemsavtalarFactoryTest {
@@ -155,12 +153,12 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         36,
-                        prosent("10%"),
-                        prosent("2%"),
-                        prosent("0.35%"),
-                        kroner("2.5"),
-                        kroner("200"),
-                        kroner("100.99")
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
                 ),
                 new Avtaleprodukt(
                         endringsdato,
@@ -168,12 +166,12 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         37,
-                        prosent("12%"),
-                        prosent("3%"),
-                        prosent("0.35%"),
-                        kroner("2.5"),
-                        kroner("200"),
-                        kroner("100.99")
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
                 )
         );
 

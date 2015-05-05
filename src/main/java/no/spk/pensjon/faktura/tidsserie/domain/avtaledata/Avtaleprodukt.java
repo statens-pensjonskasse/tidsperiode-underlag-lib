@@ -114,34 +114,6 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Avtaleprodukt)) return false;
-
-        Avtaleprodukt that = (Avtaleprodukt) o;
-
-        if (avtaleId != null ? !avtaleId.equals(that.avtaleId) : that.avtaleId != null) return false;
-        if (produkt != that.produkt) return false;
-        if (!Prosent.equals(arbeidsgiverpremieProsent, that.arbeidsgiverpremieProsent))
-            return false;
-        if (!Prosent.equals(medlemspremieProsent, that.medlemspremieProsent)) return false;
-        if (!Prosent.equals(administrasjonsgebyrProsent, that.administrasjonsgebyrProsent))
-            return false;
-        return true;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = avtaleId != null ? avtaleId.hashCode() : 0;
-        result = 31 * result + (produkt != null ? produkt.hashCode() : 0);
-        result = 31 * result + (arbeidsgiverpremieProsent != null ? arbeidsgiverpremieProsent.hashCode() : 0);
-        result = 31 * result + (medlemspremieProsent != null ? medlemspremieProsent.hashCode() : 0);
-        result = 31 * result + (administrasjonsgebyrProsent != null ? administrasjonsgebyrProsent.hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "Avtaleprodukt{" +
                 "avtaleId=" + avtaleId +
