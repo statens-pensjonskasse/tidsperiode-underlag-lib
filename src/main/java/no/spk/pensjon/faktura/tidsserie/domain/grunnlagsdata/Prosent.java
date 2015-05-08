@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  *
  * @author Tarjei Skorgenes
  */
-public class Prosent {
+public class Prosent implements Sats{
     /**
      * 0%.
      */

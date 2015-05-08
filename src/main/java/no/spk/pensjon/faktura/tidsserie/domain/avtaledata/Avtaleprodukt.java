@@ -5,9 +5,7 @@ import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
@@ -22,7 +20,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
  * Alle andre produktinfo-verdier betyr at avtalen <i>ikke skal</i> faktureres for produktet 'GRU'.
  * </p>
  * <p>
- * <p>Avtaleprodukt er oppført med premiesatser. Disse er oppgitt enten i prosent eller i kronebeløp, men ikke begge deler. Begge kan være 0.</p>
+ * <p>Avtaleprodukt er oppført med premiesatser. Disse er oppgitt enten i prosent eller i kronebeløp.</p>
  *
  * @author Snorre E. Brekke - Computas
  */
@@ -31,8 +29,7 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
     private final AvtaleId avtaleId;
     private final Produkt produkt;
     private final int produktinfo;
-    private final Optional<Satser<Kroner>> kronesatser;
-    private final Optional<Satser<Prosent>> prosentsatser;
+    private final Satser<?> satser;
 
     /**
      * Konstruktør for å opprette et avtaleprodukt koblet til en avtale som for en bestemt tidsperiode.
@@ -42,22 +39,15 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
      * @param avtaleId avtalid for avtalen avtaleproduktet er koblet til
      * @param produkt produkt-typen til avtaleproduktet
      * @param produktinfo produktinfo for avtaleproduktet. Betydningen av koden er avhengig av produkt.
-     * @param prosentsatser Valgfri parameter som holder på premiesatser representert i prosent. Dersom denne er i bruk, må kronessatser være
-     * Optional.empty()
-     * @param kronesatser Valgfri parameter som holder på premiesatser representert i kroner.
-     * Dersom denne er i bruk, må kronessatser være Optional.empty()
-     * @throws IllegalStateException dersom både prosentsatser og kronesatser 'isPresent'. Kun en av de to, eller ingen er tillatt.
+     * @param satser Satser som gjelder for avtaleproduktet.
      */
     public Avtaleprodukt(LocalDate fraOgMed, Optional<LocalDate> tilOgMed,
-            AvtaleId avtaleId, Produkt produkt, int produktinfo,
-            Optional<Satser<Prosent>> prosentsatser, Optional<Satser<Kroner>> kronesatser) {
+            AvtaleId avtaleId, Produkt produkt, int produktinfo, Satser<?> satser) {
         super(fraOgMed, tilOgMed);
-        assertIkkeProsentsatserOgKronesatserSammen(prosentsatser, kronesatser);
-        this.kronesatser = kronesatser;
         this.avtaleId = avtaleId;
         this.produkt = produkt;
         this.produktinfo = produktinfo;
-        this.prosentsatser = prosentsatser;
+        this.satser = satser;
     }
 
     /**
@@ -119,11 +109,5 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
             return produktinfo != 79;
         }
         return true;
-    }
-
-    private void assertIkkeProsentsatserOgKronesatserSammen(Optional<?> prosentsatser, Optional<?> kronesatser) {
-        if (prosentsatser.isPresent() && kronesatser.isPresent()) {
-            throw new IllegalStateException("Både prosentsatser og kronesatser kan ikke være i bruk for et avtaleprodukt.");
-        }
     }
 }

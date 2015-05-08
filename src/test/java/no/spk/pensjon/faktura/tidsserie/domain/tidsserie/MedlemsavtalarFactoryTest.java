@@ -8,6 +8,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser.ingenSatser;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.assertBetalarTilSPKFor;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.assertPremiestatus;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.eiAvtalekobling;
@@ -75,8 +76,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         36,
-                        empty(),
-                        empty()
+                        ingenSatser()
                 )
         );
 
@@ -102,8 +102,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         36,
-                        empty(),
-                        empty()
+                        ingenSatser()
                 ),
                 new Avtaleprodukt(
                         endringsdato,
@@ -111,8 +110,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         GRU,
                         36,
-                        empty(),
-                        empty()
+                        ingenSatser()
                 )
         );
 
@@ -141,8 +139,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         36,
-                        empty(),
-                        empty()
+                        ingenSatser()
                 ),
                 new Avtaleprodukt(
                         endringsdato,
@@ -150,8 +147,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         37,
-                        empty(),
-                        empty()
+                        ingenSatser()
                 )
         );
 

@@ -14,7 +14,7 @@ import java.util.function.Supplier;
  *
  * @author Tarjei Skorgenes
  */
-public final class Kroner implements Comparable<Kroner> {
+public final class Kroner implements Comparable<Kroner>, Sats {
     /**
      * Eit kronebeløp med verdi lik kr 0.
      */

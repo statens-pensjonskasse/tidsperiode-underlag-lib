@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.junit.Test;
@@ -47,8 +48,7 @@ public class AvtaleproduktTest {
                 id,
                 type,
                 produktinfo,
-                empty(),
-                empty()
+                Satser.ingenSatser()
         );
     }
 }

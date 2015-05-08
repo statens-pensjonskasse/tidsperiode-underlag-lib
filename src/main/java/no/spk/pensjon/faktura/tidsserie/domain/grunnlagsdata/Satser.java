@@ -12,7 +12,9 @@ import java.util.Objects;
  *
  * @author Snorre E. Brekke - Computas
  */
-public class Satser<T> {
+public class Satser<T extends Sats> {
+    private static final Satser<? extends Sats> INGEN_SATSER = new Satser<>(IngenSats.sats(), IngenSats.sats(), IngenSats.sats());
+
     private final T arbeidsgiverpremie;
     private final T medlemspremie;
     private final T administrasjonsgebyr;
@@ -21,6 +23,14 @@ public class Satser<T> {
         this.arbeidsgiverpremie = Objects.requireNonNull(arbeidsgiverpremie);
         this.medlemspremie = Objects.requireNonNull(medlemspremie);
         this.administrasjonsgebyr = Objects.requireNonNull(administrasjonsgebyr);
+
+    }
+
+    /**
+     * @return Satser som representer at ingen satser er satt. Operasjoner på statsene vil gi 0-verdier.
+     */
+    public static Satser<? extends Sats> ingenSatser() {
+        return INGEN_SATSER;
     }
 
     public T arbeidsgiverpremie() {

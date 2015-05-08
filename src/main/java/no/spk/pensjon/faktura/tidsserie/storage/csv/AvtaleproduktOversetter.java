@@ -47,7 +47,7 @@ public class AvtaleproduktOversetter {
         Prosent medlemspremieProsent = read(rad, INDEX_MEDLEMSPREMIE_PROSENT).map(Prosent::prosent).get();
         Prosent administrasjonsgebyrProsent = read(rad, INDEX_ADMINISTRASJONSGEBYR_PROSENT).map(Prosent::prosent).get();
 
-        Optional<Satser<Prosent>> prosentsatser = Stream.of(arbeidsgiverpremieProsent, medlemspremieProsent, administrasjonsgebyrProsent)
+        Optional<Satser<?>> prosentsatser = Stream.of(arbeidsgiverpremieProsent, medlemspremieProsent, administrasjonsgebyrProsent)
                 .filter(p -> p.isGreaterThan(Prosent.ZERO))
                 .findFirst()
                 .map(p -> new Satser<>(arbeidsgiverpremieProsent, medlemspremieProsent, administrasjonsgebyrProsent));
@@ -56,10 +56,20 @@ public class AvtaleproduktOversetter {
         Kroner medlemspremieBeloep = read(rad, INDEX_MEDLEMSPREMIE_BELOEP).map(this::kroner).get();
         Kroner administrasjonsgebyrBeloep = read(rad, INDEX_ADMINISTRASJONSGEBYR_BELOEP).map(this::kroner).get();
 
-        Optional<Satser<Kroner>> kronesatser = Stream.of(arbeidsgiverpremieBeloep, medlemspremieBeloep, administrasjonsgebyrBeloep)
+        Optional<Satser<?>> kronesatser = Stream.of(arbeidsgiverpremieBeloep, medlemspremieBeloep, administrasjonsgebyrBeloep)
                 .filter(k -> k.verdi() > 0)
                 .findFirst()
                 .map(p -> new Satser<>(arbeidsgiverpremieBeloep, medlemspremieBeloep, administrasjonsgebyrBeloep));
+
+        if (kronesatser.isPresent() && prosentsatser.isPresent()) {
+            throw new IllegalStateException("Både prosentsatser og kronesatser kan ikke være i bruk for et avtaleprodukt.");
+        }
+
+        Satser<?> satser = Stream.of(kronesatser, prosentsatser)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .orElse(Satser.ingenSatser());
 
         return new Avtaleprodukt(
                 read(rad, INDEX_FRA_OG_MED_DATO).map(Datoar::dato).get(),
@@ -67,8 +77,7 @@ public class AvtaleproduktOversetter {
                 read(rad, INDEX_AVTALE).map(AvtaleId::valueOf).get(),
                 read(rad, INDEX_PRODUKT).map(Produkt::fraKode).get(),
                 read(rad, INDEX_PRODUKTINFO).map(Integer::parseInt).get(),
-                prosentsatser,
-                kronesatser
+                satser
         );
     }
 
