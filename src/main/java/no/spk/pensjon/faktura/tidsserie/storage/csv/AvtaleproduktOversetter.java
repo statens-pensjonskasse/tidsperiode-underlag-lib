@@ -5,6 +5,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
@@ -12,6 +13,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 
 public class AvtaleproduktOversetter {
     public static final String TYPEINDIKATOR = "AVTALEPRODUKT";
@@ -40,18 +42,33 @@ public class AvtaleproduktOversetter {
                     ugyldigAntallKolonnerForOmregningsperiode(rad)
             );
         }
+
+        Prosent arbeidsgiverpremieProsent = read(rad, INDEX_ARBEIDSGIVERPREMIE_PROSENT).map(Prosent::prosent).get();
+        Prosent medlemspremieProsent = read(rad, INDEX_MEDLEMSPREMIE_PROSENT).map(Prosent::prosent).get();
+        Prosent administrasjonsgebyrProsent = read(rad, INDEX_ADMINISTRASJONSGEBYR_PROSENT).map(Prosent::prosent).get();
+
+        Optional<Satser<Prosent>> prosentsatser = Stream.of(arbeidsgiverpremieProsent, medlemspremieProsent, administrasjonsgebyrProsent)
+                .filter(p -> p.isGreaterThan(Prosent.ZERO))
+                .findFirst()
+                .map(p -> new Satser<>(arbeidsgiverpremieProsent, medlemspremieProsent, administrasjonsgebyrProsent));
+
+        Kroner arbeidsgiverpremieBeloep = read(rad, INDEX_ARBEIDSGIVERPREMIE_BELOEP).map(this::kroner).get();
+        Kroner medlemspremieBeloep = read(rad, INDEX_MEDLEMSPREMIE_BELOEP).map(this::kroner).get();
+        Kroner administrasjonsgebyrBeloep = read(rad, INDEX_ADMINISTRASJONSGEBYR_BELOEP).map(this::kroner).get();
+
+        Optional<Satser<Kroner>> kronesatser = Stream.of(arbeidsgiverpremieBeloep, medlemspremieBeloep, administrasjonsgebyrBeloep)
+                .filter(k -> k.verdi() > 0)
+                .findFirst()
+                .map(p -> new Satser<>(arbeidsgiverpremieBeloep, medlemspremieBeloep, administrasjonsgebyrBeloep));
+
         return new Avtaleprodukt(
                 read(rad, INDEX_FRA_OG_MED_DATO).map(Datoar::dato).get(),
                 read(rad, INDEX_TIL_OG_MED_DATO).map(Datoar::dato),
                 read(rad, INDEX_AVTALE).map(AvtaleId::valueOf).get(),
                 read(rad, INDEX_PRODUKT).map(Produkt::fraKode).get(),
                 read(rad, INDEX_PRODUKTINFO).map(Integer::parseInt).get(),
-                read(rad, INDEX_ARBEIDSGIVERPREMIE_PROSENT).map(Prosent::prosent).get(),
-                read(rad, INDEX_MEDLEMSPREMIE_PROSENT).map(Prosent::prosent).get(),
-                read(rad, INDEX_ADMINISTRASJONSGEBYR_PROSENT).map(Prosent::prosent).get(),
-                read(rad, INDEX_ARBEIDSGIVERPREMIE_BELOEP).map(this::kroner).get(),
-                read(rad, INDEX_MEDLEMSPREMIE_BELOEP).map(this::kroner).get(),
-                read(rad, INDEX_ADMINISTRASJONSGEBYR_BELOEP).map(this::kroner).get()
+                prosentsatser,
+                kronesatser
         );
     }
 

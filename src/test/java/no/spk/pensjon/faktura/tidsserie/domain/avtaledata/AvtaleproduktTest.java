@@ -1,21 +1,18 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import org.assertj.core.api.AbstractBooleanAssert;
-import org.junit.Test;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
+import static java.util.Optional.empty;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
+
+import org.assertj.core.api.AbstractBooleanAssert;
+import org.junit.Test;
 
 public class AvtaleproduktTest {
     @Test
@@ -46,16 +43,12 @@ public class AvtaleproduktTest {
     private static Avtaleprodukt lagProdukt(AvtaleId id, Produkt type, int produktinfo) {
         return new Avtaleprodukt(
                 dato("2000.01.01"),
-                Optional.<LocalDate>empty(),
+                empty(),
                 id,
                 type,
                 produktinfo,
-                Prosent.ZERO,
-                Prosent.ZERO,
-                Prosent.ZERO,
-                kroner(10),
-                kroner(10),
-                kroner(10)
+                empty(),
+                empty()
         );
     }
 }

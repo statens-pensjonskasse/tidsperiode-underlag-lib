@@ -75,12 +75,8 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         36,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
+                        empty(),
+                        empty()
                 )
         );
 
@@ -106,12 +102,8 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         36,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
+                        empty(),
+                        empty()
                 ),
                 new Avtaleprodukt(
                         endringsdato,
@@ -119,12 +111,8 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         GRU,
                         36,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
+                        empty(),
+                        empty()
                 )
         );
 
@@ -153,12 +141,8 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         36,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
+                        empty(),
+                        empty()
                 ),
                 new Avtaleprodukt(
                         endringsdato,
@@ -166,12 +150,8 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         37,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
+                        empty(),
+                        empty()
                 )
         );
 
