@@ -90,6 +90,12 @@ public class MedlemsavtalarPeriode extends AbstractTidsperiode<MedlemsavtalarPer
         );
     }
 
+    /**
+     * Bygger opp tilstand for avtalene et medlem har for en bestemt periode.
+     *
+     * @author Tarjei Skorgenes
+     * @see MedlemsavtalarPeriode
+     */
     public static class Builder {
         private final Map<StillingsforholdId, Avtale> avtalekoblingar = new HashMap<>();
 

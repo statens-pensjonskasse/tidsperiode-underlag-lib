@@ -1,26 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringStatus;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
-import org.assertj.core.api.AbstractObjectAssert;
-import org.junit.Test;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
@@ -35,6 +14,27 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.pros
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
+import org.assertj.core.api.AbstractObjectAssert;
+import org.junit.Test;
 
 public class YrkesskadefaktureringIT {
     /**
@@ -66,7 +66,7 @@ public class YrkesskadefaktureringIT {
 
         final Stream<StillingsforholdPeriode> stillingsperioder = Stream.of(minste, stoerste);
 
-        final Map<StillingsforholdId, Optional<YrkesskadefaktureringStatus>> resultat = beregnPerioder(
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
                 medlemsavtalar()
                         .fraOgMed(startDato)
                         .tilOgMed(of(sluttDato))
@@ -134,7 +134,7 @@ public class YrkesskadefaktureringIT {
 
         final Stream<StillingsforholdPeriode> stillingsperioder = Stream.of(minste, stoerste, nestStoerste);
 
-        final Map<StillingsforholdId, Optional<YrkesskadefaktureringStatus>> resultat = beregnPerioder(
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
                 medlemsavtalar()
                         .fraOgMed(startDato)
                         .tilOgMed(of(sluttDato))
@@ -213,7 +213,7 @@ public class YrkesskadefaktureringIT {
                 );
         final Stream<StillingsforholdPeriode> stillingar = Stream.of(stoerste, avkorta, minste);
 
-        final Map<StillingsforholdId, Optional<YrkesskadefaktureringStatus>> resultat = beregnPerioder(
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
                 medlemsavtalar()
                         .fraOgMed(startDato)
                         .tilOgMed(of(sluttDato))
@@ -249,18 +249,93 @@ public class YrkesskadefaktureringIT {
         assertYrkesskadeandel(resultat, stilling3).isEqualTo(of("0%"));
     }
 
+    /**
+     * Verifiserer at parallelle stillingar med lik stillingsprosent som fører til at total stillingsprosent for perioda overstig 100%,
+     * får ein yrkesskadeandel som blir avkorta i en rekkefølge som gir andel til stillinger med laves stillingsforholdid først.
+     */
+    @Test
+    public void skalAvkorteParallelleStillingarMedLikStillingsprosentBasertPaaStillingsforholdId() {
+        final LocalDate startDato = dato("2015.01.01");
+        final LocalDate sluttDato = dato("2015.12.31");
+
+        final StillingsforholdId stilling1 = stillingsforhold(1L);
+        final StillingsforholdId stilling2 = stillingsforhold(2L);
+        final StillingsforholdId stilling3 = stillingsforhold(3L);
+
+
+        //Det er et poeng at perioden som legges til først ikke har minst stillingsforholdid for å avdekke sorteringsfeil.
+        final StillingsforholdPeriode stillingsperiode1 = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .stillingsforhold(stilling2)
+                                .stillingsprosent(new Stillingsprosent(prosent("60%")))
+                );
+        final StillingsforholdPeriode stillingsperiode2 = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .stillingsforhold(stilling1)
+                                .stillingsprosent(new Stillingsprosent(prosent("60%")))
+                );
+
+        final StillingsforholdPeriode stillingsperiode3 = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .stillingsforhold(stilling3)
+                                .stillingsprosent(new Stillingsprosent(prosent("60%")))
+                );
+        final Stream<StillingsforholdPeriode> stillingar = Stream.of(stillingsperiode1, stillingsperiode2, stillingsperiode3);
+
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
+                medlemsavtalar()
+                        .fraOgMed(startDato)
+                        .tilOgMed(of(sluttDato))
+                        .addAvtale(
+                                stilling1,
+                                avtale(
+                                        avtaleId(123456L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(YSK)
+                        )
+                        .addAvtale(
+                                stilling2,
+                                avtale(
+                                        avtaleId(234567L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(YSK)
+                        )
+                        .addAvtale(
+                                stilling3,
+                                avtale(
+                                        avtaleId(223344L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(YSK)
+                        ),
+                stillingar
+        );
+
+        assertYrkesskadeandel(resultat, stilling1).isEqualTo(of("60%"));
+        assertYrkesskadeandel(resultat, stilling2).isEqualTo(of("40%"));
+        assertYrkesskadeandel(resultat, stilling3).isEqualTo(of("0%"));
+    }
+
     private static Stillingsendring eiStillingsendring() {
         return new Stillingsendring()
                 .aksjonskode(Aksjonskode.ENDRINGSMELDING);
     }
 
     private static AbstractObjectAssert<?, Optional<String>> assertYrkesskadeandel(
-            final Map<StillingsforholdId, Optional<YrkesskadefaktureringStatus>> resultat,
+            final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat,
             final StillingsforholdId stilling) {
-        return assertThat(resultat.get(stilling).map(YrkesskadefaktureringStatus::andel).map(Object::toString));
+        return assertThat(resultat.get(stilling).map(FaktureringsandelStatus::andel).map(Object::toString));
     }
 
-    private static Map<StillingsforholdId, Optional<YrkesskadefaktureringStatus>> beregnPerioder(
+    private static Map<StillingsforholdId, Optional<FaktureringsandelStatus>> beregnPerioder(
             final MedlemsavtalarPeriode.Builder avtalar, final Stream<StillingsforholdPeriode> perioder
     ) {
         final List<StillingsforholdPeriode> tmp = perioder.collect(toList());
@@ -275,7 +350,7 @@ public class YrkesskadefaktureringIT {
                 })
                 .collect(
                         groupingBy(
-                                YrkesskadefaktureringStatus::stillingsforhold,
+                                FaktureringsandelStatus::stillingsforhold,
                                 reducing((a, b) -> b)
                         )
                 );

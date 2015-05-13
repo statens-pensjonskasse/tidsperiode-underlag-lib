@@ -1,10 +1,9 @@
-package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
+package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory;
 
 /**
  * {@link AvtaleinformasjonRepository} representerer eit repository for oppslag av avtalerelatert informasjon

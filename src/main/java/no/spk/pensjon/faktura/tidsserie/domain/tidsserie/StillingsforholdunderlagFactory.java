@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.AvtaleinformasjonRepository;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;

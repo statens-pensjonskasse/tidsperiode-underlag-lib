@@ -1,5 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_35;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_36;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.YSK_79;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.erEnAv;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -28,7 +33,7 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
 
     private final AvtaleId avtaleId;
     private final Produkt produkt;
-    private final int produktinfo;
+    private final Produktinfo produktinfo;
     private final Satser<?> satser;
 
     /**
@@ -42,7 +47,7 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
      * @param satser Satser som gjelder for avtaleproduktet.
      */
     public Avtaleprodukt(LocalDate fraOgMed, Optional<LocalDate> tilOgMed,
-            AvtaleId avtaleId, Produkt produkt, int produktinfo, Satser<?> satser) {
+            AvtaleId avtaleId, Produkt produkt, Produktinfo produktinfo, Satser<?> satser) {
         super(fraOgMed, tilOgMed);
         this.avtaleId = avtaleId;
         this.produkt = produkt;
@@ -103,10 +108,10 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
 
     private boolean erFakturerbar() {
         if (produkt.equals(Produkt.GRU)) {
-            return produktinfo == 35 || produktinfo == 36;
+            return erEnAv(produktinfo, GRU_35, GRU_36);
         }
         if (produkt.equals(Produkt.YSK)) {
-            return produktinfo != 79;
+            return !erEnAv(produktinfo, YSK_79);
         }
         return true;
     }

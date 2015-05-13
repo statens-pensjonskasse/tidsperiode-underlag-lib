@@ -5,9 +5,11 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.pros
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
@@ -67,7 +69,7 @@ public class AvtaleproduktOversetterTest {
                 Optional.of(LocalDate.of(2010, 8, 31)),
                 AvtaleId.valueOf("100001"),
                 Produkt.PEN,
-                11,
+                new Produktinfo(11),
                 satser));
     }
 
@@ -80,5 +82,15 @@ public class AvtaleproduktOversetterTest {
                         "AVTALEPRODUKT;100001;XXX;2007.01.01;2010.08.31;11;0.00;0.00;10.00;0;0;2".split(";")
                 )
         );
+    }
+
+    @Test
+    public void testForFaaAntallKolonnerGirFeilmelding() throws Exception {
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("typeindikator, avtaleid, produkt, fra og med-dato, til og med-dato, produktinfo, " +
+                "arbeidsgiverpremie prosent, medlemspremie prosent, administrasjongebyr prosent, " +
+                "arbeidsgiverpremie beløp, medlemspremie beløp, administrasjongebyr beløp");
+        oversetter.oversett(new ArrayList<>());
+        e.expectMessage("Både prosentsatser og kronesatser kan ikke være i bruk for et avtaleprodukt.");
     }
 }

@@ -1,20 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import static java.util.Comparator.comparing;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
@@ -123,22 +118,7 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
         }
 
         @Override
-        public Optional<StillingsforholdId> stoersteStilling() {
-            return stoersteStilling(s -> true);
-        }
-
-        @Override
-        public Optional<StillingsforholdId> stoersteStilling(final Predicate<StillingsforholdId> filter) {
-            return stillingar()
-                    .filter(p -> filter.test(p.stillingsforhold()))
-                    .filter(p -> !p.erMedregning())
-                    .findFirst()
-                    .map(AktivStilling::stillingsforhold);
-        }
-
-        @Override
         public Stream<AktivStilling> stillingar() {
-            final Comparator<AktivStilling> sortering = comparing(e -> e.stillingsprosent().orElse(Prosent.ZERO).toDouble());
             return stillingar
                     .stream()
                     .map(p -> {
@@ -149,8 +129,7 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
                                         gjeldende.map(Stillingsendring::aksjonskode)
                                 );
                             }
-                    )
-                    .sorted(sortering.reversed());
+                    );
         }
     }
 }

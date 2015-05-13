@@ -23,6 +23,7 @@ import java.util.List;
 
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
@@ -75,7 +76,7 @@ public class MedlemsavtalarFactoryTest {
                         ),
                         enAvtale(),
                         PEN,
-                        36,
+                        new Produktinfo(36),
                         ingenSatser()
                 )
         );
@@ -101,7 +102,7 @@ public class MedlemsavtalarFactoryTest {
                         empty(),
                         enAvtale(),
                         PEN,
-                        36,
+                        new Produktinfo(36),
                         ingenSatser()
                 ),
                 new Avtaleprodukt(
@@ -109,7 +110,7 @@ public class MedlemsavtalarFactoryTest {
                         empty(),
                         enAvtale(),
                         GRU,
-                        36,
+                        new Produktinfo(36),
                         ingenSatser()
                 )
         );
@@ -138,7 +139,7 @@ public class MedlemsavtalarFactoryTest {
                         empty(),
                         enAvtale(),
                         PEN,
-                        36,
+                        new Produktinfo(36),
                         ingenSatser()
                 ),
                 new Avtaleprodukt(
@@ -146,7 +147,7 @@ public class MedlemsavtalarFactoryTest {
                         empty(),
                         enAvtale(),
                         PEN,
-                        37,
+                        new Produktinfo(37),
                         ingenSatser()
                 )
         );

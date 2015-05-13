@@ -6,12 +6,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 /**
- * {@link GruppelivsfaktureringStatus} indikerer korvidt eit stillingsforhold skal bli fakturert for gruppeliv.
+ * {@link FaktureringsandelStatus} indikerer korvidt eit stillingsforhold skal bli fakturert for gruppeliv.
  *
  * @author Tarjei Skorgenes
  * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel
  */
-public class GruppelivsfaktureringStatus {
+public class FaktureringsandelStatus {
     private final StillingsforholdId id;
     private final Prosent andel;
 
@@ -21,7 +21,7 @@ public class GruppelivsfaktureringStatus {
      * @param stillingsforhold stillingsforholdet statusen gjeld for
      * @param andel            prosentandelen av gruppelivspremien som stillingsforholdet sin avtale skal betale
      */
-    public GruppelivsfaktureringStatus(final StillingsforholdId stillingsforhold, final Prosent andel) {
+    public FaktureringsandelStatus(final StillingsforholdId stillingsforhold, final Prosent andel) {
         this.id = requireNonNull(stillingsforhold, "stillingsforhold var null, men er påkrevd");
         this.andel = requireNonNull(andel, "andel var null, men er påkrevd");
     }
@@ -44,10 +44,14 @@ public class GruppelivsfaktureringStatus {
         return id;
     }
 
+    public Prosent andel() {
+        return andel;
+    }
+
     @Override
     public String toString() {
         return stillingsforhold()
                 + (erFakturerbar() ? " skal " : " skal ikkje ")
-                + "betale GRU-premie";
+                + "betale premie";
     }
 }

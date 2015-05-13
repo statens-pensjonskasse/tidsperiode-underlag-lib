@@ -1,11 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.empty;
+
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * {@link AktiveStillingar} representerer ei oversikt over alle aktive stillingar eit medlem har.
@@ -19,36 +19,11 @@ import static java.util.Optional.empty;
  * @author Tarjei Skorgenes
  */
 public interface AktiveStillingar {
-    /**
-     * Utledar kva stillingsforhold som er størst / har høgast stillingsprosent innanfor perioda.
-     * <p>
-     * Merk at vi her kun tar hensyn til stillingsforhold basert på stillingsendringar. Medregningsbaserte
-     * stillingar blir ekskludert sidan dei ikkje har noko konsept om stillingsprosent.
-     * <p>
-     * Antagelsen her er at denne sjekken kun vil bli brukt ved seinare gruppelivsfakturering og sidan det
-     * er eit forsikringsprodukt så fakturerer vi aldri dei for medregningspaserte stillingsforhold.
-     * <p>
-     * Dersom fleire stillingsforhold har lik stillingsprosent blir eit av dei plukka tilfeldig som det
-     * største. Dette er eit bevist valg gjort av FAN basert på ein antagelse om at desse tilfella
-     * er relativt få og at det er relativt uviktig kva stilling som blir fakturert for gruppeliv så lenge
-     * vi kun fakturerer eit pr dag/periode.
-     *
-     * @return stillingsforholdet som har størst stillingsprosent i perioda,
-     * eller {@link Optional#empty() ingenting} om medlemsperioda kun er tilknytta medregning
-     */
-    Optional<StillingsforholdId> stoersteStilling();
-
-    /**
-     * Utledar kva for eit av stillingsforholda som blir godtatt av filteret som er størst / har høgast stillingsprosent
-     * innanfor perioda.
-     *
-     * @see #stoersteStilling()
-     */
-    Optional<StillingsforholdId> stoersteStilling(Predicate<StillingsforholdId> filter);
 
     /**
      * Alle aktive stillingar for medlemmet innanfor perioda. Dette inkluderer både
      * stillingsforhold basert på medregning og på stillingsendringar.
+     * <i>Rekkefølgen på stillingne er tilfeldig.</i>
      *
      * @return medlemmet sine aktive stillingar i perioda
      */
@@ -67,6 +42,9 @@ public interface AktiveStillingar {
      * @author Tarjei Skorgenes
      */
     class AktivStilling {
+        public static final Comparator<AktivStilling> SAMMENLIGN_STILLINGSPROSENT = comparing(s -> s.stillingsprosent().orElse(Prosent.ZERO).toDouble());
+        public static final Comparator<AktivStilling> SAMMENLIGN_STILLINGSFORHOLDID = (s1, s2) -> s1.stillingsforhold().id().compareTo(s2.stillingsforhold().id());
+
         private final StillingsforholdId stillingsforhold;
 
         private final Optional<Prosent> stillingsprosent;
@@ -165,20 +143,6 @@ public interface AktiveStillingar {
         @Override
         public String toString() {
             return stillingsforhold + ", aksjonskode: " + aksjonskode + ", stillingsprosent: " + stillingsprosent();
-        }
-
-        /**
-         * Konstruerer ei ny medregningbasert stilling.
-         *
-         * @param stillingsforhold stillingsforholdnummeret for stillinga
-         * @return den nye medregningsbaserte stillinga utan stillingsprosent og aksjonskode
-         */
-        public static AktivStilling medregning(final StillingsforholdId stillingsforhold) {
-            return new AktivStilling(
-                    stillingsforhold,
-                    empty(),
-                    empty()
-            );
         }
     }
 }

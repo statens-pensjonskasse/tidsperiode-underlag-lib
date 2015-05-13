@@ -10,7 +10,6 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPe
 import java.util.List;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.AvtaleinformasjonRepository;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
@@ -44,6 +43,13 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 public class MedlemsavtalarFactory {
     private AvtaleinformasjonRepository avtalar = a -> Stream.empty();
 
+    /**
+     * Overstyringsmetode for å sette hvilket avtaleinformasjonrepository dette MedlemsavtalarFactory skal benytte for
+     * å finne avtaler.
+      * @param avtalar AvtaleinformasjonRepository dette MedlemsavtalarFactory skal bruke.
+     * @return dette MedlemsavtalarFactory for chaining
+     * @throws NullPointerException dersom avtaler er null
+     */
     public MedlemsavtalarFactory overstyr(final AvtaleinformasjonRepository avtalar) {
         this.avtalar = requireNonNull(avtalar, () -> "Avtalar er påkrevd, men var null");
         return this;

@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import static java.util.Optional.ofNullable;
-import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldigAntallKolonnerForOmregningsperiode;
+import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldigAntallKolonnerForAvtaleprodukt;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
@@ -39,7 +40,7 @@ public class AvtaleproduktOversetter {
     public Avtaleprodukt oversett(final List<String> rad) {
         if (rad.size() < ANTALL_KOLONNER) {
             throw new IllegalArgumentException(
-                    ugyldigAntallKolonnerForOmregningsperiode(rad)
+                    ugyldigAntallKolonnerForAvtaleprodukt(rad)
             );
         }
 
@@ -76,7 +77,7 @@ public class AvtaleproduktOversetter {
                 read(rad, INDEX_TIL_OG_MED_DATO).map(Datoar::dato),
                 read(rad, INDEX_AVTALE).map(AvtaleId::valueOf).get(),
                 read(rad, INDEX_PRODUKT).map(Produkt::fraKode).get(),
-                read(rad, INDEX_PRODUKTINFO).map(Integer::parseInt).get(),
+                read(rad, INDEX_PRODUKTINFO).map(p -> new Produktinfo(Integer.parseInt(p))).get(),
                 satser
         );
     }

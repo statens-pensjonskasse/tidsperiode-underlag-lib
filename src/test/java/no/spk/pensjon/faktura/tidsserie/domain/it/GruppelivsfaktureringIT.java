@@ -1,25 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.it;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringStatus;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
-import org.assertj.core.api.AbstractObjectAssert;
-import org.junit.Test;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
@@ -30,11 +10,31 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtal
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
+import org.assertj.core.api.AbstractObjectAssert;
+import org.junit.Test;
 
 public class GruppelivsfaktureringIT {
     /**
@@ -67,7 +67,7 @@ public class GruppelivsfaktureringIT {
 
         final Stream<StillingsforholdPeriode> stillingsperioder = Stream.of(minste, stoerste);
 
-        final Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> resultat = beregnPerioder(
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
                 medlemsavtalar()
                         .fraOgMed(startDato)
                         .tilOgMed(of(sluttDato))
@@ -136,7 +136,7 @@ public class GruppelivsfaktureringIT {
 
         final Stream<StillingsforholdPeriode> stillingsperioder = Stream.of(minste, stoerste, nestStoerste);
 
-        final Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> resultat = beregnPerioder(
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
                 medlemsavtalar()
                         .fraOgMed(startDato)
                         .tilOgMed(of(sluttDato))
@@ -206,7 +206,7 @@ public class GruppelivsfaktureringIT {
                 );
         final Stream<StillingsforholdPeriode> stillingar = Stream.of(stoerste, minste);
 
-        final Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> resultat = beregnPerioder(
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
                 medlemsavtalar()
                         .fraOgMed(startDato)
                         .tilOgMed(of(sluttDato))
@@ -233,6 +233,85 @@ public class GruppelivsfaktureringIT {
                 .isEqualTo(of(true));
         assertErFakturerbar(resultat, stilling2.id())
                 .as("er underlagsperioda med lavast stillingsprosent fakturerbar for GRU?")
+                .isEqualTo(of(false));
+    }
+
+    /**
+     * Ved parallelle stillingsforhold som har lik stillingsprosent, skal stillingsforholdid brukes til
+     * å bestemme hvilket stillingsforhold som skal faktureres. Dette for å få deterministisk beregning av undelag.
+     */
+    @Test
+    public void skalFakturerePeriodePaaStillingMedStoerstStillingsprosentOgMinstStillingsforholdId() {
+        final LocalDate startDato = dato("2015.01.01");
+        final LocalDate sluttDato = dato("2015.12.31");
+
+        final StillingsforholdId stillingMedId2 = stillingsforhold(2L);
+        final StillingsforholdId stillingMedId1 = stillingsforhold(1L);
+        final StillingsforholdId stillingMedId3 = stillingsforhold(3L);
+
+        //Det er et poeng at perioden som legges til først ikke har minst stillingsforholdid for å avdekke sorteringsfeil.
+        final StillingsforholdPeriode stillingsperiode1 = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .stillingsforhold(stillingMedId2)
+                                .stillingsprosent(new Stillingsprosent(prosent("30%")))
+                );
+        final StillingsforholdPeriode stillingsperiode2 = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .stillingsforhold(stillingMedId1)
+                                .stillingsprosent(new Stillingsprosent(prosent("30%")))
+                );
+        final StillingsforholdPeriode stillingsperiode3 = new StillingsforholdPeriode(startDato, of(sluttDato))
+                .leggTilOverlappendeStillingsendringer(
+                        eiStillingsendring()
+                                .aksjonsdato(startDato)
+                                .stillingsforhold(stillingMedId3)
+                                .stillingsprosent(new Stillingsprosent(prosent("30%")))
+                );
+
+        final Stream<StillingsforholdPeriode> stillingar = Stream.of(stillingsperiode1, stillingsperiode2, stillingsperiode3);
+
+        final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat = beregnPerioder(
+                medlemsavtalar()
+                        .fraOgMed(startDato)
+                        .tilOgMed(of(sluttDato))
+                        .addAvtale(
+                                stillingMedId2,
+                                avtale(
+                                        avtaleId(123456L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(GRU)
+                        )
+                        .addAvtale(
+                                stillingMedId1,
+                                avtale(
+                                        avtaleId(234567L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(GRU)
+                        )
+                        .addAvtale(
+                                stillingMedId3,
+                                avtale(
+                                        avtaleId(234568L)
+                                )
+                                        .addProdukt(PEN)
+                                        .addProdukt(GRU)
+                        ),
+                stillingar
+        );
+        assertErFakturerbar(resultat, stillingMedId1.id())
+                .as("er underlagsperioda lavest stillingsid fakturerbar for GRU?")
+                .isEqualTo(of(true));
+        assertErFakturerbar(resultat, stillingMedId2.id())
+                .as("er underlagsperioda stillingsid som ikke er lavest fakturerbar for GRU?")
+                .isEqualTo(of(false));
+        assertErFakturerbar(resultat, stillingMedId3.id())
+                .as("er underlagsperioda stillingsid som ikke er lavest fakturerbar for GRU?")
                 .isEqualTo(of(false));
     }
 
@@ -296,7 +375,7 @@ public class GruppelivsfaktureringIT {
                         .values()
                         .stream()
                         .map(Optional::get)
-                        .filter(GruppelivsfaktureringStatus::erFakturerbar)
+                        .filter(FaktureringsandelStatus::erFakturerbar)
                         .collect(toList())
         )
                 .as("stillingsforhold som er fakturerbare for GRU i den aktuelle perioden")
@@ -308,7 +387,7 @@ public class GruppelivsfaktureringIT {
                 .aksjonskode(Aksjonskode.ENDRINGSMELDING);
     }
 
-    private static Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> beregnPerioder(
+    private static Map<StillingsforholdId, Optional<FaktureringsandelStatus>> beregnPerioder(
             final MedlemsavtalarPeriode.Builder avtalar, final Stream<StillingsforholdPeriode> perioder
     ) {
         final List<StillingsforholdPeriode> tmp = perioder.collect(toList());
@@ -323,7 +402,7 @@ public class GruppelivsfaktureringIT {
                 })
                 .collect(
                         groupingBy(
-                                GruppelivsfaktureringStatus::stillingsforhold,
+                                FaktureringsandelStatus::stillingsforhold,
                                 reducing((a, b) -> b)
                         )
                 );
@@ -339,17 +418,17 @@ public class GruppelivsfaktureringIT {
     }
 
     private static AbstractObjectAssert<?, Optional<Boolean>> assertErFakturerbar(
-            final Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> resultat,
+            final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat,
             final long stillingsforholdId
     ) {
         return assertThat(erFakturerbar(resultat, stillingsforholdId));
     }
 
     private static Optional<Boolean> erFakturerbar(
-            final Map<StillingsforholdId, Optional<GruppelivsfaktureringStatus>> resultat,
+            final Map<StillingsforholdId, Optional<FaktureringsandelStatus>> resultat,
             final long stillingsforholdId
     ) {
-        return resultat.get(stillingsforhold(stillingsforholdId)).map(GruppelivsfaktureringStatus::erFakturerbar);
+        return resultat.get(stillingsforhold(stillingsforholdId)).map(FaktureringsandelStatus::erFakturerbar);
     }
 
 }

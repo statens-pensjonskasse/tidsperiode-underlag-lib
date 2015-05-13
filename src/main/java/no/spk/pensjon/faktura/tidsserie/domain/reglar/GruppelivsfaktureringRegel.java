@@ -1,5 +1,14 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.PERMISJON_UTAN_LOENN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling.SAMMENLIGN_STILLINGSFORHOLDID;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling.SAMMENLIGN_STILLINGSPROSENT;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.ZERO;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
@@ -8,12 +17,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
-
-import java.util.function.Predicate;
-
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.PERMISJON_UTAN_LOENN;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.ZERO;
 
 /**
  * Regel med strategien som styrer kva underlagsperioder som skal fakturerast for gruppelivsproduktet.
@@ -25,19 +28,23 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.ZERO
  * strategi for kva for eit stillingsforhold og avtale som skal betale premien for dagane i perioda.
  * <p>
  * SPK har valgt å bruke stillingsstørrelse som strategi for kva stillinga og avtale som skal dekke inn premien.
+ * Dersom stillingene er like store, brukes stillingsforholdid for å bestemme hvilken stilling som skal brukes,
+ * slik at det blir deterministisk oppførsel mellom kjøringer på samme datasett,
  * <p>
  * Regelen er som følger:
  * <ol>
  * <li>Stillingar tilknytta avtalar utan gruppelivsprodukt hos SPK skal aldri betale gruppelivspremie.</li>
+ * <li>Stillingar tilknytta medregning skal ikke ha gruppelivspremie.</li>
+ * <li>Stillingar some er ute i permisjon uten lønn skal ikke ha gruppelivspremie for perioden permisjonen gjelder.</li>
  * <li>Stillinga med størst stillingsprosent og der avtalen har gruppelivsprodukt, skal vere ansvarlig for periodas
  * gruppelivspremie</li>
  * <li>Variant: I førre punkt, viss fleire stillingar har stillingsprosent lik medlemmet si største stilling i perioda,
- * blir ei av stillingane tilfeldig valgt som ansvarlig for periodas gruppelivspermie</li>
+ * blir stillingen med lavest stillingsforholdid valgt.</li>
  * </ol>
  *
  * @author Tarjei Skorgenes
  */
-public class GruppelivsfaktureringRegel implements BeregningsRegel<GruppelivsfaktureringStatus> {
+public class GruppelivsfaktureringRegel implements BeregningsRegel<FaktureringsandelStatus> {
     private static final Prosent FULLTID = new Prosent("100%");
 
     /**
@@ -60,7 +67,7 @@ public class GruppelivsfaktureringRegel implements BeregningsRegel<Gruppelivsfak
      *                                            {@link Medlemsavtalar} eller {@link AktiveStillingar}
      */
     @Override
-    public GruppelivsfaktureringStatus beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
+    public FaktureringsandelStatus beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
         final Medlemsavtalar avtalar = periode.annotasjonFor(Medlemsavtalar.class);
         final Predicate<AktivStilling> harGruppeliv = s -> avtalar.betalarTilSPKFor(s.stillingsforhold(), GRU);
         final Predicate<AktivStilling> permisjonUtanLoenn = s -> s
@@ -68,21 +75,25 @@ public class GruppelivsfaktureringRegel implements BeregningsRegel<Gruppelivsfak
                 .filter(PERMISJON_UTAN_LOENN::equals)
                 .isPresent();
 
+
         final StillingsforholdId stilling = periode.annotasjonFor(StillingsforholdId.class);
-        return new GruppelivsfaktureringStatus(
+        Function<AktivStilling, AktivStilling> oppjusterTilFulltid = this::oppjusterTilFulltid;
+        return new FaktureringsandelStatus(
                 stilling,
                 periode.annotasjonFor(AktiveStillingar.class)
                         .stillingar()
+                        .filter(s -> !s.erMedregning())
                         .filter(harGruppeliv)
                         .filter(permisjonUtanLoenn.negate())
-                        .map(this::oppjusterTilFulltid)
+                        .sorted(SAMMENLIGN_STILLINGSPROSENT.reversed().thenComparing(SAMMENLIGN_STILLINGSFORHOLDID))
+                        .map(oppjusterTilFulltid)
                         .reduce(
                                 new Stillingsfordeling(),
                                 Stillingsfordeling::leggTil,
-                                Stillingsfordeling::kombiner
+                                Stillingsfordeling::kombinerIkkeStoettet
                         )
                         .andelFor(stilling)
-                        .orElse(ZERO) // Medregning manglar stillingsprosent og skal heller aldri belastast for GRU
+                        .orElse(ZERO)
         );
     }
 

@@ -47,7 +47,7 @@ public class AvtaleproduktTest {
                 empty(),
                 id,
                 type,
-                produktinfo,
+                new Produktinfo(produktinfo),
                 Satser.ingenSatser()
         );
     }
