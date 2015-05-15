@@ -23,7 +23,7 @@ public class Omregningsperiode extends AbstractTidsperiode<Omregningsperiode> {
      *
      * @param fraOgMed første dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
-     * @param beloep
+     * @param beloep grunnbeløp for perioden
      */
     public Omregningsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final Kroner beloep) {
         super(fraOgMed, tilOgMed);

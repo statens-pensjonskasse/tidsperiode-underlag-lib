@@ -17,7 +17,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
  * {@link no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode}
  * <p>
  * Informasjon henta frå statlige lønnstrinnperioder skal inneholde følgjande verdiar, alle representert som tekst:
- * <table>
+ * <table summary="">
  * <thead>
  * <tr>
  * <td>Index</td>

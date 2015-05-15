@@ -23,6 +23,7 @@ public interface Beregningsperiode<T extends Tidsperiode<T>> extends Tidsperiode
      *
      * @param regelType kva type beregningsregel som skal brukast
      * @return resultatet frå beregningsregelen basert på underlagsperiodas tilstand
+     * @param <T> typen på resultatet av beregningen
      * @throws PaakrevdAnnotasjonManglarException dersom det ikkje eksisterer nokon beregningsregel
      *                                            av den angitte typa som er gyldig innanfor beregningsperioda
      */

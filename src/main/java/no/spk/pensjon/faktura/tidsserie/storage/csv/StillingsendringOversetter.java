@@ -26,7 +26,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
  * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring}
  * <p>
  * Informasjon henta frå stillingshistorikken skal inneholde følgjande verdiar, alle representert som tekst:
- * <table>
+ * <table summary="">
  * <thead>
  * <tr>
  * <td>Index</td>

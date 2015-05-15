@@ -91,6 +91,7 @@ public class TidsserieObservasjon {
      * Avtalens premiestatus pr siste periode i observasjonsunderlaget.
      * <p>
      * Merk at verdien er valgfri sidan avtalane ikkje er påkrevd å alltid ha ein premiestatus.
+     * @return premiestatus for observasjonen dersom den finnes
      */
     public Optional<Premiestatus> premiestatus() {
         return premiestatus;

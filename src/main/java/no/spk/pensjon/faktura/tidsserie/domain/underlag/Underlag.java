@@ -18,69 +18,74 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  * Eit underlag, med tilhøyrande underlagsperioder, skal understøtte beregningar/spørringar som skal utførast basert
  * på verdiar henta frå 2 eller fleire periodiserte datatyper som kan individuelt variere over tid, frå dag til dag,
  * veke til veke, måned til måned eller andre semi-tilfeldige variasjonsmønster.
- * <p>
+ * </p>
  * Denne typen variasjon frå periode til periode, med mange nivå av mulige overlappande perioder, er hovedmotivasjonen
  * for underlags- og underlagsperiode-konsepta.
  * <p>
  * Underlaget inneheld underlagsperioder og kvar underlagsperiode representerer den minste tidsperioda som ein kan
  * behandle utan at nokon av dei tilknytta tidsperiodiske datasetta, endrar tilstand innanfor tidsperioda.
- * <p>
+ * </p>
  * <h2>Kontrakt</h2>
  * <p>
  * Den viktigaste kontrakta som klientar som brukar underlaget kan basere seg på er at at det ikkje skal kunne
  * eksistere tidsgap mellom ei eller fleire av underlagsperiodene som inngår i underlaget. Forsøk på å konstruere
  * eit underlag med tidsgap skal feile umiddelbart.
+ * </p>
  * <p>
  * Underlaget skal vere bygd opp av underlagsperioder sortert i kronologisk rekkefølge, med eldste periode første og
  * nyaste periode sist.
- * <p>
+ * </p>
  * <h2>Koblingar</h2>
  * Sidan konstruksjon av underlag og underlagsperioder krever eit periodisert datasett som input, er det ønskelig å
  * kunne spore tilbake frå genererte underlagsperioder til input-periodene som førte til at dei vart oppretta.
  * <p>
  * For å støtte denne typen sporing, gir kvar underlagsperiode tilgang til alle input-perioder som den er kobla til.
  * Dette er alle tidsperiodene som overlappar underlagsperiode, enten delvis eller fullstendig.
- * <h2>Eksempel</h3>
+ * </p>
+ * <h2>Eksempel</h2>
  * Tore startar i ny stilling 1. januar 2001, går opp frå lønnstrinn 10 til 20 3. juni 2001 og sluttar i stilling
  * 31. desember 2001, han jobbar heile tida i 100% stilling.
  * <p>
  * Lønnstrinn 10 endrar beløp 1. mai 2001, frå kr 100 000 til kr 105 000, 20 endrar beløp 1. mai 2001, frå kr 200 000
  * til kr 210 000. Ingen seinare endring av lønnstrinnbeløpa er registrert.
+ * </p>
  * <p>
  * Eit underlag generert ut frå desse 6 tidsperiodene (2 stillingsforholdperioder + 4 lønnstrinnperioder) består
  * av følgjande 3 underlagsperioder:
- * <table>
- * <thread>
- * <tr>Frå og med-dato</tr>
- * <tr>Til og med-dato</tr>
- * <tr>Tilknytta perioder</tr>
- * </thread>
+ * </p>
+ * <table summary="">
+ * <thead>
+ * <tr>
+ * <td>Frå og med-dato</td>
+ * <td>Til og med-dato</td>
+ * <td>Tilknytta perioder</td>
+ * </thead>
  * <tbody>
  * <tr>
  * <td>2001.01.01</td>
  * <td>2001.04.30</td>
  * <td>
- * Stillingsforholdperiode 2001.01.01 -> 2001.06.02
- * Lønnstrinnperiode ltr. 10, 2000.05.01 -> 2001.04.30
- * Lønnstrinnperiode ltr. 20, 2000.05.01 -> 2001.04.30
+ * Stillingsforholdperiode 2001.01.01 -&gt; 2001.06.02
+ * Lønnstrinnperiode ltr. 10, 2000.05.01 -&gt; 2001.04.30
+ * Lønnstrinnperiode ltr. 20, 2000.05.01 -&gt; 2001.04.30
  * </td>
  * </tr>
  * <tr>
  * <td>2001.05.01</td>
  * <td>2001.06.02</td>
  * <td>
- * Stillingsforholdperiode 2001.01.01 -> 2001.06.02
- * Lønnstrinnperiode ltr. 10, 2001.05.01 -> løpande
- * Lønnstrinnperiode ltr. 20, 2001.05.01 -> løpande
+ * Stillingsforholdperiode 2001.01.01 -&gt; 2001.06.02
+ * Lønnstrinnperiode ltr. 10, 2001.05.01 -&gt; løpande
+ * Lønnstrinnperiode ltr. 20, 2001.05.01 -&gt; løpande
  * </td>
  * </tr>
  * <tr>
  * <td>2001.06.03</td>
  * <td>2001.12.31</td>
  * <td>
- * Stillingsforholdperiode 2001.06.03 -> 2001.12.31
- * Lønnstrinnperiode ltr. 10, 2001.05.01 -> løpande
- * Lønnstrinnperiode ltr. 20, 2001.05.01 -> løpande
+ * Stillingsforholdperiode 2001.06.03 -&gt; 2001.12.31
+ * Lønnstrinnperiode ltr. 10, 2001.05.01 -&gt; løpande
+ * Lønnstrinnperiode ltr. 20, 2001.05.01 -&gt; løpande
  * </td>
  * </tr>
  * </tbody>
@@ -91,6 +96,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.fei
  * kan ein no enkelt finne ut om ein har perioder med inkonsistente eller manglande data, f.eks. om det finnes
  * underlagsperioder utan kobling til ei stillingsforholdperiode, eller med kobling til meir enn ei
  * stillingsforholdperiode.
+ * </p>
  *
  * @author Tarjei Skorgenes
  */

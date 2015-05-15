@@ -20,7 +20,7 @@ import static no.spk.pensjon.faktura.tidsserie.storage.csv.Feilmeldingar.ugyldig
  * <p>
  * Informasjon henta frå lønnstrinnperioder tilknytta Apotekordninga skal inneholde følgjande verdiar, alle representert
  * som tekst:
- * <table>
+ * <table summary="">
  * <thead>
  * <tr>
  * <td>Index</td>

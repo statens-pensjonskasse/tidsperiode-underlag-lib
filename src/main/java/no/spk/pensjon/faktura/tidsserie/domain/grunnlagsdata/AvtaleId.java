@@ -48,6 +48,8 @@ public class AvtaleId {
     /**
      * @see #valueOf(long)
      * @see Long#parseLong(String)
+     * @param text er ein String som kan konverteres til ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
+     * @return eit nytt avtalenummer.
      */
     public static AvtaleId valueOf(String text) {
         return valueOf(Long.parseLong(text));
@@ -55,6 +57,8 @@ public class AvtaleId {
 
     /**
      * @see #valueOf(long)
+     * @param id ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
+     * @return eit nytt avtalenummer.
      */
     public static AvtaleId avtaleId(final long id) {
         return valueOf(id);
@@ -62,6 +66,8 @@ public class AvtaleId {
 
     /**
      * @see #AvtaleId(Long)
+     * @param id ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
+     * @return eit nytt avtalenummer.
      */
     public static AvtaleId valueOf(long id) {
         return new AvtaleId(id);

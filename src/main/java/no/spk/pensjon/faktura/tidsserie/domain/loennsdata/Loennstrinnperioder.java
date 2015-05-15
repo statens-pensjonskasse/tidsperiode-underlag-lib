@@ -61,6 +61,7 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
      * @param stillingskode      den valgfrie stillingskoda som kan ha påvirka kva lønnstrinntabell ein har slått opp lønnstrinnperiodene frå for apotekordninga
      * @param loennstrinnperiode lønnstrinnperiodene som alle er tilknytta lønnstrinnet og som
      *                           alle er gyldige innanfor den aktuelle tidsperioda  @return ei feilmelding med ein beskrivelse av kva som har feila og kva perioder som førte til feilen
+     * @return feilmelding som gir informasjon om overlappende gjeldene lønnstrinperioder
      */
     public static String meirEnnEiGjeldandeLoennstrinnPeriodeForSammeLoennstrinnPaaSammeTid(
             final Tidsperiode<?> periode,
@@ -174,6 +175,9 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
 
     /**
      * @see #grupper(Ordning, Stream)
+     * @param ordning  pensjonsordninga som lønnstrinna er tilknytta
+     * @param perioder lønnstrinnperiodene som skal grupperast etter tidperiode
+     * @return ein straum som inneheld lønntrinnperioder for kvar gruppering
      */
     public static Stream<Loennstrinnperioder> grupper(final Ordning ordning, final Loennstrinnperiode<?>... perioder) {
         return grupper(ordning, asList(perioder).stream());

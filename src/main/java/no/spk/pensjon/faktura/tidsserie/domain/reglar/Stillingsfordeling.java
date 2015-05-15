@@ -64,7 +64,9 @@ public class Stillingsfordeling {
     /**
      * Denne dummy metoden eksisterer for å kunne tilfredstille signaturen for reduce fra en strøm med aktive stillinger.
      * Blir kun kalt ved parallellprossersering av størm, og det støttes ikke/brukes ikke.
-     * @throws UnsupportedOperationException
+     * @param other Stillingsfordelinger kan ikke brukes i en parallell strøm
+     * @return Kaster alltid UnsupportedOperationException
+     * @throws UnsupportedOperationException Stillingsfordelinger kan ikke brukes i en parallell strøm
      */
     public Stillingsfordeling kombinerIkkeStoettet(final Stillingsfordeling other) {
         throw new UnsupportedOperationException();

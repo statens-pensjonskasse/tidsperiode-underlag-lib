@@ -60,22 +60,28 @@ public class StillingsforholdId {
     }
 
     /**
+     * @param id ein <code>Long</code> som inneheld det unike nummeret som identifiserer stillingsforholdet
      * @see #valueOf(long)
+     * @return eit nytt stillingsforholdnummer.
      */
     public static StillingsforholdId stillingsforhold(final long id) {
         return new StillingsforholdId(id);
     }
 
     /**
+     * @param id ein <code>long</code> som inneheld det unike nummeret som identifiserer stillingsforholdet
      * @see #StillingsforholdId(Long)
+     * @return eit nytt stillingsforholdnummer.
      */
     public static StillingsforholdId valueOf(final long id) {
         return new StillingsforholdId(id);
     }
 
     /**
+     * @param text er ein <code>String</code> som kan konverteres til ein <code>long</code> for det unike nummeret som identifiserer stillingsforholdet
      * @see #valueOf(long)
      * @see Long#parseLong(String)
+     * @return eit nytt stillingsforholdnummer.
      */
     public static StillingsforholdId valueOf(final String text) {
         return valueOf(Long.parseLong(text));

@@ -193,6 +193,7 @@ public class StillingsforholdunderlagFactory {
 
     /**
      * @see #addReferansePerioder(java.util.stream.Stream)
+     * @param perioder beregingsreglane og periodene dei er gjeldande for,
      */
     public void addReferansePerioder(final Iterable<Tidsperiode<?>> perioder) {
         perioder.forEach(referanseperioder::add);
@@ -200,6 +201,7 @@ public class StillingsforholdunderlagFactory {
 
     /**
      * @see #addReferansePerioder(java.util.stream.Stream)
+     * @param perioder beregingsreglane og periodene dei er gjeldande for,
      */
     public void addReferansePerioder(final Tidsperiode<?>... perioder) {
         addReferansePerioder(Stream.of(perioder));
@@ -221,6 +223,7 @@ public class StillingsforholdunderlagFactory {
 
     /**
      * @see #addBeregningsregel(java.util.stream.Stream)
+     * @param perioder beregingsreglane og periodene dei er gjeldande for
      */
     public void addBeregningsregel(final Regelperiode<?>... perioder) {
         addReferansePerioder(perioder);
@@ -228,6 +231,7 @@ public class StillingsforholdunderlagFactory {
 
     /**
      * @see #addBeregningsregel(java.util.stream.Stream)
+     * @param perioder beregingsreglane og periodene dei er gjeldande for,
      */
     public void addBeregningsregel(final Iterable<Regelperiode<?>> perioder) {
         perioder.forEach(referanseperioder::add);

@@ -126,8 +126,9 @@ public final class Stillingskode {
     }
 
     /**
-     * Stillingskode 5, 7, 8, 9, 60 og 61 i tort016 mappes til 60 i tort012</br> Stillingskode 3 og 4 i tort016 mappes til 4 i tort012</br>
-     * Stillingskode 2 i tort016 mappes til 2 i tort012</br>
+     * Stillingskode 5, 7, 8, 9, 60 og 61 i tort016 mappes til 60 i tort012<br>
+     * Stillingskode 3 og 4 i tort016 mappes til 4 i tort012<br>
+     * Stillingskode 2 i tort016 mappes til 2 i tort012<br>
      *
      * @return stillingskode i TORT12
      */

@@ -30,6 +30,8 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> {
      *
      * @param fraOgMed første dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
+     * @param avtale som versjonen gjelder
+     * @param status for avtalen i perioden
      * @throws NullPointerException dersom nokon av parameterverdiane er <code>null</code>
      */
     public Avtaleversjon(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,

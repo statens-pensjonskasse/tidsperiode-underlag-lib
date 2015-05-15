@@ -20,39 +20,43 @@ import static java.util.stream.Collectors.toSet;
  * Dei tre primære datatypene som er påkrevd for dette er stillingsendringar frå stillingshistorikken,
  * medregningar og avtalekoblingar for alle stillingsforholda tilknytta medlemmet og som ein skal gjere beregningar
  * for.
+ * </p>
  * <p>
  * Den medlemsspesifikke informasjonen som objektet inneheld blir internt og eksternt handtert som ei samling med tekstverdiar,
  * organisert som rader og kolonner i form av ei liste som inneheld lister som igjen inneheld strengar.
  * Denne representaasjonen er valgt for å holde serialiseringa enkel og forenkle handtering av stillingshistorikk,
  * medregning og avtalekoblingar utan å måtte lage spesialisert serialisering for kvar og ein av desse.
+ * </p>
  * <p>
  * Kontrakta for korleis kvar rad må sjå ut, varierer mellom dei 3 forskjellige datatypene. Men 4 felt er likevel
  * påkrevd for at ting skal fungere som ønska:
+ * </p>
  * <ol>
  * <li>Typeindikator</li>
  * <li>Fødselsdato</li>
  * <li>Personnummer</li>
  * <li>Stillingsforholdnummer</li>
  * </ol>
- * <p>
- * <h4>Stillingshistorikk</h4>
+ * <h3>Stillingshistorikk</h3>
  * <p>
  * Informasjon henta frå stillingshistorikken blir mappa om og representert som
  * {@link Stillingsendring}. Dette blir automatisk utført for alle
  * medlemsdata som har verdien <code>0</code> som sin typeindikator.
+ * </p>
  * <p>
  * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter} for meir detaljert
  * informasjon om konktrakta på formatet som slike endringar må oppfylle.
- * <p>
- * <h4>Avtalekobling</h4>
+ * </p>
+ * <h3>Avtalekobling</h3>
  * <p>
  * Informasjon henta frå stillingsforholdets avtalekoblingar blir mappa om og representert som
  * {@link Avtalekoblingsperiode}. Dette blir automatisk utført for
  * alle medlemsdata som har verdien <code>1</code> som sin typeindikator.
+ * </p>
  * <p>
  * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter} for meir detaljert
  * informasjon om konktrakta på formatet som slike endringar må oppfylle.
- *
+ * </p>
  * @author Tarjei Skorgenes
  */
 public class Medlemsdata {

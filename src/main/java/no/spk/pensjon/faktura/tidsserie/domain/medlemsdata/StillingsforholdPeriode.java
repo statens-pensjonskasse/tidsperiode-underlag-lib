@@ -83,6 +83,8 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
     /**
      * @see #leggTilOverlappendeStillingsendringer(java.util.List)
      * @see java.util.Arrays#asList
+     * @param endringer en liste som inneholder alle stillingsendringer som skal forsøkes tilkoblet perioden
+     * @return <code>this</code>
      */
     public StillingsforholdPeriode leggTilOverlappendeStillingsendringer(final Stillingsendring... endringer) {
         leggTilOverlappendeStillingsendringer(asList(endringer));

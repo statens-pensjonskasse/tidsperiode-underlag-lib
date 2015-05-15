@@ -186,6 +186,7 @@ public class Stillingsendring {
      * Ei stilling kan bli innrapportert enten med lønn eller med lønnstrinn, men aldri med begge to.
      *
      * @param loenn stillingas lønn viss den ikkje innrapporteres med lønnstrinn
+     * @return <code>this</code>
      */
     public Stillingsendring loenn(final Optional<DeltidsjustertLoenn> loenn) {
         this.loenn = loenn;
@@ -207,6 +208,8 @@ public class Stillingsendring {
 
     /**
      * @see #fastetillegg()
+     * @param fastetillegg faste tillegget i årslønn for stillinga som skal settes for stillingsendringen
+     * @return <code>this</code>
      */
     public Stillingsendring fastetillegg(final Optional<Fastetillegg> fastetillegg) {
         this.fastetillegg = requireNonNull(fastetillegg);
@@ -228,6 +231,8 @@ public class Stillingsendring {
 
     /**
      * @see #variabletillegg()
+     * @param variabletillegg som skal settes i årslønn for stillinga
+     * @return <code>this</code>
      */
     public Stillingsendring variabletillegg(final Optional<Variabletillegg> variabletillegg) {
         this.variabletillegg = requireNonNull(variabletillegg);
@@ -249,6 +254,8 @@ public class Stillingsendring {
 
     /**
      * @see #funksjonstillegg()
+     * @param funksjonstillegg som skal settes i årslønn for stillinga
+     *  @return <code>this</code>
      */
     public Stillingsendring funksjonstillegg(final Optional<Funksjonstillegg> funksjonstillegg) {
         this.funksjonstillegg = requireNonNull(funksjonstillegg);
@@ -268,7 +275,7 @@ public class Stillingsendring {
      * Stillingsbrøken for stillingsforholdet.
      *
      * @param stillingsprosent stillingsbrøken for stillingsforholdet
-     * @return <code></code>this</code>
+     * @return <code>this</code>
      */
     public Stillingsendring stillingsprosent(Stillingsprosent stillingsprosent) {
         this.stillingsprosent = ofNullable(stillingsprosent);
@@ -308,6 +315,8 @@ public class Stillingsendring {
 
     /**
      * @see #stillingskode()
+     * @param stillingskode som skal brukes for stillingsendringen
+     * @return stillingsendringa si stillingskode
      */
     public Stillingsendring stillingskode(final Optional<Stillingskode> stillingskode) {
         this.stillingskode = requireNonNull(stillingskode);

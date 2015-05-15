@@ -40,6 +40,8 @@ public class UnderlagFactory {
 
     /**
      * @see #addPerioder(java.util.stream.Stream)
+     * @param perioder som skal legges til underlaget
+     * @return dette UnderlagFactory for chaining
      */
     public UnderlagFactory addPerioder(final Tidsperiode<?>... perioder) {
         return addPerioder(asList(perioder));
@@ -47,6 +49,8 @@ public class UnderlagFactory {
 
     /**
      * @see #addPerioder(java.util.stream.Stream)
+     * @param perioder som skal legges til underlaget
+     * @return dette UnderlagFactory for chaining
      */
     public UnderlagFactory addPerioder(final Iterable<? extends Tidsperiode<?>> perioder) {
         return addPerioder(stream(perioder.spliterator(), false));

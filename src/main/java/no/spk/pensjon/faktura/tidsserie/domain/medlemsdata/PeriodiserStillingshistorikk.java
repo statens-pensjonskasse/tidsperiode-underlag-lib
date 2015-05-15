@@ -38,6 +38,8 @@ public class PeriodiserStillingshistorikk {
 
     /**
      * @see #addEndring(java.util.stream.Stream)
+     * @param endringer stillingsendringer som skal periodiseres
+     * @return <code>this</code>
      */
     public PeriodiserStillingshistorikk addEndring(final Iterable<Stillingsendring> endringer) {
         endringer.forEach(e -> this.endringer.add(e));
@@ -65,7 +67,7 @@ public class PeriodiserStillingshistorikk {
      * tilfelle vil stillingsforholdet bli behandla som løpande. VErken 011 eller 031 blir tolka på noko anna vis enn
      * ei 021 linje.
      * <p>
-     * <Første aksjonsdato i historikken til stillingsforholdet blir alltid behandla som startmelding ettersom vi ikkje
+     * Første aksjonsdato i historikken til stillingsforholdet blir alltid behandla som startmelding ettersom vi ikkje
      * er i stand til å gi noko bedre estimat på når stillingsforholdet startar viss det ikkje er ei startmelding som
      * er registrert denne dagen.
      *

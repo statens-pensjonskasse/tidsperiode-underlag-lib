@@ -55,7 +55,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     }
 
     /**
-     * Beløpet som skal medregnast for stillingsforholdet.
+     * @return Beløpet som skal medregnast for stillingsforholdet.
      */
     public Medregning beloep() {
         return medregning;
@@ -65,6 +65,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
      * Kode som indikerer kva type medregning det er snakk om.
      * <p>
      * For fastsatsfaktureringa er det kun bistillingar og lønn annen arbeidsgivar som skal medregnast.
+     * @return Medredningskode i perioden
      */
     public Medregningskode kode() {
         return kode;

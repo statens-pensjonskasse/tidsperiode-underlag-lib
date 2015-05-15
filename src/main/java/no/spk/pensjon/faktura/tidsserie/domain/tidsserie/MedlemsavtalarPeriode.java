@@ -139,6 +139,9 @@ public class MedlemsavtalarPeriode extends AbstractTidsperiode<MedlemsavtalarPer
         /**
          * @see AvtaleBuilder#bygg()
          * @see #addAvtale(StillingsforholdId, Avtale)
+         * @param stilling stillinga som er kobla til avtalen innanfor perioda
+         * @param avtale informasjon om avtalens tilstand innanfor perioda
+         * @return <code>this</code>
          */
         public Builder addAvtale(final StillingsforholdId stilling, final AvtaleBuilder avtale) {
             avtalekoblingar.put(stilling, avtale.bygg());

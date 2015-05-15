@@ -30,6 +30,8 @@ public class Aarsverk {
     /**
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent#Prosent(String)
      * @see #Aarsverk(no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent)
+     * @param verdi antall årsverk angitt i prosent
+     * @return Aarsverk for verdi
      */
     public static Aarsverk aarsverk(final Prosent verdi) {
         return new Aarsverk(verdi);

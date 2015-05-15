@@ -47,6 +47,9 @@ public class Medregningskode {
 
     /**
      * @see #valueOf(String)
+     * @param kode kodeverdien som skal konverterast til ei medregningskode
+     * @return den pre-eksisterande medregningskoda med samme verdi, eller ei ny medregningskode viss det ikkje
+     * eksisterer ei predefinert kode for verdien
      */
     public static Medregningskode valueOf(final int kode) {
         return valueOf(Integer.toString(kode));
@@ -63,6 +66,7 @@ public class Medregningskode {
 
     /**
      * @see #BISTILLING
+     * @return BISTILLING
      */
     public boolean erBistilling() {
         return BISTILLING.equals(this);
@@ -70,6 +74,7 @@ public class Medregningskode {
 
     /**
      * @see #TILLEGG_ANNEN_ARBGIV
+     * @return TILLEGG_ANNEN_ARBGIV
      */
     public boolean erTilleggAnnenArbeidsgiver() {
         return TILLEGG_ANNEN_ARBGIV.equals(this);

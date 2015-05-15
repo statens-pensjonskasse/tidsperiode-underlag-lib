@@ -14,17 +14,18 @@ import java.util.Optional;
  * Ettersom beregningsreglane kan endre seg over tid, enten fordi SPK endrar metodikk eller på grunn av endringar
  * i regelverk som SPK må forholde seg til, ønskjer vi å kunne handtere dette på generelt vis via underlagets
  * underlagsperioder.
+ * </p>
  * <p>
  * For å unngå at ein i alle reglar som kan variere over tid, må sjekke på dato for å finne ut kva regel som er
  * gjeldande på eit bestemt tidspunkt, inkluderer vi heller perioder med gjeldande beregningsregel, som ein del av
  * underlaget. På dette viset får vi då automatisk splitta opp underlaget kvar gang ein byttar beregningsregel og
  * ein kan dermed bere slå opp gjeldande beregningsregel frå kvar underlagsperiodes periodekoblingar.
- * <p>
+ * </p>
  * <h2>Eksempel</h2>
  * <p>
  * Permisjonsavtalen vart endra med virkningsdato 1. juli 2013. Før endringa var det kun punkt 4a og 4b som skulle
  * handterast. Etter endringa skulle beregningsregelen også ta hensyn til 4c og utvida medregningsperiode.
- * <p>
+ * </p>
  * Dette tilfellet ville kunne handterast ved å ha to beregningsreglar (PermisjonsRegelV1 og PermisjonsRegelV2):
  * <pre>
  * RegelPeriode a = new RegelPeriode(dato("2003.01.01"), of(dato("2013.06.30"), new PermisjonsRegelV1());

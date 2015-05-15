@@ -72,7 +72,9 @@ public class Ordning {
     }
 
     /**
+     * @param text er en streng som kan konverteres til en integer som representerere ordningas unike identifikator
      * @see #valueOf(int)
+     * @return ein ny instans, eller ein av dei predefinerte viss dei har samme numerisk verdi som <code>id</code>
      */
     public static Ordning valueOf(final String text) {
         return valueOf(Integer.parseInt(text));

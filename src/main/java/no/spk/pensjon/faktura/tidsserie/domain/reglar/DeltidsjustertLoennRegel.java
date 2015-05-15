@@ -19,7 +19,7 @@ import java.util.Optional;
  * <br>
  * Deltidsjustert lønn blir beregna på ein av tre mulig måtar:
  * <ol>
- * <l>Dersom stillinga er tilknytta medregning, blir beløpet alltid lik kr 0</l>
+ * <li>Dersom stillinga er tilknytta medregning, blir beløpet alltid lik kr 0</li>
  * <li>Dersom underlagsperioda er annotert med lønnstrinn, blir lønnstrinnet slått opp og konvertert til lønn i
  * 100% stilling, for deretter å blir deltidsjustert ut frå periodas stillingsprosent</li>
  * <li>Dersom underlagsperioda ikkje er annotert med lønnstrinn, blir deltidsjustert lønn slått opp direkte frå

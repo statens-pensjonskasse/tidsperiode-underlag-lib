@@ -43,6 +43,7 @@ interface HarKoblingar {
      * ingen exception vil bli kasta i denne situasjonen.
      *
      * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
+     * @param <T> typen tidsperiode
      * @return den eine tidsperioda av den angitte typen som underlagsperioda er tilkobla, eller eit
      * {@link java.util.Optional#empty() tomt} svar viss perioda ikkje er kobla til ei tidsperioda av den angitte typen
      * @throws IllegalStateException dersom perioda er tilkobla meir enn ei tidsperiode av den angitte typen
@@ -51,7 +52,10 @@ interface HarKoblingar {
 
     /**
      * @see #koblingAvType(Class, Predicate)
-     * @params predikat filter som blir køyrt på koblingane før ønska enkeltperiode blir forsøkt henta ut
+     * @param predikat filter som blir køyrt på koblingane før ønska enkeltperiode blir forsøkt henta ut
+     * @param type klassen for typen tidsperiode
+     * @param <T> typen tidsperiode
+     * @return enkel tidsperiode som matcher filter-kriteriene, dersom den finnes
      */
     <T extends Tidsperiode<T>> Optional<T> koblingAvType(Class<T> type, final Predicate<T> predikat);
 
@@ -62,6 +66,7 @@ interface HarKoblingar {
      * ingen exception vil bli kasta i denne situasjonen.
      *
      * @param type datatypen for tidsperioda som underlagsperioda kan vere koble opp mot
+     * @param <T> typen tidsperiode
      * @return ein straum som inneheld alle dei tilkobla periodene av den angitte typen
      */
     <T extends Tidsperiode<?>> Stream<T> koblingarAvType(Class<T> type);

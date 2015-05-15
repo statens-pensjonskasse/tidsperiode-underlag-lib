@@ -24,7 +24,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
  * For produkt 'GRU' betyr produktinfo 35 og 36 at avtalen <i>skal</i> faktureres for 'GRU'.
  * Alle andre produktinfo-verdier betyr at avtalen <i>ikke skal</i> faktureres for produktet 'GRU'.
  * </p>
- * <p>
  * <p>Avtaleprodukt er oppført med premiesatser. Disse er oppgitt enten i prosent eller i kronebeløp.</p>
  *
  * @author Snorre E. Brekke - Computas
@@ -78,6 +77,7 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
      * TODO: Skal satsene brukes her?
      *
      * @param avtale avtalebyggaren som inneheld avtaletilstanda som skal oppdaterast
+     * @return builder for chaining
      */
     public AvtaleBuilder populer(final AvtaleBuilder avtale) {
         if (erFakturerbar()) {

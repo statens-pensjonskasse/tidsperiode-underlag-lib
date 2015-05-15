@@ -94,8 +94,11 @@ public class TidsserieFacade {
      * påvirkar/senkar ytelsen til prosesseringa anbefalast det sterkt at den utfører vidare tung behandling eller
      * persistering av observasjonane asynkront.
      *
+     * @param medlemsdata all informasjon tilknyttet et medlem det skal generers tidsserie for
+     * @param periode avgrensing av tidsserien
      * @param publikator publikatoren som straumen av observasjonsunderlag vil bli sendt vidare til,
      * den er ansvarlig for all vidare behandling/persistering av observasjonane
+     * @param referanseperioder perioder som ikke er medlemsspesifikke
      * @see #generer(Medlemsdata, Observasjonsperiode, StillingsforholdUnderlagCallback, Stream)
      * @see #lagObservasjonsunderlagGenerator(Observasjonspublikator)
      */

@@ -22,6 +22,7 @@ public interface Annoterbar<S extends Annoterbar<S>> {
      * @param <T>   annotasjonstypen
      * @param type  annotasjonstypen
      * @param verdi verdien som skal vere tilknytta annotasjonstypen
+     * @return <code>this</code>
      * @throws IllegalArgumentException viss <code>type</code> er {@link java.util.Optional}
      */
     <T> S annoter(Class<? extends T> type, T verdi);

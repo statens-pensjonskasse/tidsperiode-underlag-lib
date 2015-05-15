@@ -44,7 +44,7 @@ public class Avtale {
     /**
      * Skal avtalen betale premie for det angitte produktet til SPK?
      *
-     * @param produkt
+     * @param produkt som skal sjekkes for om avtalen betaler for
      * @return <code>true</code> dersom avtalen har det angitte produktet hos SPK,
      * <code>false</code> ellers
      */

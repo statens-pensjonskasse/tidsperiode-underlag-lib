@@ -98,11 +98,11 @@ public class Prosent implements Sats{
      * <br>
      * Eksempel:
      * <br>
-     * 100% => 1.0
+     * 100% =&gt; 1.0
      * <br>
-     * 250% => 2.5
+     * 250% =&gt; 2.5
      * <br>
-     * -50% => -0.5
+     * -50% =&gt; -0.5
      *
      * @return prosentsatsen representert som eit desimaltall i form av prosentsatsen delt på 100
      */
@@ -137,6 +137,8 @@ public class Prosent implements Sats{
 
     /**
      * @see #Prosent(String)
+     * @param text ein <code>String</code> som inneheld ein prosentsats, formatert på forma <code>123%</code>
+     * @return Ny prosent
      */
     public static Prosent prosent(final String text) {
         return new Prosent(text);

@@ -28,6 +28,8 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
 
     /**
      * @see #StillingsforholdPerioder(StillingsforholdId, Stream)
+     * @param stillingsforhold stillingsforholdet som har blitt periodisert
+     * @param perioder periodene som periodiseringa har generert for stillingsforholdet
      */
     public StillingsforholdPerioder(final StillingsforholdId stillingsforhold, final List<StillingsforholdPeriode> perioder) {
         this(stillingsforhold, requireNonNull(perioder, () -> "perioder er påkrevd, men var null").stream());
