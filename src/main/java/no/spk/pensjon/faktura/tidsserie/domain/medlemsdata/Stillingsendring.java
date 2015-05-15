@@ -318,7 +318,8 @@ public class Stillingsendring {
      * Annoterer underlagsperioda med stillingsendringas verdiar som er påkrevd for beregning av maskinelt grunnlag.
      * <p>
      * Følgjande verdiar blir forsøkt annotert på perioda viss stillingsendringa har ein ikkje-tom verdi for dei:
-     * <ul></ul>
+     * <ul>
+     * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId}</li>
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent}</li>
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode}</li>
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn}</li>
@@ -332,6 +333,8 @@ public class Stillingsendring {
      * @param periode underlagsperioda som skal annoterast
      */
     void annoter(final Annoterbar<?> periode) {
+        periode.annoter(StillingsforholdId.class, stillingsforhold);
+
         periode.annoter(Aksjonskode.class, aksjonskode());
 
         periode.annoter(Stillingsprosent.class, stillingsprosent());

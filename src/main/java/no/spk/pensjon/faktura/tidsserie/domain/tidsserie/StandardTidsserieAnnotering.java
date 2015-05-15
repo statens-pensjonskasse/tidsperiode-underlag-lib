@@ -5,6 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
@@ -72,6 +73,12 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
         });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             stillingsforhold.annoter(periode);
+        });
+        periode.koblingAvType(Medlemsperiode.class).ifPresent(medlem -> {
+            medlem.annoter(periode);
+        });
+        periode.koblingAvType(MedlemsavtalarPeriode.class).ifPresent(p -> {
+            p.annoter(periode);
         });
         periode.koblingAvType(Aar.class).ifPresent((Aar aar) -> {
             periode.annoter(Aarstall.class, aar.aarstall());

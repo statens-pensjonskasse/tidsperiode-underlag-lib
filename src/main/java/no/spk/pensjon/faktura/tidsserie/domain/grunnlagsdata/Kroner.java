@@ -1,10 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
+import static java.util.Objects.requireNonNull;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.function.Supplier;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner} representerer eit beløp angitt i norske kroner.
@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Tarjei Skorgenes
  */
-public final class Kroner implements Comparable<Kroner> {
+public final class Kroner implements Comparable<Kroner>, Sats {
     /**
      * Eit kronebeløp med verdi lik kr 0.
      */

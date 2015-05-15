@@ -2,6 +2,8 @@ package no.spk.pensjon.faktura.tidsserie.storage.csv;
 
 import java.util.List;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+
 class Feilmeldingar {
     /**
      * Oversetting frå <code>rad</code> til
@@ -97,6 +99,24 @@ class Feilmeldingar {
                 rad,
                 "stillingsendring",
                 "typeindikator, frå og med-dato, til og med-dato, lønnstrinn, stillingskode, beløp"
+        );
+    }
+
+    /**
+     * Oversetting fra <code>rad</code> til
+     * {@link Avtaleprodukt} har feilet
+     * fordi antall kolonner i <code>rad</code> ikke var som forventet.
+     *
+     * @param rad input-rader som inneholdt feil antall kolonner for et avtaleprodukt
+     * @return feimelding som beskriver forventet format og hva den faktisk inneholdt
+     */
+    public static String ugyldigAntallKolonnerForAvtaleprodukt(final List<String> rad) {
+        return ugyldigAntallKolonner(
+                rad,
+                "stillingsendring",
+                "typeindikator, avtaleid, produkt, fra og med-dato, til og med-dato, produktinfo, " +
+                        "arbeidsgiverpremie prosent, medlemspremie prosent, administrasjongebyr prosent, " +
+                        "arbeidsgiverpremie beløp, medlemspremie beløp, administrasjongebyr beløp"
         );
     }
 

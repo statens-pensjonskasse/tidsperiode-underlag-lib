@@ -1,12 +1,18 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
  * {@link Medlemsperiode} representerer ei tidsperiode der det ikkje skjer nokon lønns- eller stillingsrelaterte
@@ -62,5 +68,68 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
     @Override
     public String toString() {
         return "MP[" + fraOgMed + "," + tilOgMed().map(Object::toString).orElse("->") + "]";
+    }
+
+    /**
+     * Annoterer underlagsperioda med informasjon om kva stillingar
+     * medlemmet er aktivt på innanfor medlemsperioda.
+     *
+     * @param periode underlagsperioda som skal annoterast
+     */
+    public void annoter(final Annoterbar<?> periode) {
+        periode.annoter(AktiveStillingar.class, aktiveStillingar());
+    }
+
+    /**
+     * Opprettar eit nytt sett med aktive stillingar basert på stillingsforholdperiodene som er tilknytta medlemsperioda.
+     * <p>
+     * Dersom medlemmet innanfor perioda ikkje har nokon aktive stillingar på avtalar tilknytta SPK, blir ingenting
+     * returnert.
+     *
+     * @return ein ny instans av aktive stillingar med informasjon om kvart stillingsforhold medlemmet er aktivt på
+     * innanfor medlemsperioda, eller {@link Optional#empty() ingenting} dersom medlememt er inaktiv i perioda
+     */
+    Optional<AktiveStillingar> aktiveStillingar() {
+        if (stillingsforhold.isEmpty()) {
+            return empty();
+        }
+        return of(
+                new AktiveStillingsforhold(
+                        stillingsforhold()
+                )
+        );
+    }
+
+    /**
+     * Aktive stillingar gir oversikt over kva stillingsforhold medlemmet er aktivt på innanfor ei bestemt
+     * medlemsperiode.
+     */
+    private static class AktiveStillingsforhold implements AktiveStillingar {
+        private final List<StillingsforholdPeriode> stillingar = new ArrayList<>();
+
+        AktiveStillingsforhold(final Stream<StillingsforholdPeriode> stillingsforhold) {
+            stillingsforhold.forEach(stillingar::add);
+
+            if (stillingar.isEmpty()) {
+                throw new IllegalStateException(
+                        "Kan ikkje opprette aktive stillingar for medlemsperiode der ingen stillingar er aktive"
+                );
+            }
+        }
+
+        @Override
+        public Stream<AktivStilling> stillingar() {
+            return stillingar
+                    .stream()
+                    .map(p -> {
+                                final Optional<Stillingsendring> gjeldende = p.gjeldendeEndring();
+                                return new AktivStilling(
+                                        p.stillingsforhold(),
+                                        gjeldende.map(Stillingsendring::stillingsprosent).map(Stillingsprosent::prosent),
+                                        gjeldende.map(Stillingsendring::aksjonskode)
+                                );
+                            }
+                    );
+        }
     }
 }

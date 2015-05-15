@@ -1,16 +1,16 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
  * {@link Avtaleversjon} representerer tilstanden til ein avtale innanfor ei bestemt tidsperiode.
@@ -46,6 +46,15 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> {
      */
     public void annoter(final Annoterbar<?> periode) {
         periode.annoter(Premiestatus.class, status);
+    }
+
+    /**
+     * Oppdaterer avtalebyggarens tilstand til å reflektere kva som er gjeldande premiestatus for avtalen.
+     *
+     * @param avtale avtalebyggaren som inneheld avtaletilstanda som skal oppdaterast
+     */
+    public void populer(final AvtaleBuilder avtale) {
+        avtale.premiestatus(status);
     }
 
     /**

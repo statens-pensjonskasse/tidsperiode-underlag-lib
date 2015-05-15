@@ -1,18 +1,18 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
+import static java.lang.Double.parseDouble;
+import static java.util.Objects.requireNonNull;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.function.Supplier;
-
-import static java.lang.Double.parseDouble;
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent} representerer ein prosentsats.
  *
  * @author Tarjei Skorgenes
  */
-public class Prosent {
+public class Prosent implements Sats{
     /**
      * 0%.
      */
@@ -66,6 +66,18 @@ public class Prosent {
     public Prosent plus(final Prosent other) {
         return new Prosent(
                 verdi + other.verdi
+        );
+    }
+
+    /**
+     * Trekker verdien av den andre prosenten frå verdien av gjeldande prosent.
+     *
+     * @param other den andre prosenten
+     * @return gjeldande prosentverdi minus den andre prosentverdien
+     */
+    public Prosent minus(final Prosent other) {
+        return new Prosent(
+                verdi - other.verdi
         );
     }
 
@@ -132,5 +144,9 @@ public class Prosent {
 
     private long avrund(final Prosent other, final int antallDesimalar) {
         return Math.round(100d * other.verdi * Math.pow(10, antallDesimalar));
+    }
+
+    public boolean isGreaterThan(final Prosent other) {
+        return verdi > other.verdi;
     }
 }

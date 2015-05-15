@@ -5,6 +5,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -54,6 +55,11 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
     @Override
     public <T extends Tidsperiode<T>> Optional<T> koblingAvType(final Class<T> type) {
         return koblingar.koblingAvType(type);
+    }
+
+    @Override
+    public <T extends Tidsperiode<T>> Optional<T> koblingAvType(final Class<T> type, final Predicate<T> predikat) {
+        return koblingar.koblingAvType(type, predikat);
     }
 
     @Override

@@ -1,5 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
@@ -14,15 +24,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@link StillingsforholdunderlagFactory} inneheld algoritma som bygger opp stillingsforholdunderlag.
@@ -93,6 +94,14 @@ public class StillingsforholdunderlagFactory {
         final Collection<Aar> observerbare = observasjonsperiode.overlappendeAar();
         final Medlemsperioder medlemsperioder = medlem.periodiser()
                 .orElseThrow(feilmeldingForMedlemSomKunHarAvtalekobling());
+
+        final Collection<MedlemsavtalarPeriode> avtaleperioder = new MedlemsavtalarFactory()
+                .overstyr(avtalar)
+                .periodiser(
+                        medlem.avtalekoblingar(p -> true),
+                        observasjonsperiode
+                )
+                .collect(toList());
         medlem
                 .allePeriodiserbareStillingsforhold()
                 .map(medlemsperioder::stillingsforhold)
@@ -103,6 +112,7 @@ public class StillingsforholdunderlagFactory {
                     factory.addPerioder(s.stream());
                     factory.addPerioder(medlemsperioder.stream());
                     factory.addPerioder(medlem.avtalekoblingar(s::tilhoeyrer));
+                    factory.addPerioder(avtaleperioder.stream());
                     factory.addPerioder(
                             medlem
                                     .avtalekoblingar(s::tilhoeyrer)
@@ -294,22 +304,6 @@ public class StillingsforholdunderlagFactory {
         @Override
         public void annoter(final Underlag underlag, final Underlagsperiode periode) {
         }
-    }
-
-    /**
-     * {@link AvtaleinformasjonRepository} representerer eit repository for oppslag av avtalerelatert informasjon
-     * som kan variere over tid.
-     *
-     * @author Tarjei Skorgenes
-     */
-    public static interface AvtaleinformasjonRepository {
-        /**
-         * Slår opp all tidsperiodisert informasjon som er relevant for tidsseriegenereringa for ein bestemt avtale.
-         *
-         * @param avtale avtalen det skal slåast opp tidsperiodisert avtaleinformasjon om
-         * @return ein straum med all avtalerelatert informasjon tilknytta <code>avtale</code>
-         */
-        Stream<Tidsperiode<?>> finn(final AvtaleId avtale);
     }
 
     private static class IngenAvtaleinformasjon implements AvtaleinformasjonRepository {

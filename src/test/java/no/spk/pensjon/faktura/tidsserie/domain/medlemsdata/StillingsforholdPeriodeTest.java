@@ -42,6 +42,13 @@ public class StillingsforholdPeriodeTest {
         new StillingsforholdPeriode(dato("2005.08.15"), empty()).tilhoeyrer(new StillingsforholdId(1L));
     }
 
+    @Test
+    public void skalFeileTilhoeyrerSjekkDersomTilstandErUgyldig2() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Stillingsforholdperioda SP[2005-08-15,->] er i ei ugyldig tilstand, den har verken ei medregning eller ei stillingsendring");
+        new StillingsforholdPeriode(dato("2005.08.15"), empty()).stillingsforhold();
+    }
+
     /**
      * Verifiserer at ei periode tilhøyrer stillingsforholdet som gjeldande stillingsendringa er tilknytta.
      */

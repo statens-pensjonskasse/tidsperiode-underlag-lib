@@ -60,6 +60,13 @@ public class StillingsforholdId {
     }
 
     /**
+     * @see #valueOf(long)
+     */
+    public static StillingsforholdId stillingsforhold(final long id) {
+        return new StillingsforholdId(id);
+    }
+
+    /**
      * @see #StillingsforholdId(Long)
      */
     public static StillingsforholdId valueOf(final long id) {

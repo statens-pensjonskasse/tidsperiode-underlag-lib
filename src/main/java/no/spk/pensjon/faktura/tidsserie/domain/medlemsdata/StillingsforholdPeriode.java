@@ -177,8 +177,17 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * @throws IllegalStateException dersom perioda er i ei ugyldig tilstand og verken har medregning eller stillingsendring(ar)
      */
     public boolean tilhoeyrer(final StillingsforholdId id) {
+        return stillingsforhold().equals(id);
+    }
+
+    @Override
+    public String toString() {
+        return "SP[" + fraOgMed() + "," + tilOgMed().map(Object::toString).orElse("->") + "]";
+    }
+
+    StillingsforholdId stillingsforhold() {
         if (medregning.isPresent()) {
-            return medregning.get().tilhoerer(id);
+            return medregning.get().stillingsforhold();
         }
         return gjeldendeEndring()
                 .orElseThrow(
@@ -188,11 +197,6 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
                                         + "den har verken ei medregning eller ei stillingsendring"
                         )
                 )
-                .tilhoerer(id);
-    }
-
-    @Override
-    public String toString() {
-        return "SP[" + fraOgMed() + "," + tilOgMed().map(Object::toString).orElse("->") + "]";
+                .stillingsforhold();
     }
 }

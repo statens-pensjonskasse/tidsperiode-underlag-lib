@@ -13,24 +13,26 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.ApotekLoennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
+import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
-import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.ApotekLoennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
-import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -70,6 +72,30 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med aktivestillingar frå medlemsperiodene.
+     */
+    @Test
+    public void skalAnnotereMedAktiveStillingaFraaMedlemsperioda() {
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                new Medlemsperiode(dato("2015.01.01"), empty())
+                                        .kobleTil(
+                                                Stream.of(
+                                                        new StillingsforholdPeriode(dato("2015.01.01"), empty())
+                                                                .leggTilOverlappendeStillingsendringer(
+                                                                        new Stillingsendring()
+                                                                                .stillingsprosent(fulltid())
+                                                                                .aksjonsdato(dato("2015.01.01"))
+                                                                )
+                                                )
+                                        )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), AktiveStillingar.class).isNotEqualTo(empty());
     }
 
     /**
@@ -141,6 +167,54 @@ public class StandardTidsserieAnnoteringTest {
                         )
         );
         assertAnnotasjon(underlag.toList().get(0), Aksjonskode.class).isEqualTo(of(aksjonskode));
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med stillingsforhold frå stillingsforholdperioder tilknytta
+     * medregning.
+     */
+    @Test
+    public void skalAnnotereMedStillingsforholdFraStillingsforholdperioderTilknyttaMedregning() {
+        final StillingsforholdId expected = new StillingsforholdId(1L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        new Medregningsperiode(
+                                                dato("1917.01.01"),
+                                                of(dato("2015.12.31")),
+                                                new Medregning(kroner(10_000)),
+                                                Medregningskode.BISTILLING,
+                                                expected
+                                        )
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), StillingsforholdId.class).isEqualTo(of(expected));
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene blir annotert med stillingsforhold frå stillingsforholdperioda dei overlappar
+     * når den er tilknytta stillingsendring.
+     */
+    @Test
+    public void skalAnnotereUnderlagsperioderMedStillingsforholdFraGjeldandeStillingsendring() {
+        final StillingsforholdId expected = new StillingsforholdId(29292L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("2005.08.15"))
+                        .tilOgMed(dato("2005.08.31"))
+                        .medKobling(
+                                new StillingsforholdPeriode(dato("2005.08.15"), empty())
+                                        .leggTilOverlappendeStillingsendringer(
+                                                new Stillingsendring()
+                                                        .stillingsprosent(fulltid())
+                                                        .aksjonsdato(dato("2005.08.15"))
+                                                        .stillingsforhold(expected)
+                                        )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), StillingsforholdId.class).isEqualTo(of(expected));
     }
 
     /**

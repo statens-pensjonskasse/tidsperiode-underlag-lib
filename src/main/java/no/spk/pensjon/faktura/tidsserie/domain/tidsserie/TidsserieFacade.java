@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import static java.util.Objects.requireNonNull;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StillingsforholdunderlagFactory.AvtaleinformasjonRepository;
 
 import java.util.function.Consumer;
 import java.util.stream.Stream;
