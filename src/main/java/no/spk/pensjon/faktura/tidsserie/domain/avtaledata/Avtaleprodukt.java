@@ -28,7 +28,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
  *
  * @author Snorre E. Brekke - Computas
  */
-public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
+public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> {
 
     private final AvtaleId avtaleId;
     private final Produkt produkt;
