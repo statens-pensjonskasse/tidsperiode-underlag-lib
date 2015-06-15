@@ -12,20 +12,24 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 
 import org.assertj.core.api.AbstractObjectAssert;
 
+@SuppressWarnings("rawtypes")
 public class Assertions {
     public static AbstractObjectAssert<?, Optional<String>> assertArbeidsgiverbeloep(final Avtaleprodukt produkt) {
         final Optional<? extends Satser<?>> premiesatser = of(produkt.premiesatser());
-        return assertThat(premiesatser.map(satser -> satser.arbeidsgiverpremie()).map(Object::toString))
+        final Function<Satser, Sats> mapper = satser -> satser.arbeidsgiverpremie();
+        return assertThat(premiesatser.map(mapper).map(Object::toString))
                 .as("premiebeløp for arbeidsgiver fra " + produkt);
     }
 
     public static AbstractObjectAssert<?, Optional<String>> assertMedlemsbeloep(final Avtaleprodukt produkt) {
-        return assertThat(of(produkt.premiesatser()).map(satser -> satser.medlemspremie()).map(Object::toString))
+        final Function<Satser, Sats> mapper = satser -> satser.medlemspremie();
+        return assertThat(of(produkt.premiesatser()).map(mapper).map(Object::toString))
                 .as("premiebeløp for medlem fra " + produkt);
     }
 
     public static AbstractObjectAssert<?, Optional<String>> assertAdministrasjonsgebyrbeloep(final Avtaleprodukt produkt) {
-        return assertThat(of(produkt.premiesatser()).map(satser -> satser.administrasjonsgebyr()).map(Object::toString))
+        final Function<Satser, Sats> mapper = satser -> satser.administrasjonsgebyr();
+        return assertThat(of(produkt.premiesatser()).map(mapper).map(Object::toString))
                 .as("premiebeløp for administrasjonsgebyr fra " + produkt);
     }
 }
