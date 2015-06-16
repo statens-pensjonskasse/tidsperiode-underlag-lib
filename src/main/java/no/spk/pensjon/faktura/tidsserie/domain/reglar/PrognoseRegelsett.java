@@ -5,6 +5,8 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 
 import java.util.stream.Stream;
 
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+
 /**
  * Genererer regelsettet som blir benytta når det skal byggast opp ein live- eller T1-tidsserie på stillingsforholdnivå
  * pr avtale pr premieår pr observasjonsdato.
@@ -24,17 +26,21 @@ public class PrognoseRegelsett implements Regelsett {
      */
     @Override
     public Stream<Regelperiode<?>> reglar() {
-        return Stream.<Regelperiode<?>>of(
-                new Regelperiode<>(dato("2000.01.01"), empty(), new MaskineltGrunnlagRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new AarsfaktorRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new DeltidsjustertLoennRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new AntallDagarRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new AarsLengdeRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new LoennstilleggRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new OevreLoennsgrenseRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new MedregningsRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new MinstegrenseRegel()),
-                new Regelperiode<>(dato("2000.01.01"), empty(), new AarsverkRegel())
+        return Stream.of(
+                prognoseperiode(new MaskineltGrunnlagRegel()),
+                prognoseperiode(new AarsfaktorRegel()),
+                prognoseperiode(new DeltidsjustertLoennRegel()),
+                prognoseperiode(new AntallDagarRegel()),
+                prognoseperiode(new AarsLengdeRegel()),
+                prognoseperiode(new LoennstilleggRegel()),
+                prognoseperiode(new OevreLoennsgrenseRegel()),
+                prognoseperiode(new MedregningsRegel()),
+                prognoseperiode(new MinstegrenseRegel()),
+                prognoseperiode(new AarsverkRegel())
         );
+    }
+
+    private Regelperiode<?> prognoseperiode(final BeregningsRegel<?> regel) {
+        return new Regelperiode<>(dato("2000.01.01"), empty(), regel);
     }
 }
