@@ -11,6 +11,7 @@ import java.util.Optional;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Sats;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
@@ -28,7 +29,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
  *
  * @author Snorre E. Brekke - Computas
  */
-public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
+public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements Avtalerelatertperiode<Avtaleprodukt> {
 
     private final AvtaleId avtaleId;
     private final Produkt produkt;
@@ -114,5 +115,14 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleversjon> {
             return !erEnAv(produktinfo, YSK_79);
         }
         return true;
+    }
+
+    /**
+     * Kun for bruk fra tester av avtaleproduktets tilstand.
+     *
+     * @return premiesatser
+     */
+    Satser<?> premiesatser() {
+        return satser;
     }
 }

@@ -1,6 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.Map;
@@ -8,10 +11,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toSet;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata} representerer all
@@ -44,19 +44,12 @@ import static java.util.stream.Collectors.toSet;
  * medlemsdata som har verdien <code>0</code> som sin typeindikator.
  * </p>
  * <p>
- * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.StillingsendringOversetter} for meir detaljert
- * informasjon om konktrakta på formatet som slike endringar må oppfylle.
+ * Ansvaret for handtering og mapping frå råformat til {@link Stillingsendring} er klientane
+ * sitt ansvar. Sjå dei konkrete implementasjonane av
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter} for informasjon
+ * om kontrakta som input-datane må oppfylle.
  * </p>
- * <h3>Avtalekobling</h3>
- * <p>
- * Informasjon henta frå stillingsforholdets avtalekoblingar blir mappa om og representert som
- * {@link Avtalekoblingsperiode}. Dette blir automatisk utført for
- * alle medlemsdata som har verdien <code>1</code> som sin typeindikator.
- * </p>
- * <p>
- * Sjå {@link no.spk.pensjon.faktura.tidsserie.storage.csv.AvtalekoblingOversetter} for meir detaljert
- * informasjon om konktrakta på formatet som slike endringar må oppfylle.
- * </p>
+ *
  * @author Tarjei Skorgenes
  */
 public class Medlemsdata {

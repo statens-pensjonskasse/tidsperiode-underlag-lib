@@ -20,7 +20,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
  *
  * @author Tarjei Skorgenes
  */
-public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> {
+public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements Avtalerelatertperiode<Avtaleversjon> {
     private final AvtaleId avtale;
     private final Premiestatus status;
 

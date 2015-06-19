@@ -35,7 +35,7 @@ import java.util.Optional;
  * @author Tarjei Skorgenes
  */
 public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
-    private final BeregningsRegel<T> gjeldandeRegel;
+    private final BeregningsRegel<? extends T> gjeldandeRegel;
 
     /**
      * Konstruerer ei ny tidsperiode som den angitte beregningsregelen er gjeldande i.
@@ -46,7 +46,7 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
      * @param gjeldandeRegel beregningsregelen som er gjeldande innanfor den angitte tidsperioda
      * @throws java.lang.NullPointerException viss nokon av parameterverdiane er <code>null</code>
      */
-    public Regelperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final BeregningsRegel<T> gjeldandeRegel) {
+    public Regelperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final BeregningsRegel<? extends T> gjeldandeRegel) {
         super(fraOgMed, tilOgMed);
         this.gjeldandeRegel = gjeldandeRegel;
     }

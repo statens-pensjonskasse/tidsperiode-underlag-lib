@@ -24,7 +24,7 @@ public class Assertions {
      */
     @SuppressWarnings("rawtypes")
     public static AbstractListAssert assertKoblingarAvType(final Underlagsperiode periode, Class<? extends Tidsperiode<?>> type) {
-        return assertThat(periode.koblingarAvType(type).<Tidsperiode<?>>map(k -> k).collect(toList()));
+        return (AbstractListAssert) assertThat(periode.koblingarAvType(type).<Tidsperiode<?>>map(k -> k).collect(toList()));
     }
 
     /**
@@ -47,7 +47,7 @@ public class Assertions {
      */
     public static AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode> assertUnderlagsperioder(
             final Collection<Underlag> underlag, final Predicate<Underlagsperiode> predikat) {
-        return assertThat(
+        return (AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode>)assertThat(
                 underlag
                         .stream()
                         .flatMap(Underlag::stream)
@@ -73,7 +73,7 @@ public class Assertions {
     public static <T> AbstractListAssert<?, ? extends List<T>, T> assertVerdiFraUnderlagsperioder(
             final Collection<Underlag> underlag, final Function<Underlagsperiode, T> mapper,
             final Predicate<Underlagsperiode>... predikater) {
-        return assertThat(
+        return (AbstractListAssert<?, ? extends List<T>, T>)assertThat(
                 underlag
                         .stream()
                         .flatMap(Underlag::stream)
