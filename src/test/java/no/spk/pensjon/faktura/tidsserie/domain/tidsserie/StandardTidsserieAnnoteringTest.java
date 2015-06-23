@@ -1,6 +1,26 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
+import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.time.Month;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
@@ -22,7 +42,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
@@ -36,30 +55,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
-import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StandardTidsserieAnnoteringTest {
     @Rule
@@ -240,92 +240,6 @@ public class StandardTidsserieAnnoteringTest {
     public void skalFeileDersomUnderlagsperiodeOverlapparMeirEnnEinAvtaleversjon() {
     }
 
-    /**
-     * Verifiserer at vi ikkje annoterer nokon underlagsperioder som siste periode dersom stillingsforholdet
-     * ikkje har noko sluttmelding.
-     */
-    @Test
-    public void skalIkkjeAnnotereSistePeriodeDersomStillingsforholdErAktivt() {
-        final LocalDate aksjonsdato = dato("2012.06.30");
-        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2005.08.15"), of(aksjonsdato))
-                .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
-                                .stillingsprosent(fulltid())
-                                .aksjonsdato(aksjonsdato)
-                                .aksjonskode(Aksjonskode.ENDRINGSMELDING)
-                );
-        final Underlag underlag = annoterAllePerioder(
-                eiTomPeriode()
-                        .fraOgMed(dato("2012.01.01"))
-                        .tilOgMed(aksjonsdato)
-                        .medKobling(
-                                stilling
-                        )
-        );
-        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
-    }
-
-    /**
-     * Verifiserer at det kun er siste underlagsperiode som blir annotert med {@link SistePeriode} sjølv om
-     * det er to eller fleire underlagsperioder som overlappar stillingsforholdperioda som inneheld sluttmeldinga.
-     */
-    @Test
-    public void skalKunAnnotereSisteUnderlagsperiodeSjoelvOmStillingsperiodeMedSluttmeldingOverlapparFleireUnderlagsperioder() {
-        final LocalDate sluttDato = dato("2012.06.30");
-        final UnderlagsperiodeBuilder builder = eiTomPeriode()
-                .medKobling(
-                        new StillingsforholdPeriode(dato("2005.08.15"), of(sluttDato))
-                                .leggTilOverlappendeStillingsendringer(
-                                        new Stillingsendring()
-                                                .stillingsprosent(fulltid())
-                                                .aksjonsdato(sluttDato)
-                                                .aksjonskode(Aksjonskode.SLUTTMELDING)
-                                )
-                );
-        final Underlag underlag = annoterAllePerioder(
-                builder.kopi()
-                        .fraOgMed(dato("2012.01.01"))
-                        .tilOgMed(dato("2012.04.30")),
-                builder.kopi()
-                        .fraOgMed(dato("2012.05.01"))
-                        .tilOgMed(dato("2012.05.31")),
-                builder.kopi()
-                        .fraOgMed(dato("2012.06.01"))
-                        .tilOgMed(sluttDato)
-        );
-        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(empty());
-        assertAnnotasjon(underlag.toList().get(1), SistePeriode.class).isEqualTo(empty());
-        assertAnnotasjon(underlag.toList().get(2), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
-    }
-
-
-    /**
-     * Verifiserer at siste underlagsperiode i stillingsforholdunderlaget, blir annotert med
-     * {@link SistePeriode} dersom den overlappande stillingsforholdperioda inneheld ei sluttmelding.
-     * <p>
-     * Ein underliggande antagelse her er at siste underlagsperiode løper fram til og med den overlappande stillingsforholdperiodas
-     * til og med-dato.
-     */
-    @Test
-    public void skalAnnotereSisteUnderlagsperiodeMedSistePeriodeVissOverlappandeStillingsforholdsperiodeInneheldEiSluttmelding() {
-        final LocalDate sluttDato = dato("2012.06.30");
-        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2005.08.15"), of(sluttDato))
-                .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
-                                .stillingsprosent(fulltid())
-                                .aksjonsdato(sluttDato)
-                                .aksjonskode(Aksjonskode.SLUTTMELDING)
-                );
-        final Underlag underlag = annoterAllePerioder(
-                eiTomPeriode()
-                        .fraOgMed(dato("2012.01.01"))
-                        .tilOgMed(sluttDato)
-                        .medKobling(
-                                stilling
-                        )
-        );
-        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
-    }
 
     @Test
     public void skalAnnotereGrunnbeloepFraOmregningsperiode() {
