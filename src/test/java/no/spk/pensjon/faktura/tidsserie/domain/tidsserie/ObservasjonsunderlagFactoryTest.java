@@ -243,7 +243,7 @@ public class ObservasjonsunderlagFactoryTest {
      * stillingsforholdets sluttdato.
      */
     @Test
-    public void skalIkkjeGenerereFiktivPeriodeUtAaretDersomSisteUnderlagsperiodeIAarsunderlagetErAnnotertMedSistePeriode() {
+    public void skalIkkjeGenerereFiktivPeriodeUtAaretDersomSisteUnderlagsperiodeHarTildatoFoerObservasjonsdato() {
         final Underlag aarsunderlag = underlag(
                 new Aarstall(2000),
                 periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
@@ -368,6 +368,21 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
+     * Verifiserer at det kun blir generert ei fiktiv periode når en synlig periode sluttmeldes før observasjonsdato.
+     */
+    @Test
+    public void skalGenerereFiktivPeriodeForUnderlagSomSluttmeldesPaaObservasjonsdato() throws Exception {
+        final Underlag aarsunderlag = underlag(
+                new Aarstall(2015),
+                periode().fraOgMed(dato("2015.01.01")).tilOgMed(dato("2015.01.31")).med(JANUARY)
+        );
+        final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
+        assertObservasjonsunderlagMedFiktivPeriode(prMnd, 0).hasSize(2);
+        assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 1).hasSize(1);
+        assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 11).hasSize(1);
+    }
+
+    /**
      * Verifiserer at det kun blir generert ei fiktiv periode og at den er basert på siste underlagsperiode i den siste
      * synlige månaden for observasjonsunderlaget, sjølv om siste synlig månad inneheld meir enn ei underlagsperiode.
      */
@@ -385,6 +400,8 @@ public class ObservasjonsunderlagFactoryTest {
         assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 2).hasSize(3);
         assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 10).hasSize(3);
     }
+
+
 
     private static AbstractIterableAssert<?, ? extends Iterable<Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagUtanFiktivPeriode(final List<Underlag> prMnd, final int index) {
         final Underlag underlag = prMnd.get(index);
