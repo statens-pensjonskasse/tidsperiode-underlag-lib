@@ -321,7 +321,7 @@ public class ObservasjonsunderlagFactoryTest {
      * årsunderlaget, perioda som inneheld stillingsforholdets sluttmelding, ikkje får generert nokon fiktive perioder
      * etter siste periodes til og med-dato.
      * <p>
-     * Intensjonen her er at inntil vi står på eller etter sluttmeldinga til eit stillingsforhold så skal vi tru at det
+     * Intensjonen her er at inntil vi står etter sluttmeldinga til eit stillingsforhold så skal vi tru at det
      * vil forbli aktivt til evig tid (vel, iallefall resten av året).
      */
     @Test
