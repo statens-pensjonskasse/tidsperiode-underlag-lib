@@ -1,22 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
-import org.assertj.core.api.AbstractIterableAssert;
-import org.assertj.core.api.AbstractListAssert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.time.Month;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import static java.time.Month.APRIL;
 import static java.time.Month.AUGUST;
 import static java.time.Month.DECEMBER;
@@ -41,6 +24,24 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.harAnn
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.or;
 import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.paakrevdAnnotasjon;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.Month;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
+import org.assertj.core.api.AbstractIterableAssert;
+import org.assertj.core.api.AbstractListAssert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Enheitstestar for {@link ObservasjonsunderlagFactory}.
@@ -175,7 +176,6 @@ public class ObservasjonsunderlagFactoryTest {
                 periode().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(OCTOBER),
                 periode().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(NOVEMBER),
                 periode().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(DECEMBER)
-                        .med(SistePeriode.INSTANCE)
         );
         final Underlag observasjonsunderlagDesember = observasjonsunderlagFactory
                 .genererUnderlagPrMaaned(aarsunderlag)
@@ -205,7 +205,6 @@ public class ObservasjonsunderlagFactoryTest {
                 periode().fraOgMed(dato("2000.10.01")).tilOgMed(dato("2000.10.31")).med(OCTOBER),
                 periode().fraOgMed(dato("2000.11.01")).tilOgMed(dato("2000.11.30")).med(NOVEMBER),
                 periode().fraOgMed(dato("2000.12.01")).tilOgMed(dato("2000.12.31")).med(DECEMBER)
-                        .med(SistePeriode.INSTANCE)
         );
         assertThat(
                 observasjonsunderlagFactory
@@ -244,7 +243,7 @@ public class ObservasjonsunderlagFactoryTest {
      * stillingsforholdets sluttdato.
      */
     @Test
-    public void skalIkkjeGenerereFiktivPeriodeUtAaretDersomSisteUnderlagsperiodeIAarsunderlagetErAnnotertMedSistePeriode() {
+    public void skalIkkjeGenerereFiktivPeriodeUtAaretDersomSisteUnderlagsperiodeHarTildatoFoerObservasjonsdato() {
         final Underlag aarsunderlag = underlag(
                 new Aarstall(2000),
                 periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")).med(JANUARY),
@@ -252,7 +251,6 @@ public class ObservasjonsunderlagFactoryTest {
                 periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.03.31")).med(MARCH),
                 periode().fraOgMed(dato("2000.04.01")).tilOgMed(dato("2000.04.30")).med(APRIL),
                 periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.21")).med(MAY)
-                        .med(SistePeriode.INSTANCE)
         );
 
         final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
@@ -323,7 +321,7 @@ public class ObservasjonsunderlagFactoryTest {
      * årsunderlaget, perioda som inneheld stillingsforholdets sluttmelding, ikkje får generert nokon fiktive perioder
      * etter siste periodes til og med-dato.
      * <p>
-     * Intensjonen her er at inntil vi står på eller etter sluttmeldinga til eit stillingsforhold så skal vi tru at det
+     * Intensjonen her er at inntil vi står etter sluttmeldinga til eit stillingsforhold så skal vi tru at det
      * vil forbli aktivt til evig tid (vel, iallefall resten av året).
      */
     @Test
@@ -337,7 +335,6 @@ public class ObservasjonsunderlagFactoryTest {
                 periode().fraOgMed(dato("2012.05.01")).tilOgMed(dato("2012.05.31")).med(MAY),
                 periode().fraOgMed(dato("2012.06.01")).tilOgMed(dato("2012.06.09")).med(JUNE),
                 periode().fraOgMed(dato("2012.06.10")).tilOgMed(dato("2012.06.15"))
-                        .med(JUNE).med(SistePeriode.INSTANCE)
         );
         final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
 
@@ -371,6 +368,21 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
+     * Verifiserer at det kun blir generert ei fiktiv periode når en synlig periode sluttmeldes før observasjonsdato.
+     */
+    @Test
+    public void skalGenerereFiktivPeriodeForUnderlagSomSluttmeldesPaaObservasjonsdato() throws Exception {
+        final Underlag aarsunderlag = underlag(
+                new Aarstall(2015),
+                periode().fraOgMed(dato("2015.01.01")).tilOgMed(dato("2015.01.31")).med(JANUARY)
+        );
+        final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
+        assertObservasjonsunderlagMedFiktivPeriode(prMnd, 0).hasSize(2);
+        assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 1).hasSize(1);
+        assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 11).hasSize(1);
+    }
+
+    /**
      * Verifiserer at det kun blir generert ei fiktiv periode og at den er basert på siste underlagsperiode i den siste
      * synlige månaden for observasjonsunderlaget, sjølv om siste synlig månad inneheld meir enn ei underlagsperiode.
      */
@@ -381,14 +393,15 @@ public class ObservasjonsunderlagFactoryTest {
                 periode().fraOgMed(dato("2015.01.01")).tilOgMed(dato("2015.01.14")).med(JANUARY),
                 periode().fraOgMed(dato("2015.01.15")).tilOgMed(dato("2015.01.31")).med(JANUARY),
                 periode().fraOgMed(dato("2015.02.01")).tilOgMed(dato("2015.02.28")).med(FEBRUARY)
-                        .med(SistePeriode.INSTANCE)
         );
         final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
         assertObservasjonsunderlagMedFiktivPeriode(prMnd, 0).hasSize(3);
-        assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 1).hasSize(3);
+        assertObservasjonsunderlagMedFiktivPeriode(prMnd, 1).hasSize(4);
         assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 2).hasSize(3);
         assertObservasjonsunderlagUtanFiktivPeriode(prMnd, 10).hasSize(3);
     }
+
+
 
     private static AbstractIterableAssert<?, ? extends Iterable<Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagUtanFiktivPeriode(final List<Underlag> prMnd, final int index) {
         final Underlag underlag = prMnd.get(index);
