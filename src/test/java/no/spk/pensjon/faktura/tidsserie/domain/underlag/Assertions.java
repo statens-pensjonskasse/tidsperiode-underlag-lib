@@ -1,20 +1,34 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-import org.assertj.core.api.AbstractListAssert;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+
+import org.assertj.core.api.AbstractComparableAssert;
+import org.assertj.core.api.AbstractListAssert;
 
 public class Assertions {
+    /**
+     * Opprettar ein ny assertion som opererer på periodas unike identifikator.
+     *
+     * @param periode underlagsperioda UUIDen skal hentast frå
+     * @return ein ny assert med UUIDen til perioda
+     * @see Underlagsperiode#id()
+     */
+    public static AbstractComparableAssert<?, UUID> assertUUID(final Underlagsperiode periode) {
+        return assertThat(periode.id()).as("unik ID for periode " + periode);
+    }
+
     /**
      * Opprettar ein ny assertion som opererer på samlinga av alle koblingar av angitt type frå underlagsperioda.
      *
@@ -47,7 +61,7 @@ public class Assertions {
      */
     public static AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode> assertUnderlagsperioder(
             final Collection<Underlag> underlag, final Predicate<Underlagsperiode> predikat) {
-        return (AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode>)assertThat(
+        return (AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode>) assertThat(
                 underlag
                         .stream()
                         .flatMap(Underlag::stream)
@@ -73,7 +87,7 @@ public class Assertions {
     public static <T> AbstractListAssert<?, ? extends List<T>, T> assertVerdiFraUnderlagsperioder(
             final Collection<Underlag> underlag, final Function<Underlagsperiode, T> mapper,
             final Predicate<Underlagsperiode>... predikater) {
-        return (AbstractListAssert<?, ? extends List<T>, T>)assertThat(
+        return (AbstractListAssert<?, ? extends List<T>, T>) assertThat(
                 underlag
                         .stream()
                         .flatMap(Underlag::stream)
