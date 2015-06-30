@@ -78,4 +78,8 @@ public class Aarsfaktor {
     public Aarsverk multiply(final Prosent deltid) {
         return new Aarsverk(verdi.multiply(deltid));
     }
+
+    public Prosent tilProsent() {
+        return verdi;
+    }
 }
