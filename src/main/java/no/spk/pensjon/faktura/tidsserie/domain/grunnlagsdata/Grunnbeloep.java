@@ -54,4 +54,8 @@ public class Grunnbeloep {
     public String toString() {
         return "grunnbeløp " + beloep;
     }
+
+    public Kroner beloep() {
+        return beloep;
+    }
 }

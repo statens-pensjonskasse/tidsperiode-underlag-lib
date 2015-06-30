@@ -1,23 +1,27 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
-import org.assertj.core.api.AbstractBooleanAssert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
+import static java.time.LocalDate.now;
 import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode.medregning;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.ObjectMother.eiMedregning;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+
+import org.assertj.core.api.AbstractBooleanAssert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Enheitstestar for {@link StillingsforholdPeriode}.
@@ -77,13 +81,9 @@ public class StillingsforholdPeriodeTest {
         final StillingsforholdId notExpected = new StillingsforholdId(2L);
 
         final StillingsforholdPeriode periode = new StillingsforholdPeriode(
-                new Medregningsperiode(
-                        dato("2005.01.01"),
-                        empty(),
-                        new Medregning(Kroner.kroner(500_000)),
-                        Medregningskode.BISTILLING,
-                        expected
-                )
+                eiMedregning()
+                        .stillingsforhold(expected)
+                        .bygg()
         );
         assertTilhoeyrer(periode, expected).isTrue();
         assertTilhoeyrer(periode, notExpected).isFalse();

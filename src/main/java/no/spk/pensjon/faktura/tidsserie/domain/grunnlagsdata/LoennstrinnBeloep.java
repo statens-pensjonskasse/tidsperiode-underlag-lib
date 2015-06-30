@@ -44,6 +44,10 @@ public class LoennstrinnBeloep {
         return bruttoloenn.hashCode();
     }
 
+    public Kroner beloep() {
+        return bruttoloenn;
+    }
+
     /**
      * Sjekkar om <code>obj</code> er eit lønnstrinnbeløp med samme kroneverdi
      * som dette objektet.

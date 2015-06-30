@@ -52,6 +52,10 @@ public class Loennstrinn {
         return this.trinn == trinn;
     }
 
+    public int trinn() {
+        return trinn;
+    }
+
     @Override
     public int hashCode() {
         return trinn;

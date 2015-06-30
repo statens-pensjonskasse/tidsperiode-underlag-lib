@@ -1,26 +1,28 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static java.time.LocalDate.MIN;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
  * {@link Stillingsendring}
@@ -34,7 +36,11 @@ import static java.util.Optional.ofNullable;
  * @author Tarjei Skorgenes
  */
 public class Stillingsendring {
-    private StillingsforholdId stillingsforhold;
+    private Optional<Foedselsdato> foedselsdato = empty();
+
+    private Optional<Personnummer> personnummer = empty();
+
+    private Optional<StillingsforholdId> stillingsforhold = empty();
 
     private Optional<LocalDate> registreringsdato = empty();
 
@@ -64,7 +70,55 @@ public class Stillingsendring {
      * <code>false</code> viss den tilhøyrer eit anna stillingsforhold
      */
     public boolean tilhoerer(final StillingsforholdId stillingsforhold) {
-        return this.stillingsforhold.equals(stillingsforhold);
+        return this.stillingsforhold.map(id -> id.equals(stillingsforhold)).orElse(false);
+    }
+
+    /**
+     * Fødselsdatoen til medlemmet.
+     *
+     * @param dato datoen medlemmet vart født
+     * @return <code>this</code>
+     */
+    public Stillingsendring foedselsdato(final Foedselsdato dato) {
+        this.foedselsdato = of(dato);
+        return this;
+    }
+
+    /**
+     * Fødselsdatoen til medlemmet.
+     *
+     * @return datoen medlemmet vart født
+     */
+    public Foedselsdato foedselsdato() {
+        return foedselsdato.orElseThrow(
+                () -> new IllegalStateException(
+                        "fødselsdato har ikkje blitt populert inn i stillingsendringa.\n" + this
+                )
+        );
+    }
+
+    /**
+     * Personnummeret til medlemmet.
+     *
+     * @param personnummer medlemmet sitt personnummer
+     * @return <code>this</code>
+     */
+    public Stillingsendring personnummer(final Personnummer personnummer) {
+        this.personnummer = of(personnummer);
+        return this;
+    }
+
+    /**
+     * Personnummeret til medlemmet.
+     *
+     * @return medlemmet sitt personnummer
+     */
+    public Personnummer personnummer() {
+        return personnummer.orElseThrow(
+                () -> new IllegalStateException(
+                        "personnummer har ikkje blitt populert inn i stillingsendringa.\n" + this
+                )
+        );
     }
 
     /**
@@ -74,7 +128,7 @@ public class Stillingsendring {
      * @return <code>this</code>
      */
     public Stillingsendring stillingsforhold(final StillingsforholdId stillingsforhold) {
-        this.stillingsforhold = stillingsforhold;
+        this.stillingsforhold = of(stillingsforhold);
         return this;
     }
 
@@ -84,7 +138,11 @@ public class Stillingsendring {
      * @return stillingsforholdnummeret for stillingsforholdet endringa tilhøyrer
      */
     public StillingsforholdId stillingsforhold() {
-        return stillingsforhold;
+        return stillingsforhold.orElseThrow(
+                () -> new IllegalStateException(
+                        "stillingsforholdId har ikkje blitt populert inn i stillingsendringa.\n" + this
+                )
+        );
     }
 
     /**
@@ -207,9 +265,9 @@ public class Stillingsendring {
     }
 
     /**
-     * @see #fastetillegg()
      * @param fastetillegg faste tillegget i årslønn for stillinga som skal settes for stillingsendringen
      * @return <code>this</code>
+     * @see #fastetillegg()
      */
     public Stillingsendring fastetillegg(final Optional<Fastetillegg> fastetillegg) {
         this.fastetillegg = requireNonNull(fastetillegg);
@@ -230,9 +288,9 @@ public class Stillingsendring {
     }
 
     /**
-     * @see #variabletillegg()
      * @param variabletillegg som skal settes i årslønn for stillinga
      * @return <code>this</code>
+     * @see #variabletillegg()
      */
     public Stillingsendring variabletillegg(final Optional<Variabletillegg> variabletillegg) {
         this.variabletillegg = requireNonNull(variabletillegg);
@@ -253,9 +311,9 @@ public class Stillingsendring {
     }
 
     /**
-     * @see #funksjonstillegg()
      * @param funksjonstillegg som skal settes i årslønn for stillinga
-     *  @return <code>this</code>
+     * @return <code>this</code>
+     * @see #funksjonstillegg()
      */
     public Stillingsendring funksjonstillegg(final Optional<Funksjonstillegg> funksjonstillegg) {
         this.funksjonstillegg = requireNonNull(funksjonstillegg);
@@ -314,9 +372,9 @@ public class Stillingsendring {
     }
 
     /**
-     * @see #stillingskode()
      * @param stillingskode som skal brukes for stillingsendringen
      * @return stillingsendringa si stillingskode
+     * @see #stillingskode()
      */
     public Stillingsendring stillingskode(final Optional<Stillingskode> stillingskode) {
         this.stillingskode = requireNonNull(stillingskode);
@@ -342,6 +400,7 @@ public class Stillingsendring {
      * @param periode underlagsperioda som skal annoterast
      */
     void annoter(final Annoterbar<?> periode) {
+        periode.annoter(Foedselsnummer.class, new Foedselsnummer(foedselsdato(), personnummer()));
         periode.annoter(StillingsforholdId.class, stillingsforhold);
 
         periode.annoter(Aksjonskode.class, aksjonskode());
@@ -362,6 +421,7 @@ public class Stillingsendring {
         final StringBuilder builder = new StringBuilder();
         builder.append("Stillingsendring, registrert ").append(registreringsdato).append(", med aksjonsdato ").append(aksjonsdato).append("\n");
         Stream.of(
+                line("Stillingsforhold: ", stillingsforhold),
                 line("Aksjonskode: ", aksjonskode),
                 line("Stillingsbrøk: ", stillingsprosent),
                 line("Lønnstrinn: ", loennstrinn)

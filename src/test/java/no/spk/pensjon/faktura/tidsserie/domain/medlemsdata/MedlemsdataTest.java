@@ -1,25 +1,30 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static java.time.LocalDate.now;
+import static java.util.Arrays.asList;
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.BISTILLING;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode.medregning;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.time.LocalDate.now;
-import static java.util.Arrays.asList;
-import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.BISTILLING;
-import static org.assertj.core.api.Assertions.assertThat;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata}.
@@ -65,7 +70,15 @@ public class MedlemsdataTest {
         oversettere.put(Medregningsperiode.class, new MedlemsdataOversetter<Medregningsperiode>() {
             @Override
             public Medregningsperiode oversett(final List<String> rad) {
-                return new Medregningsperiode(now(), of(now()), new Medregning(kroner(10)), BISTILLING, StillingsforholdId.valueOf(rad.get(3)));
+                return medregning()
+                        .fraOgMed(now())
+                        .loepende()
+                        .beloep(kroner(10))
+                        .kode(BISTILLING)
+                        .stillingsforhold(StillingsforholdId.valueOf(rad.get(3)))
+                        .foedselsdato(foedselsdato(dato("1970.01.01")))
+                        .personnummer(new Personnummer(1))
+                        .bygg();
             }
 
             @Override

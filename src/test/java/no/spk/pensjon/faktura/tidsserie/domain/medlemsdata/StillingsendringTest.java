@@ -1,32 +1,37 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer.personnummer;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Enheitstestar for {@link Stillingsendring}.
@@ -40,7 +45,40 @@ public class StillingsendringTest {
     @Test
     public void skalFeileDersomStillingsprosentManglar() {
         e.expect(NoSuchElementException.class);
-        new Stillingsendring().annoter(eiPeriode());
+        new Stillingsendring()
+                .foedselsdato(foedselsdato(dato("1917.01.01")))
+                .personnummer(personnummer(1))
+                .annoter(eiPeriode());
+    }
+
+    @Test
+    public void skalTilhoeyreStillingsforholdMedSammeStillingsforholdNummer() {
+        final StillingsforholdId id = StillingsforholdId.stillingsforhold(6189726L);
+
+        final Stillingsendring endring = new Stillingsendring().stillingsforhold(id);
+        assertThat(endring.tilhoerer(id))
+                .as("tilhøyrer stillingsendringa " + id + "?\n" + endring)
+                .isTrue();
+    }
+
+    @Test
+    public void skalAnnotereMedFoedselsnummer() {
+        final Underlagsperiode periode = eiPeriode();
+
+        eiEndring()
+                .foedselsdato(foedselsdato(dato("1978.01.05")))
+                .personnummer(new Personnummer(13289))
+                .annoter(periode);
+
+        assertAnnotasjon(periode, Foedselsnummer.class)
+                .isEqualTo(
+                        of(
+                                new Foedselsnummer(
+                                        foedselsdato(dato("1978.01.05")),
+                                        personnummer(13289)
+                                )
+                        )
+                );
     }
 
     /**
@@ -162,6 +200,8 @@ public class StillingsendringTest {
      */
     private static Stillingsendring eiEndring() {
         return new Stillingsendring()
+                .foedselsdato(foedselsdato(dato("1917.01.01")))
+                .personnummer(personnummer(1))
                 .stillingsprosent(fulltid());
     }
 

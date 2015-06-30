@@ -1,17 +1,19 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.util.Optional;
-
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertUUID;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode}
@@ -21,6 +23,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UnderlagsperiodeTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    /**
+     * Verifiserer at kvar underlagsperiodeinstans får sin eigen unike id.
+     * <br>
+     * Også ved kopiering av perioder skal den nye perioda få ein identifikator som skiller den frå perioda den er
+     * kopiert frå.
+     * <br>
+     * Derimot skal det ikkje genererast meir enn ein unik identifikator ved forsøk på uthenting av id frå
+     * samme periodeinstans.
+     */
+    @Test
+    public void skalGenerereUnikIdentifikatorForAllePerioder() {
+        final Underlagsperiode periode = new Underlagsperiode(dato("2000.01.01"), dato("2000.12.31"));
+        assertUUID(periode).isEqualTo(periode.id());
+        assertUUID(periode).isNotEqualTo(new Underlagsperiode(dato("2000.01.01"), dato("2000.12.31")).id());
+        assertUUID(periode).isNotEqualTo(periode.kopierUtenKoblinger(dato("2000.01.01"), dato("2000.12.31")).id());
+
+    }
 
     /**
      * Verifiserer at all tilstand fr<E5> underlagsperioda blir med n<E5>r ein kopi blir bygd.
