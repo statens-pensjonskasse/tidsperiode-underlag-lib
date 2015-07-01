@@ -5,7 +5,9 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.fe
 import java.time.Month;
 import java.util.Optional;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Kundedataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -91,6 +93,8 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
         periode.valgfriAnnotasjonFor(Loennstrinn.class).ifPresent(loennstrinn -> {
             annoterLoennForLoennstrinn(periode);
         });
+        periode.koblingAvType(Kundedataperiode.class).ifPresent(p -> p.annoter(periode));
+        periode.koblingAvType(Arbeidsgiverperiode.class).ifPresent(p -> p.annoter(periode));
     }
 
     private void annoterLoennForLoennstrinn(final Underlagsperiode periode) {
