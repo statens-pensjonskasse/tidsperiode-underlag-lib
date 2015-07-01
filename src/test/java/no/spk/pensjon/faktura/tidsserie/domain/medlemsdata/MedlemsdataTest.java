@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
@@ -86,6 +85,24 @@ public class MedlemsdataTest {
                 return "2".equals(rad.get(0));
             }
         });
+    }
+
+    /**
+     * Verifiserer at dersom rader frå forskjellige medlemmar blir sendt inn til samme Medlemsdata så blir det oppdaga
+     * og medfører at instansieringa feilar.
+     */
+    @Test
+    public void skalKunTillateDataTilknyttaEitMedlemPrMedlemsdata() {
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("medlemsdata kan kun inneholde data for eit medlem om gangen");
+        e.expectMessage("1970010112345");
+        e.expectMessage("1970010154321");
+
+        medMedlemsdata(
+                stillingsendringdata().foedselsdato("19700101").personnummer("12345"),
+                stillingsendringdata().foedselsdato("19700101").personnummer("54321")
+        )
+                .create();
     }
 
     /**
@@ -189,7 +206,17 @@ public class MedlemsdataTest {
     public void skalIkkjeTillateOversettereLikNullVedKonstruksjon() {
         e.expect(NullPointerException.class);
         e.expectMessage("oversettere er påkrevd, men var null");
-        new Medlemsdata(asList(stillingsendringdata(), avtalekoblingsdata()), null);
+
+        new Medlemsdata(
+                asList(
+                        stillingsendringdata(),
+                        avtalekoblingsdata()
+                )
+                        .stream()
+                        .map(RadBuilder::bygg)
+                        .collect(toList())
+                , null
+        );
     }
 
     /**
@@ -226,8 +253,8 @@ public class MedlemsdataTest {
         ).isEmpty();
     }
 
-    private MedlemsdataTest medMedlemsdata(final List<String>... medlemsdata) {
-        this.medlemsdata.addAll(asList(medlemsdata));
+    private MedlemsdataTest medMedlemsdata(final RadBuilder... medlemsdata) {
+        this.medlemsdata.addAll(asList(medlemsdata).stream().map(RadBuilder::bygg).collect(toList()));
         return this;
     }
 
@@ -235,31 +262,74 @@ public class MedlemsdataTest {
         return new Medlemsdata(medlemsdata, oversettere);
     }
 
-    private List<String> avtalekoblingsdata() {
+    private RadBuilder avtalekoblingsdata() {
         return avtalekoblingsdata(1L);
     }
 
-    private List<String> avtalekoblingsdata(final long stillingsforhold) {
-        return rad("1", stillingsforhold);
+    private RadBuilder avtalekoblingsdata(final long stillingsforhold) {
+        return rad().type("1")
+                .foedselsdato("19700101")
+                .personnummer("12345")
+                .stillingsforhold(Long.toString(stillingsforhold))
+                ;
     }
 
-    private List<String> stillingsendringdata() {
+    private RadBuilder stillingsendringdata() {
         return stillingsendringdata(1L);
     }
 
-    private List<String> stillingsendringdata(final long stillingsforhold) {
-        return rad("0", stillingsforhold);
+    private RadBuilder stillingsendringdata(final long stillingsforhold) {
+        return rad().type("0")
+                .foedselsdato("19700101")
+                .personnummer("12345")
+                .stillingsforhold(Long.toString(stillingsforhold))
+                ;
     }
 
-    private List<String> medregningsdata() {
+    private RadBuilder medregningsdata() {
         return medregningsdata(1L);
     }
 
-    private List<String> medregningsdata(final long stillingsforhold) {
-        return rad("2", stillingsforhold);
+    private RadBuilder medregningsdata(final long stillingsforhold) {
+        return rad().type("2")
+                .foedselsdato("19700101")
+                .personnummer("12345")
+                .stillingsforhold(Long.toString(stillingsforhold))
+                ;
     }
 
-    private List<String> rad(final String type, long stillingsforhold) {
-        return asList(type, "19700101", "12345", Long.toString(stillingsforhold));
+    private static RadBuilder rad() {
+        return new RadBuilder();
+    }
+
+    private static class RadBuilder {
+        private String type;
+        private String foedselsdato;
+        private String personnummer;
+        private String stillingsforhold;
+
+        public List<String> bygg() {
+            return asList(type, foedselsdato, personnummer, stillingsforhold);
+        }
+
+        public RadBuilder type(final String value) {
+            this.type = value;
+            return this;
+        }
+
+        public RadBuilder foedselsdato(final String value) {
+            this.foedselsdato = value;
+            return this;
+        }
+
+        public RadBuilder personnummer(final String value) {
+            this.personnummer = value;
+            return this;
+        }
+
+        public RadBuilder stillingsforhold(final String value) {
+            this.stillingsforhold = value;
+            return this;
+        }
     }
 }

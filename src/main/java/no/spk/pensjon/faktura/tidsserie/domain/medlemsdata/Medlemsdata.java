@@ -3,11 +3,13 @@ package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -54,6 +56,16 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
  */
 public class Medlemsdata {
     /**
+     * Indexen fødselsdatoen blir henta frå i radene som utgjer medlemsdatane.
+     */
+    private static final int INDEX_FOEDSELSDATO_ID = 1;
+
+    /**
+     * Indexen personnummeret blir henta frå i radene som utgjer medlemsdatane.
+     */
+    private static final int INDEX_PERSONNUMMER_ID = 2;
+
+    /**
      * Indexen stillingsforholdnummeret blir henta frå i radene som utgjer medlemsdatane.
      */
     private static final int INDEX_STILLINGSFORHOLD_ID = 3;
@@ -77,7 +89,8 @@ public class Medlemsdata {
      * @param oversettere oversettere som er ansvarlige for å konvertere radene i <code>medlemsdata</code> til sterkt
      *                    typa verdiar ved senere behandling
      * @throws NullPointerException     viss noen av parameterverdiene er <code>null</code>
-     * @throws IllegalArgumentException viss <code>medlemsdata</code> ikkje inneheld noko informasjon og er tom
+     * @throws IllegalArgumentException viss <code>medlemsdata</code> ikkje inneheld noko informasjon og er tom eller
+     *                                  viss <code>medlemsdata</code> inneheld medlemsdata frå meir enn eit medlem
      */
     public Medlemsdata(final List<List<String>> medlemsdata, final Map<Class<?>, MedlemsdataOversetter<?>> oversettere) {
         requireNonNull(medlemsdata, () -> "medlemsdata er påkrevd, men var null");
@@ -85,6 +98,17 @@ public class Medlemsdata {
         if (medlemsdata.isEmpty()) {
             throw new IllegalArgumentException(
                     "medlemsdata må inneholde minst ei stillingsendring, medregning eller avtalekobling, men var tom"
+            );
+        }
+        final Set<String> foedselsnummer = tilFoedselsnummer(medlemsdata);
+        if (foedselsnummer.size() > 1) {
+            throw new IllegalArgumentException(
+                    "medlemsdata kan kun inneholde data for eit medlem om gangen, "
+                            + "men inneholdt rader tilhøyrande følgjande medlemmar:\n"
+                            + foedselsnummer
+                            .stream()
+                            .map(f -> "- " + f)
+                            .collect(joining("\n"))
             );
         }
         this.oversettere = oversettere;
@@ -306,6 +330,13 @@ public class Medlemsdata {
                 )
                 .periodiser()
                 .map(Medlemsperioder::new);
+    }
+
+    private static Set<String> tilFoedselsnummer(final List<List<String>> medlemsdata) {
+        return medlemsdata
+                .stream()
+                .map(rad -> rad.get(INDEX_FOEDSELSDATO_ID) + rad.get(INDEX_PERSONNUMMER_ID))
+                .collect(toSet());
     }
 
     private static class NullOversetter<T> implements MedlemsdataOversetter<T> {
