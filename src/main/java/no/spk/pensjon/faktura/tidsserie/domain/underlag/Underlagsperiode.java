@@ -1,15 +1,16 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.of;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.of;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
  * Ei tidsperiode som inngår som ein del av eit underlag.
@@ -29,6 +30,8 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
 
     private final Annotasjonar annotasjonar = new Annotasjonar();
 
+    private final UUID uuid = UUID.randomUUID();
+
     /**
      * Konstruerer ei ny underlagsperiode som har ein frå og med- og ein til og med-dato ulik <code>null</code>.
      *
@@ -40,6 +43,18 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
      */
     public Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
         super(fraOgMed, of(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
+    }
+
+    /**
+     * Globalt unik identifikator for underlagsperiodeinstansen.
+     * <br>
+     * Intensjonen med denne er å gjere det mulig å deduplisere underlagsperiodene som inngår i
+     * fleire observasjonsunderlag.
+     *
+     * @return ein globalt unik identifikator for periodeinstansen
+     */
+    public UUID id() {
+        return uuid;
     }
 
     @Override
@@ -114,6 +129,9 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
      * som nye datoar for kopien.
      * <p>
      * Kopien vil bli generert uten noen kopi av originalens periodekoblinger, kun en kopi av originalens annotasjoner.
+     * <br>
+     * Den nye underlagsperioda vil få tildelt ein ny, globalt unik identifikator, den vil altså ikkje arve eller
+     * gjennbruke identifikatoren til perioda den er kopiert frå.
      *
      * @param fraOgMed kopiens fra og med-dato
      * @param tilOgMed kopiens til og med-dato

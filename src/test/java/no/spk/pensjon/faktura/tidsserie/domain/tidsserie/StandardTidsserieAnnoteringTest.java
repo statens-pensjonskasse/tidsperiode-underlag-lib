@@ -1,6 +1,32 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer.*;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
+import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.ObjectMother.eiMedregning;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.time.Month;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
@@ -12,6 +38,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Orgnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
@@ -22,9 +49,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Stillingsendring;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
@@ -36,30 +61,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
-import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StandardTidsserieAnnoteringTest {
     @Rule
@@ -109,13 +115,9 @@ public class StandardTidsserieAnnoteringTest {
                 eiPeriode()
                         .medKobling(
                                 new StillingsforholdPeriode(
-                                        new Medregningsperiode(
-                                                dato("1917.01.01"),
-                                                of(dato("2015.12.31")),
-                                                new Medregning(kroner(10_000)),
-                                                expected,
-                                                new StillingsforholdId(1L)
-                                        )
+                                        eiMedregning()
+                                                .kode(expected)
+                                                .bygg()
                                 )
                         )
         );
@@ -123,7 +125,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene blir annotert med medregningskode frå stillingsforholdperioder tilknytta
+     * Verifiserer at underlagsperiodene blir annotert med medregna beløp frå stillingsforholdperioder tilknytta
      * medregning.
      */
     @Test
@@ -133,13 +135,9 @@ public class StandardTidsserieAnnoteringTest {
                 eiPeriode()
                         .medKobling(
                                 new StillingsforholdPeriode(
-                                        new Medregningsperiode(
-                                                dato("1917.01.01"),
-                                                of(dato("2015.12.31")),
-                                                expected,
-                                                Medregningskode.BISTILLING,
-                                                new StillingsforholdId(1L)
-                                        )
+                                        eiMedregning()
+                                                .beloep(expected)
+                                                .bygg()
                                 )
                         )
         );
@@ -159,7 +157,7 @@ public class StandardTidsserieAnnoteringTest {
                         .medKobling(
                                 new StillingsforholdPeriode(dato("2005.08.15"), empty())
                                         .leggTilOverlappendeStillingsendringer(
-                                                new Stillingsendring()
+                                                eiStillingsendring()
                                                         .stillingsprosent(fulltid())
                                                         .aksjonsdato(dato("2005.08.15"))
                                                         .aksjonskode(aksjonskode)
@@ -180,13 +178,9 @@ public class StandardTidsserieAnnoteringTest {
                 eiPeriode()
                         .medKobling(
                                 new StillingsforholdPeriode(
-                                        new Medregningsperiode(
-                                                dato("1917.01.01"),
-                                                of(dato("2015.12.31")),
-                                                new Medregning(kroner(10_000)),
-                                                Medregningskode.BISTILLING,
-                                                expected
-                                        )
+                                        eiMedregning()
+                                                .stillingsforhold(expected)
+                                                .bygg()
                                 )
                         )
         );
@@ -207,7 +201,7 @@ public class StandardTidsserieAnnoteringTest {
                         .medKobling(
                                 new StillingsforholdPeriode(dato("2005.08.15"), empty())
                                         .leggTilOverlappendeStillingsendringer(
-                                                new Stillingsendring()
+                                                eiStillingsendring()
                                                         .stillingsprosent(fulltid())
                                                         .aksjonsdato(dato("2005.08.15"))
                                                         .stillingsforhold(expected)
@@ -240,92 +234,6 @@ public class StandardTidsserieAnnoteringTest {
     public void skalFeileDersomUnderlagsperiodeOverlapparMeirEnnEinAvtaleversjon() {
     }
 
-    /**
-     * Verifiserer at vi ikkje annoterer nokon underlagsperioder som siste periode dersom stillingsforholdet
-     * ikkje har noko sluttmelding.
-     */
-    @Test
-    public void skalIkkjeAnnotereSistePeriodeDersomStillingsforholdErAktivt() {
-        final LocalDate aksjonsdato = dato("2012.06.30");
-        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2005.08.15"), of(aksjonsdato))
-                .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
-                                .stillingsprosent(fulltid())
-                                .aksjonsdato(aksjonsdato)
-                                .aksjonskode(Aksjonskode.ENDRINGSMELDING)
-                );
-        final Underlag underlag = annoterAllePerioder(
-                eiTomPeriode()
-                        .fraOgMed(dato("2012.01.01"))
-                        .tilOgMed(aksjonsdato)
-                        .medKobling(
-                                stilling
-                        )
-        );
-        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
-    }
-
-    /**
-     * Verifiserer at det kun er siste underlagsperiode som blir annotert med {@link SistePeriode} sjølv om
-     * det er to eller fleire underlagsperioder som overlappar stillingsforholdperioda som inneheld sluttmeldinga.
-     */
-    @Test
-    public void skalKunAnnotereSisteUnderlagsperiodeSjoelvOmStillingsperiodeMedSluttmeldingOverlapparFleireUnderlagsperioder() {
-        final LocalDate sluttDato = dato("2012.06.30");
-        final UnderlagsperiodeBuilder builder = eiTomPeriode()
-                .medKobling(
-                        new StillingsforholdPeriode(dato("2005.08.15"), of(sluttDato))
-                                .leggTilOverlappendeStillingsendringer(
-                                        new Stillingsendring()
-                                                .stillingsprosent(fulltid())
-                                                .aksjonsdato(sluttDato)
-                                                .aksjonskode(Aksjonskode.SLUTTMELDING)
-                                )
-                );
-        final Underlag underlag = annoterAllePerioder(
-                builder.kopi()
-                        .fraOgMed(dato("2012.01.01"))
-                        .tilOgMed(dato("2012.04.30")),
-                builder.kopi()
-                        .fraOgMed(dato("2012.05.01"))
-                        .tilOgMed(dato("2012.05.31")),
-                builder.kopi()
-                        .fraOgMed(dato("2012.06.01"))
-                        .tilOgMed(sluttDato)
-        );
-        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(empty());
-        assertAnnotasjon(underlag.toList().get(1), SistePeriode.class).isEqualTo(empty());
-        assertAnnotasjon(underlag.toList().get(2), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
-    }
-
-
-    /**
-     * Verifiserer at siste underlagsperiode i stillingsforholdunderlaget, blir annotert med
-     * {@link SistePeriode} dersom den overlappande stillingsforholdperioda inneheld ei sluttmelding.
-     * <p>
-     * Ein underliggande antagelse her er at siste underlagsperiode løper fram til og med den overlappande stillingsforholdperiodas
-     * til og med-dato.
-     */
-    @Test
-    public void skalAnnotereSisteUnderlagsperiodeMedSistePeriodeVissOverlappandeStillingsforholdsperiodeInneheldEiSluttmelding() {
-        final LocalDate sluttDato = dato("2012.06.30");
-        final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2005.08.15"), of(sluttDato))
-                .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
-                                .stillingsprosent(fulltid())
-                                .aksjonsdato(sluttDato)
-                                .aksjonskode(Aksjonskode.SLUTTMELDING)
-                );
-        final Underlag underlag = annoterAllePerioder(
-                eiTomPeriode()
-                        .fraOgMed(dato("2012.01.01"))
-                        .tilOgMed(sluttDato)
-                        .medKobling(
-                                stilling
-                        )
-        );
-        assertAnnotasjon(underlag.toList().get(0), SistePeriode.class).isEqualTo(of(SistePeriode.INSTANCE));
-    }
 
     @Test
     public void skalAnnotereGrunnbeloepFraOmregningsperiode() {
@@ -418,6 +326,71 @@ public class StandardTidsserieAnnoteringTest {
                 .isEqualTo(of(beloep));
     }
 
+    /**
+     * Verifiserer at et stillingsforhold som er kynttet til en avtale som er knyttet en arbeidsgiver
+     * annoterer arbeidsgiverid på underlagsperioden
+     */
+    @Test
+    public void skalAnnotereArbeidsgiveridVedTilkobletArbeidsgiverperiode() {
+        final ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(1L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("1990.01.01"))
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        dato("1990.01.01"),
+                                        empty()
+                                )
+                        )
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        new AvtaleId(123456L),
+                                        Ordning.POA
+                                )
+                        )
+                        .medKobling(
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), ArbeidsgiverId.class).isEqualTo(of(arbeidsgiverId));
+    }
+
+    /**
+     * Verifiserer at et stillingsforhold som er kynttet til en avtale som er knyttet til kundedata via arbeidsgiverid
+     * annoterer Orgnummer på underlagsperioden
+     */
+    @Test
+    public void skalAnnotereOrgnummerVedTilkobletKundedataperiode() {
+        final ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(1L);
+        final Orgnummer orgnummer = new Orgnummer(123456789L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("1990.01.01"))
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        dato("1990.01.01"),
+                                        empty()
+                                )
+                        )
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        new AvtaleId(123456L),
+                                        Ordning.POA
+                                )
+                        )
+                        .medKobling(
+                                new Arbeidsgiverdataperiode(dato("1990.01.01"), empty(), orgnummer, arbeidsgiverId)
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Orgnummer.class).isEqualTo(of(orgnummer));
+    }
+
     @Test
     public void skalAnnotereUnderlagsperioderMedFunksjonstillegg() {
         final Optional<Funksjonstillegg> expected = of(new Funksjonstillegg(kroner(1_240)));
@@ -429,7 +402,7 @@ public class StandardTidsserieAnnoteringTest {
                                 .medKobling(
                                         new StillingsforholdPeriode(dato("2012.09.01"), empty())
                                                 .leggTilOverlappendeStillingsendringer(
-                                                        new Stillingsendring()
+                                                        eiStillingsendring()
                                                                 .aksjonsdato(dato("2012.09.01"))
                                                                 .stillingsprosent(fulltid())
                                                                 .funksjonstillegg(
@@ -453,7 +426,7 @@ public class StandardTidsserieAnnoteringTest {
                                 .medKobling(
                                         new StillingsforholdPeriode(dato("2005.08.15"), empty())
                                                 .leggTilOverlappendeStillingsendringer(
-                                                        new Stillingsendring()
+                                                        eiStillingsendring()
                                                                 .aksjonsdato(dato("2005.08.15"))
                                                                 .stillingsprosent(fulltid())
                                                                 .fastetillegg(
@@ -477,7 +450,7 @@ public class StandardTidsserieAnnoteringTest {
                                 .medKobling(
                                         new StillingsforholdPeriode(dato("2007.01.01"), empty())
                                                 .leggTilOverlappendeStillingsendringer(
-                                                        new Stillingsendring()
+                                                        eiStillingsendring()
                                                                 .aksjonsdato(dato("2007.01.01"))
                                                                 .stillingsprosent(fulltid())
                                                                 .variabletillegg(
@@ -585,7 +558,7 @@ public class StandardTidsserieAnnoteringTest {
 
         final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2007.01.23"), empty())
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(dato("2007.01.23"))
                                 .aksjonskode(Aksjonskode.NYTILGANG)
@@ -622,7 +595,7 @@ public class StandardTidsserieAnnoteringTest {
     public void skalAnnotereUnderlagsperiodeMedLoennstrinnBeloepForLoennstrinnetDersomStillingaBrukarLoennstrinnOgPeriodaErKoblaTilLoennstrinnPerioder() {
         final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2007.01.23"), empty())
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(dato("2007.01.23"))
                                 .aksjonskode(Aksjonskode.NYTILGANG)
@@ -664,7 +637,7 @@ public class StandardTidsserieAnnoteringTest {
     public void skalIkkjeFeileDersomAnnoteringaIkkjeFinnEitLoennstrinnBeloepForPeriodasLoennstrinn() {
         final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2007.01.23"), empty())
                 .leggTilOverlappendeStillingsendringer(
-                        new Stillingsendring()
+                        eiStillingsendring()
                                 .stillingsprosent(fulltid())
                                 .aksjonsdato(dato("2007.01.23"))
                                 .aksjonskode(Aksjonskode.NYTILGANG)
@@ -842,6 +815,8 @@ public class StandardTidsserieAnnoteringTest {
     private static Stillingsendring eiStillingsendring() {
         return new Stillingsendring()
                 .stillingsprosent(fulltid())
+                .foedselsdato(foedselsdato(dato("1917.01.01")))
+                .personnummer(personnummer(12345))
                 .registreringsdato(dato("2099.01.01"));
     }
 

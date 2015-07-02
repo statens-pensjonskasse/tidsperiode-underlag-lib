@@ -1,24 +1,26 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon;
+
+import java.time.Month;
+import java.util.Optional;
+
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
-import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
-
-import java.time.Month;
-import java.util.Optional;
-
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinære
@@ -33,9 +35,6 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
      * <p>
      * Kvar underlagsperiode blir først annotert via {@link #annoter(Underlag, Underlagsperiode)}.
      * <p>
-     * Deretter  blir siste underlagsperiode blir annotert med {@link SistePeriode} slik at seinare prosesseringa
-     * kjapt skal kunne sjekke opp om det eksisterer nokon fleire underlagsperioder i underlaget.
-     * <p>
      * Dersom siste underlagsperiode er annotert med premiestatus blir underlaget annotert med denne heilt til slutt.
      *
      * @param underlag underlaget som skal annoterast
@@ -45,7 +44,6 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
         underlag.stream().forEach((Underlagsperiode periode) -> annoter(underlag, periode));
         final Optional<Underlagsperiode> sistePeriode = underlag.last();
         sistePeriode.ifPresent(periode -> {
-            periode.annoter(SistePeriode.class, SistePeriode.INSTANCE);
             periode.valgfriAnnotasjonFor(Premiestatus.class)
                     .ifPresent(premiestatus -> underlag.annoter(Premiestatus.class, premiestatus));
         });
@@ -95,6 +93,8 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
         periode.valgfriAnnotasjonFor(Loennstrinn.class).ifPresent(loennstrinn -> {
             annoterLoennForLoennstrinn(periode);
         });
+        periode.koblingAvType(Arbeidsgiverdataperiode.class).ifPresent(p -> p.annoter(periode));
+        periode.koblingAvType(Arbeidsgiverperiode.class).ifPresent(p -> p.annoter(periode));
     }
 
     private void annoterLoennForLoennstrinn(final Underlagsperiode periode) {

@@ -72,4 +72,8 @@ public class Minstegrense {
     public String toString() {
         return "minstegrense " + grense;
     }
+
+    public Prosent grense() {
+        return grense;
+    }
 }

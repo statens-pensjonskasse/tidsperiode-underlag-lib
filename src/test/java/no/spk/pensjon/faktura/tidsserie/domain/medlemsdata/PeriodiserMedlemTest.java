@@ -1,11 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import org.junit.Test;
-
-import java.util.List;
-
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
@@ -14,10 +8,20 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.BISTILLING;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.TILLEGG_ANNEN_ARBGIV;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode.medregning;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.ObjectMother.eiMedregning;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.PeriodiserMedlemHelper.assertStillingsforholdperioder;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.PeriodiserMedlemHelper.periode;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.PeriodiserMedlemHelper.periodiser;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+
+import org.junit.Test;
 
 /**
  * Enheitstestar for {@link PeriodiserMedlem}.
@@ -87,13 +91,10 @@ public class PeriodiserMedlemTest {
     public void skalReturnereEiLøpandePeriodeDersomMedlemmetKunHarEiLøpandeMedregning() {
         final List<Medlemsperiode> perioder = periodiser(
                 new StillingsforholdPeriode(
-                        new Medregningsperiode(
-                                dato("2000.01.01"),
-                                empty(),
-                                MEDREGNING,
-                                BISTILLING,
-                                STILLING_1
-                        )
+                        eiMedregning()
+                                .fraOgMed(dato("2000.01.01"))
+                                .loepende()
+                                .bygg()
                 )
         );
         assertThat(perioder).hasSize(1);
@@ -112,23 +113,19 @@ public class PeriodiserMedlemTest {
     public void skalStarteNyPeriodeDagenEtterMedregningsperiodasTilOgMedDato() {
         final List<Medlemsperiode> perioder = periodiser(
                 new StillingsforholdPeriode(
-                        new Medregningsperiode(
-                                dato("2005.04.03"),
-                                of(dato("2015.04.30")),
-                                MEDREGNING,
-                                BISTILLING,
-                                STILLING_1
-                        )
-                ),
+                        eiMedregning()
+                                .fraOgMed(dato("2005.04.03"))
+                                .tilOgMed(of(dato("2015.04.30")))
+                                .stillingsforhold(STILLING_1)
+                                .bygg()
+                )
+                ,
                 new StillingsforholdPeriode(
-                        new Medregningsperiode(
-                                dato("2016.01.01"),
-                                empty(),
-                                MEDREGNING,
-                                BISTILLING,
-                                STILLING_2
-                        )
-
+                        eiMedregning()
+                                .fraOgMed(dato("2016.01.01"))
+                                .loepende()
+                                .stillingsforhold(STILLING_2)
+                                .bygg()
                 )
         );
         assertThat(perioder).hasSize(3);
@@ -179,13 +176,11 @@ public class PeriodiserMedlemTest {
                                         .stillingsforhold(STILLING_1)
                         ),
                 new StillingsforholdPeriode(
-                        new Medregningsperiode(
-                                dato("2009.06.01"),
-                                of(dato("2016.12.31")),
-                                MEDREGNING,
-                                TILLEGG_ANNEN_ARBGIV,
-                                STILLING_3
-                        )
+                        eiMedregning()
+                                .fraOgMed(dato("2009.06.01"))
+                                .tilOgMed(of(dato("2016.12.31")))
+                                .stillingsforhold(STILLING_3)
+                                .bygg()
                 ),
                 new StillingsforholdPeriode(dato("2010.01.01"), of(dato("2010.02.28")))
                         .leggTilOverlappendeStillingsendringer(
