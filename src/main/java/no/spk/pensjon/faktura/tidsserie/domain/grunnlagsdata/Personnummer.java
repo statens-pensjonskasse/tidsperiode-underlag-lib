@@ -33,6 +33,7 @@ public final class Personnummer {
      * Konstruerer eit nytt personnummer basert på den angitte, numeriske verdien.
      *
      * @param value ein numerisk representasjon av personnummeret
+     * @return et nytt personnummer
      * @throws IllegalArgumentException viss <code>value</code> er mindre enn 0
      */
     public static Personnummer personnummer(final int value) {

@@ -15,4 +15,9 @@ public final class IngenSats implements Sats{
     public static final Sats sats() {
         return INGEN_SATS;
     }
+
+    @Override
+    public String toString() {
+        return "Ingen sats";
+    }
 }

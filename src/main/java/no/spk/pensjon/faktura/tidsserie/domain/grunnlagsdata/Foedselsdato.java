@@ -37,6 +37,7 @@ public final class Foedselsdato {
      * @param dato datoen medlemmet vart født.
      * @throws NullPointerException     viss <code>dato</code> var <code>null</code>
      * @throws IllegalArgumentException viss <code>dato</code> er før år 1875 sidan det er
+     * @return ny fødselsdato
      * @see Foedselsdato#Foedselsdato(java.time.LocalDate)
      */
     public static Foedselsdato foedselsdato(final LocalDate dato) {
