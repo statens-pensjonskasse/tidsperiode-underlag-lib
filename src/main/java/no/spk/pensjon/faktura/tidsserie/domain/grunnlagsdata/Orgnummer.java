@@ -11,9 +11,9 @@ public class Orgnummer {
     private final Long id;
 
     /**
-     * Konstruerer eit nytt avtalenummer.
+     * Konstruerer et nytt orgnummer
      *
-     * @param id ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
+     * @param id en <code>Long</code> som representerer orgnummeret
      * @throws NullPointerException viss <code>id</code> er <code>null</code>
      */
     public Orgnummer(final Long id) {
@@ -48,7 +48,7 @@ public class Orgnummer {
     /**
      * @see #valueOf(long)
      * @see Long#parseLong(String)
-     * @param text er ein String som kan konverteres til ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
+     * @param text er en string som kan konverteres til en <code>Long</code> som representerer orgnummeret
      * @return eit nytt avtalenummer.
      */
     public static Orgnummer valueOf(String text) {
@@ -56,8 +56,8 @@ public class Orgnummer {
     }
 
     /**
-     * @see #AvtaleId(Long)
-     * @param id ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
+     * @see #Orgnummer(Long) (Long)
+     * @param id er en <code>Long</code> som representerer orgnummeret
      * @return eit nytt avtalenummer.
      */
     public static Orgnummer valueOf(long id) {

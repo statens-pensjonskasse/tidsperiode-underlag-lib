@@ -22,8 +22,11 @@ import java.time.Month;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
@@ -35,6 +38,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Orgnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
@@ -320,6 +324,71 @@ public class StandardTidsserieAnnoteringTest {
         );
         assertAnnotasjon(underlag.toList().get(0), LoennstrinnBeloep.class)
                 .isEqualTo(of(beloep));
+    }
+
+    /**
+     * Verifiserer at et stillingsforhold som er kynttet til en avtale som er knyttet en arbeidsgiver
+     * annoterer arbeidsgiverid på underlagsperioden
+     */
+    @Test
+    public void skalAnnotereArbeidsgiveridVedTilkobletArbeidsgiverperiode() {
+        final ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(1L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("1990.01.01"))
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        dato("1990.01.01"),
+                                        empty()
+                                )
+                        )
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        new AvtaleId(123456L),
+                                        Ordning.POA
+                                )
+                        )
+                        .medKobling(
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), ArbeidsgiverId.class).isEqualTo(of(arbeidsgiverId));
+    }
+
+    /**
+     * Verifiserer at et stillingsforhold som er kynttet til en avtale som er knyttet til kundedata via arbeidsgiverid
+     * annoterer Orgnummer på underlagsperioden
+     */
+    @Test
+    public void skalAnnotereOrgnummerVedTilkobletKundedataperiode() {
+        final ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(1L);
+        final Orgnummer orgnummer = new Orgnummer(123456789L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("1990.01.01"))
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        dato("1990.01.01"),
+                                        empty()
+                                )
+                        )
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        new AvtaleId(123456L),
+                                        Ordning.POA
+                                )
+                        )
+                        .medKobling(
+                                new Arbeidsgiverdataperiode(dato("1990.01.01"), empty(), orgnummer, arbeidsgiverId)
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Orgnummer.class).isEqualTo(of(orgnummer));
     }
 
     @Test

@@ -12,11 +12,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
  * Kundedataperiode holder på {@link Orgnummer} som en arbeidsgiver med gitt {@link ArbeidsgiverId} har i en gitt periode.
  * @author Snorre E. Brekke - Computas
  */
-public class Kundedataperiode extends AbstractTidsperiode<Kundedataperiode> implements Arbeidsgiverrelatertperiode<Kundedataperiode> {
+public class Arbeidsgiverdataperiode extends AbstractTidsperiode<Arbeidsgiverdataperiode> implements Arbeidsgiverrelatertperiode<Arbeidsgiverdataperiode> {
     private final Orgnummer orgnummer;
     private final ArbeidsgiverId arbeidsgiverId;
 
-    public Kundedataperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, Orgnummer orgnummer, ArbeidsgiverId arbeidsgiverId) {
+    public Arbeidsgiverdataperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, Orgnummer orgnummer, ArbeidsgiverId arbeidsgiverId) {
         super(fraOgMed, tilOgMed);
         this.orgnummer = orgnummer;
         this.arbeidsgiverId = arbeidsgiverId;

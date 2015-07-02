@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Kundedataperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Orgnummer;
@@ -29,12 +29,12 @@ import org.junit.Test;
  * @author Snorre E. Brekke - Computas
  */
 public class StandardAvtaleInformasjonRepositoryTest {
-    StandardAvtaleInformasjonRepository repository = new StandardAvtaleInformasjonRepository();
+    StandardAvtaleInformasjonRepository repository;
     Map<Class<?>, List<Tidsperiode<?>>> perioder = new HashMap<>();
 
     @Test
     public void tomtAvtalerepositySkalIkkeFinneAvtale() throws Exception {
-        repository.periodeGrupper(perioder);
+        repository = new StandardAvtaleInformasjonRepository(perioder);
         assertThat(repository.finn(new AvtaleId(1L)).count()).isZero();
     }
 
@@ -49,14 +49,14 @@ public class StandardAvtaleInformasjonRepositoryTest {
         Avtaleversjon avtaleversjon = new Avtaleversjon(fraDato, tildato, avtaleId, Premiestatus.UKJENT);
         Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId);
         Arbeidsgiverperiode arbeidsgiverperiode = new Arbeidsgiverperiode(fraDato, tildato, arbeidsgiverId);
-        Kundedataperiode kundedataperiode = new Kundedataperiode(fraDato, tildato, orgnummer, arbeidsgiverId);
+        Arbeidsgiverdataperiode arbeidsgiverdataperiode = new Arbeidsgiverdataperiode(fraDato, tildato, orgnummer, arbeidsgiverId);
 
-        put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode, kundedataperiode);
+        put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode, arbeidsgiverdataperiode);
 
-        repository.periodeGrupper(perioder);
+        repository = new StandardAvtaleInformasjonRepository(perioder);
         List<Tidsperiode<?>> fantPerioder = repository.finn(avtaleId).collect(toList());
 
-        assertThat(fantPerioder).containsExactly(avtaleversjon, avtaleperiode, arbeidsgiverperiode, kundedataperiode);
+        assertThat(fantPerioder).containsExactly(avtaleversjon, avtaleperiode, arbeidsgiverperiode, arbeidsgiverdataperiode);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class StandardAvtaleInformasjonRepositoryTest {
 
         put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode);
 
-        repository.periodeGrupper(perioder);
+        repository = new StandardAvtaleInformasjonRepository(perioder);
         List<Tidsperiode<?>> fantPerioder = repository.finn(avtaleId).collect(toList());
 
         assertThat(fantPerioder).containsExactly(avtaleversjon, avtaleperiode);
@@ -90,7 +90,7 @@ public class StandardAvtaleInformasjonRepositoryTest {
 
         put(perioder, avtaleversjon, arbeidsgiverperiode);
 
-        repository.periodeGrupper(perioder);
+        repository = new StandardAvtaleInformasjonRepository(perioder);
         List<Tidsperiode<?>> fantPerioder = repository.finn(avtaleId).collect(toList());
 
         assertThat(fantPerioder).containsExactly(avtaleversjon);
@@ -116,7 +116,7 @@ public class StandardAvtaleInformasjonRepositoryTest {
         put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode,
                 avtaleversjonUtelatt, avtaleperiodeUtelatt, arbeidsgiverperiodeUtelatt);
 
-        repository.periodeGrupper(perioder);
+        repository = new StandardAvtaleInformasjonRepository(perioder);
         List<Tidsperiode<?>> fantPerioder = repository.finn(avtaleId).collect(toList());
 
         assertThat(fantPerioder).containsExactly(avtaleversjon, avtaleperiode, arbeidsgiverperiode);

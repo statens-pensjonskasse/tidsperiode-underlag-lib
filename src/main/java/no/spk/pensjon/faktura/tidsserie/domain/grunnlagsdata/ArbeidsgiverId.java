@@ -48,17 +48,17 @@ public class ArbeidsgiverId {
     /**
      * @see #valueOf(long)
      * @see Long#parseLong(String)
-     * @param text er ein String som kan konverteres til ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
-     * @return eit nytt avtalenummer.
+     * @param text er en String som kan konverteres til en <code>Long</code> som inneholder arbeidsgiverid som unikt identifiserer arbeidsgiveren
+     * @return en ny arbeidsgiverid.
      */
     public static ArbeidsgiverId valueOf(String text) {
         return valueOf(Long.parseLong(text));
     }
 
     /**
-     * @see #AvtaleId(Long)
-     * @param id ein <code>Long</code> som innehelt avtalenummeret som unikt identifiserer avtalen
-     * @return eit nytt avtalenummer.
+     * @see #ArbeidsgiverId(Long)
+     * @param id en <code>Long</code> som inneholder arbeidsgiverid som unikt identifiserer arbeidsgiveren
+     *@return en ny arbeidsgiverid.
      */
     public static ArbeidsgiverId valueOf(long id) {
         return new ArbeidsgiverId(id);
