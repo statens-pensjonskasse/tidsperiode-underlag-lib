@@ -1,5 +1,17 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertKoblingarAvType;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
@@ -7,14 +19,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static java.util.Optional.empty;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assertKoblingarAvType;
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class UnderlagsperiodeBuilderTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    @Test
+    public void skalAnnoterePeriodeneMedAlleReglarIRegelsettet() {
+        final AarsfaktorRegel expected = new AarsfaktorRegel();
+        final Regelsett reglar = () -> Stream.of(new Regelperiode<>(dato("1917.01.01"), empty(), expected));
+
+        final Underlagsperiode periode = builder().reglar(reglar).bygg();
+        assertAnnotasjon(periode, AarsfaktorRegel.class).isEqualTo(of(expected));
+    }
+
 
     /**
      * Verifiserer at alle annotasjonane som er lagt til på den opprinnelige builderen, blir kopiert
