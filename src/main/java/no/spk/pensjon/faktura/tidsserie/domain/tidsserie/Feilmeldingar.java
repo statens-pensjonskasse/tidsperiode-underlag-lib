@@ -1,18 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-
-import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
  * Feilmeldingar generert av tidsserie-genereringa.
@@ -33,15 +25,15 @@ public class Feilmeldingar {
      *                og der alle versjonane er tilknytta <code>avtale</code>
      * @return ein ny reducer som feilar dersom den blir kalla ein eller fleire gangar
      */
-    public static BinaryOperator<Avtaleversjon> feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon(
-            final AvtaleId avtale, final Tidsperiode<?> periode) {
+    public static <T> BinaryOperator<T> feilDersomPeriodaOverlapparMeirEnnEin(
+            final Class<T> type, final AvtaleId avtale, final Tidsperiode<?> periode) {
         return (a, b) -> {
             final StringBuilder builder = new StringBuilder();
-            builder.append("Klarer ikkje å entydig avgjere kva som er gjeldande avtaleversjon for ")
+            builder.append("Klarer ikkje å entydig avgjere kva som er gjeldande " + type.getSimpleName() +" for ")
                     .append(avtale)
                     .append(" i perioda ")
                     .append(periode)
-                    .append(".\nAvtaleversjonar som overlappar perioda:\n");
+                    .append(".\n" + type +" som overlappar perioda:\n");
             Stream.of(a, b).forEach(versjon -> {
                 builder.append("- ");
                 builder.append(versjon.toString());
