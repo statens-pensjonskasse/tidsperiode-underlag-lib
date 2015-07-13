@@ -108,7 +108,9 @@ public class UnderlagsperiodeBuilder {
      * Annoterer underlagsperioda med den angitte verdien. Annotasjonen blir registrert under
      * <code>annotasjon</code>.
      *
-     * @param annotasjon verdien som periodene skal annoterast med
+     * @param <T>        annotasjonstypen som periodene skal annoterast med
+     * @param annotasjon annotasjonstypen som periodene skal annoterast med
+     * @param verdi      verdien som periodene skal annoterast med
      * @return <code>this</code>
      */
     public <T> UnderlagsperiodeBuilder med(Class<? extends T> annotasjon, T verdi) {

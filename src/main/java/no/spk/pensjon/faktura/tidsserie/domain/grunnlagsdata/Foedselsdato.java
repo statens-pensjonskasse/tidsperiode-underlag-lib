@@ -14,8 +14,7 @@ import java.time.format.DateTimeFormatter;
  * Av denne grunn bør ikkje {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato} brukast
  * i andre samanhengar enn situasjonar der ein treng å holde på ein fødselsdato som skal inngå som ein del av
  * eit personnummer.
- * <br>
- * <h6>Referansar</h6>
+ * <h3>Referansar</h3>
  * <ul>
  * <li><a href="https://no.wikipedia.org/wiki/F%C3%B8dselsnummer#D-nummer">Fødselsnummer</a></li>
  * <li><a href="http://www.fnrinfo.no/Info/Oppbygging.aspx">Hvilken informasjon finnes i et fødselsnummer?</a></li>
