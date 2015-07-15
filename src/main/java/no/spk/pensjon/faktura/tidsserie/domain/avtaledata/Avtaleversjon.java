@@ -1,13 +1,17 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
@@ -23,6 +27,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements Avtalerelatertperiode<Avtaleversjon> {
     private final AvtaleId avtale;
     private final Premiestatus status;
+    private final Optional<Premiekategori> kategori;
 
     /**
      * Konstruerer ei ny avtaleversjon som har ein frå og med-dato og som kan ha
@@ -30,15 +35,24 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
      *
      * @param fraOgMed første dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
-     * @param avtale som versjonen gjelder
-     * @param status for avtalen i perioden
+     * @param avtale   som versjonen gjelder
+     * @param status   for avtalen i perioden
      * @throws NullPointerException dersom nokon av parameterverdiane er <code>null</code>
+     * @see #avtaleversjon(no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId)
+     * @deprecated
      */
+    @Deprecated
     public Avtaleversjon(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
                          final AvtaleId avtale, final Premiestatus status) {
+        this(fraOgMed, tilOgMed, avtale, status, empty());
+    }
+
+    private Avtaleversjon(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
+                          final AvtaleId avtale, final Premiestatus status, final Optional<Premiekategori> kategori) {
         super(fraOgMed, tilOgMed);
-        this.avtale = requireNonNull(avtale, () -> "avtalenummer er påkrevd, men var null");
-        this.status = requireNonNull(status, () -> "premiestatus er påkrevd, men var null");
+        this.avtale = requireNonNull(avtale, "avtalenummer er påkrevd, men var null");
+        this.status = requireNonNull(status, "premiestatus er påkrevd, men var null");
+        this.kategori = kategori;
     }
 
     /**
@@ -57,6 +71,7 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
      */
     public void populer(final AvtaleBuilder avtale) {
         avtale.premiestatus(status);
+        kategori.ifPresent(avtale::premiekategori);
     }
 
     /**
@@ -82,5 +97,73 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
     @Override
     public String toString() {
         return "avtaleversjon " + fraOgMed() + "->" + tilOgMed.map(LocalDate::toString).orElse("") + " med " + status + " med hash " + Objects.hashCode(this);
+    }
+
+    /**
+     * Opprettar ein ny builder for konstruksjon av nye avtaleversjonar for ein bestemt avtale.
+     *
+     * @param avtale avtalenummer for avtalen avtaleversjonane skal tilhøyre
+     * @return ein ny builder for avtaleversjonar for ein bestemt avtale
+     * @throws java.lang.NullPointerException viss <code>avtale</code> er <code>null</code>
+     * @since 1.1.1
+     */
+    public static AvtaleversjonBuilder avtaleversjon(final AvtaleId avtale) {
+        return new AvtaleversjonBuilder(requireNonNull(avtale, "avtalenummer er påkrevd, men manglar"));
+    }
+
+    /**
+     * {@link AvtaleversjonBuilder} lar ein konstruere nye avtaleversjonar for ein bestemt avtale.
+     *
+     * @author Tarjei Skorgenes
+     * @since 1.1.1
+     */
+    public static class AvtaleversjonBuilder {
+        private final AvtaleId avtale;
+
+        private Optional<LocalDate> fraOgMed = empty();
+
+        private Optional<LocalDate> tilOgMed = empty();
+
+        private Optional<Premiestatus> status = empty();
+
+        private Optional<Premiekategori> kategori = empty();
+
+        private AvtaleversjonBuilder(final AvtaleId avtale) {
+            this.avtale = avtale;
+        }
+
+        public AvtaleversjonBuilder fraOgMed(final LocalDate fraOgMed) {
+            this.fraOgMed = ofNullable(fraOgMed);
+            return this;
+        }
+
+        public AvtaleversjonBuilder tilOgMed(final Optional<LocalDate> tilOgMed) {
+            this.tilOgMed = tilOgMed;
+            return this;
+        }
+
+        public AvtaleversjonBuilder premiestatus(final Premiestatus status) {
+            this.status = ofNullable(status);
+            return this;
+        }
+
+        public AvtaleversjonBuilder premiekategori(final Premiekategori kategori) {
+            this.kategori = ofNullable(kategori);
+            return this;
+        }
+
+        public Avtaleversjon bygg() {
+            return new Avtaleversjon(
+                    fraOgMed.orElseThrow(feltManglarVerdi("fra og med-dato")),
+                    tilOgMed,
+                    avtale,
+                    status.orElseThrow(feltManglarVerdi("premiestatus")),
+                    kategori
+            );
+        }
+
+        private static Supplier<IllegalStateException> feltManglarVerdi(final String felt) {
+            return () -> new IllegalStateException(felt + " er påkrevd, men manglar verdi");
+        }
     }
 }

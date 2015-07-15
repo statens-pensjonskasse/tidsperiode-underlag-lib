@@ -9,20 +9,20 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avt
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser.ingenSatser;
+import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.enAvtaleversjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.tidenesMorgen;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.assertBetalarTilSPKFor;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.assertPremiestatus;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.eiAvtalekobling;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.eiOrdning;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.eiStilling;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.enAvtale;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarFactoryTestHelpers.tidenesMorgen;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -165,20 +165,18 @@ public class MedlemsavtalarFactoryTest {
     @Test
     public void skalPeriodisereVedEndringAvPremiestatusPaaAvtale() {
         final LocalDate endringsdato = tidenesMorgen().plusYears(50);
+        final AvtaleId avtale = enAvtale();
         addAvtaleinformasjon(
-                enAvtale(),
-                new Avtaleversjon(
-                        tidenesMorgen(),
-                        of(endringsdato.minusDays(1)),
-                        enAvtale(),
-                        Premiestatus.AAO_01
-                ),
-                new Avtaleversjon(
-                        endringsdato,
-                        empty(),
-                        enAvtale(),
-                        Premiestatus.AAO_02
-                )
+                avtale,
+                enAvtaleversjon(avtale)
+                        .tilOgMed(of(endringsdato.minusDays(1)))
+                        .premiestatus(Premiestatus.AAO_01)
+                        .bygg()
+                ,
+                enAvtaleversjon(avtale)
+                        .fraOgMed(endringsdato)
+                        .premiestatus(Premiestatus.AAO_02)
+                        .bygg()
         );
         final List<MedlemsavtalarPeriode> perioder = periodiser(eiAvtalekobling(eiStilling()));
         assertThat(perioder).hasSize(2);
