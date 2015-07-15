@@ -1,9 +1,12 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -28,16 +31,21 @@ public class Avtale {
 
     private final Premiestatus status;
 
+    private final Optional<Premiekategori> kategori;
+
     /**
      * Konstruerer ein ny avtale utan nokon produkt innlagt.
      *
-     * @param id      avtalenummeret som unikt identifiserer avtalen
-     * @param status  avtalen sin premiestatus
-     * @param produkt produkta avtalen betalar premie til SPK for
+     * @param id       avtalenummeret som unikt identifiserer avtalen
+     * @param status   avtalen sin premiestatus
+     * @param kategori avtalen sin premiekategori, eller ingenting dersom premiekategori er ukjent
+     * @param produkt  produkta avtalen betalar premie til SPK for
      */
-    private Avtale(final AvtaleId id, final Premiestatus status, final Stream<Produkt> produkt) {
+    private Avtale(final AvtaleId id, final Premiestatus status, final Optional<Premiekategori> kategori,
+                   final Stream<Produkt> produkt) {
         this.id = id;
         this.status = status;
+        this.kategori = kategori;
         produkt.forEach(this.avtaleprodukt::add);
     }
 
@@ -70,10 +78,21 @@ public class Avtale {
         return status;
     }
 
+    /**
+     * Gjeldande premiekategori for avtalen.
+     *
+     * @return avtalens premiekategori
+     * @since 1.1.1
+     */
+    public Optional<Premiekategori> premiekategori() {
+        return kategori;
+    }
+
     @Override
     public String toString() {
         return id
                 + ", " + premiestatus()
+                + "," + premiekategori()
                 + ", "
                 + avtaleprodukt.size()
                 + " produkt ("
@@ -109,6 +128,8 @@ public class Avtale {
 
         private Premiestatus status = Premiestatus.UKJENT;
 
+        private Optional<Premiekategori> kategori = empty();
+
         private AvtaleBuilder(final AvtaleId id) {
             this.id = id;
         }
@@ -121,7 +142,19 @@ public class Avtale {
          * @throws NullPointerException viss <code>status</code> er <code>null</code>
          */
         public AvtaleBuilder premiestatus(Premiestatus status) {
-            this.status = requireNonNull(status, () -> "Premiestatus er påkrevd, men vart forsøkt endra til null");
+            this.status = requireNonNull(status, "Premiestatus er påkrevd, men vart forsøkt endra til null");
+            return this;
+        }
+
+        /**
+         * Oppdaterer premiekategorien som avtalen skal settast opp med.
+         *
+         * @param kategori premiekategorien som avtalen skal benytte
+         * @return <code>this</code>
+         * @since 1.1.1
+         */
+        public AvtaleBuilder premiekategori(final Premiekategori kategori) {
+            this.kategori = ofNullable(kategori);
             return this;
         }
 
@@ -146,6 +179,7 @@ public class Avtale {
             return new Avtale(
                     id,
                     status,
+                    kategori,
                     avtaleprodukt.stream()
             );
         }
