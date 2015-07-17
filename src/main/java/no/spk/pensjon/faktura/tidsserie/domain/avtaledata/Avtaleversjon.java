@@ -62,6 +62,7 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
      */
     public void annoter(final Annoterbar<?> periode) {
         periode.annoter(Premiestatus.class, status);
+        periode.annoter(Premiekategori.class, kategori);
     }
 
     /**

@@ -40,6 +40,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Orgnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
@@ -218,14 +220,75 @@ public class StandardTidsserieAnnoteringTest {
      */
     @Test
     public void skalAnnoterePeriodeMedPremiestatusFraOverlappandeAvtaleversjon() {
+        final AvtaleId avtale = avtaleId(123456);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        avtale,
+                                        Ordning.POA
+                                ),
+                                enAvtaleversjon(avtale)
+                                        .premiestatus(Premiestatus.AAO_02)
+                                        .bygg()
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Premiestatus.class)
+                .isEqualTo(of(Premiestatus.AAO_02));
     }
 
     /**
-     * Verifiserer at underlagsperiodene ikkje blir annotert med premiestatus dersom perioda ikkje er tilknytta ein
-     * avtaleversjon.
+     * Verifiserer at underlagsperiodene blir annotert med premiekategori dersom perioda er tilknytta ein
+     * avtaleversjon som har ein premiekategori.
      */
     @Test
-    public void skalIkkjeAnnoterePeriodeMedPremiestatusDersomPeriodaIkkjeOverlapparEinAvtaleversjon() {
+    public void skalAnnoterePeriodeMedPremiekategoriFraOverlappandeAvtaleversjon() {
+        final AvtaleId avtale = avtaleId(123456);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        avtale,
+                                        Ordning.POA
+                                ),
+                                enAvtaleversjon(avtale)
+                                        .premiekategori(Premiekategori.FASTSATS_AARLIG_OPPFOELGING)
+                                        .bygg()
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Premiekategori.class)
+                .isEqualTo(of(Premiekategori.FASTSATS_AARLIG_OPPFOELGING));
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene ikkje blir annotert med premiestatus og premiekategori dersom perioda ikkje
+     * er tilknytta ein avtaleversjon.
+     */
+    @Test
+    public void skalIkkjeAnnoterePeriodeMedPremiestatusEllerKategoriDersomPeriodaIkkjeOverlapparEinAvtaleversjon() {
+        final AvtaleId avtale = avtaleId(123456);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        avtale,
+                                        Ordning.POA
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Premiestatus.class)
+                .isEqualTo(empty());
+        assertAnnotasjon(underlag.toList().get(0), Premiekategori.class)
+                .isEqualTo(empty());
     }
 
     /**
@@ -233,6 +296,25 @@ public class StandardTidsserieAnnoteringTest {
      */
     @Test
     public void skalFeileDersomUnderlagsperiodeOverlapparMeirEnnEinAvtaleversjon() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Avtaleversjon");
+        AvtaleId avtale = new AvtaleId(12345L);
+        annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2011.05.01"))
+                        .tilOgMed(dato("2011.05.31"))
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("2011.01.01"),
+                                        of(dato("2011.06.30")),
+                                        new StillingsforholdId(999999L),
+                                        avtale,
+                                        SPK
+                                ),
+                                enAvtaleversjon(avtale).bygg(),
+                                enAvtaleversjon(avtale).bygg()
+                        )
+        );
     }
 
 
