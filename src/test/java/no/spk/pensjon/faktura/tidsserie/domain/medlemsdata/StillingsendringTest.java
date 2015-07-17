@@ -6,6 +6,7 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemslinjenummer.linjenummer;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer.personnummer;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
@@ -20,6 +21,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemslinjenummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
@@ -41,6 +43,18 @@ import org.junit.rules.ExpectedException;
 public class StillingsendringTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
+
+    @Test
+    public void skalAnnotereMedStillingsendringLinjenummer() {
+        final Underlagsperiode periode = eiPeriode();
+
+        final Medlemslinjenummer expected = linjenummer(1);
+        eiEndring()
+                .linje(of(expected))
+                .annoter(periode);
+
+        assertAnnotasjon(periode, Medlemslinjenummer.class).isEqualTo(of(expected));
+    }
 
     @Test
     public void skalFeileDersomStillingsprosentManglar() {
