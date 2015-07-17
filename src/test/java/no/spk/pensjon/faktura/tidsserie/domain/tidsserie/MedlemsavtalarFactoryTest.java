@@ -136,7 +136,7 @@ public class MedlemsavtalarFactoryTest {
                 enAvtale(),
                 new Avtaleprodukt(
                         tidenesMorgen(),
-                        empty(),
+                        of(endringsdato.minusDays(1)),
                         enAvtale(),
                         PEN,
                         new Produktinfo(36),

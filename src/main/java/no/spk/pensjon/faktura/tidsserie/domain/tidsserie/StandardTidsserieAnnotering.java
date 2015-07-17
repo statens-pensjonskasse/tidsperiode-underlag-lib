@@ -9,6 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiod
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -31,6 +32,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  * @author Tarjei Skorgenes
  */
 public class StandardTidsserieAnnotering implements StillingsforholdunderlagFactory.Annoteringsstrategi {
+    private final AvtaleFactory avtaleFactory = new AvtaleFactory();
+
     /**
      * Populerer underlaget og underlagets underlagsperioder med annotasjonar.
      * <p>
@@ -114,6 +117,8 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
                                 .reduce(feilDersomPeriodaOverlapparMeirEnnEin(Arbeidsgiverdataperiode.class, avtalekobling.avtale(), periode))
                                 .ifPresent(arbeidsgiverdataperiode -> arbeidsgiverdataperiode.annoter(periode));
                     });
+
+            periode.annoter(Avtale.class, avtaleFactory.lagAvtale(periode, avtalekobling.avtale()));
         });
     }
 

@@ -2,18 +2,12 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.Builder;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
@@ -41,6 +35,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  * @author Tarjei Skorgenes
  */
 public class MedlemsavtalarFactory {
+    private final AvtaleFactory factory = new AvtaleFactory();
+
     private AvtaleinformasjonRepository avtalar = a -> Stream.empty();
 
     /**
@@ -92,30 +88,9 @@ public class MedlemsavtalarFactory {
                 .fraOgMed(periode.fraOgMed())
                 .tilOgMed(periode.tilOgMed());
         periode.koblingarAvType(Avtalekoblingsperiode.class).forEach(kobling -> {
-            avtalar.addAvtale(kobling.stillingsforhold(), lagAvtale(periode, kobling));
+            avtalar.addAvtale(kobling.stillingsforhold(), factory.lagAvtale(periode, kobling.avtale()));
         });
         return avtalar.bygg();
     }
 
-    /**
-     * Orkestrerer oppbygging av ein ny representasjon av gjeldande tilstand for avtalekoblinga sin avtale innanfor
-     * underlagsperioda.
-     * <p>
-     * Avtalen sin tilstand blir bygd opp basert på alle avtaleprodukt og avtaleversjonen som tilhøyrer avtalekoblinga
-     * sin avtale og som overlappar underlagsperioda.
-     *
-     * @param periode underlagsperioda som inneheld informasjon om gjeldande tilstand for avtalekoblinga sin avtale
-     * @param kobling avtalekoblinga som regulerer kva avtale gjeldande tilstand skal byggast opp for
-     * @return gjeldande tilstand for avtalen innanfor underlagsperioda
-     */
-    private Avtale lagAvtale(final Underlagsperiode periode, final Avtalekoblingsperiode kobling) {
-        final AvtaleId avtale = kobling.avtale();
-        final AvtaleBuilder builder = avtale(avtale);
-        periode.koblingAvType(Avtaleversjon.class, a -> a.tilhoeyrer(avtale))
-                .ifPresent(a -> a.populer(builder));
-        periode.koblingarAvType(Avtaleprodukt.class)
-                .filter(a -> a.tilhoeyrer(avtale))
-                .forEach(a -> a.populer(builder));
-        return builder.bygg();
-    }
 }
