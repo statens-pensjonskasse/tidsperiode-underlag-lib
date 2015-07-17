@@ -4,17 +4,25 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer.personnummer;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats.premiesats;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.ObjectMother.eiMedregning;
+import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.enAvtaleversjon;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,9 +33,12 @@ import java.util.stream.Stream;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
@@ -36,13 +47,16 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Orgnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -61,6 +75,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -81,6 +96,80 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    /**
+     * Verifiserer at {@link MedlemsavtalarPeriode#annoter(Annoterbar)} blir kalla
+     * dersom underlagsperioda er tilkobla ei periode av denne typen.
+     */
+    @Test
+    public void skalAnnotereMedMedlemsavtalarFraaMedlemsavtalane() {
+        Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                medlemsavtalar()
+                                        .fraOgMed(dato("1917.01.01"))
+                                        .addAvtale(
+                                                stillingsforhold(123456L),
+                                                avtale(avtaleId(200300))
+                                                        .addPremiesats(
+                                                                premiesats(Produkt.PEN)
+                                                                        .produktinfo(new Produktinfo(10))
+                                                                        .satser(new Satser<>(prosent("10%"), prosent("2%"), prosent("0.35%")))
+                                                                        .bygg()
+                                                        )
+                                        )
+                                        .bygg()
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Medlemsavtalar.class).isNotEqualTo(empty());
+    }
+
+    /**
+     * Verifiserer at perioda blir annotert med ein {@link Avtale} basert på avtalen avtalekoblinga er tilknytta og
+     * avtaleversjonen og avtaleprodukta som tilhøyrer den avtalen.
+     */
+    @Test
+    public void skalAnnotereMedAvtaleBygdOppBasertPaaAvtaleversjonOgAvtaleproduktaTilknyttaAvtalekoblingasAvtale() {
+        final AvtaleId avtale = avtaleId(123456L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("1917.01.01"),
+                                        empty(),
+                                        stillingsforhold(1L),
+                                        avtale,
+                                        Ordning.SPK
+                                )
+                        )
+                        .medKobling(
+                                enAvtaleversjon(avtale)
+                                        .premiestatus(Premiestatus.AAO_02)
+                                        .bygg()
+                        )
+                        .medKobling(
+                                new Avtaleprodukt(
+                                        dato("1917.01.01"),
+                                        empty(),
+                                        avtale,
+                                        PEN,
+                                        new Produktinfo(10),
+                                        new Satser<>(
+                                                prosent("10%"),
+                                                prosent("2%"),
+                                                prosent("0.35%")
+                                        ))
+                        )
+
+        );
+        final Underlagsperiode periode = underlag.toList().get(0);
+        assertAnnotasjon(periode, Avtale.class, a -> of(a.id()))
+                .isEqualTo(of(avtale));
+        assertAnnotasjon(periode, Avtale.class, a -> of(a.premiestatus()))
+                .isEqualTo(of(Premiestatus.AAO_02));
+        assertAnnotasjon(periode, Avtale.class, a -> a.premiesatsFor(PEN).map(s -> s.produktinfo))
+                .isEqualTo(of(new Produktinfo(10)));
     }
 
     /**
