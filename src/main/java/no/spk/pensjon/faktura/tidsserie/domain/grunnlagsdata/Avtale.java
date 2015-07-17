@@ -37,21 +37,25 @@ public class Avtale {
 
     private final Optional<Premiekategori> kategori;
 
+    private final Optional<Risikoklasse> risikoklasse;
+
     /**
      * Konstruerer ein ny avtale utan nokon produkt innlagt.
      *
-     * @param id      avtalenummeret som unikt identifiserer avtalen
-     * @param status  avtalen sin premiestatus
-     * @param kategori avtalen sin premiekategori, eller ingenting dersom premiekategori er ukjent
-     * @param produkt produkta avtalen betalar premie til SPK for
-     * @param satser  premiesatsane som er tilknytta avtalen, kan inkludere produkt som avtalen
-     *                ikkje betalar premie  til SPK for
+     * @param id           avtalenummeret som unikt identifiserer avtalen
+     * @param status       avtalen sin premiestatus
+     * @param kategori     avtalen sin premiekategori, eller ingenting dersom premiekategori er ukjent
+     * @param produkt      produkta avtalen betalar premie til SPK for
+     * @param satser       premiesatsane som er tilknytta avtalen, kan inkludere produkt som avtalen
+     * @param risikoklasse risikoklassa avtalen tilhøyrer viss den har eit YSK-produkt hos SPK
      */
     private Avtale(final AvtaleId id, final Premiestatus status, final Optional<Premiekategori> kategori,
-                   final Stream<Produkt> produkt, final Map<Produkt, Premiesats> satser) {
+                   final Stream<Produkt> produkt, final Map<Produkt, Premiesats> satser,
+                   final Optional<Risikoklasse> risikoklasse) {
         this.id = id;
         this.status = status;
         this.kategori = kategori;
+        this.risikoklasse = risikoklasse;
         this.premiesatser.putAll(satser);
         produkt.forEach(this.avtaleprodukt::add);
     }
@@ -107,6 +111,18 @@ public class Avtale {
         return kategori;
     }
 
+    /**
+     * Gjeldande risikoklasse for avtalen.
+     * <br>
+     * Ein avtale kan kun ha ei risikoklasse viss den har eit YSK-produkt hos SPK.
+     *
+     * @return gjeldande risikoklasse for avtalen, eller ingenting dersom avtalen ikkje har YSK hos SPK
+     * @since 1.1.1
+     */
+    public Optional<Risikoklasse> risikoklasse() {
+        return risikoklasse;
+    }
+
     @Override
     public String toString() {
         return id
@@ -151,6 +167,8 @@ public class Avtale {
 
         private Optional<Premiekategori> kategori = empty();
 
+        private Optional<Risikoklasse> risikoklasse = empty();
+
         private AvtaleBuilder(final AvtaleId id) {
             this.id = id;
         }
@@ -176,6 +194,18 @@ public class Avtale {
          */
         public AvtaleBuilder premiekategori(final Premiekategori kategori) {
             this.kategori = ofNullable(kategori);
+            return this;
+        }
+
+        /**
+         * Oppdaterer risikoklassa som avtalen skal settast opp med.
+         *
+         * @param risikoklasse risikoklassa som avtalen skal benytte
+         * @return <code>this</code>
+         * @since 1.1.1
+         */
+        public AvtaleBuilder risikoklasse(final Optional<Risikoklasse> risikoklasse) {
+            this.risikoklasse = requireNonNull(risikoklasse, "risikoklasse er påkrevd, men var null");
             return this;
         }
 
@@ -235,7 +265,8 @@ public class Avtale {
                     status,
                     kategori,
                     avtaleprodukt.stream(),
-                    premiesatser
+                    premiesatser,
+                    risikoklasse
             );
         }
     }

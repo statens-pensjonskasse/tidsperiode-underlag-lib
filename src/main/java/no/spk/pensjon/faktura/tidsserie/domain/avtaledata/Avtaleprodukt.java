@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats.premiesats;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilde
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Risikoklasse;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
@@ -28,9 +30,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
  * @author Snorre E. Brekke - Computas
  */
 public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements Avtalerelatertperiode<Avtaleprodukt> {
-
     private final AvtaleId avtaleId;
+
     private final Premiesats premiesats;
+
+    private Optional<Risikoklasse> risikoklasse = empty();
 
     /**
      * Konstruktør for å opprette et avtaleprodukt koblet til en avtale som for en bestemt tidsperiode.
@@ -71,7 +75,7 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
      * @see AvtaleBuilder#addPremiesats(Premiesats)
      */
     public AvtaleBuilder populer(final AvtaleBuilder avtale) {
-        return avtale.addPremiesats(premiesats);
+        return avtale.addPremiesats(premiesats).risikoklasse(risikoklasse);
     }
 
     /**
@@ -88,9 +92,33 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
         return premiesats.produkt;
     }
 
+    /**
+     * Overstyrer avtaleproduktets risikoklasse.
+     *
+     * @param risikoklasse risikoklassa avtalen tilhøyrer, eller {@link Optional#empty()} viss avtalen
+     *                     ikkje har ei risikoklasse
+     * @return <code>this</code>
+     * @throws IllegalArgumentException viss avtaleproduktet ikkje er {@link Produkt#YSK} og risikoklassa ikkje er tom
+     * @since 1.1.1
+     */
+    public Avtaleprodukt risikoklasse(final Optional<Risikoklasse> risikoklasse) {
+        requireNonNull(risikoklasse, "risikoklasse er påkrevd, men var null");
+        if (produkt() != Produkt.YSK && risikoklasse.isPresent()) {
+            throw new IllegalArgumentException(
+                    "risikoklasse er ikkje støtta for "
+                            + produkt()
+                            + ", risikoklasse er kun støtta for avtaleprodukt tilknytta "
+                            + Produkt.YSK
+            );
+        }
+        this.risikoklasse = risikoklasse;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Avtaleprodukt for avtaleid=" + avtaleId +
-                ", produkt=" + premiesats.produkt + ", premiesats=" + premiesats;
+                ", produkt=" + premiesats.produkt + ", premiesats=" + premiesats
+                + ", risikoklasse=" + risikoklasse;
     }
 }
