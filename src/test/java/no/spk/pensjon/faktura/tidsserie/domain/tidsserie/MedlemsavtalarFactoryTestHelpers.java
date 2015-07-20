@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
+import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.tidenesMorgen;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
@@ -94,9 +95,5 @@ class MedlemsavtalarFactoryTestHelpers {
 
     static LocalDate endOfTime() {
         return dato("2099.12.31");
-    }
-
-    static LocalDate tidenesMorgen() {
-        return dato("1917.01.01");
     }
 }

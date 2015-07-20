@@ -17,6 +17,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemslinjenummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
@@ -61,6 +62,8 @@ public class Stillingsendring {
     private Optional<Variabletillegg> variabletillegg = empty();
 
     private Optional<Funksjonstillegg> funksjonstillegg = empty();
+
+    private Optional<Medlemslinjenummer> linje = empty();
 
     /**
      * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
@@ -130,6 +133,28 @@ public class Stillingsendring {
     public Stillingsendring stillingsforhold(final StillingsforholdId stillingsforhold) {
         this.stillingsforhold = of(stillingsforhold);
         return this;
+    }
+
+    /**
+     * Linjenummeret til stillingsendringa.
+     *
+     * @param linje linjenummeret som i kombinasjon med fødselsnummeret unikt identifiserer stillingsendringa
+     * @return <code>this</code>
+     * @since 1.1.1
+     */
+    public Stillingsendring linje(final Optional<Medlemslinjenummer> linje) {
+        this.linje = requireNonNull(linje, "linjenummer er påkrevd, men var null");
+        return this;
+    }
+
+    /**
+     * Linjenummeret til stillingsendringa.
+     *
+     * @return linjenummeret som i kombinasjon med fødselsnummeret unikt identifiserer stillingsendringa
+     * @since 1.1.1
+     */
+    public Optional<Medlemslinjenummer> linje() {
+        return linje;
     }
 
     /**
@@ -414,6 +439,7 @@ public class Stillingsendring {
         periode.annoter(Funksjonstillegg.class, funksjonstillegg());
 
         periode.annoter(Loennstrinn.class, loennstrinn());
+        periode.annoter(Medlemslinjenummer.class, linje());
     }
 
     @Override

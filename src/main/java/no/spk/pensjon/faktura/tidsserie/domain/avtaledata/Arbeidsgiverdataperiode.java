@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -18,6 +20,8 @@ public class Arbeidsgiverdataperiode extends AbstractTidsperiode<Arbeidsgiverdat
 
     public Arbeidsgiverdataperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, Orgnummer orgnummer, ArbeidsgiverId arbeidsgiverId) {
         super(fraOgMed, tilOgMed);
+        requireNonNull(arbeidsgiverId, "Arbeidsgiverdataperiode krever arbeidsgiverId, men aarbeidsgiverId var null.");
+        requireNonNull(orgnummer, "Arbeidsgiverdataperiode krever orgnummer, men orgnummer var null.");
         this.orgnummer = orgnummer;
         this.arbeidsgiverId = arbeidsgiverId;
     }
@@ -30,8 +34,23 @@ public class Arbeidsgiverdataperiode extends AbstractTidsperiode<Arbeidsgiverdat
         periode.annoter(Orgnummer.class, orgnummer);
     }
 
+    /**
+     * Er arbeidsgiverdataperioden tillknytta den angitte avtalen?
+     *
+     * @param arbeidsgiver arbeidsgiverid for arbeidsgiver vi skal sjekke opp mot
+     * @return <code>true</code> dersom arbeidsgiverdataperioden er tilknytta den angitte arbeidsgiveren, <code>false</code> ellers
+     */
+    public boolean tilhoeyrer(ArbeidsgiverId arbeidsgiver) {
+        return this.arbeidsgiverId.equals(arbeidsgiver);
+    }
+
     @Override
     public ArbeidsgiverId arbeidsgiver() {
         return arbeidsgiverId;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s->%s,%s,%s]", "Arbeidsgiverdata", fraOgMed(), tilOgMed().map(LocalDate::toString).orElse(""), orgnummer, arbeidsgiverId);
     }
 }

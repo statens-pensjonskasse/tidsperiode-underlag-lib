@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverrelatertperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtalerelatertperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
@@ -23,6 +23,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 /**
  * Gitt en map med tidsperioder gruppert per klasse, organiserer StandardAvtaleInformasjonRepository tidsperiodene
  * som er relevante for avtale- og arbeidsgiver-informasjon internt, og eksponerer disse via {@link #finn(AvtaleId)}.
+ *
  * @author Snorre E. Brekke - Computas
  */
 public class StandardAvtaleInformasjonRepository implements AvtaleinformasjonRepository {
@@ -32,6 +33,12 @@ public class StandardAvtaleInformasjonRepository implements AvtaleinformasjonRep
     /**
      * Larger et nytt StandardAvtaleInformasjonRepository med tidsperiodene som er relevante for avtale- og arbeidsgiver-informasjon internt,
      * og eksponerer disse via {@link #finn(AvtaleId)}.
+     *
+     * @param perioder tidsperioder gruppert etter periodetype, forventast å inneholde innslag
+     *                 for alle avtale- og arbeidsgiverrelaterte periodetyper
+     * @throws java.lang.NullPointerException viss <code>perioder</code> er <code>null</code>
+     * @see no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtalerelatertperiode
+     * @see no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverrelatertperiode
      */
     public StandardAvtaleInformasjonRepository(Map<Class<?>, List<Tidsperiode<?>>> perioder) {
         requireNonNull(perioder, "perioder kan ikke være null");
@@ -47,6 +54,7 @@ public class StandardAvtaleInformasjonRepository implements AvtaleinformasjonRep
      * @see AvtaleinformasjonRepository
      * @see Avtaleversjon
      * @see Avtaleprodukt
+     * @see Avtaleperiode
      * @see Arbeidsgiverdataperiode
      * @see Arbeidsgiverperiode
      */

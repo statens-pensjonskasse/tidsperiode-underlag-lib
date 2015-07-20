@@ -1,13 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.feilDersomPeriodaOverlapparMeirEnnEin;
 
 import java.time.Month;
 import java.util.Optional;
 
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -30,6 +32,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  * @author Tarjei Skorgenes
  */
 public class StandardTidsserieAnnotering implements StillingsforholdunderlagFactory.Annoteringsstrategi {
+    private final AvtaleFactory avtaleFactory = new AvtaleFactory();
+
     /**
      * Populerer underlaget og underlagets underlagsperioder med annotasjonar.
      * <p>
@@ -54,21 +58,15 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
      * er tilknytta eit stillingsforhold
      *
      * @param underlag underlaget som perioda inngår i
-     * @param periode  underlagsperioda som skal populerast med annotasjonar
+     * @param periode underlagsperioda som skal populerast med annotasjonar
      * @see Underlagsperiode#koblingarAvType(Class)
      * @see StillingsforholdPeriode#annoter(no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar)
      */
     @Override
     @SuppressWarnings("unchecked")
     public void annoter(final Underlag underlag, final Underlagsperiode periode) {
-        periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
-            avtalekobling.annoter(periode);
+        annoterAvtalerelatereVerdier(periode);
 
-            periode.koblingarAvType(Avtaleversjon.class)
-                    .filter(v -> v.tilhoeyrer(avtalekobling.avtale()))
-                    .reduce(feilDersomPeriodaOverlapparMeirEnnEinAvtaleversjon(avtalekobling.avtale(), periode))
-                    .ifPresent(versjon -> versjon.annoter(periode));
-        });
         periode.koblingAvType(StillingsforholdPeriode.class).ifPresent(stillingsforhold -> {
             stillingsforhold.annoter(periode);
         });
@@ -93,8 +91,35 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
         periode.valgfriAnnotasjonFor(Loennstrinn.class).ifPresent(loennstrinn -> {
             annoterLoennForLoennstrinn(periode);
         });
-        periode.koblingAvType(Arbeidsgiverdataperiode.class).ifPresent(p -> p.annoter(periode));
-        periode.koblingAvType(Arbeidsgiverperiode.class).ifPresent(p -> p.annoter(periode));
+    }
+
+    private void annoterAvtalerelatereVerdier(Underlagsperiode periode) {
+        periode.koblingAvType(Avtalekoblingsperiode.class).ifPresent(avtalekobling -> {
+            avtalekobling.annoter(periode);
+
+            periode.koblingarAvType(Avtaleversjon.class)
+                    .filter(v -> v.tilhoeyrer(avtalekobling.avtale()))
+                    .reduce(feilDersomPeriodaOverlapparMeirEnnEin(Avtaleversjon.class, avtalekobling.avtale(), periode))
+                    .ifPresent(versjon -> versjon.annoter(periode));
+
+            periode.koblingarAvType(Avtaleperiode.class)
+                    .filter(a -> a.tilhoeyrer(avtalekobling.avtale()))
+                    .reduce(feilDersomPeriodaOverlapparMeirEnnEin(Avtaleperiode.class, avtalekobling.avtale(), periode))
+                    .ifPresent(avtaleperiode -> {
+
+                        periode.koblingarAvType(Arbeidsgiverperiode.class)
+                                .filter(ap -> ap.tilhoeyrer(avtaleperiode.arbeidsgiverId()))
+                                .reduce(feilDersomPeriodaOverlapparMeirEnnEin(Arbeidsgiverperiode.class, avtalekobling.avtale(), periode))
+                                .ifPresent(arbeidsgiverperiode -> arbeidsgiverperiode.annoter(periode));
+
+                        periode.koblingarAvType(Arbeidsgiverdataperiode.class)
+                                .filter(ap -> ap.tilhoeyrer(avtaleperiode.arbeidsgiverId()))
+                                .reduce(feilDersomPeriodaOverlapparMeirEnnEin(Arbeidsgiverdataperiode.class, avtalekobling.avtale(), periode))
+                                .ifPresent(arbeidsgiverdataperiode -> arbeidsgiverdataperiode.annoter(periode));
+                    });
+
+            periode.annoter(Avtale.class, avtaleFactory.lagAvtale(periode, avtalekobling.avtale()));
+        });
     }
 
     private void annoterLoennForLoennstrinn(final Underlagsperiode periode) {

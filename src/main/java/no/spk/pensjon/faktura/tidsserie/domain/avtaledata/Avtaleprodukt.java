@@ -1,17 +1,17 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_35;
-import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_36;
-import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.YSK_79;
-import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.erEnAv;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats.premiesats;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Sats;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Risikoklasse;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
@@ -30,29 +30,28 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
  * @author Snorre E. Brekke - Computas
  */
 public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements Avtalerelatertperiode<Avtaleprodukt> {
-
     private final AvtaleId avtaleId;
-    private final Produkt produkt;
-    private final Produktinfo produktinfo;
-    private final Satser<?> satser;
+
+    private final Premiesats premiesats;
+
+    private Optional<Risikoklasse> risikoklasse = empty();
 
     /**
      * Konstruktør for å opprette et avtaleprodukt koblet til en avtale som for en bestemt tidsperiode.
      *
-     * @param fraOgMed fra og med-dato for perioden
-     * @param tilOgMed til og med-datp for perioden
-     * @param avtaleId avtalid for avtalen avtaleproduktet er koblet til
-     * @param produkt produkt-typen til avtaleproduktet
+     * @param fraOgMed    fra og med-dato for perioden
+     * @param tilOgMed    til og med-datp for perioden
+     * @param avtaleId    avtalid for avtalen avtaleproduktet er koblet til
+     * @param produkt     produkt-typen til avtaleproduktet
      * @param produktinfo produktinfo for avtaleproduktet. Betydningen av koden er avhengig av produkt.
-     * @param satser Satser som gjelder for avtaleproduktet.
+     * @param satser      Satser som gjelder for avtaleproduktet.
+     * @throws NullPointerException viss nokon av argumenta er <code>null</code>
      */
     public Avtaleprodukt(LocalDate fraOgMed, Optional<LocalDate> tilOgMed,
-            AvtaleId avtaleId, Produkt produkt, Produktinfo produktinfo, Satser<?> satser) {
+                         AvtaleId avtaleId, Produkt produkt, Produktinfo produktinfo, Satser<?> satser) {
         super(fraOgMed, tilOgMed);
-        this.avtaleId = avtaleId;
-        this.produkt = produkt;
-        this.produktinfo = produktinfo;
-        this.satser = satser;
+        this.avtaleId = requireNonNull(avtaleId, "avtaleId er påkrevd, men var null");
+        this.premiesats = premiesats(produkt).produktinfo(produktinfo).satser(satser).bygg();
     }
 
     /**
@@ -66,25 +65,17 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
     }
 
     /**
-     * Oppdaterer avtalebyggarens tilstand til å reflektere informasjon om at avtalen betalar premie for
-     * avtaleproduktets produkt.
-     * <p>
-     * TODO: Korleis tolke/handtere avtaleprodukt med produktinfo 19, 29, 39 osv (dei betyr typisk "Har ikkje produktet")
-     * <p>
-     * TODO: Korleis tolke/handtere avtaleprodukt med tomme satsar, skal vi behandle dei som om avtalen betalar premie or not?
-     * <p>
-     * TODO: Viss vi filtrerer vekk tomme satsar, korleis handtere AFP-produktet for apotekordninga?
+     * Legger til avtaleproduktet sin premiesats på builderen.
+     * <br>
+     * Merk at premiesatsen blir lagt til uavhengig av om produktet er fakturerbart eller ikkje. For å avgjere
+     * om ein faktisk skal fakturere for produktet, sjå {@link Premiesats#erFakturerbar()}.
      *
-     * TODO: Skal satsene brukes her?
-     *
-     * @param avtale avtalebyggaren som inneheld avtaletilstanda som skal oppdaterast
-     * @return builder for chaining
+     * @param avtale builderen som inneheld avtaletilstanda som skal oppdaterast
+     * @return <code>avtale</code>
+     * @see AvtaleBuilder#addPremiesats(Premiesats)
      */
     public AvtaleBuilder populer(final AvtaleBuilder avtale) {
-        if (erFakturerbar()) {
-            avtale.addProdukt(produkt);
-        }
-        return avtale;
+        return avtale.addPremiesats(premiesats).risikoklasse(risikoklasse);
     }
 
     /**
@@ -98,31 +89,36 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
      * @return Produktet som avtaleproduktet representerer.
      */
     public Produkt produkt() {
-        return produkt;
+        return premiesats.produkt;
+    }
+
+    /**
+     * Overstyrer avtaleproduktets risikoklasse.
+     *
+     * @param risikoklasse risikoklassa avtalen tilhøyrer, eller {@link Optional#empty()} viss avtalen
+     *                     ikkje har ei risikoklasse
+     * @return <code>this</code>
+     * @throws IllegalArgumentException viss avtaleproduktet ikkje er {@link Produkt#YSK} og risikoklassa ikkje er tom
+     * @since 1.1.1
+     */
+    public Avtaleprodukt risikoklasse(final Optional<Risikoklasse> risikoklasse) {
+        requireNonNull(risikoklasse, "risikoklasse er påkrevd, men var null");
+        if (produkt() != Produkt.YSK && risikoklasse.isPresent()) {
+            throw new IllegalArgumentException(
+                    "risikoklasse er ikkje støtta for "
+                            + produkt()
+                            + ", risikoklasse er kun støtta for avtaleprodukt tilknytta "
+                            + Produkt.YSK
+            );
+        }
+        this.risikoklasse = risikoklasse;
+        return this;
     }
 
     @Override
     public String toString() {
         return "Avtaleprodukt for avtaleid=" + avtaleId +
-                ", produkt=" + produkt + ", produktinfo=" + produktinfo;
-    }
-
-    private boolean erFakturerbar() {
-        if (produkt.equals(Produkt.GRU)) {
-            return erEnAv(produktinfo, GRU_35, GRU_36);
-        }
-        if (produkt.equals(Produkt.YSK)) {
-            return !erEnAv(produktinfo, YSK_79);
-        }
-        return true;
-    }
-
-    /**
-     * Kun for bruk fra tester av avtaleproduktets tilstand.
-     *
-     * @return premiesatser
-     */
-    Satser<?> premiesatser() {
-        return satser;
+                ", produkt=" + premiesats.produkt + ", premiesats=" + premiesats
+                + ", risikoklasse=" + risikoklasse;
     }
 }

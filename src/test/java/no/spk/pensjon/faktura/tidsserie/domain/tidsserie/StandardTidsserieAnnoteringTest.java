@@ -4,17 +4,25 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.SPK;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer.*;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer.personnummer;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats.premiesats;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode.K_STIL_APO_PROVISOR;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.ObjectMother.eiMedregning;
+import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.enAvtaleversjon;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Assertions.assertAnnotasjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,11 +30,15 @@ import java.time.Month;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
@@ -35,11 +47,16 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Orgnummer;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -58,6 +75,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -78,6 +96,80 @@ public class StandardTidsserieAnnoteringTest {
     @Before
     public void _before() {
         when(underlag.last()).thenReturn(empty());
+    }
+
+    /**
+     * Verifiserer at {@link MedlemsavtalarPeriode#annoter(Annoterbar)} blir kalla
+     * dersom underlagsperioda er tilkobla ei periode av denne typen.
+     */
+    @Test
+    public void skalAnnotereMedMedlemsavtalarFraaMedlemsavtalane() {
+        Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                medlemsavtalar()
+                                        .fraOgMed(dato("1917.01.01"))
+                                        .addAvtale(
+                                                stillingsforhold(123456L),
+                                                avtale(avtaleId(200300))
+                                                        .addPremiesats(
+                                                                premiesats(Produkt.PEN)
+                                                                        .produktinfo(new Produktinfo(10))
+                                                                        .satser(new Satser<>(prosent("10%"), prosent("2%"), prosent("0.35%")))
+                                                                        .bygg()
+                                                        )
+                                        )
+                                        .bygg()
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Medlemsavtalar.class).isNotEqualTo(empty());
+    }
+
+    /**
+     * Verifiserer at perioda blir annotert med ein {@link Avtale} basert på avtalen avtalekoblinga er tilknytta og
+     * avtaleversjonen og avtaleprodukta som tilhøyrer den avtalen.
+     */
+    @Test
+    public void skalAnnotereMedAvtaleBygdOppBasertPaaAvtaleversjonOgAvtaleproduktaTilknyttaAvtalekoblingasAvtale() {
+        final AvtaleId avtale = avtaleId(123456L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("1917.01.01"),
+                                        empty(),
+                                        stillingsforhold(1L),
+                                        avtale,
+                                        Ordning.SPK
+                                )
+                        )
+                        .medKobling(
+                                enAvtaleversjon(avtale)
+                                        .premiestatus(Premiestatus.AAO_02)
+                                        .bygg()
+                        )
+                        .medKobling(
+                                new Avtaleprodukt(
+                                        dato("1917.01.01"),
+                                        empty(),
+                                        avtale,
+                                        PEN,
+                                        new Produktinfo(10),
+                                        new Satser<>(
+                                                prosent("10%"),
+                                                prosent("2%"),
+                                                prosent("0.35%")
+                                        ))
+                        )
+
+        );
+        final Underlagsperiode periode = underlag.toList().get(0);
+        assertAnnotasjon(periode, Avtale.class, a -> of(a.id()))
+                .isEqualTo(of(avtale));
+        assertAnnotasjon(periode, Avtale.class, a -> of(a.premiestatus()))
+                .isEqualTo(of(Premiestatus.AAO_02));
+        assertAnnotasjon(periode, Avtale.class, a -> a.premiesatsFor(PEN).map(s -> s.produktinfo))
+                .isEqualTo(of(new Produktinfo(10)));
     }
 
     /**
@@ -217,14 +309,75 @@ public class StandardTidsserieAnnoteringTest {
      */
     @Test
     public void skalAnnoterePeriodeMedPremiestatusFraOverlappandeAvtaleversjon() {
+        final AvtaleId avtale = avtaleId(123456);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        avtale,
+                                        Ordning.POA
+                                ),
+                                enAvtaleversjon(avtale)
+                                        .premiestatus(Premiestatus.AAO_02)
+                                        .bygg()
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Premiestatus.class)
+                .isEqualTo(of(Premiestatus.AAO_02));
     }
 
     /**
-     * Verifiserer at underlagsperiodene ikkje blir annotert med premiestatus dersom perioda ikkje er tilknytta ein
-     * avtaleversjon.
+     * Verifiserer at underlagsperiodene blir annotert med premiekategori dersom perioda er tilknytta ein
+     * avtaleversjon som har ein premiekategori.
      */
     @Test
-    public void skalIkkjeAnnoterePeriodeMedPremiestatusDersomPeriodaIkkjeOverlapparEinAvtaleversjon() {
+    public void skalAnnoterePeriodeMedPremiekategoriFraOverlappandeAvtaleversjon() {
+        final AvtaleId avtale = avtaleId(123456);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        avtale,
+                                        Ordning.POA
+                                ),
+                                enAvtaleversjon(avtale)
+                                        .premiekategori(Premiekategori.FASTSATS_AARLIG_OPPFOELGING)
+                                        .bygg()
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Premiekategori.class)
+                .isEqualTo(of(Premiekategori.FASTSATS_AARLIG_OPPFOELGING));
+    }
+
+    /**
+     * Verifiserer at underlagsperiodene ikkje blir annotert med premiestatus og premiekategori dersom perioda ikkje
+     * er tilknytta ein avtaleversjon.
+     */
+    @Test
+    public void skalIkkjeAnnoterePeriodeMedPremiestatusEllerKategoriDersomPeriodaIkkjeOverlapparEinAvtaleversjon() {
+        final AvtaleId avtale = avtaleId(123456);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        avtale,
+                                        Ordning.POA
+                                )
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), Premiestatus.class)
+                .isEqualTo(empty());
+        assertAnnotasjon(underlag.toList().get(0), Premiekategori.class)
+                .isEqualTo(empty());
     }
 
     /**
@@ -232,6 +385,25 @@ public class StandardTidsserieAnnoteringTest {
      */
     @Test
     public void skalFeileDersomUnderlagsperiodeOverlapparMeirEnnEinAvtaleversjon() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Avtaleversjon");
+        AvtaleId avtale = new AvtaleId(12345L);
+        annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2011.05.01"))
+                        .tilOgMed(dato("2011.05.31"))
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("2011.01.01"),
+                                        of(dato("2011.06.30")),
+                                        new StillingsforholdId(999999L),
+                                        avtale,
+                                        SPK
+                                ),
+                                enAvtaleversjon(avtale).bygg(),
+                                enAvtaleversjon(avtale).bygg()
+                        )
+        );
     }
 
 
@@ -333,6 +505,7 @@ public class StandardTidsserieAnnoteringTest {
     @Test
     public void skalAnnotereArbeidsgiveridVedTilkobletArbeidsgiverperiode() {
         final ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(1L);
+        final AvtaleId avtaleId = new AvtaleId(123456L);
         final Underlag underlag = annoterAllePerioder(
                 eiPeriode()
                         .fraOgMed(dato("1990.01.01"))
@@ -347,9 +520,12 @@ public class StandardTidsserieAnnoteringTest {
                                         dato("1990.01.01"),
                                         empty(),
                                         new StillingsforholdId(1L),
-                                        new AvtaleId(123456L),
+                                        avtaleId,
                                         Ordning.POA
                                 )
+                        )
+                        .medKobling(
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId, arbeidsgiverId)
                         )
                         .medKobling(
                                 new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
@@ -366,6 +542,7 @@ public class StandardTidsserieAnnoteringTest {
     public void skalAnnotereOrgnummerVedTilkobletKundedataperiode() {
         final ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(1L);
         final Orgnummer orgnummer = new Orgnummer(123456789L);
+        final AvtaleId avtaleId = new AvtaleId(123456L);
         final Underlag underlag = annoterAllePerioder(
                 eiPeriode()
                         .fraOgMed(dato("1990.01.01"))
@@ -380,15 +557,69 @@ public class StandardTidsserieAnnoteringTest {
                                         dato("1990.01.01"),
                                         empty(),
                                         new StillingsforholdId(1L),
-                                        new AvtaleId(123456L),
+                                        avtaleId,
                                         Ordning.POA
                                 )
+                        )
+                        .medKobling(
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId, arbeidsgiverId)
+                        )
+                        .medKobling(
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
                         )
                         .medKobling(
                                 new Arbeidsgiverdataperiode(dato("1990.01.01"), empty(), orgnummer, arbeidsgiverId)
                         )
         );
         assertAnnotasjon(underlag.toList().get(0), Orgnummer.class).isEqualTo(of(orgnummer));
+    }
+
+    /**
+     * Verifiserer at et stillingsforhold som gjennomgått avtalebytte slik at stillingsforholdet har kobling
+     * til overlappende arbeidsgiverperioder, så skal kun arbeidsgiverperioden som tilhører gjeldende avtale
+     * benyttes for å annotere underlagsperioden
+     */
+    @Test
+    public void skalAnnotereArbeidsgiverIdKunForArbeidsgiverSomTilhorerAvtalenForPerioden() {
+        final ArbeidsgiverId arbeidsgiverId1 = new ArbeidsgiverId(1L);
+        final ArbeidsgiverId arbeidsgiverId2 = new ArbeidsgiverId(2L);
+        final AvtaleId avtaleId1 = new AvtaleId(123456L);
+        final AvtaleId avtaleId2 = new AvtaleId(654321L);
+        final Orgnummer orgnummer1 = new Orgnummer(123456789L);
+        final Orgnummer orgnummer2 = new Orgnummer(987654321L);
+        final Underlag underlag = annoterAllePerioder(
+                eiPeriode()
+                        .fraOgMed(dato("1990.01.01"))
+                        .medKobling(
+                                new StillingsforholdPeriode(
+                                        dato("1990.01.01"),
+                                        empty()
+                                )
+                        )
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        of(dato("1999.12.31")),
+                                        new StillingsforholdId(1L),
+                                        avtaleId1,
+                                        Ordning.POA
+                                )
+                        )
+                        .medKoblingar(
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId1, arbeidsgiverId1),
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId2, arbeidsgiverId2)
+                        )
+                        .medKoblingar(
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId1),
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId2)
+                        )
+                        .medKoblingar(
+                                new Arbeidsgiverdataperiode(dato("1990.01.01"), empty(), orgnummer1, arbeidsgiverId1),
+                                new Arbeidsgiverdataperiode(dato("1990.01.01"), empty(), orgnummer2, arbeidsgiverId2)
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), ArbeidsgiverId.class).isEqualTo(of(arbeidsgiverId1));
+        assertAnnotasjon(underlag.toList().get(0), Orgnummer.class).isEqualTo(of(orgnummer1));
     }
 
     @Test
@@ -515,6 +746,108 @@ public class StandardTidsserieAnnoteringTest {
                                 )
                         )
         );
+    }
+
+    /**
+     * Verifiserer at annotering av {@link ArbeidsgiverId} feilar dersom underlagsperioda har meir enn ei
+     * overlappande avtaleperiode, men at avtaleId fremdeles blir annotert
+     */
+    @Test
+    public void skalAvbryteAnnoteringDersomUnderlagsperiodeErTilkoblaMeirEnnEiAvtaleperiodeSomTilhoeyrerSammeAvtale() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Avtaleperiode");
+        AvtaleId avtale = new AvtaleId(12345L);
+        annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2011.05.01"))
+                        .tilOgMed(dato("2011.05.31"))
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("2011.01.01"),
+                                        of(dato("2011.06.30")),
+                                        new StillingsforholdId(999999L),
+                                        avtale,
+                                        SPK
+                                ))
+                        .medKoblingar(
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, new ArbeidsgiverId(1L)),
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, new ArbeidsgiverId(2L))
+                        )
+        );
+        assertAnnotasjon(underlag.toList().get(0), AvtaleId.class).isEqualTo(of(avtale));
+    }
+
+    /**
+     * Verifiserer at annotering av {@link ArbeidsgiverId} feilar dersom underlagsperioda har meir enn ei
+     * overlappande arbeidsgiverperiode koblet til avtaleperioden. Avtaleid skal fremdeles bli annotert.
+     */
+    @Test
+    public void skalAvbryteAnnoteringDersomUnderlagsperiodeErTilkoblaMeirEnnEiArbeidsgiverperiodeSomTilhoeyrerSammeAvtaleperiode() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Arbeidsgiverperiode");
+        AvtaleId avtale = new AvtaleId(12345L);
+        ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(2L);
+        annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2011.05.01"))
+                        .tilOgMed(dato("2011.05.31"))
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("2011.01.01"),
+                                        of(dato("2011.06.30")),
+                                        new StillingsforholdId(999999L),
+                                        avtale,
+                                        SPK
+                                ))
+                        .medKoblingar(
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, arbeidsgiverId)
+                        )
+                        .medKoblingar(
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId),
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
+                        )
+        );
+
+        assertAnnotasjon(underlag.toList().get(0), AvtaleId.class).isEqualTo(of(avtale));
+    }
+
+
+    /**
+     * Verifiserer at annotering av {@link Orgnummer} feilar dersom underlagsperioda har meir enn ei
+     * overlappande arbeidsgiverdataperiode koblet til avtaleperiode. ArbeidsgiverId skal fremdeles bli annotert.
+     */
+    @Test
+    public void skalAvbryteAnnoteringDersomUnderlagsperiodeErTilkoblaMeirEnnEiArbeidsgiverdataperiodeSomTilhoeyrerSammeAvtaleperiode() {
+        e.expect(IllegalStateException.class);
+        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Arbeidsgiverdataperiode");
+        AvtaleId avtale = new AvtaleId(12345L);
+        ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(2L);
+        annoterAllePerioder(
+                eiTomPeriode()
+                        .fraOgMed(dato("2011.05.01"))
+                        .tilOgMed(dato("2011.05.31"))
+                        .medKobling(
+                                new Avtalekoblingsperiode(
+                                        dato("2011.01.01"),
+                                        of(dato("2011.06.30")),
+                                        new StillingsforholdId(999999L),
+                                        avtale,
+                                        SPK
+                                ))
+                        .medKoblingar(
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, arbeidsgiverId)
+                        )
+                        .medKoblingar(
+                                new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
+                        )
+                        .medKoblingar(
+                                new Arbeidsgiverdataperiode(dato("1990.01.01"), empty(), new Orgnummer(123L), arbeidsgiverId),
+                                new Arbeidsgiverdataperiode(dato("1990.01.01"), empty(), new Orgnummer(234L), arbeidsgiverId)
+                        )
+        );
+
+        assertAnnotasjon(underlag.toList().get(0), AvtaleId.class).isEqualTo(of(avtale));
+        assertAnnotasjon(underlag.toList().get(0), ArbeidsgiverId.class).isEqualTo(of(avtale));
     }
 
     /**

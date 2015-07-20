@@ -1,9 +1,14 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -19,6 +24,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
  * @author Tarjei Skorgenes
  */
 public class Avtale {
+    private final Map<Produkt, Premiesats> premiesatser = new HashMap<>();
+
     private final Set<Produkt> avtaleprodukt = new HashSet<>();
 
     /**
@@ -28,17 +35,41 @@ public class Avtale {
 
     private final Premiestatus status;
 
+    private final Optional<Premiekategori> kategori;
+
+    private final Optional<Risikoklasse> risikoklasse;
+
     /**
      * Konstruerer ein ny avtale utan nokon produkt innlagt.
      *
-     * @param id      avtalenummeret som unikt identifiserer avtalen
-     * @param status  avtalen sin premiestatus
-     * @param produkt produkta avtalen betalar premie til SPK for
+     * @param id           avtalenummeret som unikt identifiserer avtalen
+     * @param status       avtalen sin premiestatus
+     * @param kategori     avtalen sin premiekategori, eller ingenting dersom premiekategori er ukjent
+     * @param produkt      produkta avtalen betalar premie til SPK for
+     * @param satser       premiesatsane som er tilknytta avtalen, kan inkludere produkt som avtalen
+     * @param risikoklasse risikoklassa avtalen tilhøyrer viss den har eit YSK-produkt hos SPK
      */
-    private Avtale(final AvtaleId id, final Premiestatus status, final Stream<Produkt> produkt) {
+    private Avtale(final AvtaleId id, final Premiestatus status, final Optional<Premiekategori> kategori,
+                   final Stream<Produkt> produkt, final Map<Produkt, Premiesats> satser,
+                   final Optional<Risikoklasse> risikoklasse) {
         this.id = id;
         this.status = status;
+        this.kategori = kategori;
+        this.risikoklasse = risikoklasse;
+        this.premiesatser.putAll(satser);
         produkt.forEach(this.avtaleprodukt::add);
+    }
+
+    /**
+     * Har avtalen ein premiesats for det aktuelle produktet?
+     *
+     * @param produkt produktet premiesatsen skal vere tilknytta
+     * @return avtalen sin premiesats for produktet,
+     * eller {@link Optional#empty()} viss avtalen ikkje har det aktuelle produktet
+     * @since 1.1.1
+     */
+    public Optional<Premiesats> premiesatsFor(final Produkt produkt) {
+        return ofNullable(premiesatser.get(produkt));
     }
 
     /**
@@ -70,10 +101,33 @@ public class Avtale {
         return status;
     }
 
+    /**
+     * Gjeldande premiekategori for avtalen.
+     *
+     * @return avtalens premiekategori
+     * @since 1.1.1
+     */
+    public Optional<Premiekategori> premiekategori() {
+        return kategori;
+    }
+
+    /**
+     * Gjeldande risikoklasse for avtalen.
+     * <br>
+     * Ein avtale kan kun ha ei risikoklasse viss den har eit YSK-produkt hos SPK.
+     *
+     * @return gjeldande risikoklasse for avtalen, eller ingenting dersom avtalen ikkje har YSK hos SPK
+     * @since 1.1.1
+     */
+    public Optional<Risikoklasse> risikoklasse() {
+        return risikoklasse;
+    }
+
     @Override
     public String toString() {
         return id
                 + ", " + premiestatus()
+                + "," + premiekategori()
                 + ", "
                 + avtaleprodukt.size()
                 + " produkt ("
@@ -105,9 +159,15 @@ public class Avtale {
     public static class AvtaleBuilder {
         private final Set<Produkt> avtaleprodukt = new HashSet<>();
 
+        private final Map<Produkt, Premiesats> premiesatser = new HashMap<>();
+
         private final AvtaleId id;
 
         private Premiestatus status = Premiestatus.UKJENT;
+
+        private Optional<Premiekategori> kategori = empty();
+
+        private Optional<Risikoklasse> risikoklasse = empty();
 
         private AvtaleBuilder(final AvtaleId id) {
             this.id = id;
@@ -121,7 +181,31 @@ public class Avtale {
          * @throws NullPointerException viss <code>status</code> er <code>null</code>
          */
         public AvtaleBuilder premiestatus(Premiestatus status) {
-            this.status = requireNonNull(status, () -> "Premiestatus er påkrevd, men vart forsøkt endra til null");
+            this.status = requireNonNull(status, "Premiestatus er påkrevd, men vart forsøkt endra til null");
+            return this;
+        }
+
+        /**
+         * Oppdaterer premiekategorien som avtalen skal settast opp med.
+         *
+         * @param kategori premiekategorien som avtalen skal benytte
+         * @return <code>this</code>
+         * @since 1.1.1
+         */
+        public AvtaleBuilder premiekategori(final Premiekategori kategori) {
+            this.kategori = ofNullable(kategori);
+            return this;
+        }
+
+        /**
+         * Oppdaterer risikoklassa som avtalen skal settast opp med.
+         *
+         * @param risikoklasse risikoklassa som avtalen skal benytte
+         * @return <code>this</code>
+         * @since 1.1.1
+         */
+        public AvtaleBuilder risikoklasse(final Optional<Risikoklasse> risikoklasse) {
+            this.risikoklasse = requireNonNull(risikoklasse, "risikoklasse er påkrevd, men var null");
             return this;
         }
 
@@ -131,9 +215,42 @@ public class Avtale {
          * @param produkt eit produkt som avtalen betalar premie til SPK for
          * @return <code>this</code>
          * @throws NullPointerException viss <code>produkt</code> er <code>null</code>
+         * @see #addPremiesats(Premiesats)
+         * @deprecated
          */
+        @Deprecated
         public AvtaleBuilder addProdukt(final Produkt produkt) {
             this.avtaleprodukt.add(requireNonNull(produkt, () -> "Produkt er påkrevd, men var null"));
+            return this;
+        }
+
+        /**
+         * Legger til en premiesats som er tilknyttet avtalen.
+         *
+         * @param premiesats premiesatsar som er tilknytta avtalen
+         * @return <code>this</code>
+         * @throws NullPointerException  viss <code>premiesats</code> er <code>null</code>
+         * @throws IllegalStateException viss avtalen allereie har ein premiesats med samme produkt som <code>premiesats</code>
+         * @since 1.1.1
+         */
+        public AvtaleBuilder addPremiesats(final Premiesats premiesats) {
+            final Produkt produkt = requireNonNull(premiesats, "premiesats er påkrevd, men var null").produkt;
+            if (premiesatser.containsKey(produkt)) {
+                throw new IllegalStateException(
+                        "Avtale "
+                                + id.id()
+                                + " har meir enn ein premiesats for "
+                                + produkt
+                                + ".\n"
+                                + Stream.of(premiesatser.get(produkt), premiesats)
+                                .map(s -> "- " + s)
+                                .collect(joining("\n"))
+                );
+            }
+            premiesatser.put(produkt, premiesats);
+            if (premiesats.erFakturerbar()) {
+                avtaleprodukt.add(premiesats.produkt);
+            }
             return this;
         }
 
@@ -146,7 +263,10 @@ public class Avtale {
             return new Avtale(
                     id,
                     status,
-                    avtaleprodukt.stream()
+                    kategori,
+                    avtaleprodukt.stream(),
+                    premiesatser,
+                    risikoklasse
             );
         }
     }
