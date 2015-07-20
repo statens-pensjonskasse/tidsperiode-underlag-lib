@@ -9,7 +9,7 @@
 
     <groupId>no.spk.pensjon.faktura</groupId>
     <artifactId>faktura-prognose-tidsserie</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
     <description>
         Domenemodell for generering av tidsseriar brukt ved prognostisering av maskinelt grunnlag.
     </description>
