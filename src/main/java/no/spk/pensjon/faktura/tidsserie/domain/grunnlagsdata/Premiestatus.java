@@ -1,11 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static java.util.Objects.requireNonNull;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@link Premiestatus} representerer ei kode som blir brukt av avtalar for å gruppere saman avtalar med liknande
@@ -29,6 +26,11 @@ public final class Premiestatus {
      * Vidaregåande skular.
      */
     public static final Premiestatus AAO_02 = new Premiestatus("AAO-02");
+
+    /**
+     * Ikke premiebetalende
+     */
+    public static final Premiestatus IPB = new Premiestatus("IPB");
 
     /**
      * Premiestatus for avtaleversjonar som manglar premiestatus.

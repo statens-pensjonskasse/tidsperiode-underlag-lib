@@ -35,32 +35,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Orgnummer;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Termintype;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.*;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.ApotekLoennstrinnperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
@@ -1120,6 +1096,68 @@ public class StandardTidsserieAnnoteringTest {
         periode.kobleTil(new Aar(new Aarstall(1990)));
 
         assertAnnotasjon(annoter(periode), Aarstall.class).isEqualTo(of(new Aarstall(1990)));
+    }
+
+    @Test
+    public void skalAnnotereTermintypeSpkIkkeIpbIkkeHendelsesbasert() {
+        final Underlag underlag = byggUnderlag(Ordning.SPK, Premiestatus.AAO_02, Premiekategori.FASTSATS_AARLIG_OPPFOELGING);
+        assertAnnotasjon(underlag.toList().get(0), Termintype.class).isEqualTo(of(Termintype.SPK));
+    }
+
+    @Test
+    public void skalAnnotereTermintypeSpkIkkeIpbHendelsesbasert() {
+        final Underlag underlag = byggUnderlag(Ordning.SPK, Premiestatus.AAO_01, Premiekategori.HENDELSESBASERT);
+        assertAnnotasjon(underlag.toList().get(0), Termintype.class).isEqualTo(of(Termintype.ANDRE));
+    }
+
+    @Test
+    public void skalAnnotereTermintypeSpkFasIpb() {
+        final Underlag underlag = byggUnderlag(Ordning.SPK, Premiestatus.IPB, Premiekategori.FASTSATS);
+        assertAnnotasjon(underlag.toList().get(0), Termintype.class).isEqualTo(of(Termintype.ANDRE));
+    }
+
+    @Test
+    public void skalAnnotereTermintypeSpkIpbFsa() {
+        final Underlag underlag = byggUnderlag(Ordning.SPK, Premiestatus.IPB, Premiekategori.FASTSATS_AARLIG_OPPFOELGING);
+        assertAnnotasjon(underlag.toList().get(0), Termintype.class).isEqualTo(of(Termintype.ANDRE));
+    }
+
+    @Test
+    public void skalAnnotereTermintypePoaIkkeIpbIkkeHendelsesbasert() {
+        final Underlag underlag = byggUnderlag(Ordning.POA, Premiestatus.AAO_01, Premiekategori.FASTSATS_AARLIG_OPPFOELGING);
+        assertAnnotasjon(underlag.toList().get(0), Termintype.class).isEqualTo(of(Termintype.POA));
+    }
+
+    @Test
+    public void skalAnnotereTermintypePoaHendelsesbasert() {
+        final Underlag underlag = byggUnderlag(Ordning.POA, Premiestatus.AAO_01, Premiekategori.HENDELSESBASERT);
+        assertAnnotasjon(underlag.toList().get(0), Termintype.class).isEqualTo(of(Termintype.ANDRE));
+    }
+
+    @Test
+    public void skalAnnotereTermintypeSpkManglerPremiekategori() {
+        final Underlag underlag = byggUnderlag(Ordning.SPK, Premiestatus.AAO_01, null);
+        assertAnnotasjon(underlag.toList().get(0), Termintype.class).isEqualTo(of(Termintype.UKJENT));
+    }
+
+    private Underlag byggUnderlag(Ordning ordning, Premiestatus status, Premiekategori kategori) {
+        final AvtaleId avtale = avtaleId(123456);
+        return annoterAllePerioder(
+                eiPeriode()
+                        .medKoblingar(
+                                new Avtalekoblingsperiode(
+                                        dato("1990.01.01"),
+                                        empty(),
+                                        new StillingsforholdId(1L),
+                                        avtale,
+                                        ordning
+                                ),
+                                enAvtaleversjon(avtale)
+                                        .premiestatus(status)
+                                        .premiekategori(kategori)
+                                        .bygg()
+                        )
+        );
     }
 
     private Underlagsperiode annoter(final UnderlagsperiodeBuilder builder) {
