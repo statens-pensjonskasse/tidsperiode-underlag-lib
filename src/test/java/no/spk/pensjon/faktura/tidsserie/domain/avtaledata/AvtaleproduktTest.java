@@ -5,6 +5,8 @@ import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.ZERO;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +17,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Risikoklasse;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Sats;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 
 import org.assertj.core.api.AbstractBooleanAssert;
@@ -77,7 +80,7 @@ public class AvtaleproduktTest {
                 id,
                 type,
                 new Produktinfo(produktinfo),
-                Satser.ingenSatser()
+                new Satser<Sats>(kroner(1), ZERO, ZERO)
         );
     }
 }
