@@ -59,6 +59,10 @@ public class Premiesats {
      * fakturering er tillatt for det aktuelle produktets premiesats
      */
     public boolean erFakturerbar() {
+        if (!satser.somKroner().isPresent() && !satser.somProsent().isPresent()) {
+            return false;
+        }
+
         if (produkt.equals(Produkt.GRU)) {
             return erEnAv(produktinfo, GRU_35, GRU_36);
         }
