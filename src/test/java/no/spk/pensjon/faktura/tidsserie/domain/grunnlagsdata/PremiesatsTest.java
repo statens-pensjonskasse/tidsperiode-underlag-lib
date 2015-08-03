@@ -21,6 +21,8 @@ import org.junit.Test;
 public class PremiesatsTest {
 
     private static final Produktinfo VILLKAARLIG_PRODUKTINFO = new Produktinfo(1);
+    private static final Produkt PRODUKT_IKKE_YSK_ELLER_GRU = Produkt.UKJ;
+    private static final Prosent PROSENTSATS_STOERRE_ENN_NULL = prosent("1%");
 
     @Test
     public void tommeSatserErIkkeFakturerbare() throws Exception {
@@ -32,17 +34,17 @@ public class PremiesatsTest {
     }
 
     @Test
-    public void satserMedBeloepErIkkeFakturerbare() throws Exception {
-        Premiesats premiesats = premiesats(Produkt.UKJ)
+    public void satserMedBeloepErFakturerbare() throws Exception {
+        Premiesats premiesats = premiesats(PRODUKT_IKKE_YSK_ELLER_GRU)
                 .produktinfo(VILLKAARLIG_PRODUKTINFO)
-                .satser(new Satser<>(prosent("1%"), Prosent.ZERO, Prosent.ZERO)).bygg();
+                .satser(new Satser<>(PROSENTSATS_STOERRE_ENN_NULL, Prosent.ZERO, Prosent.ZERO)).bygg();
 
         assertThat(premiesats.erFakturerbar()).isTrue();
     }
 
     @Test
     public void premiesatsGRUMedBeloepErFakturerbare() throws Exception {
-        Premiesats.Builder gruBuilder = premiesats(Produkt.GRU).satser(new Satser<>(kroner(1), ZERO, ZERO));
+        Premiesats.Builder gruBuilder = premiesats(Produkt.GRU).satser(new Satser<>(KRONEBELOEP_STOERRE_ENN_NULL(), ZERO, ZERO));
 
         assertThat(gruBuilder.produktinfo(VILLKAARLIG_PRODUKTINFO).bygg().erFakturerbar()).isFalse();
 
@@ -50,9 +52,13 @@ public class PremiesatsTest {
         assertThat(gruBuilder.produktinfo(GRU_36).bygg().erFakturerbar()).isTrue();
     }
 
+    private Kroner KRONEBELOEP_STOERRE_ENN_NULL() {
+        return kroner(1);
+    }
+
     @Test
     public void premiesatsYSKMedBeloepErFakturerbare() throws Exception {
-        Premiesats.Builder gruBuilder = premiesats(Produkt.YSK).satser(new Satser<>(kroner(1), ZERO, ZERO));
+        Premiesats.Builder gruBuilder = premiesats(Produkt.YSK).satser(new Satser<>(KRONEBELOEP_STOERRE_ENN_NULL(), ZERO, ZERO));
 
         assertThat(gruBuilder.produktinfo(YSK_79).bygg().erFakturerbar()).isFalse();
 
