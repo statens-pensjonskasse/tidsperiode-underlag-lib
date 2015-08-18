@@ -1,19 +1,20 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
-import org.assertj.core.api.AbstractObjectAssert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.util.Optional;
-
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent.fulltid;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
+
+import org.assertj.core.api.OptionalAssert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class AktivStillingTest {
     @Rule
@@ -63,7 +64,7 @@ public class AktivStillingTest {
         ).isEqualTo(empty());
     }
 
-    private static AbstractObjectAssert<?, Optional<Prosent>> assertStillingsprosent(final AktivStilling stilling) {
+    private static OptionalAssert<Prosent> assertStillingsprosent(final AktivStilling stilling) {
         return assertThat(stilling.stillingsprosent())
                 .as("stillingsprosent for stilling " + stilling);
     }

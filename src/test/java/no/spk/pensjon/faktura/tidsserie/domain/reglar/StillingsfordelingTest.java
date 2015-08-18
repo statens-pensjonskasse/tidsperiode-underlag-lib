@@ -1,18 +1,19 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import org.assertj.core.api.AbstractObjectAssert;
-import org.assertj.core.data.Offset;
-import org.junit.Before;
-import org.junit.Test;
-
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+
+import org.assertj.core.api.OptionalAssert;
+import org.assertj.core.data.Offset;
+import org.junit.Before;
+import org.junit.Test;
 
 public class StillingsfordelingTest {
     private Stillingsfordeling fordeling;
@@ -103,7 +104,7 @@ public class StillingsfordelingTest {
         );
     }
 
-    private AbstractObjectAssert<?, ?> assertAndelForStilling(final long stillingsforhold) {
+    private OptionalAssert<String> assertAndelForStilling(final long stillingsforhold) {
         return assertThat(fordeling.andelFor(stillingsforhold(stillingsforhold)).map(Prosent::toString))
                 .as(stillingsforhold(stillingsforhold) + " sin andel av fordelinga " + fordeling);
     }

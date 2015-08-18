@@ -1,14 +1,14 @@
 package no.spk.pensjon.faktura.tidsserie.domain;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
-import org.assertj.core.api.AbstractComparableAssert;
-import org.assertj.core.api.AbstractObjectAssert;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
+
+import org.assertj.core.api.AbstractLocalDateAssert;
+import org.assertj.core.api.OptionalAssert;
 
 /**
  * Hjelpemetoder for å verifisere tilstanden til forskjellige typer domene- og verdiobjekt i domenemodellen til
@@ -21,7 +21,7 @@ public final class Assertions {
      * @param periode underlagsperioda som til og med-dato skal hentast frå
      * @return ein ny asserter for til og med-datoen til perioda
      */
-    public static AbstractObjectAssert<?, Optional<LocalDate>> assertTilOgMed(final Tidsperiode<?> periode) {
+    public static OptionalAssert<LocalDate> assertTilOgMed(final Tidsperiode<?> periode) {
         return assertThat(periode.tilOgMed()).as("til og med-dato for underlagsperiode " + periode);
     }
 
@@ -31,7 +31,7 @@ public final class Assertions {
      * @param periode underlagsperioda som fra og med-dato skal hentast frå
      * @return ein ny asserter for fra og med-datoen til perioda
      */
-    public static AbstractComparableAssert<?, LocalDate> assertFraOgMed(final Tidsperiode<?> periode) {
+    public static AbstractLocalDateAssert<?> assertFraOgMed(final Tidsperiode<?> periode) {
         return assertThat(periode.fraOgMed()).as("fra og med-dato for tidsperiode " + periode);
     }
 
@@ -45,7 +45,7 @@ public final class Assertions {
      * @param index    den 0-baserte indeksen som underlagsperioda som skal hentast ligg plassert på i underlaget
      * @return ein ny asserter for fra og med-datoen til perioda
      */
-    public static AbstractObjectAssert<?, Optional<LocalDate>> assertTilOgMed(Underlag underlag, int index) {
+    public static OptionalAssert<LocalDate> assertTilOgMed(Underlag underlag, int index) {
         return assertTilOgMed(underlag.toList().get(index));
     }
 
@@ -56,7 +56,7 @@ public final class Assertions {
      * @param index    den 0-baserte indeksen som underlagsperioda som skal hentast ligg plassert på i underlaget
      * @return ein ny asserter for til og med-datoen til perioda
      */
-    public static AbstractComparableAssert<?, LocalDate> assertFraOgMed(Underlag underlag, int index) {
+    public static AbstractLocalDateAssert<?> assertFraOgMed(Underlag underlag, int index) {
         return assertFraOgMed(underlag.toList().get(index));
     }
 }

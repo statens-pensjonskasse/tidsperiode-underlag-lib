@@ -1,20 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
-import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
-import org.assertj.core.api.AbstractObjectAssert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
@@ -22,6 +7,21 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.krone
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn.loennstrinn;
 import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.grupper;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.StatligLoennstrinnperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
+import org.assertj.core.api.OptionalAssert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class FinnLoennForLoennstrinnTest {
     @Rule
@@ -124,7 +124,7 @@ public class FinnLoennForLoennstrinnTest {
         return new StatligLoennstrinnperiode(fraOgMed, empty(), loennstrinn, beloep);
     }
 
-    private static AbstractObjectAssert<?, Optional<LoennstrinnBeloep>> assertLoennForLoennstrinn(
+    private static OptionalAssert<LoennstrinnBeloep> assertLoennForLoennstrinn(
             final UnderlagsperiodeBuilder builder, final Loennstrinn loennstrinn) {
         return assertThat(new FinnLoennForLoennstrinn(builder.bygg()).loennForLoennstrinn())
                 .as("lønn for lønnstrinn " + loennstrinn);

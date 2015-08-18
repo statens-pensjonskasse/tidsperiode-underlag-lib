@@ -403,7 +403,7 @@ public class ObservasjonsunderlagFactoryTest {
 
 
 
-    private static AbstractIterableAssert<?, ? extends Iterable<Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagUtanFiktivPeriode(final List<Underlag> prMnd, final int index) {
+    private static AbstractIterableAssert<?, ? extends Iterable<? extends Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagUtanFiktivPeriode(final List<Underlag> prMnd, final int index) {
         final Underlag underlag = prMnd.get(index);
         assertThat(underlag.last().get().valgfriAnnotasjonFor(FiktivPeriode.class))
                 .as("FiktivPeriode-annotasjon for siste periode i observasjonsunderlaget " + underlag)
@@ -423,13 +423,13 @@ public class ObservasjonsunderlagFactoryTest {
         return new Underlag(asList(perioder).stream().map(UnderlagsperiodeBuilder::bygg));
     }
 
-    private AbstractListAssert<?, ? extends List<Underlag>, Underlag> assertObservasjonsunderlag(final Underlag aarsunderlag) {
+    private AbstractListAssert<?, ? extends List<? extends Underlag>, Underlag> assertObservasjonsunderlag(final Underlag aarsunderlag) {
         return assertThat(
                 generer(aarsunderlag).collect(toList())
         ).as("observasjonsunderlag generert basert på " + aarsunderlag);
     }
 
-    private static AbstractIterableAssert<?, ? extends Iterable<Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagMedFiktivPeriode(
+    private static AbstractIterableAssert<?, ? extends Iterable<? extends Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagMedFiktivPeriode(
             final List<Underlag> prMnd, final int index) {
         final Underlag underlag = prMnd.get(index);
         assertThat(underlag.last().get().valgfriAnnotasjonFor(FiktivPeriode.class))
