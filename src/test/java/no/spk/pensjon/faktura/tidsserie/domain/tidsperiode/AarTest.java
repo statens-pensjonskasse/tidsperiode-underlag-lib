@@ -1,26 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
-
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Maaned;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-import org.assertj.core.api.AbstractBooleanAssert;
-import org.assertj.core.api.AbstractIterableAssert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 import static java.time.LocalDate.ofYearDay;
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
@@ -30,6 +9,22 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import org.assertj.core.api.AbstractBooleanAssert;
+import org.assertj.core.api.AbstractListAssert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar}.
@@ -267,7 +262,7 @@ public class AarTest {
         assertAar(aar).hasSize(12);
     }
 
-    private static AbstractIterableAssert<?, ? extends Iterable<Maaned>, Maaned> assertAar(final Aarstall aar) {
+    private static AbstractListAssert<?, ? extends List<? extends Maaned>, Maaned> assertAar(final Aarstall aar) {
         return assertThat(new Aar(aar).maaneder().collect(toList())).as("måneder i år " + aar);
     }
 

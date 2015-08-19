@@ -33,6 +33,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 
 import org.assertj.core.api.AbstractObjectAssert;
+import org.assertj.core.api.OptionalAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -251,7 +252,7 @@ public class AvtaleFactoryTest {
         return assertThat(avtale.premiestatus()).as("premiestatus fra avtale " + avtale);
     }
 
-    private static AbstractObjectAssert<?, Optional<Premiesats>> assertPremiesats(Avtale avtale, Produkt produkt) {
+    private static OptionalAssert<Premiesats> assertPremiesats(Avtale avtale, Produkt produkt) {
         return assertThat(avtale.premiesatsFor(produkt)).as("premiesatsar for " + produkt + " fra avtale " + avtale);
     }
 }

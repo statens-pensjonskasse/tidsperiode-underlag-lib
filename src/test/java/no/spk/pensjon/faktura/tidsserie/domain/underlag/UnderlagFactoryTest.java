@@ -1,17 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
-
-import org.assertj.core.api.AbstractListAssert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.time.LocalDate;
-import java.util.Optional;
-
 import static java.time.LocalDate.now;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Optional.empty;
@@ -21,6 +9,20 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+
+import org.assertj.core.api.AbstractListAssert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Enheitstestar for UnderlagFactory.
@@ -142,7 +144,7 @@ public class UnderlagFactoryTest {
                 ).periodiser();
         assertThat(underlag).hasSize(1);
         assertFraOgMed(underlag, 0).isEqualTo(dato("2001.01.01"));
-        assertThat(underlag.toList().get(0).tilOgMed().get()).isGreaterThan(duplisertDato);
+        assertThat(underlag.toList().get(0).tilOgMed().get()).isAfter(duplisertDato);
     }
 
     /**
@@ -319,6 +321,8 @@ public class UnderlagFactoryTest {
     @SuppressWarnings("rawtypes")
     private static AbstractListAssert assertKobling(Underlag underlag, Class<? extends Tidsperiode<?>> type, int index) {
         final Underlagsperiode underlagsperiode = underlag.toList().get(index);
-        return assertThat(underlagsperiode.koblingarAvType(type).<Tidsperiode<?>>map(k -> (Tidsperiode<?>) k).collect(toList()));
+        Stream<? extends Tidsperiode<?>> stream = underlagsperiode.koblingarAvType(type);
+        List<Tidsperiode<?>> collect = stream.map(k -> (Tidsperiode<?>) k).collect(toList());
+        return assertThat((List)collect);
     }
 }

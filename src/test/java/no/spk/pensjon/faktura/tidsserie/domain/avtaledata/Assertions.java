@@ -12,35 +12,35 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 
-import org.assertj.core.api.AbstractObjectAssert;
+import org.assertj.core.api.OptionalAssert;
 
 @SuppressWarnings("rawtypes")
 public class Assertions {
-    public static AbstractObjectAssert<?, Optional<String>> assertArbeidsgiverbeloep(final Avtaleprodukt produkt) {
+    public static OptionalAssert<String> assertArbeidsgiverbeloep(final Avtaleprodukt produkt) {
         return assertBeloep(produkt, Satser::arbeidsgiverpremie, "arbeidsgiver");
     }
 
-    public static AbstractObjectAssert<?, Optional<String>> assertMedlemsbeloep(final Avtaleprodukt produkt) {
+    public static OptionalAssert<String> assertMedlemsbeloep(final Avtaleprodukt produkt) {
         return assertBeloep(produkt, Satser::medlemspremie, "medlem");
     }
 
-    public static AbstractObjectAssert<?, Optional<String>> assertAdministrasjonsgebyrbeloep(final Avtaleprodukt produkt) {
+    public static OptionalAssert<String> assertAdministrasjonsgebyrbeloep(final Avtaleprodukt produkt) {
         return assertBeloep(produkt, Satser::administrasjonsgebyr, "administrasjonsgebyr");
     }
 
-    public static AbstractObjectAssert<?, Optional<String>> assertArbeidsgiverprosent(final Avtaleprodukt produkt) {
+    public static OptionalAssert<String> assertArbeidsgiverprosent(final Avtaleprodukt produkt) {
         return assertProsent(produkt, Satser::arbeidsgiverpremie, "arbeidsgiver");
     }
 
-    public static AbstractObjectAssert<?, Optional<String>> assertMedlemsprosent(final Avtaleprodukt produkt) {
+    public static OptionalAssert<String> assertMedlemsprosent(final Avtaleprodukt produkt) {
         return assertProsent(produkt, Satser::medlemspremie, "medlem");
     }
 
-    public static AbstractObjectAssert<?, Optional<String>> assertAdministrasjonsgebyrprosent(final Avtaleprodukt produkt) {
+    public static OptionalAssert<String> assertAdministrasjonsgebyrprosent(final Avtaleprodukt produkt) {
         return assertProsent(produkt, Satser::administrasjonsgebyr, "administrasjonsgebyr");
     }
 
-    private static AbstractObjectAssert<?, Optional<String>> assertProsent(
+    private static OptionalAssert<String> assertProsent(
             final Avtaleprodukt produkt, final Function<Satser<Prosent>, Prosent> mapper, final String felt) {
         final Avtale.AvtaleBuilder builder = avtale(produkt.avtale());
         final Optional<Premiesats> premiesats = produkt.populer(builder).bygg().premiesatsFor(produkt.produkt());
@@ -48,7 +48,7 @@ public class Assertions {
                 .as("premiesats for " + felt + " fra " + premiesats);
     }
 
-    private static AbstractObjectAssert<?, Optional<String>> assertBeloep(
+    private static OptionalAssert<String> assertBeloep(
             final Avtaleprodukt produkt, final Function<Satser<Kroner>, Kroner> mapper, final String felt) {
         final Avtale.AvtaleBuilder builder = avtale(produkt.avtale());
         final Optional<Premiesats> premiesats = produkt.populer(builder).bygg().premiesatsFor(produkt.produkt());

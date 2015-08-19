@@ -106,7 +106,7 @@ public class Assertions {
      * @return ein assertion som opererer på alle unike annotasjonar av angitt type frå underlagsets perioder
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)
      */
-    public static <T> AbstractListAssert<?, ? extends List<T>, T> assertUnikeAnnotasjonsverdiar(
+    public static <T> AbstractListAssert<?, ? extends List<? extends T>, T> assertUnikeAnnotasjonsverdiar(
             final Underlag underlag, final Class<T> annotasjonstype) {
         return assertThat(
                 underlag
