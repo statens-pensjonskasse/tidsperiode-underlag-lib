@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 
 import java.util.stream.Stream;
@@ -35,7 +36,8 @@ public class PrognoseRegelsett implements Regelsett {
                 prognoseperiode(new LoennstilleggRegel()),
                 prognoseperiode(new OevreLoennsgrenseRegel()),
                 prognoseperiode(new MedregningsRegel()),
-                prognoseperiode(new MinstegrenseRegel()),
+                new Regelperiode<>(dato("2000.01.01"), of(dato("2015.12.31")), MinstegrenseRegel.class, new MinstegrenseRegelVersjon1()),
+                new Regelperiode<>(dato("2016.01.01"), empty(), MinstegrenseRegel.class, new MinstegrenseRegelVersjon2()),
                 prognoseperiode(new AarsverkRegel())
         );
     }

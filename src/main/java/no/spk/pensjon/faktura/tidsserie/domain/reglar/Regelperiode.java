@@ -1,11 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 /**
  * {@link Regelperiode} representerer perioda ein
@@ -36,6 +36,7 @@ import java.util.Optional;
  */
 public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
     private final BeregningsRegel<? extends T> gjeldandeRegel;
+    private final Class<? extends BeregningsRegel> regelType;
 
     /**
      * Konstruerer ei ny tidsperiode som den angitte beregningsregelen er gjeldande i.
@@ -47,8 +48,13 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
      * @throws java.lang.NullPointerException viss nokon av parameterverdiane er <code>null</code>
      */
     public Regelperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final BeregningsRegel<? extends T> gjeldandeRegel) {
+        this(fraOgMed, tilOgMed, gjeldandeRegel.getClass(), gjeldandeRegel);
+    }
+
+    public Regelperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, final Class<? extends BeregningsRegel> regelType, final BeregningsRegel<? extends T> gjeldandeRegel) {
         super(fraOgMed, tilOgMed);
         this.gjeldandeRegel = gjeldandeRegel;
+        this.regelType = regelType;
     }
 
     /**
@@ -57,7 +63,7 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
      * @param periode underlagsperioda som skal annoterast
      */
     public void annoter(final Annoterbar<?> periode) {
-        periode.annoter(gjeldandeRegel.getClass(), gjeldandeRegel);
+        periode.annoter(regelType, gjeldandeRegel);
     }
 
     @Override

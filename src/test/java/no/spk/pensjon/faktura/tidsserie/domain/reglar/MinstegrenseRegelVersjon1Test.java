@@ -1,22 +1,23 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Test;
 
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
- * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.MinstegrenseRegel}.
+ * Enheitstestar for {@link MinstegrenseRegelVersjon1}.
  *
  * @author Tarjei Skorgenes
  */
-public class MinstegrenseRegelTest {
+public class MinstegrenseRegelVersjon1Test {
     @Test
     public void skalGenerereForventaMinstegrenseForAllePremiestatusarTilknyttaSPKOrdninga() {
         final UnderlagsperiodeBuilder periode = eiPeriode().med(Ordning.SPK);
@@ -75,7 +76,7 @@ public class MinstegrenseRegelTest {
         return new UnderlagsperiodeBuilder()
                 .fraOgMed(dato("2013.01.01"))
                 .tilOgMed(dato("2013.12.31"))
-                .med(new MinstegrenseRegel())
+                .med(MinstegrenseRegel.class, new MinstegrenseRegelVersjon1())
                 ;
     }
 
