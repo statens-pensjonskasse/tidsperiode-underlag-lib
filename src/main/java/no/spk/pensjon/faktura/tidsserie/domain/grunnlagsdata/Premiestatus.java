@@ -28,6 +28,11 @@ public final class Premiestatus {
     public static final Premiestatus AAO_02 = new Premiestatus("AAO-02");
 
     /**
+     * Apotek.
+     */
+    public static final Premiestatus AAO_12 = new Premiestatus("AAO-12");
+
+    /**
      * Ikke premiebetalende
      */
     public static final Premiestatus IPB = new Premiestatus("IPB");
