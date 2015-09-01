@@ -36,7 +36,8 @@ public class AvregningsRegelsett implements Regelsett {
                 avregningsperiode(new MinstegrenseRegel()),
                 avregningsperiode(new AarsverkRegel()),
                 avregningsperiode(new YrkesskadefaktureringRegel()),
-                avregningsperiode(new GruppelivsfaktureringRegel())
+                avregningsperiode(new GruppelivsfaktureringRegel()),
+                avregningsperiode(new TermintypeRegel())
         );
     }
 

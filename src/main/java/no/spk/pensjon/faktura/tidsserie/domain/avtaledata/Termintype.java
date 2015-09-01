@@ -26,9 +26,9 @@ public class Termintype {
     /**
      * Termintype for perioder som ikke er annotert (ukjent) med minst en av disse: ordning, premiestatus og premiekategori.
      */
-    public static Termintype UKJENT = new Termintype("UKJ");
+    public static final Termintype UKJENT = new Termintype("UKJ");
 
-    public Termintype(final String kode) {
+    private Termintype(final String kode) {
         this.kode = kode;
     }
 }

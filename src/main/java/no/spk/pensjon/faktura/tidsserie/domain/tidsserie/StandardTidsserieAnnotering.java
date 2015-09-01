@@ -9,12 +9,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiod
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Termintype;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Omregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
@@ -122,29 +119,7 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
                     });
 
             periode.annoter(Avtale.class, avtaleFactory.lagAvtale(periode, avtalekobling.avtale()));
-            final Optional<Ordning> ordning = periode.valgfriAnnotasjonFor(Ordning.class);
-            final Optional<Premiestatus> premiestatus = periode.valgfriAnnotasjonFor(Premiestatus.class);
-            final Optional<Premiekategori> premiekategori = periode.valgfriAnnotasjonFor(Premiekategori.class);
-
-            if (ordning.isPresent() && premiestatus.isPresent() && premiekategori.isPresent()) {
-                periode.annoter(Termintype.class, termintype(ordning.get(), premiestatus.get(), premiekategori.get()));
-            } else {
-                periode.annoter(Termintype.class, Termintype.UKJENT);
-            }
         });
-    }
-
-    private Termintype termintype(Ordning ordning, Premiestatus premiestatus, Premiekategori premiekategori) {
-        if (!premiestatus.equals(Premiestatus.IPB) && (premiekategori.equals(Premiekategori.FASTSATS) || premiekategori.equals(Premiekategori.FASTSATS_AARLIG_OPPFOELGING)))
-        {
-            if (ordning.equals(Ordning.POA)) {
-                return Termintype.POA ;
-            }
-            else if (ordning.equals(Ordning.OPERA) || ordning.equals(Ordning.SPK)) {
-                return Termintype.SPK;
-            }
-        }
-        return Termintype.ANDRE;
     }
 
     private void annoterLoennForLoennstrinn(final Underlagsperiode periode) {
