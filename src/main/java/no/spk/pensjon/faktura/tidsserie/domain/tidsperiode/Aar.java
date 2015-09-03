@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.of;
 
 /**
  * {@link Aar} representerer ei tidsperiode
@@ -20,6 +21,8 @@ public class Aar implements Tidsperiode<Aar> {
     private final ArrayList<Maaned> perioder = new ArrayList<>(12);
 
     private final Aarstall aar;
+    private final Optional<LocalDate> tilOgMed;
+    private final LocalDate fraOgMed;
 
     /**
      * Konstruerer eit nytt år.
@@ -34,6 +37,8 @@ public class Aar implements Tidsperiode<Aar> {
                 .stream()
                 .map(m -> new Maaned(aar, m))
                 .collect(() -> perioder, ArrayList::add, ArrayList::addAll);
+        this.tilOgMed = of(aar.atEndOfYear());
+        this.fraOgMed = aar.atStartOfYear();
     }
 
     /**
@@ -52,7 +57,7 @@ public class Aar implements Tidsperiode<Aar> {
      */
     @Override
     public LocalDate fraOgMed() {
-        return perioder.stream().findFirst().get().fraOgMed();
+        return fraOgMed;
     }
 
     /**
@@ -62,7 +67,7 @@ public class Aar implements Tidsperiode<Aar> {
      */
     @Override
     public Optional<LocalDate> tilOgMed() {
-        return perioder.stream().filter(m -> m.tilhoeyrer(Month.DECEMBER)).findAny().get().tilOgMed();
+        return tilOgMed;
     }
 
     /**

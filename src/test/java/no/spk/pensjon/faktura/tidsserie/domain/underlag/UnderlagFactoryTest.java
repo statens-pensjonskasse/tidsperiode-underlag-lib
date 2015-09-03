@@ -97,18 +97,6 @@ public class UnderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at det blir betrakta som ein feil å ikkje legge til nokon tidsperioder som input
-     * før konstruksjon av nytt underlag for blir forsøkt utført.
-     */
-    @Test
-    public void skalFeileDersomIngenPerioderErLagtTilFoerPeriodiseringBlirForsoektUtfoert() {
-        e.expect(IllegalStateException.class);
-        e.expectMessage("Periodisering av underlag krever minst ei tidsperiode som input");
-        e.expectMessage("fabrikken er satt opp uten nokon tidsperioder");
-        create().periodiser();
-    }
-
-    /**
      * Verifiserer at underlaget som kun er generert ut frå stillingsforholdperioder, får oppretta ei underlagsperiode
      * for kvar frå og med-dato frå alle stillingsforholdperiodene.
      */

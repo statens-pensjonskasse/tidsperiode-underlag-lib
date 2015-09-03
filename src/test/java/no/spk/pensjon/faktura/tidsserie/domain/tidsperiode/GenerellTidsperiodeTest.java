@@ -33,13 +33,14 @@ public class GenerellTidsperiodeTest {
 
     protected BiFunction<LocalDate, Optional<LocalDate>, Tidsperiode> factory;
 
+    private final Comparator<Tidsperiode<?>> sortering = Tidsperiode::compare;
+
     public GenerellTidsperiodeTest() {
         this.factory = (fraOgMed, tilOgMed) -> new GenerellTidsperiode(fraOgMed, tilOgMed);
     }
 
     @Test
     public void skalVereUlikeDersomFraaOgMedDatoaneErUlike() {
-        final Comparator<Tidsperiode<?>> sortering = Tidsperiode.kronologiskSorteringAvTidsperioder();
         assertThat(
                 sortering.compare(
                         create("2004.01.01", "2005.01.02"),
@@ -57,7 +58,6 @@ public class GenerellTidsperiodeTest {
 
     @Test
     public void skalVereUlikeDersomFraaOgMedDatoaneErLikeMenTilOgMedDatoaneErUlike() {
-        final Comparator<Tidsperiode<?>> sortering = Tidsperiode.kronologiskSorteringAvTidsperioder();
         assertThat(
                 sortering.compare(
                         create("2004.01.01", "2005.01.02"),
@@ -89,7 +89,6 @@ public class GenerellTidsperiodeTest {
 
     @Test
     public void skalVereLikeDersomBaadeFraaOgMedOgTilOgMedDatoaneErLike() {
-        final Comparator<Tidsperiode<?>> sortering = Tidsperiode.kronologiskSorteringAvTidsperioder();
         assertThat(
                 sortering.compare(
                         create(dato("2004.01.01"), empty()),

@@ -1,9 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * {@link AntallDagar} representerer lengda på ei tidsperiode.
@@ -50,15 +50,19 @@ public class AntallDagar {
 
     /**
      * Beregnar antall dagar i perioda frå og med <code>fraOgMed</code> og til og med <code>tilOgMed</code>.
+     * <br>
+     * Negativ lengde er ikkje støtta, til og med-dato må derfor vere større enn eller lik frå og med-datoen.
      *
      * @param fraOgMed frå og med-dato for perioda
      * @param tilOgMed til og med-dato for perioda
      * @return lengda på tidsperioda mellom dei to dagane, inkludert sjølve frå og med- og til og med-datoane
+     * @throws IllegalArgumentException viss <code>fraOgMed</code> er etter <code>tilOgMed</code>
      */
     public static AntallDagar antallDagarMellom(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        requireNonNull(fraOgMed, () -> "frå og med-dato må vere ulik null");
-        requireNonNull(tilOgMed, () -> "til og med-dato må vere ulik null, løpande perioder er ikkje støtta");
-        return antallDagar((int) ChronoUnit.DAYS.between(fraOgMed, tilOgMed.plusDays(1)));
+        requireNonNull(fraOgMed, "frå og med-dato må vere ulik null");
+        requireNonNull(tilOgMed, "til og med-dato må vere ulik null, løpande perioder er ikkje støtta");
+        Validering.feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilOgMed);
+        return antallDagar((int) ChronoUnit.DAYS.between(fraOgMed, tilOgMed) + 1);
     }
 
     @Override

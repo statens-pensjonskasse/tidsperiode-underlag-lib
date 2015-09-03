@@ -1,15 +1,19 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import static java.util.Optional.of;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingVedOverlappandeTidsperioder;
+import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingVedTidsgapIUnderlaget;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingVedOverlappandeTidsperioder;
-import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Feilmeldingar.feilmeldingVedTidsgapIUnderlaget;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
  * {@link Underlag} representerer eit periodisert tidsperiode beståande av ei eller fleire
@@ -115,11 +119,10 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
      * @throws IllegalArgumentException dersom det blir oppdaga eit tidsgap mellom ei eller fleire av underlagsperiodene
      */
     public Underlag(final Stream<Underlagsperiode> perioder) {
-        perioder
-                .sorted((a, b) -> a.fraOgMed().compareTo(b.fraOgMed()))
-                .collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
-        detekterTidsgapMellomPerioder();
-        detekterOverlappandePerioder();
+        perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
+        assert !detekterOverlappandePerioder() : overlappandePerioderFeilmelding();
+        assert !detekterTidsgapMellomPerioder() : tidsgapMellomPerioderFeilmelding();
+        assert !detekterUsortertePerioder() : "underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge";
     }
 
     /**
@@ -175,7 +178,9 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
      * nokon perioder
      */
     public Optional<Underlagsperiode> last() {
-        return perioder.stream().reduce((a, b) -> b);
+        if (perioder.isEmpty())
+            return Optional.empty();
+        return of(perioder.get(perioder.size() - 1));
     }
 
     @Override
@@ -210,29 +215,46 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
         return "U" + perioder;
     }
 
-    private void detekterTidsgapMellomPerioder() {
-        final DetekterTidsgapMellomPerioder validator = new DetekterTidsgapMellomPerioder();
-        perioder.stream().reduce(validator);
-        if (validator.harTidsgap()) {
-            throw new IllegalArgumentException(
-                    feilmeldingVedTidsgapIUnderlaget(
-                            "Eit underlag kan ikkje inneholde tidsgap mellom underlagsperiodene",
-                            validator
-                    )
-            );
-        }
+    private boolean detekterOverlappandePerioder() {
+        return overlappandePerioder().harOverlappande();
     }
 
-    private void detekterOverlappandePerioder() {
+    private boolean detekterTidsgapMellomPerioder() {
+        return tidsgapMellomPerioder().harTidsgap();
+    }
+
+    private boolean detekterUsortertePerioder() {
+        return !perioder.equals(
+                perioder
+                        .stream()
+                        .sorted(Tidsperiode::compare)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private DetekterOverlappandePerioder overlappandePerioder() {
         final DetekterOverlappandePerioder detektor = new DetekterOverlappandePerioder();
         this.perioder.stream().reduce(detektor);
-        if (detektor.harOverlappande()) {
-            throw new IllegalArgumentException(
-                    feilmeldingVedOverlappandeTidsperioder(
-                            "Eit underlag kan ikkje inneholde underlagsperioder som overlappar kvarandre",
-                            detektor
-                    )
-            );
-        }
+        return detektor;
+    }
+
+    private DetekterTidsgapMellomPerioder tidsgapMellomPerioder() {
+        final DetekterTidsgapMellomPerioder validator = new DetekterTidsgapMellomPerioder();
+        perioder.stream().reduce(validator);
+        return validator;
+    }
+
+    private String tidsgapMellomPerioderFeilmelding() {
+        return feilmeldingVedTidsgapIUnderlaget(
+                "Eit underlag kan ikkje inneholde tidsgap mellom underlagsperiodene",
+                tidsgapMellomPerioder()
+        );
+    }
+
+    private String overlappandePerioderFeilmelding() {
+        return feilmeldingVedOverlappandeTidsperioder(
+                "Eit underlag kan ikkje inneholde underlagsperioder som overlappar kvarandre",
+                overlappandePerioder()
+        );
     }
 }

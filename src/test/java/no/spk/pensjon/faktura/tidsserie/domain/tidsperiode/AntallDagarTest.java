@@ -1,15 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
-import org.assertj.core.api.Assertions;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagar;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AntallDagarTest {
     @Rule
@@ -106,6 +104,24 @@ public class AntallDagarTest {
         e.expectMessage("til og med-dato må vere ulik null");
         e.expectMessage("løpande perioder er ikkje støtta");
         antallDagarMellom(dato("2005.01.01"), null);
+    }
+
+    /**
+     * Antall dagar mellom to like datoar skal vere lik 1 ettersom {@link Tidsperiode#tilOgMed()} er inkludert
+     * i tidsperioder ein skal måle antall dagar i.
+     */
+    @Test
+    public void skalBeregneLengdeLik1DagForPerioderMedLikFraOgMedOgTilOgMedDato() {
+        assertThat(antallDagarMellom(dato("2003.01.01"), dato("2003.01.01"))).isEqualTo(antallDagar(1));
+    }
+
+    @Test
+    public void skalFeileVissFraOgMedDatoErStoerreEnnTilOgMedDato() {
+        e.expect(IllegalArgumentException.class);
+        e.expectMessage("fra og med-dato kan ikkje vere etter til og med-dato");
+        e.expectMessage("2000-09-10 er etter 2000-09-09");
+
+        antallDagarMellom(dato("2000.09.10"), dato("2000.09.09"));
     }
 
     private void expectIllegalArgumentException() {

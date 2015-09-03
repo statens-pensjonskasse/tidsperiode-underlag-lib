@@ -2,10 +2,13 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -36,6 +39,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  * @author Tarjei Skorgenes
  */
 class ObservasjonsunderlagFactory {
+    private static final List<Month> SORTED_MONTHS = asList(Month.values())
+            .stream()
+            .sorted(Month::compareTo)
+            .collect(toList());
+
     /**
      * Genererer eit nytt observasjonsunderlag for kvar unike måned i <code>aarsunderlag</code>.
      *
@@ -53,9 +61,7 @@ class ObservasjonsunderlagFactory {
                             + aarsunderlag + " er ikkje eit årsunderlag sidan det ikkje er annotert med årstall"
             );
         }
-        return asList(Month.values())
-                .stream()
-                .sorted(Month::compareTo)
+        return SORTED_MONTHS.stream()
                 .map(m -> Observasjonsdato.forSisteDag(aarsunderlag.annotasjonFor(Aarstall.class), m))
                 .map(od -> nyttObservasjonsunderlag(aarsunderlag, od))
                 .filter(isEmpty().negate());
@@ -69,15 +75,17 @@ class ObservasjonsunderlagFactory {
      * over, den fiktive perioda løper frå dagen etter siste synlige periodes til og med-dato, til og med siste dag i
      * året.
      *
-     * @param aarsunderlag årsunderlaget som observasjonsunderlaget hentar synlige og bygger opp fiktive perioder frå
-     * @param observasjonsdato  som regulerer kva perioder i årsunderlaget som er synlige
+     * @param aarsunderlag     årsunderlaget som observasjonsunderlaget hentar synlige og bygger opp fiktive perioder frå
+     * @param observasjonsdato som regulerer kva perioder i årsunderlaget som er synlige
      * @return eit nytt observasjonsunderlag
      */
     private Underlag nyttObservasjonsunderlag(final Underlag aarsunderlag, final Observasjonsdato observasjonsdato) {
+        final Underlag synlige = new Underlag(synligePerioderFramTilOgMed(aarsunderlag, observasjonsdato));
+        final Optional<Underlagsperiode> siste = synlige.last();
         return new Underlag(
                 concat(
-                        synligePerioderFramTilOgMed(aarsunderlag, observasjonsdato),
-                        fiktivPeriodeUtAaret(aarsunderlag, observasjonsdato)
+                        synlige.stream(),
+                        fiktivPeriodeUtAaret(observasjonsdato, siste)
                 )
         )
                 .annoterFra(aarsunderlag)
@@ -86,45 +94,44 @@ class ObservasjonsunderlagFactory {
 
 
     /**
-     * Genererer ei ny underlagsperiode som strekker seg frå dagen etter den angitte datoens siste dag, til
-     * siste dag i årsunderlagets årstall.
+     * Genererer ei ny underlagsperiode som strekker seg frå dagen etter observasjonsdatoen og ut året.
      * <p>
-     * Den fiktive periodas tilstand er ein eksakt kopi av
-     * {@link #synligePerioderFramTilOgMed(Underlag, Observasjonsdato) siste synlige periode} frå årsunderlaget, sett bort frå
-     * frå og med- og til og med-datoane. I tillegg blir den fiktive perioda annotert med {@link FiktivPeriode} for å
-     * tydelig markere at perioda er fiktiv.
+     * Den fiktive perioda får med annotasjonane frå <code>sisteSynlige</code> periode, men ikkje koblingane.
+     * <p>
+     * Den fiktive perioda blir i tillegg annotert med {@link FiktivPeriode} for å tydelig markere at perioda er fiktiv.
      * <p>
      * <h2>Unntakssituasjonar</h2>
      * <p>
      * Det er to situasjonar der det ikkje vil bli generert ei fiktiv periode:
      * <ul>
      * <li>Månaden er desember.</li>
-     * <li>Stillingsforholdet blir sluttmeldt før observasjonsdato.</li>
+     * <li>Stillingsforholdet er sluttmeldt før observasjonsdato.</li>
      * </ul>
      * <h3>1. Desember månad</h3>
-     * Det blir ikkje generert ei fiktiv periode viss <code>month</code> er lik desember måned ettersom årsunderlaget
-     * då vil vere identisk med observasjonsunderlaget. Siste dag i desember er også siste dag i året, ergo blir dei
-     * to underlaga alltid like for desember måned.
+     * Det blir ikkje generert ei fiktiv periode viss <code>observasjonsdato</code> er siste dag i året ettersom
+     * årsunderlaget og observasjonsunderlaget alltid vil vere like i desember måned.
      * <p>
      * <h3>2. Stillingsforholdet blir sluttmeldt før observasjonsdato</h3>
-     * Dersom siste synlige underlagsperiode har til-dato <i>før</i> observasjonsdato vil det ikkje bli generert ei fiktiv
-     * periode ettersom dette betyr at stillingsforholdet er sluttmeldt på underlagsperiodas til og med-dato.
+     * Dersom <code>sisteSynlige</code> underlagsperiode har til og med-dato <i>før</i> <code>observasjonsdato</code>
+     * vil det ikkje bli generert ei fiktiv periode. Dette fordi ein då ser at stillinga er avslutta i fortida og dermed
+     * ikkje har noko ønske om å prognostisere den som aktiv ut året.
      * <br>
-     * Dersom siste synlige underlagsperiode har til-dato <i>lik</i> observasjonsdato vil det bli generert ei fiktiv periode.
-     * Dette gjøres for å unngå en nedgang i observert maskinellt grunnlag for stillinger som sluttmeldes på observasjonsdato,
-     * da det er vanlig at at medlemmer tiltrer i ny stilling dagen etter.
+     * Dersom <code>sisteSynlige</code> underlagsperiode har til-dato <i>lik</i> observasjonsdato vil det bli generert
+     * ei fiktiv periode. Dette gjøres for å unngå en nedgang i observert maskinellt grunnlag for stillinger som
+     * sluttmeldes på observasjonsdato, da det er vanlig at at medlemmer tiltrer i ny stilling dagen etter.
      *
-     * @param aarsunderlag underlaget som siste synlige periode på eller før den aktuelle månaden, skal hentast frå
      * @param observasjonsdato som avgrensar kva perioder som er synlige
+     * @param sisteSynlige     siste synlige underlagsperiode i årsunderlaget for <code>observasjonsdato</code>en
      * @return ein straum som inneheld ei fiktiv periode som strekker seg frå dagen etter observasjonsdato
-     * til siste dag i året, eller ein {@link java.util.stream.Stream#empty() tom} straum dersom observasjonsdato er siste dag i året.
+     * til siste dag i året, eller ein {@link java.util.stream.Stream#empty() tom} straum dersom observasjonsdato er
+     * siste dag i året.
      */
-    private Stream<Underlagsperiode> fiktivPeriodeUtAaret(final Underlag aarsunderlag, final Observasjonsdato observasjonsdato) {
-        if (aarsunderlag.annotasjonFor(Aarstall.class).atEndOfYear().equals(observasjonsdato.dato())) {
+    private Stream<Underlagsperiode> fiktivPeriodeUtAaret(final Observasjonsdato observasjonsdato,
+                                                          final Optional<Underlagsperiode> sisteSynlige) {
+        if (observasjonsdato.erAaretsSisteDag()) {
             return Stream.empty();
         }
-        return synligePerioderFramTilOgMed(aarsunderlag, observasjonsdato)
-                .reduce((a, b) -> b)
+        return sisteSynlige
                 .filter((Underlagsperiode p) -> p.tilOgMed().get().equals(observasjonsdato.dato()))
                 .map(this::nyFiktivPeriodeUtAaret)
                 .map(Stream::of)
@@ -132,16 +139,18 @@ class ObservasjonsunderlagFactory {
     }
 
     /**
-     * Returnerer alle underlagsperioder som er startar og sluttar før eller på observasjonsdato.
+     * Returnerer alle underlagsperioder som er startar og sluttar før eller på observasjonsdato
+     * og som dermed skal inkluderast i observasjonsunderlaget.
      *
-     * @param aarsunderlag årsunderlaget som underlagsperiodene skal hentast frå
+     * @param aarsunderlag     årsunderlaget som underlagsperiodene skal hentast frå
      * @param observasjonsdato der ein skal observere maskinelt grunnlag for heile året
-     * @return ein straum med alle underlagsperioder synlige fram til og med observasjonsdato
+     * @return ein straum med alle underlagsperioder synlige på observasjonsdatoen
      */
-    private Stream<Underlagsperiode> synligePerioderFramTilOgMed(final Underlag aarsunderlag, final Observasjonsdato observasjonsdato) {
+    private Stream<Underlagsperiode> synligePerioderFramTilOgMed(final Underlag aarsunderlag,
+                                                                 final Observasjonsdato observasjonsdato) {
         return aarsunderlag
                 .stream()
-                .filter((Underlagsperiode p) -> !p.tilOgMed().get().isAfter(observasjonsdato.dato()));
+                .filter(observasjonsdato::erPeriodenSynligFra);
     }
 
     /**

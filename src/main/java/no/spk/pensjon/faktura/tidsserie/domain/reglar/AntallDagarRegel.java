@@ -31,9 +31,6 @@ public class AntallDagarRegel implements BeregningsRegel<AntallDagar> {
      */
     @Override
     public AntallDagar beregn(final Beregningsperiode<?> periode) {
-        return antallDagarMellom(
-                periode.fraOgMed(),
-                periode.tilOgMed().get()
-        );
+        return periode.lengde();
     }
 }

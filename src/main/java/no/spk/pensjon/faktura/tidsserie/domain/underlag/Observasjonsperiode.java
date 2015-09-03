@@ -1,16 +1,23 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import static java.time.LocalDate.MAX;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aar;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
  * {@link Observasjonsperiode} representerer
@@ -22,7 +29,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author Tarjei Skorgenes
  */
-public class Observasjonsperiode extends AbstractTidsperiode<Observasjonsperiode> {
+public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsperiode> {
     /**
      * Konstruerer ei ny grenser.
      *
@@ -52,5 +59,61 @@ public class Observasjonsperiode extends AbstractTidsperiode<Observasjonsperiode
                 .mapToObj(Aarstall::new)
                 .map(Aar::new)
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    /**
+     * Genererer ei ny observasjonsperiode som kun dekker den tidsperioda der gjeldande
+     * observasjonsperiode overlappar <code>periode</code>.
+     *
+     * @param periode perioda som alle dagane i den den nye observasjonsperioda skal overlappe
+     * @return ei ny observasjonsperiode der alle dagane blir overlapparav <code>periode</code>,
+     * {@link Optional#empty()} dersom periodene ikkje overlappar kvarandre
+     * @since 1.1.2
+     */
+    public Optional<Observasjonsperiode> intersect(final Tidsperiode<?> periode) {
+        if (!overlapper(periode)) {
+            return empty();
+        }
+        final LocalDate fraOgMed = periode.fraOgMed();
+        final LocalDate tilOgMed = periode.tilOgMed().orElse(MAX);
+        return of(
+                new Observasjonsperiode(
+                        avgrensFraOgMedDato(fraOgMed),
+                        avgrensTilOgMedDato(tilOgMed)
+                )
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fraOgMed(), tilOgMed().get());
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof Observasjonsperiode)) {
+            return false;
+        }
+        final Observasjonsperiode other = (Observasjonsperiode) obj;
+        return Objects.equals(fraOgMed(), other.fraOgMed()) && Objects.equals(tilOgMed(), other.tilOgMed());
+    }
+
+    @Override
+    public String toString() {
+        return "observasjonsperiode [" + fraOgMed() + "->" + tilOgMed().get() + "]";
+    }
+
+    private LocalDate avgrensFraOgMedDato(final LocalDate other) {
+        return Stream.of(other, fraOgMed())
+                .filter(this::overlapper)
+                .max(LocalDate::compareTo)
+                .get();
+    }
+
+    private LocalDate avgrensTilOgMedDato(final LocalDate other) {
+        return Stream.of(other, tilOgMed().get())
+                .filter(this::overlapper)
+                .min(LocalDate::compareTo)
+                .get();
     }
 }
