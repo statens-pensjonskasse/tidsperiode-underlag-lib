@@ -1,45 +1,50 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
 public class Aksjonskode {
-    private static final Set<Aksjonskode> VALUES = new HashSet<>();
+    private static final Map<Aksjonskode, Object> VALUES = new HashMap<>();
 
     /**
      * Nytilgang.
      */
-    public static final Aksjonskode NYTILGANG = new Aksjonskode("011");
+    public static final Aksjonskode NYTILGANG = newAksjonskode("011");
 
     /**
      * Endringsmelding.
      */
-    public static final Aksjonskode ENDRINGSMELDING = new Aksjonskode("021");
+    public static final Aksjonskode ENDRINGSMELDING = newAksjonskode("021");
 
     /**
      * Sluttmelding.
      */
-    public static final Aksjonskode SLUTTMELDING = new Aksjonskode("031");
+    public static final Aksjonskode SLUTTMELDING = newAksjonskode("031");
 
     /**
      * Permisjon utan lønn.
      */
-    public static final Aksjonskode PERMISJON_UTAN_LOENN = new Aksjonskode("028");
+    public static final Aksjonskode PERMISJON_UTAN_LOENN = newAksjonskode("028");
 
     /**
      * Aksjonskode for stillingsendringar der aksjonskode manglar.
      */
-    public static final Aksjonskode UKJENT = new Aksjonskode("UKJENT");
+    public static final Aksjonskode UKJENT = newAksjonskode("UKJENT");
+
+    private static Aksjonskode newAksjonskode(String kode) {
+        final Aksjonskode value = new Aksjonskode(kode);
+        VALUES.put(value, value);
+        return value;
+    }
 
     private final String kode;
 
     private Aksjonskode(final String kode) {
         this.kode = requireNonNull(kode, () -> "aksjonskode er påkrevd, men var null");
-        if (VALUES.size() < 100) {
-            VALUES.add(this);
-        }
     }
 
     /**
@@ -71,6 +76,7 @@ public class Aksjonskode {
             return UKJENT;
         }
         return VALUES
+                .keySet()
                 .stream()
                 .filter(status -> status.harKode(kode))
                 .findFirst()

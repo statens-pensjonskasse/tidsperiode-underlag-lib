@@ -1,12 +1,14 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import static java.time.LocalDate.MAX;
+import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
+import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDate;
 import java.time.Month;
 
-import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
-import static java.util.Objects.requireNonNull;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
  * {@link Observasjonsdato} representerer dagen ein observasjon blir simulert utført.
@@ -22,6 +24,8 @@ import static java.util.Objects.requireNonNull;
  */
 public class Observasjonsdato {
     private final LocalDate dato;
+    private final boolean erSisteForÅret;
+    private final LocalDate sisteDagIÅret;
 
     /**
      * Konstruerer ein ny observasjondato.
@@ -31,6 +35,17 @@ public class Observasjonsdato {
      */
     public Observasjonsdato(final LocalDate dato) {
         this.dato = requireNonNull(dato, () -> "dato manglar verdi, men er påkrevd");
+        this.erSisteForÅret = Month.DECEMBER == dato.getMonth();
+        this.sisteDagIÅret = dato.with(lastDayOfYear());
+    }
+
+    private Observasjonsdato(final Aarstall aarstall, final Month month) {
+        this.dato = aarstall
+                .toYear()
+                .atMonth(month)
+                .atEndOfMonth();
+        this.sisteDagIÅret = aarstall.atEndOfYear();
+        this.erSisteForÅret = dato.isEqual(sisteDagIÅret);
     }
 
     @Override
@@ -66,12 +81,7 @@ public class Observasjonsdato {
      * @return ein ny observasjonsdato som er siste dag i det angitte årets måned
      */
     public static Observasjonsdato forSisteDag(final Aarstall aarstall, final Month month) {
-        return new Observasjonsdato(
-                aarstall
-                        .atStartOfYear()
-                        .with(month)
-                        .with(lastDayOfMonth())
-        );
+        return new Observasjonsdato(aarstall, month);
     }
 
     /**
@@ -101,5 +111,29 @@ public class Observasjonsdato {
      */
     public LocalDate dato() {
         return dato;
+    }
+
+    /**
+     * Er <code>perioda</code> synlig frå gjeldande observasjonsdato?
+     * <br>
+     * Ei periode definerast som synlig dersom den har sin til og med-dato på eller før observasjonsdatoen.
+     * Dersom perioda er avslutta etter observasjonsdatoen er den ikkje synlig.
+     *
+     * @param perioda underlagsperioda som ein skal sjekke om er synlig på observasjonsdatoen
+     * @return <code>true</code> dersom perioda er avslutta før observasjonsdatoen, <code>false</code> ellers
+     * @since 1.1.2
+     */
+    public boolean erPeriodenSynligFra(final Underlagsperiode perioda) {
+        return !perioda.tilOgMed().orElse(MAX).isAfter(dato);
+    }
+
+    /**
+     * Sjekkar om observasjonsdatoen er lik siste dag i året den er tilknytta, aka 31. desember?
+     *
+     * @return <code>true</code> dersom observasjonsdatoen er lik 31. desember, <code>false</code> ellers
+     * @since 1.1.2
+     */
+    public boolean erAaretsSisteDag() {
+        return erSisteForÅret;
     }
 }

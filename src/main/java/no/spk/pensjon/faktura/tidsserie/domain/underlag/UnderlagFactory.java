@@ -4,16 +4,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
+import static java.time.LocalDate.MAX;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
 /**
@@ -64,7 +63,9 @@ public class UnderlagFactory {
      * @return <code>this</code>
      */
     public UnderlagFactory addPerioder(Stream<? extends Tidsperiode<?>> perioder) {
-        perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
+        perioder
+                .filter(grenser::overlapper)
+                .collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
         return this;
     }
 
@@ -79,16 +80,10 @@ public class UnderlagFactory {
      * @see #addPerioder(java.util.stream.Stream)
      */
     public Underlag periodiser() {
-        if (perioder.isEmpty()) {
-            throw new IllegalStateException(
-                    "Periodisering av underlag krever minst ei tidsperiode som input, " +
-                            "men fabrikken er satt opp uten nokon tidsperioder."
-            );
-        }
-        final List<Tidsperiode<?>> input = finnObserverbarePerioder();
+        perioder.sort(Comparator.comparing(Tidsperiode::fraOgMed));
         return kobleTilOverlappandeTidsperioder(
                 new Underlag(
-                        byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(input))
+                        byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(perioder))
                 )
         );
     }
@@ -102,13 +97,17 @@ public class UnderlagFactory {
      * @return <code>underlag</code>
      */
     private Underlag kobleTilOverlappandeTidsperioder(final Underlag underlag) {
-        underlag.stream().forEach(underlagsperiode -> {
-            for (final Tidsperiode<?> periode : perioder) {
-                if (periode.overlapper(underlagsperiode)) {
-                    underlagsperiode.kobleTil(periode);
+        for (final Underlagsperiode underlagsperiode : underlag.toList()) {
+            for (final Tidsperiode<?> periode : this.perioder) {
+                if (periode.tilOgMed().orElse(MAX).isBefore(underlagsperiode.fraOgMed())) {
+                    continue;
                 }
+                if (periode.fraOgMed().isAfter(underlagsperiode.tilOgMed().orElse(MAX))) {
+                    break;
+                }
+                underlagsperiode.kobleTil(periode);
             }
-        });
+        }
         return underlag;
     }
 
@@ -126,12 +125,12 @@ public class UnderlagFactory {
      */
     private Stream<Underlagsperiode> byggUnderlagsperioder(final SortedSet<LocalDate> endringsdatoer) {
         final ArrayList<Underlagsperiode> nyePerioder = new ArrayList<>();
-        Optional<LocalDate> fraOgMed = Optional.empty();
+        LocalDate fraOgMed = null;
         for (final LocalDate nextDate : endringsdatoer) {
-            fraOgMed.ifPresent(dato -> {
-                nyePerioder.add(new Underlagsperiode(dato, nextDate.minusDays(1)));
-            });
-            fraOgMed = of(nextDate);
+            if (fraOgMed != null) {
+                nyePerioder.add(new Underlagsperiode(fraOgMed, nextDate.minusDays(1)));
+            }
+            fraOgMed = nextDate;
         }
         return nyePerioder.stream();
     }
@@ -187,21 +186,13 @@ public class UnderlagFactory {
      * @return ei kronologisk sortert samling av unike datoar som underlaget sine underlagsperioder skal splittast på
      */
     private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<Tidsperiode<?>> input) {
-        return Stream.of(
-                input
-                        .stream()
-                        .map(Tidsperiode::fraOgMed)
-                ,
-                input.stream()
-                        .map(Tidsperiode::tilOgMed)
-                        .map(o -> o.orElse(grenser.tilOgMed().get()))
-                        .map(UnderlagFactory::nesteDag)
-        )
-                .flatMap(perioder -> perioder)
+        return input.stream()
+                .flatMap(p -> Stream.of(
+                        p.fraOgMed(),
+                        nesteDag(p.tilOgMed().orElse(grenser.tilOgMed().get()))
+                ))
                 .map(this::avgrensTilNedreGrense)
                 .map(this::avgrensTilOevreGrense)
-                .distinct()
-                .sorted(LocalDate::compareTo)
                 .collect(TreeSet::new, TreeSet::add, TreeSet::addAll);
     }
 
@@ -237,21 +228,6 @@ public class UnderlagFactory {
 
     private LocalDate avgrensTilNedreGrense(final LocalDate dato) {
         return dato.isBefore(grenser.fraOgMed()) ? grenser.fraOgMed() : dato;
-    }
-
-    /**
-     * Filtrerer vekk alle input-perioder som ikkje overlappar observasjonsperioda.
-     * <p>
-     * Intensjonen her er å hindre at underlaget kan bli påvirka og periodisert basert på data frå perioder som ein
-     * ikkje skal ta hensyn til.
-     *
-     * @return ei liste som kun inneheld perioder som overlappar observasjonsperioda
-     */
-    private List<Tidsperiode<?>> finnObserverbarePerioder() {
-        return perioder
-                .stream()
-                .filter(p -> p.overlapper(grenser))
-                .collect(toList());
     }
 
     /**

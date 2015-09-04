@@ -432,9 +432,6 @@ public class ObservasjonsunderlagFactoryTest {
     private static AbstractIterableAssert<?, ? extends Iterable<? extends Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagMedFiktivPeriode(
             final List<Underlag> prMnd, final int index) {
         final Underlag underlag = prMnd.get(index);
-        assertThat(underlag.last().get().valgfriAnnotasjonFor(FiktivPeriode.class))
-                .as("annotasjon for siste periode i observasjonsunderlaget " + underlag)
-                .isEqualTo(of(FiktivPeriode.FIKTIV));
         return assertThat(underlag).as("Observasjonsunderlag for " + Month.of(index + 1) + " (" + underlag + ")");
     }
 

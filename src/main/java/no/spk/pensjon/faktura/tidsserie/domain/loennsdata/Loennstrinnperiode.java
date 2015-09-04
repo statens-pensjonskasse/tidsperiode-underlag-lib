@@ -45,4 +45,12 @@ public interface Loennstrinnperiode<T extends Loennstrinnperiode<T>> extends Tid
      * @return lønna i 100% stilling tilknytta det aktuelle lønnstrinnet
      */
     LoennstrinnBeloep beloep();
+
+    /**
+     * Lønnstrinnet som perioda inneheld gjeldande lønn i 100% stilling for.
+     *
+     * @return lønnstrinner perioda representerer gjeldande lønn for
+     * @since 1.1.2
+     */
+    Loennstrinn trinn();
 }
