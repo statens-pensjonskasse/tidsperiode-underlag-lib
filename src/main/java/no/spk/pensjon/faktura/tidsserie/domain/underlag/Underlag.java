@@ -178,8 +178,9 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
      * nokon perioder
      */
     public Optional<Underlagsperiode> last() {
-        if (perioder.isEmpty())
+        if (perioder.isEmpty()) {
             return Optional.empty();
+        }
         return of(perioder.get(perioder.size() - 1));
     }
 
