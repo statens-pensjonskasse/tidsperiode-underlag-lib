@@ -1,13 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
 
 import static java.time.LocalDate.MAX;
-import static java.util.Comparator.comparing;
 
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Optional;
-
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
 
 /**
  * {@link Tidsperiode} representerer ei tidsperiode.
@@ -42,7 +39,7 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
      * <code>false</code> ellers
      */
     default boolean overlapper(final Tidsperiode<?> other) {
-        return overlapper(other.fraOgMed()) || other.overlapper(fraOgMed());
+        return !(fraOgMed().isAfter(other.tilOgMed().orElse(MAX)) || tilOgMed().orElse(MAX).isBefore(other.fraOgMed()));
     }
 
     /**
@@ -56,20 +53,48 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
     }
 
     /**
-     * Ei algoritme som sorterer tidsperioder kronologisk basert på frå og med- og til og med-dato.
+     * Sorterer tidsperiodene kronologisk basert på periodenes frå og med- og til og med-dato.
      * <p>
-     * Perioder som har ulik frå og med-dato blir sortert kun basert på denne.
+     * Dersom periodene har ulik frå og med-dato blir perioda med lavast/eldste frå og med-dato sortert først.
      * <p>
-     * Dersom periodene startar samtidig blir dei sortert på til og med-dato.
+     * Dersom periodene har lik frå og med-dato, blir perioda med lavaste/eldste til og med-dato sortert først. Dersom
+     * ei av periodene er løpande/manglar til og med-dato, blir den sortert sist.
      * <p>
-     * Perioder som er løpande blir sortert som om deira til og med-dato er lik {@link LocalDate#MAX}
+     * Dersom periodene har lik til og med-dato eller begge er løpande, blir sorteringsrekkefølga tilfeldig.
      *
      * @return ei kronologisk sorteringsrekkefølge for tidsperioder
      * @see Tidsperiode#fraOgMed()
      * @see Tidsperiode#tilOgMed()
+     * @see #compare(Tidsperiode, Tidsperiode)
+     * @deprecated
      */
+    @Deprecated
     static Comparator<Tidsperiode<?>> kronologiskSorteringAvTidsperioder() {
-        return comparing((Tidsperiode<?> p) -> p.fraOgMed())
-                .thenComparing((Tidsperiode<?> p) -> p.tilOgMed().orElse(LocalDate.MAX));
+        return Tidsperiode::compare;
+    }
+
+    /**
+     * Sorterer tidsperiodene kronologisk basert på periodenes frå og med- og til og med-dato.
+     * <p>
+     * Dersom periodene har ulik frå og med-dato blir perioda med lavast/eldste frå og med-dato sortert først.
+     * <p>
+     * Dersom periodene har lik frå og med-dato, blir perioda med lavaste/eldste til og med-dato sortert først. Dersom
+     * ei av periodene er løpande/manglar til og med-dato, blir den sortert sist.
+     * <p>
+     * Dersom periodene har lik til og med-dato eller begge er løpande, blir sorteringsrekkefølga tilfeldig.
+     *
+     * @param a første tidsperiode
+     * @param b andre tidsperiode
+     * @return <code>&lt; 0</code> dersom perioda <code>a</code> blir sortert før periode <code>b</code>,
+     * <code>0</code> dersom perioda <code>a</code> er lik periode <code>b</code>,
+     * <code>&gt; 0</code> dersom perioda <code>a</code> blir sortert etter periode <code>b</code>
+     * @since 1.1.2
+     */
+    static int compare(final Tidsperiode<?> a, final Tidsperiode<?> b) {
+        final int resultat = a.fraOgMed().compareTo(b.fraOgMed());
+        if (resultat == 0) {
+            return a.tilOgMed().orElse(MAX).compareTo(b.tilOgMed().orElse(MAX));
+        }
+        return resultat;
     }
 }

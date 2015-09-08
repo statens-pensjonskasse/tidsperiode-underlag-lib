@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsperioder;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode;
@@ -108,16 +107,18 @@ public class StillingsforholdunderlagFactory {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .forEach((StillingsforholdPerioder s) -> {
-                    final UnderlagFactory factory = new UnderlagFactory(observasjonsperiode);
+                    final UnderlagFactory factory = new UnderlagFactory(optimaliserPeriode(observasjonsperiode, s));
                     factory.addPerioder(s.stream());
                     factory.addPerioder(medlemsperioder.stream());
-                    factory.addPerioder(medlem.avtalekoblingar(s::tilhoeyrer));
                     factory.addPerioder(avtaleperioder.stream());
                     factory.addPerioder(
                             medlem
                                     .avtalekoblingar(s::tilhoeyrer)
-                                    .map(Avtalekoblingsperiode::avtale)
-                                    .flatMap(this.avtalar::finn)
+                                    .flatMap(k -> Stream.concat(
+                                                    avtalar.finn(k.avtale()),
+                                                    Stream.of(k)
+                                            )
+                                    )
                     );
 
                     factory.addPerioder(observerbare.stream().flatMap(Aar::maaneder));
@@ -138,6 +139,32 @@ public class StillingsforholdunderlagFactory {
                         // det callbacken feila på
                     }
                 });
+    }
+
+    /**
+     * Forsøker å innskrenke lengda på observasjonsperioda til å kun strekke seg over dei dagane som stillingsforholdet
+     * og den overordna observasjonsperioda overlappar kvarandre.
+     * <br>
+     * Dette blir gjort for å redusere størrelsen på det første underlaget som blir generert ettersom det kun er
+     * underlagsperiodene som overlappar stillingsforholdet som vil bli brukt når stillingsforholdunderlaget blir danna.
+     * <br>
+     * Utan denne optimaliseringa vil det første underlaget inneholde ei underlagsperiode pr måned også for tidsperiodene
+     * før og/eller etter stillingsforholdperiodet er starta/avslutta. Desse underlagsperiodene må så koblast opp mot
+     * eventuelle andre tidsperioder med lønns- eller avtaledata. Sidan desse periodene ikkje har nokon verdi blir det
+     * bere sløsing med køyretid å skulle utføre denne samankoblinga. Ergo kan vi unngå å generere dei ved å avgrense
+     * lengda på observasjonsperioda her.
+     * <br>
+     * Dersom dei to periodene ikkje overlappar kvarandre blir den opprinnelige observasjonsperioda returnert as-is for
+     * å forenkle handteringa av denne relativt sjeldent forekommande situasjonen.
+     *
+     * @param observasjonsperiode den overordna observasjonsperioda som styrer maksimal lengde på alle underlaga som skal genererast for tidsserien
+     * @param stillingsforhold    stillingsforholdperiodene som indikerer kva tidsperiode stillinga er aktiv i
+     * @return ei ny, potensielt avkorta observasjonsperiode som kun inneheld dei dagane som dei to periodene overlappar kvarandre,
+     * eller den opprinnelige observasjonsperioda viss dei to ikkje overlappar kvarandre nokonsinne
+     */
+    private Observasjonsperiode optimaliserPeriode(final Observasjonsperiode observasjonsperiode,
+                                                   final StillingsforholdPerioder stillingsforhold) {
+        return observasjonsperiode.intersect(stillingsforhold).orElse(observasjonsperiode);
     }
 
     /**

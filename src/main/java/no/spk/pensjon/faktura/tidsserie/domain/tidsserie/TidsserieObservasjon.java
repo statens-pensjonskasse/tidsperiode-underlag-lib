@@ -8,13 +8,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 
 import java.time.Month;
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.of;
 
 /**
  * {@link TidsserieObservasjon} representerer ein observasjon som inngår som eit innslag
@@ -35,8 +32,6 @@ import static java.util.Optional.ofNullable;
  * @author Tarjei Skorgenes
  */
 public class TidsserieObservasjon {
-    private final HashMap<Class<?>, Object> maalingar = new HashMap<>(6);
-
     /**
      * Stillingsforholdet observasjonen er utført av og for.
      */
@@ -52,7 +47,9 @@ public class TidsserieObservasjon {
     /**
      * Totalt maskinelt grunnlag for stillingsforholdet på avtalen i det aktuelle året.
      */
-    public final Kroner maskineltGrunnlag;
+    public Kroner maskineltGrunnlag = Kroner.ZERO;
+
+    private Aarsverk aarsverk = Aarsverk.ZERO;
 
     private final Optional<Premiestatus> premiestatus;
 
@@ -60,21 +57,18 @@ public class TidsserieObservasjon {
      * Konstruerer ein ny observasjon av totalt maskinelt grunnlag for eit stillingsforhold på ein bestemt avtale
      * der observasjonen er utført på eit observasjonsunderlag for den angitte observasjonsdatoen.
      *
-     * @param stillingsforhold  stillingsforholdet obserasjonen er utført for
-     * @param avtale            avtalen som stillingsforholdet har vore eller er aktivt på
-     * @param observasjonsdato  datoen observasjonen er simulert utført
-     * @param maskineltGrunnlag det maskinelle grunnlaget for alle periodene stillingsforholdet har vore aktivt på
-     *                          avtalen innanfor premieåret observasjonen er utført for
-     * @param premiestatus      avtalens premiestatus
+     * @param stillingsforhold stillingsforholdet obserasjonen er utført for
+     * @param avtale           avtalen som stillingsforholdet har vore eller er aktivt på
+     * @param observasjonsdato datoen observasjonen er simulert utført
+     * @param premiestatus     avtalens premiestatus
      * @throws NullPointerException dersom nokon av parameterverdiane er <code>null</code>
      */
     public TidsserieObservasjon(final StillingsforholdId stillingsforhold, final AvtaleId avtale,
-                                final Observasjonsdato observasjonsdato, final Kroner maskineltGrunnlag,
+                                final Observasjonsdato observasjonsdato,
                                 final Optional<Premiestatus> premiestatus) {
         this.stillingsforhold = requireNonNull(stillingsforhold);
         this.avtale = requireNonNull(avtale);
         this.observasjonsdato = requireNonNull(observasjonsdato);
-        this.maskineltGrunnlag = requireNonNull(maskineltGrunnlag);
         this.premiestatus = requireNonNull(premiestatus);
     }
 
@@ -151,41 +145,38 @@ public class TidsserieObservasjon {
      * @throws IllegalArgumentException dersom observasjonane ikkje har lik stillingsforhold, avtale og observasjonsdato
      */
     TidsserieObservasjon plus(final TidsserieObservasjon other) {
-        valider(
-                other,
-                that -> ofNullable(this.stillingsforhold).equals(ofNullable(that.stillingsforhold)),
-                () -> feilmeldingForskjelligVerdi(other, "stillingsforhold")
-        );
-        valider(
-                other,
-                that -> ofNullable(this.avtale).equals(ofNullable(that.avtale)),
-                () -> feilmeldingForskjelligVerdi(other, "avtalar")
-        );
-        valider(
-                other,
-                that -> ofNullable(this.observasjonsdato).equals(ofNullable(that.observasjonsdato)),
-                () -> feilmeldingForskjelligVerdi(other, "observasjonsdatoar")
-        );
-        valider(
-                other,
-                that -> premiestatus.equals(that.premiestatus),
-                () -> feilmeldingForskjelligVerdi(other, "premiestatus")
-        );
         return new TidsserieObservasjon(
                 stillingsforhold,
                 avtale,
                 observasjonsdato,
-                maskineltGrunnlag.plus(other.maskineltGrunnlag),
                 premiestatus
         )
-                .registrerMaaling(
-                        Aarsverk.class,
-                        aarsverk().plus(other.aarsverk())
-                );
+                .aarsverk(aarsverk().plus(other.aarsverk()))
+                .maskineltGrunnlag(maskineltGrunnlag().plus(other.maskineltGrunnlag()))
+                ;
     }
 
-    private Aarsverk aarsverk() {
-        return maaling(Aarsverk.class).orElse(Aarsverk.ZERO);
+    public TidsserieObservasjon maskineltGrunnlag(final Kroner value) {
+        this.maskineltGrunnlag = value;
+        return this;
+    }
+
+    public Kroner maskineltGrunnlag() {
+        return maskineltGrunnlag;
+    }
+
+    public TidsserieObservasjon aarsverk(final Aarsverk value) {
+        this.aarsverk = value;
+        return this;
+    }
+
+    public Aarsverk aarsverk() {
+        return aarsverk;
+    }
+
+    @Deprecated
+    public Optional<Aarsverk> maaling(final Class<? extends Aarsverk> ignored) {
+        return of(aarsverk);
     }
 
     @Override
@@ -196,48 +187,9 @@ public class TidsserieObservasjon {
                 + " på "
                 + avtale
                 + " med maskinelt grunnlag  "
-                + maskineltGrunnlag;
-    }
-
-    private static void valider(final TidsserieObservasjon other, final Predicate<TidsserieObservasjon> predikat,
-                                final Supplier<String> feilmelding) {
-        if (!predikat.test(other)) {
-            throw new IllegalArgumentException(feilmelding.get());
-        }
-    }
-
-    private String feilmeldingForskjelligVerdi(final TidsserieObservasjon other, final String reason) {
-        return "Tidsserieobservasjonane tilhøyrer forskjellige "
-                + reason
-                + ".\n"
-                + "Observasjon 1: " + this + "\n"
-                + "Observasjon 2: " + other + "\n";
-    }
-
-    /**
-     * Hentar ut eller genererer ei måling av den angitte datatypen frå observasjonen.
-     *
-     * @param <T>  datatypen som det skal hentast ut ei måling av
-     * @param type datatypen som det skal hentast ut ei måling av
-     * @return verdien av den angitte målingstypen, eller {@link Optional#empty() ingenting} dersom observasjonen ikkje støttar
-     * målingar av den angitte typen
-     */
-    @SuppressWarnings("unchecked")
-    public <T> Optional<T> maaling(final Class<T> type) {
-        return ofNullable((T) maalingar.get(type));
-    }
-
-    /**
-     * Registrerer / legger til verdien av ei måling som er utført basert på observasjonens observasjonsunderlag.
-     *
-     * @param <T>          kva type måling som har blitt utført
-     * @param <V>          verditypen til målinga
-     * @param maalingsType kva type måling som har blitt utført
-     * @param verdi        verdien av målinga
-     * @return <code>this</code>
-     */
-    public <T, V extends T> TidsserieObservasjon registrerMaaling(final Class<T> maalingsType, final V verdi) {
-        maalingar.put(maalingsType, verdi);
-        return this;
+                + maskineltGrunnlag
+                + " og "
+                + aarsverk
+                ;
     }
 }

@@ -1,5 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import java.time.LocalDate;
+
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
@@ -20,12 +23,29 @@ public interface Beregningsperiode<T extends Tidsperiode<T>> extends Tidsperiode
     /**
      * Slår opp ein beregningsregel av ei bestemt type og brukar den for å gjere ei bestemt type beregning
      * ut frå underlagsperiodas annoterte fakta.
+     * <br>
+     * Resultatet av ei beregning vil vere ikkje-muterbart over tid slik at fleire kall til samme regel på ei og samme
+     * periodeinstans, vil returnere eksakt samme verdi for kvart kall.
+     * <br>
+     * Periodeimplementasjonen står fritt til å bruke denne egenskapen til å implementere caching av tidligare
+     * beregna verdiar for å forbetre beregningsytelsen til reglane.
      *
      * @param regelType kva type beregningsregel som skal brukast
+     * @param <T>       typen på resultatet av beregningen
      * @return resultatet frå beregningsregelen basert på underlagsperiodas tilstand
-     * @param <T> typen på resultatet av beregningen
      * @throws PaakrevdAnnotasjonManglarException dersom det ikkje eksisterer nokon beregningsregel
      *                                            av den angitte typa som er gyldig innanfor beregningsperioda
      */
     <T> T beregn(Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException;
+
+    /**
+     * Lengda på perioda angitt i antall kalendardagar.
+     * <br>
+     * Lengda inkluderer frå og med- og til og med-datoane + alle dagar mellom dei to.
+     *
+     * @return antall dagar tidsperioda overlappar
+     * @see AntallDagar#antallDagarMellom(LocalDate, LocalDate)
+     * @since 1.1.2
+     */
+    AntallDagar lengde();
 }

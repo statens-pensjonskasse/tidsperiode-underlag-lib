@@ -3,7 +3,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.medlemsdata;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode.kronologiskSorteringAvTidsperioder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,9 +26,9 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
     private final LocalDate fraOgMed;
 
     /**
-     * @see #StillingsforholdPerioder(StillingsforholdId, Stream)
      * @param stillingsforhold stillingsforholdet som har blitt periodisert
-     * @param perioder periodene som periodiseringa har generert for stillingsforholdet
+     * @param perioder         periodene som periodiseringa har generert for stillingsforholdet
+     * @see #StillingsforholdPerioder(StillingsforholdId, Stream)
      */
     public StillingsforholdPerioder(final StillingsforholdId stillingsforhold, final List<StillingsforholdPeriode> perioder) {
         this(stillingsforhold, requireNonNull(perioder, () -> "perioder er påkrevd, men var null").stream());
@@ -39,7 +38,7 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
      * Konstruerer ei ny periodisering av eit bestemt stillingsforhold.
      *
      * @param stillingsforhold stillingsforholdet som har blitt periodisert
-     * @param perioder periodene som periodiseringa har generert for stillingsforholdet
+     * @param perioder         periodene som periodiseringa har generert for stillingsforholdet
      * @throws java.lang.NullPointerException viss nokon av parametera er <code>null</code>
      */
     public StillingsforholdPerioder(final StillingsforholdId stillingsforhold, final Stream<StillingsforholdPeriode> perioder) {
@@ -122,7 +121,7 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
         return this.perioder.equals(
                 this.perioder
                         .stream()
-                        .sorted(kronologiskSorteringAvTidsperioder())
+                        .sorted(Tidsperiode::compare)
                         .collect(toList())
         );
     }

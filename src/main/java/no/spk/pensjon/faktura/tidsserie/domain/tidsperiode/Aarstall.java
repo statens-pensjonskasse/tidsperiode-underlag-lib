@@ -5,6 +5,7 @@ import java.time.Year;
 
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
+import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
 
 /**
  * {@link Aarstall} representerer eit årstall.
@@ -13,6 +14,9 @@ import static java.time.Month.JANUARY;
  */
 public class Aarstall {
     private final int aarstall;
+    private final AntallDagar lengde;
+    private LocalDate fraOgMed;
+    private LocalDate tilOgMed;
 
     /**
      * Konstruerer eit nytt verdiobjekt.
@@ -21,6 +25,12 @@ public class Aarstall {
      */
     public Aarstall(final int aarstall) {
         this.aarstall = aarstall;
+        fraOgMed = Year.of(aarstall).atMonth(JANUARY).atDay(1);
+        tilOgMed = Year.of(aarstall).atMonth(DECEMBER).atEndOfMonth();
+        lengde = antallDagarMellom(
+                fraOgMed,
+                tilOgMed
+        );
     }
 
     /**
@@ -29,7 +39,7 @@ public class Aarstall {
      * @return 1. januar i det aktuelle året
      */
     public LocalDate atStartOfYear() {
-        return Year.of(aarstall).atMonth(JANUARY).atDay(1);
+        return fraOgMed;
     }
 
     /**
@@ -38,7 +48,17 @@ public class Aarstall {
      * @return 31. desember i det aktuelle året
      */
     public LocalDate atEndOfYear() {
-        return Year.of(aarstall).atMonth(DECEMBER).atEndOfMonth();
+        return tilOgMed;
+    }
+
+    /**
+     * Returnerer antall dagar i det aktuelle året.
+     *
+     * @return antall dagar i det aktuelle året
+     * @since 1.1.2
+     */
+    public AntallDagar lengde() {
+        return lengde;
     }
 
     @Override

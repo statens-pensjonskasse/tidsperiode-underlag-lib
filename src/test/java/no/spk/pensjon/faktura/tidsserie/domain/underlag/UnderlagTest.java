@@ -144,7 +144,8 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneKonstruereUnderlagMedOverlappandeUnderlagsperioder() {
-        e.expect(IllegalArgumentException.class);
+        e.handleAssertionErrors();
+        e.expect(AssertionError.class);
         e.expectMessage("Eit underlag kan ikkje inneholde underlagsperioder som overlappar kvarandre");
         e.expectMessage("2015-01-15->2015-12-31");
         e.expectMessage("2015-01-15->2015-01-31");
@@ -158,18 +159,17 @@ public class UnderlagTest {
     }
 
     /**
-     * Verifiserer at underlaget garanterer at underlagsperiodene er lagt inn i kronologisk rekkefølge.
+     * Verifiserer at underlaget validerer at underlagsperiodene blir sendt inn i kronologisk rekkefølge.
      */
     @Test
     public void skalInneholdeUnderlagsperioderIKronologiskRekkefoelge() {
+        e.handleAssertionErrors();
+        e.expect(AssertionError.class);
+        e.expectMessage("underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge");
         final Underlagsperiode b = periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.08.14")).bygg();
         final Underlagsperiode c = periode().fraOgMed(dato("2000.08.15")).tilOgMed(dato("2000.12.31")).bygg();
         final Underlagsperiode a = periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.02.29")).bygg();
-        final Underlag underlag = new Underlag(Stream.of(c, a, b));
-
-        assertThat(underlag.toList().get(0)).isEqualTo(a);
-        assertThat(underlag.toList().get(1)).isEqualTo(b);
-        assertThat(underlag.toList().get(2)).isEqualTo(c);
+        new Underlag(Stream.of(c, a, b));
     }
 
     /**
@@ -178,7 +178,8 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneKonstruereUnderlagMedTidsgapMellomUnderlagsperiodene() {
-        e.expect(IllegalArgumentException.class);
+        e.handleAssertionErrors();
+        e.expect(AssertionError.class);
         e.expectMessage("kan ikkje inneholde tidsgap");
         e.expectMessage("31 dagar tidsgap mellom");
         e.expectMessage("2000-01-01->2000-04-30");
@@ -197,7 +198,8 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneAvgrenseUnderlagSlikAtDetOppstaarTidsgapMellomUnderlagsperiodene() {
-        e.expect(IllegalArgumentException.class);
+        e.handleAssertionErrors();
+        e.expect(AssertionError.class);
 
         final Underlag uavgrensa = create(
                 periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(new Integer(2)),
@@ -233,12 +235,12 @@ public class UnderlagTest {
     @Test
     public void skalReturnereKronologiskSistePeriodeFraUnderlaget() {
         final Optional<Underlagsperiode> sistePeriode = create(
-                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.12.31")),
-                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31"))
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")),
+                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.12.31"))
         ).last();
         assertThat(
                 sistePeriode
-                        .map(p -> p.fraOgMed())
+                        .map(Underlagsperiode::fraOgMed)
         ).as("fra og med-dato for underlagsperiode " + sistePeriode)
                 .isEqualTo(of(dato("2000.02.01")));
     }

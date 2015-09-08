@@ -34,80 +34,12 @@ public class TidsserieObservasjonTest {
     @Test
     public void skalKombinereAarsverkVedSamanslaaingAvToObservasjonar() {
         final TidsserieObservasjon a = einObservasjon().bygg()
-                .registrerMaaling(Aarsverk.class, new Aarsverk(prosent("10%")));
+                .aarsverk(new Aarsverk(prosent("10%")));
         final TidsserieObservasjon b = einObservasjon().bygg()
-                .registrerMaaling(Aarsverk.class, new Aarsverk(prosent("10%")));
+                .aarsverk(new Aarsverk(prosent("10%")));
 
-        assertThat(a.plus(b).maaling(Aarsverk.class).get().tilProsent().toDouble())
+        assertThat(a.plus(b).aarsverk().tilProsent().toDouble())
                 .isEqualTo(prosent("20%").toDouble(), offset(0.0001));
-    }
-
-    @Test
-    public void skalTaVarePaaRegistrerteMaalingar() {
-        final TidsserieObservasjon observasjon = einObservasjon()
-                .bygg();
-
-        final Integer expected = 123;
-        observasjon.registrerMaaling(Integer.class, expected);
-        assertThat(observasjon.maaling(Integer.class)).isEqualTo(of(expected));
-    }
-
-    @Test
-    public void skalTaVarePaaSistRegistrerteMaalingar() {
-        final TidsserieObservasjon observasjon = einObservasjon()
-                .bygg();
-
-        final Integer expected = 123;
-        observasjon.registrerMaaling(Integer.class, 2);
-        observasjon.registrerMaaling(Integer.class, expected);
-        assertThat(observasjon.maaling(Integer.class)).isEqualTo(of(expected));
-    }
-
-    @Test
-    public void skalTaVarePaaVerdiBasertPaaAngittTypeIkkjeVerdiensKlasse() {
-        final TidsserieObservasjon o = einObservasjon().bygg().registrerMaaling(Object.class, "yada yada");
-        assertThat(o.maaling(String.class)).isEqualTo(empty());
-        assertThat(o.maaling(Object.class)).isEqualTo(of("yada yada"));
-    }
-
-    @Test
-    public void skalFeileDersomEinLeggerSamanObservasjonarMedForskjelligAvtale() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("tilhøyrer forskjellige avtalar");
-        final TidsserieObservasjonBuilder builder = observasjon("2008.02.29")
-                .stilling(1L)
-                .maskineltgrunnlag(100_000);
-        builder.avtale(1).bygg()
-                .plus(
-                        builder.avtale(2).bygg()
-                );
-    }
-
-    @Test
-    public void skalFeileDersomEinLeggerSamanObservasjonarMedForskjelligStillingsforhold() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("tilhøyrer forskjellige stillingsforhold");
-        final TidsserieObservasjonBuilder builder = observasjon("2008.03.31")
-                .avtale(1L)
-                .maskineltgrunnlag(100_000);
-        builder.stilling(1).bygg()
-                .plus(
-                        builder.stilling(2).bygg()
-                );
-    }
-
-    @Test
-    public void skalFeileDersomEinLeggerSamanObservasjonarMedForskjelligObservasjonsdato() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("tilhøyrer forskjellige observasjonsdatoar");
-        final TidsserieObservasjonBuilder builder = observasjon("2008.06.30")
-                .avtale(3L)
-                .stilling(1L)
-                .maskineltgrunnlag(100_000);
-        builder.observasjonsdato("2008.03.31").bygg()
-                .plus(
-                        builder.observasjonsdato("2007.01.31").bygg()
-                );
     }
 
     @Test
@@ -144,6 +76,7 @@ public class TidsserieObservasjonTest {
         private Long stillingsforhold;
         private Long avtale;
         private Kroner maskineltgrunnlag;
+        private Aarsverk aarsverk = Aarsverk.ZERO;
         private Optional<Premiestatus> premiestatus = empty();
 
         private TidsserieObservasjonBuilder(final LocalDate dato) {
@@ -182,9 +115,11 @@ public class TidsserieObservasjonTest {
                     new StillingsforholdId(stillingsforhold),
                     new AvtaleId(avtale),
                     new Observasjonsdato(dato),
-                    maskineltgrunnlag,
                     premiestatus
-            );
+            )
+                    .aarsverk(aarsverk)
+                    .maskineltGrunnlag(maskineltgrunnlag)
+                    ;
         }
 
         public TidsserieObservasjonBuilder observasjonsdato(final String observasjonsdato) {

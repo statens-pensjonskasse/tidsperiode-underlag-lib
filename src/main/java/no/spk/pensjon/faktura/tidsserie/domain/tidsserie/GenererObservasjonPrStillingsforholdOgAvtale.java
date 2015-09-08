@@ -11,7 +11,6 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
@@ -65,7 +64,7 @@ class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublik
      * tilknytta i løpet av premieåret som observasjonsunderlaget representerer.
      *
      * @param observasjonsunderlag eit observasjonsunderlag som det skal genererast ein eller fleire
-     * observasjonar av for tidsserien
+     *                             observasjonar av for tidsserien
      * @return ein straum med ein observasjon for stillingsforhold som ikkje har vore gjennom eit avtalebytte i
      * løpet av premieåret, eller ein straum med ein observasjon pr avtale stillingsforholdet har vore innom i
      * løpet av premieåret for stillingsforhold som har vore gjennom eit eller fleire avtalebytte
@@ -116,9 +115,9 @@ class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublik
                 observasjonsunderlag.annotasjonFor(StillingsforholdId.class),
                 p.annotasjonFor(AvtaleId.class),
                 observasjonsunderlag.annotasjonFor(Observasjonsdato.class),
-                p.beregn(MaskineltGrunnlagRegel.class),
                 observasjonsunderlag.valgfriAnnotasjonFor(Premiestatus.class)
         )
-                .registrerMaaling(Aarsverk.class, p.beregn(AarsverkRegel.class));
+                .maskineltGrunnlag(p.beregn(MaskineltGrunnlagRegel.class))
+                .aarsverk(p.beregn(AarsverkRegel.class));
     }
 }

@@ -4,6 +4,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Assume;
+import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
@@ -43,6 +44,15 @@ public class ObservasjonsdatoTest {
     public static Year[] years = rangeClosed(1917, 2099)
             .mapToObj(Year::of)
             .toArray(Year[]::new);
+
+    /**
+     * Verifiserer at observasjonsdatoen for desember indikerer at den er for siste dag i året for alle årstall.
+     */
+    @Theory
+    public void skalAlltidVereSisteDagIAaret(final Year year) {
+        final Observasjonsdato dato = Observasjonsdato.forSisteDag(new Aarstall(year.getValue()), Month.DECEMBER);
+        assertThat(dato.erAaretsSisteDag()).as("er " + dato + " siste dag i året?").isTrue();
+    }
 
     /**
      * Verifiserer at observasjonsdatoen tilhøyrer rett årstall.

@@ -6,8 +6,11 @@ import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.ZERO;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.PEN;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser.ingenSatser;
 import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.enAvtaleversjon;
 import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.tidenesMorgen;
@@ -25,7 +28,11 @@ import java.util.List;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Sats;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Avtalekoblingsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
@@ -77,7 +84,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         new Produktinfo(36),
-                        ingenSatser()
+                        prosentsatser()
                 )
         );
 
@@ -103,7 +110,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         new Produktinfo(36),
-                        ingenSatser()
+                        prosentsatser()
                 ),
                 new Avtaleprodukt(
                         endringsdato,
@@ -111,7 +118,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         GRU,
                         new Produktinfo(36),
-                        ingenSatser()
+                        prosentsatser()
                 )
         );
 
@@ -140,7 +147,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         new Produktinfo(36),
-                        ingenSatser()
+                        prosentsatser()
                 ),
                 new Avtaleprodukt(
                         endringsdato,
@@ -148,7 +155,7 @@ public class MedlemsavtalarFactoryTest {
                         enAvtale(),
                         PEN,
                         new Produktinfo(37),
-                        ingenSatser()
+                        prosentsatser()
                 )
         );
 
@@ -194,5 +201,9 @@ public class MedlemsavtalarFactoryTest {
 
     private List<MedlemsavtalarPeriode> periodiser(final Avtalekoblingsperiode... koblingar) {
         return this_.periodiser(asList(koblingar));
+    }
+
+    private Satser<Prosent> prosentsatser() {
+        return new Satser<>(prosent("1%"), Prosent.ZERO, Prosent.ZERO);
     }
 }

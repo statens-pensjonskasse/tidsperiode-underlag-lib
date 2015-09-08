@@ -22,14 +22,10 @@ public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements T
      *                                  {@link LocalDate#isAfter(ChronoLocalDate) etter} <code>tilOgMed</code>
      */
     protected AbstractTidsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
-        requireNonNull(fraOgMed, () -> "fra og med-dato er påkrevd, men var null");
-        requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null");
+        requireNonNull(fraOgMed, "fra og med-dato er påkrevd, men var null");
+        requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null");
         tilOgMed.ifPresent(tilDato -> {
-            if (fraOgMed.isAfter(tilDato)) {
-                throw new IllegalArgumentException("fra og med-dato kan ikkje vere etter til og med-dato, men "
-                        + fraOgMed + " er etter " + tilDato
-                );
-            }
+            Validering.feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilDato);
         });
         this.tilOgMed = tilOgMed;
         this.fraOgMed = fraOgMed;

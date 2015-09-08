@@ -9,12 +9,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 
@@ -33,13 +36,15 @@ import static java.util.stream.Collectors.joining;
  */
 public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder> {
     private final List<Loennstrinnperiode<?>> perioder;
+    private final Map<Loennstrinn, List<Loennstrinnperiode<?>>> cache;
     private Ordning ordning;
 
-    private Loennstrinnperioder(final Tidsperiode<?> periode, final List<Loennstrinnperiode<?>> perioder,
+    Loennstrinnperioder(final Tidsperiode<?> periode, final List<Loennstrinnperiode<?>> perioder,
                                 final Ordning ordning) {
         super(periode.fraOgMed(), periode.tilOgMed());
         this.perioder = perioder;
         this.ordning = ordning;
+        this.cache = perioder.stream().collect(groupingBy(Loennstrinnperiode::trinn));
     }
 
     /**
@@ -119,7 +124,7 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
      *                               definerer gjeldande lønn for lønnstrinnet
      */
     public Optional<LoennstrinnBeloep> loennFor(final Loennstrinn loennstrinn, final Optional<Stillingskode> stillingskode) {
-        return perioder
+        return cache.getOrDefault(loennstrinn, emptyList())
                 .stream()
                 .filter(p -> p.harLoennFor(loennstrinn, stillingskode))
                 .reduce((a, b) -> {

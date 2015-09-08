@@ -4,12 +4,15 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
@@ -28,7 +31,10 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
         implements HarKoblingar, Annoterbar<Underlagsperiode>, Beregningsperiode<Underlagsperiode> {
     private final Koblingar koblingar = new Koblingar();
 
-    private final Annotasjonar annotasjonar = new Annotasjonar();
+    private final Map<Class<? extends BeregningsRegel<?>>, Object> cache = new HashMap<>();
+
+    private final Annotasjonar annotasjonar;
+    private final AntallDagar lengde;
 
     private final UUID uuid = UUID.randomUUID();
 
@@ -42,7 +48,13 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
      * @throws IllegalArgumentException dersom fra og med-dato er etter til og med-dato
      */
     public Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
+        this(fraOgMed, tilOgMed, new Annotasjonar());
+    }
+
+    private Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed, final Annotasjonar annotasjonar) {
         super(fraOgMed, of(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
+        this.annotasjonar = annotasjonar;
+        this.lengde = AntallDagar.antallDagarMellom(fraOgMed, tilOgMed);
     }
 
     /**
@@ -57,9 +69,17 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
         return uuid;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public AntallDagar lengde() {
+        return lengde;
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T beregn(final Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException {
-        return annotasjonFor(regelType).beregn(this);
+        return (T) cache.computeIfAbsent(regelType, type -> annotasjonFor(type).beregn(this));
     }
 
     @Override
@@ -84,8 +104,11 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
 
     @Override
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
-        return valgfriAnnotasjonFor(type)
-                .orElseThrow(() -> new PaakrevdAnnotasjonManglarException(this, type));
+        final Optional<T> resultat = annotasjonar.lookup(type);
+        if (!resultat.isPresent()) {
+            throw new PaakrevdAnnotasjonManglarException(this, type);
+        }
+        return resultat.get();
     }
 
     @Override

@@ -75,7 +75,10 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
      * @see AvtaleBuilder#addPremiesats(Premiesats)
      */
     public AvtaleBuilder populer(final AvtaleBuilder avtale) {
-        return avtale.addPremiesats(premiesats).risikoklasse(risikoklasse);
+        if (produkt() == Produkt.YSK) {
+            avtale.risikoklasse(risikoklasse);
+        }
+        return avtale.addPremiesats(premiesats);
     }
 
     /**

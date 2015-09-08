@@ -1,11 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static java.util.Objects.requireNonNull;
+
+import java.util.HashMap;
 
 /**
  * {@link Premiestatus} representerer ei kode som blir brukt av avtalar for å gruppere saman avtalar med liknande
@@ -18,30 +15,43 @@ import static java.util.Objects.requireNonNull;
  * @author Tarjei Skorgenes
  */
 public final class Premiestatus {
-    private static final ConcurrentHashMap<Premiestatus, Object> VALUES = new ConcurrentHashMap<>(20);
+    private static final HashMap<Premiestatus, Object> VALUES = new HashMap<>(20);
 
     /**
      * Grunnskular.
      */
-    public static final Premiestatus AAO_01 = new Premiestatus("AAO-01");
+    public static final Premiestatus AAO_01 = newPremiestatus("AAO-01");
 
     /**
      * Vidaregåande skular.
      */
-    public static final Premiestatus AAO_02 = new Premiestatus("AAO-02");
+    public static final Premiestatus AAO_02 = newPremiestatus("AAO-02");
+
+    /**
+     * Apotek.
+     */
+    public static final Premiestatus AAO_12 = new Premiestatus("AAO-12");
+
+    /**
+     * Ikke premiebetalende
+     */
+    public static final Premiestatus IPB = new Premiestatus("IPB");
 
     /**
      * Premiestatus for avtaleversjonar som manglar premiestatus.
      */
-    public static final Premiestatus UKJENT = new Premiestatus("UKJENT");
+    public static final Premiestatus UKJENT = newPremiestatus("UKJENT");
+
+    private static Premiestatus newPremiestatus(String kode) {
+        final Premiestatus value = new Premiestatus(kode);
+        VALUES.put(value, value);
+        return value;
+    }
 
     private final String kode;
 
     private Premiestatus(final String kode) {
         this.kode = requireNonNull(kode, () -> "premiestatus er påkrevd, men var null");
-        if (VALUES.size() < 100) {
-            VALUES.put(this, this);
-        }
     }
 
     /**
