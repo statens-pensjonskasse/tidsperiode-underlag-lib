@@ -54,13 +54,14 @@ public class PrognoseRegelsettTest {
                         .fraOgMed(dato("2015.01.01"))
                         .tilOgMed(dato("2015.12.31"))
                         .med(Aksjonskode.ENDRINGSMELDING)
-                        .med(new DeltidsjustertLoenn(kroner(400_000)))
-                        .med(new Stillingsprosent(new Prosent("34,9%")))
+                        .med(new DeltidsjustertLoenn(kroner(300_000)))
+                        .med(new Stillingsprosent(new Prosent("20%")))
+                        .med(new Grunnbeloep(kroner(88_300)))
                         .med(Ordning.SPK)
                         .med(Premiestatus.AAO_01)
                         .med(new Aarstall(2015))
         )
-                .isEqualTo(kroner(0));
+                .isEqualTo(kroner(211_920));
     }
 
     @Test

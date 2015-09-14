@@ -34,7 +34,7 @@ public class AvregningsRegelsett implements Regelsett {
                 avregningsperiode(new LoennstilleggRegel()),
                 avregningsperiode(new OevreLoennsgrenseRegel()),
                 avregningsperiode(new MedregningsRegel()),
-                new Regelperiode<>(dato("2000.01.01"), of(dato("2015.12.31")), MinstegrenseRegel.class, new MinstegrenseRegelVersjon1()),
+                new Regelperiode<>(dato("2007.01.01"), of(dato("2015.12.31")), MinstegrenseRegel.class, new MinstegrenseRegelVersjon1()),
                 new Regelperiode<>(dato("2016.01.01"), empty(),  MinstegrenseRegel.class, new MinstegrenseRegelVersjon2()),
                 avregningsperiode(new AarsverkRegel()),
                 avregningsperiode(new YrkesskadefaktureringRegel()),

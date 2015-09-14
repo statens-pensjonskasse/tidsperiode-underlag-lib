@@ -30,6 +30,14 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
  * <pre>
  * RegelPeriode a = new RegelPeriode(dato("2003.01.01"), of(dato("2013.06.30"), new PermisjonsRegelV1());
  * RegelPeriode b = new RegelPeriode(dato("2013.07.01"), empty(),               new PermisjonsRegelV2());
+ * </p>
+ * Et reelt tilfelle er Minstegrensen som endres fom 1. januar 2016. Før endringen benyttes SPK-ordning og premiestatus
+ * for å bestemme hva som er minste stillingsstørrelse for faktureringen. Etter endringen gjelder kun én
+ * stillingsstørrelse, 20%. Vi har to beregningsregler for å håndtere dette: {@link MinstegrenseRegelVersjon1}
+ * og {@link MinstegrenseRegelVersjon2}
+ * </p>
+ * RegelPeriode a = new Regelperiode(dato("2007.01.01"), of(dato("2015.12.31")), MinstegrenseRegel.class, new MinstegrenseRegelVersjon1()),
+ * RegelPeriode b = new Regelperiode(dato("2016.01.01"), empty(),  MinstegrenseRegel.class, new MinstegrenseRegelVersjon2()),
  * </pre>
  *
  * @author Tarjei Skorgenes
@@ -51,6 +59,17 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
         this(fraOgMed, tilOgMed, gjeldandeRegel.getClass(), gjeldandeRegel);
     }
 
+    /**
+     * Konstruerer ei ny tidsperiode som den angitte beregningsregelen er gjeldande i. Har en ekstra parameter for
+     * beregningsregeltype.
+     *
+     * @param fraOgMed       første dag regelen er gjeldande for
+     * @param tilOgMed       siste dag regelen er gjeldande for, eller løpande viss regelen ikkje har blitt erstatta
+     *                       av ein ny regel enda
+     * @param regelType      beregningsregeltype
+     * @param gjeldandeRegel beregningsregelen som er gjeldande innanfor den angitte tidsperioda
+     * @throws java.lang.NullPointerException viss nokon av parameterverdiane er <code>null</code>
+     */
     public Regelperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, final Class<? extends BeregningsRegel> regelType, final BeregningsRegel<? extends T> gjeldandeRegel) {
         super(fraOgMed, tilOgMed);
         this.gjeldandeRegel = gjeldandeRegel;
