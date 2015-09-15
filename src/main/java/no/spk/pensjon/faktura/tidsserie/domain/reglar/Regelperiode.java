@@ -30,12 +30,14 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
  * <pre>
  * RegelPeriode a = new RegelPeriode(dato("2003.01.01"), of(dato("2013.06.30"), new PermisjonsRegelV1());
  * RegelPeriode b = new RegelPeriode(dato("2013.07.01"), empty(),               new PermisjonsRegelV2());
- * </p>
+ * </pre>
+ * <p>
  * Et reelt tilfelle er Minstegrensen som endres fom 1. januar 2016. Før endringen benyttes SPK-ordning og premiestatus
  * for å bestemme hva som er minste stillingsstørrelse for faktureringen. Etter endringen gjelder kun én
- * stillingsstørrelse, 20%. Vi har to beregningsregler for å håndtere dette: {@link MinstegrenseRegelVersjon1}
- * og {@link MinstegrenseRegelVersjon2}
+ * stillingsstørrelse, 20%.
  * </p>
+ * Vi har to beregningsregler for å håndtere dette: {@link MinstegrenseRegelVersjon1} og {@link MinstegrenseRegelVersjon2}:
+ * <pre>
  * RegelPeriode a = new Regelperiode(dato("2007.01.01"), of(dato("2015.12.31")), MinstegrenseRegel.class, new MinstegrenseRegelVersjon1()),
  * RegelPeriode b = new Regelperiode(dato("2016.01.01"), empty(),  MinstegrenseRegel.class, new MinstegrenseRegelVersjon2()),
  * </pre>

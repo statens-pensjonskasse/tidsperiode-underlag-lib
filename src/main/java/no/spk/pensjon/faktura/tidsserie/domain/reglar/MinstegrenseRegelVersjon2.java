@@ -6,7 +6,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
 /**
  * {@link MinstegrenseRegelVersjon2} implementerer ny minstegrense gjeldende fom 2016-01-01 (SPKMASTER-11812)
- * <p>
  */
 public class MinstegrenseRegelVersjon2 implements BeregningsRegel<Minstegrense> {
 
