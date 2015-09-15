@@ -1,6 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
@@ -13,15 +15,14 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
 import org.assertj.core.api.AbstractComparableAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel}.
@@ -52,13 +53,42 @@ public class MaskineltGrunnlagRegelTest {
      * i perioda som blir beregna.
      */
     @Test
-    public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUnderMinstegrensa() {
+    public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUnderMinstegrensaVersjon1() {
         assertMaskineltGrunnlag(
                 periode("2008.04.01", "2008.04.30")
                         .med(new Aarstall(2008))
                         .med(new DeltidsjustertLoenn(kroner(75_000)))
                         .med(new Stillingsprosent(new Prosent("15%")))
         ).isEqualTo(kroner(0));
+    }
+
+    /**
+     * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom stillingsforholdet er under ny minstegrensa
+     * (201%) i perioda som blir beregna.
+     */
+    @Test
+    public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUnderMinstegrensaVersjon2() {
+        assertMaskineltGrunnlag(
+                periodeFom2016("2016.01.01", "2016.12.31")
+                        .med(new Aarstall(2016))
+                        .med(new DeltidsjustertLoenn(kroner(75_000)))
+                        .med(new Stillingsprosent(new Prosent("15%")))
+        ).isEqualTo(kroner(0));
+    }
+
+    /**
+     * Verifiserer at maskinelt grunnlag blir beregnet dersom stillingsforholdet er over ny minstegrensen
+     * (20%) i perioden som blir beregnet.
+     */
+    @Test
+    public void skalBeregneMaskineltGrunnlagDersomStillingaErOver20ProsentFom2016() {
+        UnderlagsperiodeBuilder med = periodeFom2016("2016.01.01", "2016.12.31")
+                .med(new Aarstall(2016))
+                .med(new DeltidsjustertLoenn(kroner(500_000)))
+                .med(new Stillingsprosent(new Prosent("25%")));
+        assertMaskineltGrunnlag(
+                med
+        ).isEqualTo(kroner(500000));
     }
 
     /**
@@ -242,7 +272,26 @@ public class MaskineltGrunnlagRegelTest {
                         // Brukar urealistisk høgt beløp for å unngå at det skal påvirke testar som ikkje er fokusert
                         // på å teste beløp som blir påvirka av grunnbeløpet
                 .med(new Grunnbeloep(kroner(1_000_000)))
-                .med(new MinstegrenseRegel())
+                .med(MinstegrenseRegel.class, new MinstegrenseRegelVersjon1())
+                ;
+    }
+
+    private static UnderlagsperiodeBuilder periodeFom2016(final String fraOgMed, final String tilOgMed) {
+        return Support.periode(fraOgMed, tilOgMed)
+                .med(new MedregningsRegel())
+                .med(new MaskineltGrunnlagRegel())
+                .med(new AarsLengdeRegel())
+                .med(new AntallDagarRegel())
+                .med(new AarsfaktorRegel())
+                .med(new DeltidsjustertLoennRegel())
+                .med(new LoennstilleggRegel())
+                .med(new Stillingsprosent(fulltid()))
+                .med(Aksjonskode.ENDRINGSMELDING)
+                .med(new OevreLoennsgrenseRegel())
+                .med(Premiestatus.valueOf("AAO-07"))
+                .med(Ordning.SPK)
+                .med(new Grunnbeloep(kroner(1_000_000)))
+                .med(MinstegrenseRegel.class, new MinstegrenseRegelVersjon2())
                 ;
     }
 

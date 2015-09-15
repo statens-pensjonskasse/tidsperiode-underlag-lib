@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 
 import java.util.stream.Stream;
@@ -33,7 +34,8 @@ public class AvregningsRegelsett implements Regelsett {
                 avregningsperiode(new LoennstilleggRegel()),
                 avregningsperiode(new OevreLoennsgrenseRegel()),
                 avregningsperiode(new MedregningsRegel()),
-                avregningsperiode(new MinstegrenseRegel()),
+                new Regelperiode<>(dato("2007.01.01"), of(dato("2015.12.31")), MinstegrenseRegel.class, new MinstegrenseRegelVersjon1()),
+                new Regelperiode<>(dato("2016.01.01"), empty(),  MinstegrenseRegel.class, new MinstegrenseRegelVersjon2()),
                 avregningsperiode(new AarsverkRegel()),
                 avregningsperiode(new YrkesskadefaktureringRegel()),
                 avregningsperiode(new GruppelivsfaktureringRegel()),
