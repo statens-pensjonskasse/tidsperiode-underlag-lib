@@ -1,17 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 
-import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_35;
-import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_36;
-import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.YSK_79;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo.GRU_35;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo.GRU_36;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo.YSK_79;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.ZERO;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats.premiesats;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser.ingenSatser;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 
 import org.junit.Test;
 

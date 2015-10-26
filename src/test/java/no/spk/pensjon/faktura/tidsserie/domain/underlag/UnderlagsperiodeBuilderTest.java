@@ -23,16 +23,6 @@ public class UnderlagsperiodeBuilderTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
-    @Test
-    public void skalAnnoterePeriodeneMedAlleReglarIRegelsettet() {
-        final AarsfaktorRegel expected = new AarsfaktorRegel();
-        final Regelsett reglar = () -> Stream.of(new Regelperiode<>(dato("1917.01.01"), empty(), expected));
-
-        final Underlagsperiode periode = builder().reglar(reglar).bygg();
-        assertAnnotasjon(periode, AarsfaktorRegel.class).isEqualTo(of(expected));
-    }
-
-
     /**
      * Verifiserer at alle annotasjonane som er lagt til på den opprinnelige builderen, blir kopiert
      * over til den nye builderen.
