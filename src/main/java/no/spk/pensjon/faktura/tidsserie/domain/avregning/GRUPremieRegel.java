@@ -1,0 +1,22 @@
+package no.spk.pensjon.faktura.tidsserie.domain.avregning;
+
+import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premier.premier;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
+
+/**
+ * Premieberegningsregel for {@link Produkt#GRU}.
+ * <br>
+ * Merk at det foreløpig er udefinert korleis gruppelivspremien skal avregnast. Premiebeløpa blir derfor
+ * satt lik kr 0 for alle perioder inntil det er avklart.
+ *
+ * @author Tarjei Skorgenes
+ */
+public class GRUPremieRegel implements BeregningsRegel<Premier> {
+    @Override
+    public Premier beregn(final Beregningsperiode<?> periode) {
+        return premier().bygg();
+    }
+}
