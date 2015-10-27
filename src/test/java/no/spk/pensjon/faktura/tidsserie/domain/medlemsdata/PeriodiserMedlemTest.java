@@ -6,7 +6,10 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.NYTILGANG;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.SLUTTMELDING;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.eiMedregning;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.BISTILLING;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.TILLEGG_ANNEN_ARBGIV;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode.medregning;
+import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.ObjectMother.eiMedregning;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.PeriodiserMedlemHelper.assertStillingsforholdperioder;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.PeriodiserMedlemHelper.periode;
 import static no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.PeriodiserMedlemHelper.periodiser;
@@ -15,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 import org.junit.Test;

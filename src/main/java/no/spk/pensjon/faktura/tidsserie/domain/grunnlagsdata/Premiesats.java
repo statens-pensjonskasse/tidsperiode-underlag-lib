@@ -3,12 +3,14 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo.GRU_35;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo.GRU_36;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo.YSK_79;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo.erEnAv;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_35;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.GRU_36;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.YSK_79;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo.erEnAv;
 
 import java.util.Optional;
+
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Produktinfo;
 
 /**
  * Premiesatser for et produkt.

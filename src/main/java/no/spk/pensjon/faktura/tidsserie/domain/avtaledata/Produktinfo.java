@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
+package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
 import java.util.Arrays;
 

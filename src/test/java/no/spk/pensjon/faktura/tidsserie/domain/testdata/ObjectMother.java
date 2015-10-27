@@ -1,13 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.testdata;
 
-import static java.time.LocalDate.now;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon.avtaleversjon;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregningskode.TILLEGG_ANNEN_ARBGIV;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Personnummer.personnummer;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
 
 import java.time.LocalDate;
 
@@ -15,7 +9,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
-import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
 
 /**
  * Ei samling gjennbrukbare builder-instansar som kan brukast for å danne gyldige grunnlagsdata og
@@ -29,15 +22,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medregningsperiode;
  * @author Tarjei Skorgenes
  */
 public class ObjectMother {
-    private static final Medregningsperiode.Builder medregning = Medregningsperiode.medregning()
-            .fraOgMed(now().minusYears(3))
-            .loepende()
-            .beloep(kroner(1))
-            .kode(TILLEGG_ANNEN_ARBGIV)
-            .foedselsdato(foedselsdato(now().minusYears(30)))
-            .personnummer(personnummer(12345))
-            .stillingsforhold(stillingsforhold(1L));
-
     /**
      * Opprettar ein builder for den angitte avtalen som er satt opp til å konstruere avtaleversjonar
      * med alle påkrevde felt populert.
@@ -64,16 +48,5 @@ public class ObjectMother {
      */
     public static LocalDate tidenesMorgen() {
         return dato("1917.01.01");
-    }
-
-    /**
-     * Opprettar ein kopi av ein pre-populert builder for medregningsperioder.
-     * <br>
-     * Alle felt i builderen blir pre-populert slik at klienten kun skal trenge å overstyre/endre dei felta ein har spesifikke krav til verdien på.
-     *
-     * @return ein ny medregningsperioderbuilder
-     */
-    public static Medregningsperiode.Builder eiMedregning() {
-        return medregning.kopi();
     }
 }

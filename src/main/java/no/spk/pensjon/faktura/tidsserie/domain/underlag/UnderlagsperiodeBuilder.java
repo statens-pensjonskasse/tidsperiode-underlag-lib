@@ -23,6 +23,8 @@ public class UnderlagsperiodeBuilder {
 
     private LocalDate tilOgMed;
 
+    private Optional<Regelsett> reglar = Optional.empty();
+
     /**
      * Konstruerer ein ny builder med tom tilstand.
      */
@@ -61,6 +63,7 @@ public class UnderlagsperiodeBuilder {
         final Underlagsperiode periode = new Underlagsperiode(fraOgMed, tilOgMed);
         annotasjonar.annoter(periode);
         koblingar.kobleTil(periode);
+        reglar.ifPresent(regelsett -> regelsett.reglar().forEach(r -> r.annoter(periode)));
         return periode;
     }
 
@@ -168,4 +171,14 @@ public class UnderlagsperiodeBuilder {
         return new UnderlagsperiodeBuilder(this);
     }
 
+    /**
+     * Legger til reglane som underlagsperiodene skal annoterast med.
+     *
+     * @param reglar eit regelsett som inneheld alle reglar for periodene som blir bygde
+     * @return <code>this</code>
+     */
+    public UnderlagsperiodeBuilder reglar(final Regelsett reglar) {
+        this.reglar = ofNullable(reglar);
+        return this;
+    }
 }
