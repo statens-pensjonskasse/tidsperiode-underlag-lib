@@ -61,7 +61,10 @@ public class AvregningsRegelsett implements Regelsett {
                         MinstegrenseRegel.class,
                         startAar().neste().atStartOfYear(),
                         empty()
-                )
+                ),
+                avregningsperiode(new ErUnderMinstegrensaRegel()),
+                avregningsperiode(new ErPermisjonUtanLoennRegel()),
+                avregningsperiode(new ErMedregningRegel())
         );
     }
 

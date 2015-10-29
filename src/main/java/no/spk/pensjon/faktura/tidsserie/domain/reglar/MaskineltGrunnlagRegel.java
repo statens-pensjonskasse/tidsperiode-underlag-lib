@@ -2,7 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -32,10 +31,8 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
      */
     @Override
     public Kroner beregn(final Beregningsperiode<?> periode) {
-        if (!periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
-            if (periode.beregn(MinstegrenseRegel.class).erUnderMinstegrensa(periode.annotasjonFor(Stillingsprosent.class))) {
-                return kroner(0);
-            }
+        if (periode.beregn(ErUnderMinstegrensaRegel.class)) {
+            return kroner(0);
         }
         return periode.beregn(AarsfaktorRegel.class).multiply(
                 Kroner.min(
@@ -52,4 +49,5 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
                 )
         );
     }
+
 }

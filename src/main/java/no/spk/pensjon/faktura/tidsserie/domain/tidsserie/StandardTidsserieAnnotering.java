@@ -5,6 +5,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.Feilmeldingar.fe
 import java.time.Month;
 import java.util.Optional;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.Avregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
@@ -58,7 +59,7 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
      * er tilknytta eit stillingsforhold
      *
      * @param underlag underlaget som perioda inngår i
-     * @param periode underlagsperioda som skal populerast med annotasjonar
+     * @param periode  underlagsperioda som skal populerast med annotasjonar
      * @see Underlagsperiode#koblingarAvType(Class)
      * @see StillingsforholdPeriode#annoter(no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar)
      */
@@ -91,6 +92,7 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
         periode.valgfriAnnotasjonFor(Loennstrinn.class).ifPresent(loennstrinn -> {
             annoterLoennForLoennstrinn(periode);
         });
+        periode.koblingAvType(Avregningsperiode.class).ifPresent(ap -> ap.annoter(periode));
     }
 
     private void annoterAvtalerelatereVerdier(Underlagsperiode periode) {

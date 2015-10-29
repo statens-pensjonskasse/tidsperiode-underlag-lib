@@ -1,6 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
@@ -8,12 +10,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
 import org.assertj.core.api.AbstractComparableAssert;
 import org.junit.Test;
-
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoennstilleggRegelTest {
     @Test
@@ -190,6 +191,8 @@ public class LoennstilleggRegelTest {
                 .med(new AntallDagarRegel())
                 .med(new AarsfaktorRegel())
                 .med(new LoennstilleggRegel())
+                .med(new ErMedregningRegel())
+                .med(new ErPermisjonUtanLoennRegel())
                 ;
     }
 

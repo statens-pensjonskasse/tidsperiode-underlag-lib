@@ -2,7 +2,6 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
@@ -43,7 +42,7 @@ public class OevreLoennsgrenseRegel implements BeregningsRegel<Kroner> {
     @Override
     public Kroner beregn(final Beregningsperiode<?> periode) {
         final Kroner fulltidsgrense = grenseForFulltidsstilling(periode);
-        if (periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
+        if (periode.beregn(ErMedregningRegel.class)) {
             return fulltidsgrense;
         }
         final Stillingsprosent stillingsprosent = periode.annotasjonFor(Stillingsprosent.class);
@@ -68,4 +67,5 @@ public class OevreLoennsgrenseRegel implements BeregningsRegel<Kroner> {
     private boolean erOrdning(final Beregningsperiode<?> periode, final Ordning ordning) {
         return ordning.equals(periode.annotasjonFor(Ordning.class));
     }
+
 }

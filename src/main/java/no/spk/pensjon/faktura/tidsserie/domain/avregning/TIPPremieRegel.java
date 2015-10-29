@@ -15,6 +15,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
  *
  * @author Tarjei Skorgenes
  * @see Pensjonspremier#beregn(Beregningsperiode, Produkt)
+ * @since 1.2.0
  */
 public class TIPPremieRegel implements BeregningsRegel<Premier> {
     @Override

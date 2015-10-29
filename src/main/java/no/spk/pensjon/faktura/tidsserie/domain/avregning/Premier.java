@@ -3,6 +3,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 import static java.util.Objects.requireNonNull;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premiebeloep.premiebeloep;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+
 /**
  * {@link Premier} representerer eit sett med premiebeløp for arbeidsgiver, medlem og administrasjonjsgebyr.
  *
@@ -52,9 +54,9 @@ public final class Premier {
     }
 
     public static class PremierBuilder {
-        private Premiebeloep arbeidsgiver = premiebeloep("kr 0");
-        private Premiebeloep medlem = premiebeloep("kr 0");
-        private Premiebeloep administrasjonsgebyr = premiebeloep("kr 0");
+        private Premiebeloep arbeidsgiver = premiebeloep();
+        private Premiebeloep medlem = premiebeloep();
+        private Premiebeloep administrasjonsgebyr = premiebeloep();
 
         public PremierBuilder arbeidsgiver(final Premiebeloep beloep) {
             this.arbeidsgiver = requireNonNull(beloep, "arbeidsgiverpremie er påkrevd, men var null");

@@ -273,6 +273,9 @@ public class MaskineltGrunnlagRegelTest {
                         // på å teste beløp som blir påvirka av grunnbeløpet
                 .med(new Grunnbeloep(kroner(1_000_000)))
                 .med(MinstegrenseRegel.class, new MinstegrenseRegelVersjon1())
+                .med(new ErUnderMinstegrensaRegel())
+                .med(new ErMedregningRegel())
+                .med(new ErPermisjonUtanLoennRegel())
                 ;
     }
 
@@ -292,6 +295,9 @@ public class MaskineltGrunnlagRegelTest {
                 .med(Ordning.SPK)
                 .med(new Grunnbeloep(kroner(1_000_000)))
                 .med(MinstegrenseRegel.class, new MinstegrenseRegelVersjon2())
+                .med(new ErUnderMinstegrensaRegel())
+                .med(new ErMedregningRegel())
+                .med(new ErPermisjonUtanLoennRegel())
                 ;
     }
 
