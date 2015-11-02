@@ -105,6 +105,8 @@ public class OevreLoennsgrenseRegelTest {
                 .fraOgMed(dato("2007.01.01"))
                 .tilOgMed(dato("2007.12.31"))
                 .med(new OevreLoennsgrenseRegel())
+                .med(new ErMedregningRegel())
+                .med(new ErPermisjonUtanLoennRegel())
                 ;
     }
 }

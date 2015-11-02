@@ -1,13 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 /**
  * Premiebeløp representerer ein årspremieandel for eit produkt
@@ -20,14 +20,25 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
  * tidsserie for avregningsformål.
  *
  * @author Tarjei Skorgenes
+ * @since 1.2.0
  */
 public final class Premiebeloep {
     private static final MathContext CONTEXT = new MathContext(14, RoundingMode.HALF_UP);
+    private static final Premiebeloep ZERO = new Premiebeloep(tilToDesimaler(BigDecimal.ZERO));
 
     private final BigDecimal value;
 
     private Premiebeloep(final BigDecimal value) {
         this.value = value;
+    }
+
+    /**
+     * Opprettar eit nytt premiebeløp lik kr 0,00.
+     *
+     * @return eit nytt premiebeløp med verdi lik kr 0,00.
+     */
+    public static Premiebeloep premiebeloep() {
+        return ZERO;
     }
 
     /**

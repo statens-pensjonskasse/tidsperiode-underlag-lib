@@ -13,6 +13,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
  * satt lik kr 0 for alle perioder inntil det er avklart.
  *
  * @author Tarjei Skorgenes
+ * @since 1.2.0
  */
 public class GRUPremieRegel implements BeregningsRegel<Premier> {
     @Override

@@ -55,10 +55,10 @@ public class DeltidsjustertLoennRegel implements BeregningsRegel<Kroner> {
      */
     @Override
     public Kroner beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
-        if (periode.valgfriAnnotasjonFor(Medregning.class).isPresent()) {
+        if (periode.beregn(ErMedregningRegel.class)) {
             return Kroner.ZERO;
         }
-        if (periode.annotasjonFor(Aksjonskode.class).equals(Aksjonskode.PERMISJON_UTAN_LOENN)) {
+        if (periode.beregn(ErPermisjonUtanLoennRegel.class)) {
             return Kroner.ZERO;
         }
         final Optional<Loennstrinn> loennstrinn = periode.valgfriAnnotasjonFor(Loennstrinn.class);
