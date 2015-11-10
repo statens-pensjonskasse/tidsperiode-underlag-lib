@@ -9,7 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
 /**
  * {@link Avregningsavtaleperiode} representerer informasjon om en avtale som hører til et utkast til avregning. En Avregningsversjon kan omfatter flere
- * {@ink AvtaleId}.
+ * {@link AvtaleId}.
  * <br>
  * Avregningsavtaleperiode angir hvilket premieår som blir avregnet,en {@link AvtaleId} som gjelder i perioden, og {@link Avregningsversjon} som
  * avtalen er knyttet til.
