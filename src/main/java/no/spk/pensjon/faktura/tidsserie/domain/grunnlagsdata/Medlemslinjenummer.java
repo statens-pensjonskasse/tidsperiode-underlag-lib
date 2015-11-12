@@ -44,6 +44,7 @@ public final class Medlemslinjenummer {
      * Konstruerer eit nytt linjenummer.
      *
      * @param value eit positivt heiltal som inneheld verdien linjenummeret representerer
+     * @return {@link Medlemslinjenummer} konsturert fra  {@code value}
      * @throws IllegalArgumentException dersom <code>value</code> er mindre enn 1
      */
     public static Medlemslinjenummer linjenummer(final Integer value) {

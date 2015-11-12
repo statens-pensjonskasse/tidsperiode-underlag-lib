@@ -4,6 +4,8 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Avregningsperiode.avregningsperiode;
+import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Avregningsversjon.avregningsversjon;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
@@ -27,9 +29,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.Month;
+import java.time.Year;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.Avregningsversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverdataperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
@@ -1120,6 +1124,20 @@ public class StandardTidsserieAnnoteringTest {
         periode.kobleTil(new Aar(new Aarstall(1990)));
 
         assertAnnotasjon(annoter(periode), Aarstall.class).isEqualTo(of(new Aarstall(1990)));
+    }
+
+    @Test
+    public void skal_annotere_underlagsperiode_med_avregningsversjon_fra_avregningsperiode() {
+        final Underlagsperiode periode = eiPeriode()
+                .medKobling(
+                        avregningsperiode()
+                                .fraOgMed(new Aarstall(1990))
+                                .tilOgMed(new Aarstall(1990))
+                                .versjonsnummer(avregningsversjon(1))
+                                .bygg()
+                )
+                .bygg();
+        assertAnnotasjon(annoter(periode), Avregningsversjon.class).isEqualTo(of(avregningsversjon(1)));
     }
 
     private Underlagsperiode annoter(final UnderlagsperiodeBuilder builder) {

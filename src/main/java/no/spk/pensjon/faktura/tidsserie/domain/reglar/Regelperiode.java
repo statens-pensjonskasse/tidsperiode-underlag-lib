@@ -1,11 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 /**
  * {@link Regelperiode} representerer perioda ein
@@ -31,11 +31,22 @@ import java.util.Optional;
  * RegelPeriode a = new RegelPeriode(dato("2003.01.01"), of(dato("2013.06.30"), new PermisjonsRegelV1());
  * RegelPeriode b = new RegelPeriode(dato("2013.07.01"), empty(),               new PermisjonsRegelV2());
  * </pre>
+ * <p>
+ * Et reelt tilfelle er Minstegrensen som endres fom 1. januar 2016. Før endringen benyttes SPK-ordning og premiestatus
+ * for å bestemme hva som er minste stillingsstørrelse for faktureringen. Etter endringen gjelder kun én
+ * stillingsstørrelse, 20%.
+ * </p>
+ * Vi har to beregningsregler for å håndtere dette: {@link MinstegrenseRegelVersjon1} og {@link MinstegrenseRegelVersjon2}:
+ * <pre>
+ * RegelPeriode a = new Regelperiode(dato("2007.01.01"), of(dato("2015.12.31")), MinstegrenseRegel.class, new MinstegrenseRegelVersjon1()),
+ * RegelPeriode b = new Regelperiode(dato("2016.01.01"), empty(),  MinstegrenseRegel.class, new MinstegrenseRegelVersjon2()),
+ * </pre>
  *
  * @author Tarjei Skorgenes
  */
 public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
     private final BeregningsRegel<? extends T> gjeldandeRegel;
+    private final Class<? extends BeregningsRegel> regelType;
 
     /**
      * Konstruerer ei ny tidsperiode som den angitte beregningsregelen er gjeldande i.
@@ -47,8 +58,24 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
      * @throws java.lang.NullPointerException viss nokon av parameterverdiane er <code>null</code>
      */
     public Regelperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final BeregningsRegel<? extends T> gjeldandeRegel) {
+        this(fraOgMed, tilOgMed, gjeldandeRegel.getClass(), gjeldandeRegel);
+    }
+
+    /**
+     * Konstruerer ei ny tidsperiode som den angitte beregningsregelen er gjeldande i. Har en ekstra parameter for
+     * beregningsregeltype.
+     *
+     * @param fraOgMed       første dag regelen er gjeldande for
+     * @param tilOgMed       siste dag regelen er gjeldande for, eller løpande viss regelen ikkje har blitt erstatta
+     *                       av ein ny regel enda
+     * @param regelType      beregningsregeltype
+     * @param gjeldandeRegel beregningsregelen som er gjeldande innanfor den angitte tidsperioda
+     * @throws java.lang.NullPointerException viss nokon av parameterverdiane er <code>null</code>
+     */
+    public Regelperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, final Class<? extends BeregningsRegel> regelType, final BeregningsRegel<? extends T> gjeldandeRegel) {
         super(fraOgMed, tilOgMed);
         this.gjeldandeRegel = gjeldandeRegel;
+        this.regelType = regelType;
     }
 
     /**
@@ -57,7 +84,7 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
      * @param periode underlagsperioda som skal annoterast
      */
     public void annoter(final Annoterbar<?> periode) {
-        periode.annoter(gjeldandeRegel.getClass(), gjeldandeRegel);
+        periode.annoter(regelType, gjeldandeRegel);
     }
 
     @Override

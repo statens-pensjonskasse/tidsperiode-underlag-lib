@@ -10,6 +10,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -47,6 +48,56 @@ public class PrognoseRegelsettTest {
     }
 
     @Test
+    public void skalIkkeBeregnePensjonsgivandeAarsloennPrDagsDatoUnderMinstegrense2015() {
+        assertPensjonsgivendeAarsloenn(
+                builder
+                        .fraOgMed(dato("2015.01.01"))
+                        .tilOgMed(dato("2015.12.31"))
+                        .med(Aksjonskode.ENDRINGSMELDING)
+                        .med(new DeltidsjustertLoenn(kroner(300_000)))
+                        .med(new Stillingsprosent(new Prosent("20%")))
+                        .med(new Grunnbeloep(kroner(88_300)))
+                        .med(Ordning.SPK)
+                        .med(Premiestatus.AAO_01)
+                        .med(new Aarstall(2015))
+        )
+                .isEqualTo(kroner(211_920));
+    }
+
+    @Test
+    public void skalIkkeBeregnePensjonsgivandeAarsloennPrDagsDatoUnderMinstegrense2016() {
+        assertPensjonsgivendeAarsloenn(
+                builder
+                        .fraOgMed(dato("2016.01.01"))
+                        .tilOgMed(dato("2016.12.31"))
+                        .med(Aksjonskode.ENDRINGSMELDING)
+                        .med(new DeltidsjustertLoenn(kroner(250_000)))
+                        .med(new Stillingsprosent(new Prosent("19,9%")))
+                        .med(Ordning.SPK)
+                        .med(Premiestatus.AAO_01)
+                        .med(new Aarstall(2016))
+        )
+                .isEqualTo(kroner(0));
+    }
+
+    @Test
+    public void skalKunneBeregnePensjonsgivandeAarsloennPrDagsDatoOverMinstegrense2016() {
+        assertPensjonsgivendeAarsloenn(
+                builder
+                        .fraOgMed(dato("2016.01.01"))
+                        .tilOgMed(dato("2016.12.31"))
+                        .med(Aksjonskode.ENDRINGSMELDING)
+                        .med(new DeltidsjustertLoenn(kroner(300_000)))
+                        .med(new Stillingsprosent(new Prosent("20%")))
+                        .med(new Grunnbeloep(kroner(88_300)))
+                        .med(Ordning.SPK)
+                        .med(Premiestatus.AAO_01)
+                        .med(new Aarstall(2016))
+        )
+                .isEqualTo(kroner(211_920));
+    }
+
+    @Test
     public void skalKunneBeregneAarsverk() {
         assertAarsverk(
                 builder
@@ -75,9 +126,9 @@ public class PrognoseRegelsettTest {
     }
 
     private static Underlagsperiode bygg(UnderlagsperiodeBuilder builder) {
-        final Underlagsperiode p = builder.bygg();
+        final Underlagsperiode underlagsperiode = builder.bygg();
         final PrognoseRegelsett reglar = new PrognoseRegelsett();
-        reglar.reglar().forEach(periode -> periode.annoter(p));
-        return p;
+        reglar.reglar().filter(p -> p.overlapper(underlagsperiode)).forEach(periode -> periode.annoter(underlagsperiode));
+        return underlagsperiode;
     }
 }

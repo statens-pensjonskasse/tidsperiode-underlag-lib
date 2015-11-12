@@ -14,7 +14,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
  *
  * @author Tarjei Skorgenes
  */
-public class UnderlagsperiodeBuilder {
+public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuilder> {
     private final Annotasjonar annotasjonar = new Annotasjonar();
 
     private final Koblingar koblingar = new Koblingar();
@@ -179,6 +179,17 @@ public class UnderlagsperiodeBuilder {
      */
     public UnderlagsperiodeBuilder reglar(final Regelsett reglar) {
         this.reglar = ofNullable(reglar);
+        return this;
+    }
+
+    @Override
+    public <T> UnderlagsperiodeBuilder annoter(final Class<? extends T> type, final T verdi) {
+        return med(type, verdi);
+    }
+
+    @Override
+    public UnderlagsperiodeBuilder annoterFra(final UnderlagsperiodeBuilder kilde) {
+        this.annotasjonar.addAll(kilde.annotasjonar);
         return this;
     }
 }

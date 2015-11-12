@@ -1,19 +1,27 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import static java.util.Optional.empty;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static java.util.Optional.of;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.AFPPremieRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.GRUPremieRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.PENPremieRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.TIPPremieRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.YSKPremieRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 
 /**
  * Genererer regelsettet som blir benytta når det skal byggast opp ein tidsserie for avregningsformål.
  * <br>
- * Regelsettet blir generert på ein slik måte at ein skal kunne bruke gjeldande reglar i dag (2015) bakover
- * i til og med år 2000.
- * <p>
- * År 2007 er tilfeldig valgt ettersom vi ikkje kan hente ut data lenger tilbake via uttrekksbatchen.
+ * Regelsettet blir generert på ein slik måte at ein skal kunne avregne premieår 2015 og framover basert på dei
+ * reelle reglane som er eller var gjendalde på eit kvart tidspunkt frå 1. janua 2015 og fram til i dag.
+ * <br>
+ * Årstallet 2015 er valgt fordi SPK har valgt å ikkje avregne lenger tilbake enn til premieåret 2015.
  */
 public class AvregningsRegelsett implements Regelsett {
     /**
@@ -33,15 +41,46 @@ public class AvregningsRegelsett implements Regelsett {
                 avregningsperiode(new LoennstilleggRegel()),
                 avregningsperiode(new OevreLoennsgrenseRegel()),
                 avregningsperiode(new MedregningsRegel()),
-                avregningsperiode(new MinstegrenseRegel()),
                 avregningsperiode(new AarsverkRegel()),
                 avregningsperiode(new YrkesskadefaktureringRegel()),
                 avregningsperiode(new GruppelivsfaktureringRegel()),
-                avregningsperiode(new TermintypeRegel())
+                avregningsperiode(new TermintypeRegel()),
+                avregningsperiode(new PENPremieRegel()),
+                avregningsperiode(new AFPPremieRegel()),
+                avregningsperiode(new TIPPremieRegel()),
+                avregningsperiode(new GRUPremieRegel()),
+                avregningsperiode(new YSKPremieRegel()),
+
+                avregningsperiode(
+                        new MinstegrenseRegelVersjon1(),
+                        MinstegrenseRegel.class,
+                        fraOgMed(),
+                        of(startAar().atEndOfYear())),
+                avregningsperiode(
+                        new MinstegrenseRegelVersjon2(),
+                        MinstegrenseRegel.class,
+                        startAar().neste().atStartOfYear(),
+                        empty()
+                ),
+                avregningsperiode(new ErUnderMinstegrensaRegel()),
+                avregningsperiode(new ErPermisjonUtanLoennRegel()),
+                avregningsperiode(new ErMedregningRegel())
         );
     }
 
     private Regelperiode<?> avregningsperiode(final BeregningsRegel<?> regel) {
-        return new Regelperiode<>(dato("2007.01.01"), empty(), regel);
+        return new Regelperiode<>(fraOgMed(), empty(), regel);
+    }
+
+    private <T> Regelperiode<T> avregningsperiode(final BeregningsRegel<? extends T> gjeldandeRegel, final Class<? extends BeregningsRegel> regelType, final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
+        return new Regelperiode<>(fraOgMed, tilOgMed, regelType, gjeldandeRegel);
+    }
+
+    private LocalDate fraOgMed() {
+        return startAar().atStartOfYear();
+    }
+
+    private Aarstall startAar() {
+        return new Aarstall(2015);
     }
 }

@@ -216,7 +216,7 @@ public class Avtale {
          * @return <code>this</code>
          * @throws NullPointerException viss <code>produkt</code> er <code>null</code>
          * @see #addPremiesats(Premiesats)
-         * @deprecated
+         * @deprecated bruk {@link #addPremiesats(Premiesats)}
          */
         @Deprecated
         public AvtaleBuilder addProdukt(final Produkt produkt) {

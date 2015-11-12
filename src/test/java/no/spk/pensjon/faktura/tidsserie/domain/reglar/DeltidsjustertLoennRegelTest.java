@@ -1,5 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
@@ -9,11 +12,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
+
 import org.assertj.core.api.AbstractComparableAssert;
 import org.junit.Test;
-
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel}.
@@ -85,6 +86,9 @@ public class DeltidsjustertLoennRegelTest {
     }
 
     private static UnderlagsperiodeBuilder periode(final String fra, final String til) {
-        return Support.periode(fra, til).med(new DeltidsjustertLoennRegel());
+        return Support.periode(fra, til)
+                .med(new DeltidsjustertLoennRegel())
+                .med(new ErMedregningRegel())
+                .med(new ErPermisjonUtanLoennRegel());
     }
 }
