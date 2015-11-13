@@ -1166,7 +1166,7 @@ public class StandardTidsserieAnnoteringTest {
     private static Stillingsendring eiStillingsendring() {
         return new Stillingsendring()
                 .stillingsprosent(fulltid())
-                .foedselsdato(foedselsdato(dato("1917.01.01")))
+                .foedselsdato(foedselsdato(19170101))
                 .personnummer(personnummer(12345))
                 .registreringsdato(dato("2099.01.01"));
     }

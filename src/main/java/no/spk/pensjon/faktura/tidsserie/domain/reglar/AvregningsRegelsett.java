@@ -72,6 +72,7 @@ public class AvregningsRegelsett implements Regelsett {
         return new Regelperiode<>(fraOgMed(), empty(), regel);
     }
 
+    @SuppressWarnings("rawtypes")
     private <T> Regelperiode<T> avregningsperiode(final BeregningsRegel<? extends T> gjeldandeRegel, final Class<? extends BeregningsRegel> regelType, final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         return new Regelperiode<>(fraOgMed, tilOgMed, regelType, gjeldandeRegel);
     }

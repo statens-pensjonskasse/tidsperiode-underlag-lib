@@ -306,7 +306,7 @@ public class UnderlagFactoryTest {
         return new GenerellTidsperiode(fraOgMed, tilOgMed);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static AbstractListAssert assertKobling(Underlag underlag, Class<? extends Tidsperiode<?>> type, int index) {
         final Underlagsperiode underlagsperiode = underlag.toList().get(index);
         Stream<? extends Tidsperiode<?>> stream = underlagsperiode.koblingarAvType(type);

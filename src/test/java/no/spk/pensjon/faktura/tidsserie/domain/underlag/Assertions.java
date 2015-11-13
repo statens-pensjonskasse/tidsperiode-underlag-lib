@@ -1,8 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +61,7 @@ public class Assertions {
      * @param predikat predikatet som styrer kva for nokon underlagsperioder som blir henta ut og lagt inn i asserten
      * @return ein ny assert med alle underlagsperiodene som matchar predikatet
      */
+    @SuppressWarnings("unchecked")
     public static AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode> assertUnderlagsperioder(
             final Collection<Underlag> underlag, final Predicate<Underlagsperiode> predikat) {
         return (AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode>) assertThat(
@@ -83,10 +86,10 @@ public class Assertions {
      *                   tatt med i asserten
      * @return ein ny asserter med verdiar henta frå alle underlagsperiodene
      */
-    @SafeVarargs
+    @SuppressWarnings("unchecked")
     public static <T> AbstractListAssert<?, ? extends List<T>, T> assertVerdiFraUnderlagsperioder(
             final Collection<Underlag> underlag, final Function<Underlagsperiode, T> mapper,
-            final Predicate<Underlagsperiode>... predikater) {
+            final Collection<Predicate<Underlagsperiode>> predikater) {
         return (AbstractListAssert<?, ? extends List<T>, T>) assertThat(
                 underlag
                         .stream()
@@ -146,10 +149,9 @@ public class Assertions {
      * @return et nytt predikat som returnerer <code>true</code> dersom alle predikatene returnerer true
      * eller <code>predikater</code> er tom, <code>false</code> ellers
      */
-    @SafeVarargs
-    public static <T> Predicate<T> and(final Predicate<T>... predikater) {
-        return input -> Stream
-                .of(predikater)
+    public static <T> Predicate<T> and(final Collection<Predicate<T>> predikater) {
+        return input ->  predikater
+                .stream()
                 .reduce(Predicate::and)
                 .orElse(t -> true)
                 .test(input);
@@ -163,10 +165,9 @@ public class Assertions {
      * @return et nytt predikat som returnerer <code>true</code> dersom et av predikatene returnerer true
      * eller <code>predikater</code> er tom, <code>false</code> ellers
      */
-    @SafeVarargs
-    public static <T> Predicate<T> or(final Predicate<T>... predikater) {
-        return input -> Stream
-                .of(predikater)
+    public static <T> Predicate<T> or(final Collection<Predicate<T>> predikater) {
+        return input -> predikater
+                .stream()
                 .reduce(Predicate::or)
                 .orElse(t -> true)
                 .test(input);

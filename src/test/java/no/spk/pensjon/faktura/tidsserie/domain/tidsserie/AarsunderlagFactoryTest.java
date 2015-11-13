@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -53,8 +54,10 @@ public class AarsunderlagFactoryTest {
                 .collect(toList());
 
         final Predicate<Underlag> manglerAnnotasjonFraStillingsforholdUnderlaget = or(
-                Assertions.<Underlag>harAnnotasjon(StillingsforholdId.class).negate(),
-                Assertions.<Underlag>harAnnotasjon(String.class).negate()
+                asList(
+                        Assertions.<Underlag>harAnnotasjon(StillingsforholdId.class).negate(),
+                        Assertions.<Underlag>harAnnotasjon(String.class).negate()
+                )
         );
         assertThat(
                 alle

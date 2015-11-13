@@ -62,27 +62,6 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
      * <p>
      * Dersom periodene har lik til og med-dato eller begge er løpande, blir sorteringsrekkefølga tilfeldig.
      *
-     * @return ei kronologisk sorteringsrekkefølge for tidsperioder
-     * @see Tidsperiode#fraOgMed()
-     * @see Tidsperiode#tilOgMed()
-     * @see #compare(Tidsperiode, Tidsperiode)
-     * @deprecated
-     */
-    @Deprecated
-    static Comparator<Tidsperiode<?>> kronologiskSorteringAvTidsperioder() {
-        return Tidsperiode::compare;
-    }
-
-    /**
-     * Sorterer tidsperiodene kronologisk basert på periodenes frå og med- og til og med-dato.
-     * <p>
-     * Dersom periodene har ulik frå og med-dato blir perioda med lavast/eldste frå og med-dato sortert først.
-     * <p>
-     * Dersom periodene har lik frå og med-dato, blir perioda med lavaste/eldste til og med-dato sortert først. Dersom
-     * ei av periodene er løpande/manglar til og med-dato, blir den sortert sist.
-     * <p>
-     * Dersom periodene har lik til og med-dato eller begge er løpande, blir sorteringsrekkefølga tilfeldig.
-     *
      * @param a første tidsperiode
      * @param b andre tidsperiode
      * @return <code>&lt; 0</code> dersom perioda <code>a</code> blir sortert før periode <code>b</code>,

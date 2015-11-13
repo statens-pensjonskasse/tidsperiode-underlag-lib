@@ -210,21 +210,6 @@ public class Avtale {
         }
 
         /**
-         * Legger til eit produkt som avtalen skal betale premie til SPK for.
-         *
-         * @param produkt eit produkt som avtalen betalar premie til SPK for
-         * @return <code>this</code>
-         * @throws NullPointerException viss <code>produkt</code> er <code>null</code>
-         * @see #addPremiesats(Premiesats)
-         * @deprecated bruk {@link #addPremiesats(Premiesats)}
-         */
-        @Deprecated
-        public AvtaleBuilder addProdukt(final Produkt produkt) {
-            this.avtaleprodukt.add(requireNonNull(produkt, () -> "Produkt er påkrevd, men var null"));
-            return this;
-        }
-
-        /**
          * Legger til en premiesats som er tilknyttet avtalen.
          *
          * @param premiesats premiesatsar som er tilknytta avtalen

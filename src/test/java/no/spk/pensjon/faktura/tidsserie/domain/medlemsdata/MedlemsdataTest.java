@@ -75,7 +75,7 @@ public class MedlemsdataTest {
                         .beloep(kroner(10))
                         .kode(BISTILLING)
                         .stillingsforhold(StillingsforholdId.valueOf(rad.get(3)))
-                        .foedselsdato(foedselsdato(dato("1970.01.01")))
+                        .foedselsdato(foedselsdato(19700101))
                         .personnummer(new Personnummer(1))
                         .bygg();
             }

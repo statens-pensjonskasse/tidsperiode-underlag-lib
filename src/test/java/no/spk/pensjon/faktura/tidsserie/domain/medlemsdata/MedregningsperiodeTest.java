@@ -37,7 +37,7 @@ public class MedregningsperiodeTest {
         final Underlagsperiode periode = eiPeriode();
 
         eiMedregning()
-                .foedselsdato(foedselsdato(dato("1978.01.05")))
+                .foedselsdato(foedselsdato(19780105))
                 .personnummer(personnummer(78742))
                 .bygg()
                 .annoter(periode);
@@ -46,7 +46,7 @@ public class MedregningsperiodeTest {
                 .isEqualTo(
                         of(
                                 new Foedselsnummer(
-                                        foedselsdato(dato("1978.01.05")),
+                                        foedselsdato(19780105),
                                         personnummer(78742)
                                 )
                         )
