@@ -4,7 +4,6 @@
         <groupId>no.spk</groupId>
         <artifactId>spk-root-pom</artifactId>
         <version>108</version>
-        <relativePath>../spk-root-pom</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -70,6 +69,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/logback-test.xml</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>external.atlassian.jgitflow</groupId>
