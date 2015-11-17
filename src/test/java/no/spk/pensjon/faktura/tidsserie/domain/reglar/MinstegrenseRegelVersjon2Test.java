@@ -47,7 +47,7 @@ public class MinstegrenseRegelVersjon2Test {
     @Test
     public void skalBenytteMinstegrense50ProsentForOperaordningaEtter20160101() {
         final UnderlagsperiodeBuilder periode = eiPeriode().med(Ordning.OPERA);
-        assertMinstegrense(periode.med(Premiestatus.AAO_01)).isEqualTo(new Minstegrense(new Prosent("20%")));
+        assertMinstegrense(periode.med(Premiestatus.AAO_01)).isEqualTo(new Minstegrense(new Prosent("50%")));
     }
 
     @Test
