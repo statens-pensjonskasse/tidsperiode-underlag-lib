@@ -21,7 +21,7 @@ public class ObjectMother {
             .loepende()
             .beloep(kroner(1))
             .kode(TILLEGG_ANNEN_ARBGIV)
-            .foedselsdato(foedselsdato(now().minusYears(30)))
+            .foedselsdato(foedselsdato(19800101))
             .personnummer(personnummer(12345))
             .stillingsforhold(stillingsforhold(1L));
 

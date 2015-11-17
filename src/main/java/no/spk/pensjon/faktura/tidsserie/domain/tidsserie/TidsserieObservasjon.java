@@ -174,11 +174,6 @@ public class TidsserieObservasjon {
         return aarsverk;
     }
 
-    @Deprecated
-    public Optional<Aarsverk> maaling(final Class<? extends Aarsverk> ignored) {
-        return of(aarsverk);
-    }
-
     @Override
     public String toString() {
         return observasjonsdato

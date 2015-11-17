@@ -60,7 +60,7 @@ public class StillingsendringTest {
     public void skalFeileDersomStillingsprosentManglar() {
         e.expect(NoSuchElementException.class);
         new Stillingsendring()
-                .foedselsdato(foedselsdato(dato("1917.01.01")))
+                .foedselsdato(foedselsdato(19170101))
                 .personnummer(personnummer(1))
                 .annoter(eiPeriode());
     }
@@ -80,7 +80,7 @@ public class StillingsendringTest {
         final Underlagsperiode periode = eiPeriode();
 
         eiEndring()
-                .foedselsdato(foedselsdato(dato("1978.01.05")))
+                .foedselsdato(foedselsdato(19780105))
                 .personnummer(new Personnummer(13289))
                 .annoter(periode);
 
@@ -88,7 +88,7 @@ public class StillingsendringTest {
                 .isEqualTo(
                         of(
                                 new Foedselsnummer(
-                                        foedselsdato(dato("1978.01.05")),
+                                        foedselsdato(19780105),
                                         personnummer(13289)
                                 )
                         )
@@ -214,7 +214,7 @@ public class StillingsendringTest {
      */
     private static Stillingsendring eiEndring() {
         return new Stillingsendring()
-                .foedselsdato(foedselsdato(dato("1917.01.01")))
+                .foedselsdato(foedselsdato(19170101))
                 .personnummer(personnummer(1))
                 .stillingsprosent(fulltid());
     }

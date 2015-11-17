@@ -1,12 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import static java.util.Optional.ofNullable;
-
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
@@ -22,8 +18,6 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
     private LocalDate fraOgMed;
 
     private LocalDate tilOgMed;
-
-    private Optional<Regelsett> reglar = Optional.empty();
 
     /**
      * Konstruerer ein ny builder med tom tilstand.
@@ -63,7 +57,6 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
         final Underlagsperiode periode = new Underlagsperiode(fraOgMed, tilOgMed);
         annotasjonar.annoter(periode);
         koblingar.kobleTil(periode);
-        reglar.ifPresent(regelsett -> regelsett.reglar().forEach(r -> r.annoter(periode)));
         return periode;
     }
 
@@ -169,17 +162,6 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
      */
     public UnderlagsperiodeBuilder kopi() {
         return new UnderlagsperiodeBuilder(this);
-    }
-
-    /**
-     * Legger til reglane som underlagsperiodene skal annoterast med.
-     *
-     * @param reglar eit regelsett som inneheld alle reglar for periodene som blir bygde
-     * @return <code>this</code>
-     */
-    public UnderlagsperiodeBuilder reglar(final Regelsett reglar) {
-        this.reglar = ofNullable(reglar);
-        return this;
     }
 
     @Override

@@ -45,22 +45,6 @@ public final class Foedselsdato {
      * @param dato datoen medlemmet vart født.
      * @throws NullPointerException     viss <code>dato</code> var <code>null</code>
      * @throws IllegalArgumentException viss <code>dato</code> er før år 1875 sidan det er
-     * @deprecated Støttar ikkje D- eller H-nummer, bruk heller {@link #foedselsdato(Integer)}
-     */
-    public Foedselsdato(final LocalDate dato) {
-        this(tilNummer(dato));
-    }
-
-    /**
-     * Konstruerer ein ny fødselsdato.
-     * <br>
-     * For å gjere det mulig å oppdage inkonsistens i grunnlagsdatane fører datoar eldre enn 1. januar 1875 til at det
-     * blir kasta ein feil. Det eksisterer pr 29. juni 2015 ingen medlemmar i kasper som er født før 1875 og det er vel
-     * rimelig å anta at det ikkje dukkar opp fleire medlemmar eldre enn dette nokon gang i framtida.
-     *
-     * @param dato datoen medlemmet vart født.
-     * @throws NullPointerException     viss <code>dato</code> var <code>null</code>
-     * @throws IllegalArgumentException viss <code>dato</code> er før år 1875 sidan det er
      */
     private Foedselsdato(final Integer dato) {
         if (requireNonNull(dato, "fødseldato er påkrevd, men var null") < NEDRE_DATOGRENSE) {
@@ -69,23 +53,6 @@ public final class Foedselsdato {
             );
         }
         this.dato = dato;
-    }
-
-    /**
-     * Konstruerer ein ny fødselsdato basert på ein dato.
-     * <br>
-     * NB: Merk at denne konstruksjonsmetoda ikkje kan brukast i kombinasjon med dato-verdiar som inngår i
-     * eit D- eller H-nummer sidan desse ikkje inneheld gyldige datoar.
-     *
-     * @param dato datoen medlemmet vart født.
-     * @return ny fødselsdato
-     * @throws NullPointerException     viss <code>dato</code> var <code>null</code>
-     * @throws IllegalArgumentException viss <code>dato</code> er før år 1875 sidan det er
-     * @see Foedselsdato#Foedselsdato(Integer)
-     * @deprecated Støttar ikkje D- eller H-nummer, bruk heller {@link #foedselsdato(Integer)}
-     */
-    public static Foedselsdato foedselsdato(final LocalDate dato) {
-        return new Foedselsdato(tilNummer(dato));
     }
 
     /**

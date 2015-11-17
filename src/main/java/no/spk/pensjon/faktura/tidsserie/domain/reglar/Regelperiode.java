@@ -46,6 +46,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
  */
 public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
     private final BeregningsRegel<? extends T> gjeldandeRegel;
+    @SuppressWarnings("rawtypes")
     private final Class<? extends BeregningsRegel> regelType;
 
     /**
@@ -72,6 +73,7 @@ public class Regelperiode<T> extends AbstractTidsperiode<Regelperiode<T>> {
      * @param gjeldandeRegel beregningsregelen som er gjeldande innanfor den angitte tidsperioda
      * @throws java.lang.NullPointerException viss nokon av parameterverdiane er <code>null</code>
      */
+    @SuppressWarnings("rawtypes")
     public Regelperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, final Class<? extends BeregningsRegel> regelType, final BeregningsRegel<? extends T> gjeldandeRegel) {
         super(fraOgMed, tilOgMed);
         this.gjeldandeRegel = gjeldandeRegel;

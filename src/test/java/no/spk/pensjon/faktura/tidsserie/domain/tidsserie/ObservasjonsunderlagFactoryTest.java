@@ -26,6 +26,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.paakre
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Month;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -69,8 +70,10 @@ public class ObservasjonsunderlagFactoryTest {
                 .collect(toList());
 
         final Predicate<Underlag> manglerAnnotasjonFraAarsunderlagetUnderlaget = or(
-                Assertions.<Underlag>harAnnotasjon(StillingsforholdId.class).negate(),
-                Assertions.<Underlag>harAnnotasjon(Integer.class).negate()
+                asList(
+                        Assertions.<Underlag>harAnnotasjon(StillingsforholdId.class).negate(),
+                        Assertions.<Underlag>harAnnotasjon(Integer.class).negate()
+                )
         );
         assertThat(
                 alle
@@ -402,7 +405,6 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
 
-
     private static AbstractIterableAssert<?, ? extends Iterable<? extends Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagUtanFiktivPeriode(final List<Underlag> prMnd, final int index) {
         final Underlag underlag = prMnd.get(index);
         assertThat(underlag.last().get().valgfriAnnotasjonFor(FiktivPeriode.class))
@@ -465,7 +467,7 @@ public class ObservasjonsunderlagFactoryTest {
      * hente ut siste verdi frå ein straum på ein enkel måte.
      *
      * @param ignored this value is totally ignored
-     * @param value   this value is always returned
+     * @param value this value is always returned
      * @return <code>value</code>
      */
     private <T> T last(final T ignored, final T value) {

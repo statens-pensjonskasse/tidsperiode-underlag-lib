@@ -1,6 +1,5 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato.foedselsdato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,10 +59,10 @@ public class FoedselsdatoTest {
 
     @Test
     public void skalKonvertereDatoTilTall() {
-        assertFoedselsdatoSomTall("1979.08.06").isEqualTo("19790806");
-        assertFoedselsdatoSomTall("1917.01.01").isEqualTo("19170101");
-        assertFoedselsdatoSomTall("1875.01.01").isEqualTo("18750101");
-        assertFoedselsdatoSomTall("9999.01.01").isEqualTo("99990101");
+        assertFoedselsdatoSomTall(19790806).isEqualTo("19790806");
+        assertFoedselsdatoSomTall(19170101).isEqualTo("19170101");
+        assertFoedselsdatoSomTall(18750101).isEqualTo("18750101");
+        assertFoedselsdatoSomTall(99990101).isEqualTo("99990101");
     }
 
     /**
@@ -72,7 +71,7 @@ public class FoedselsdatoTest {
      */
     @Test
     public void skalSkapeProblemForFoedselsnummerEtterAar10000() {
-        assertFoedselsdatoSomTall(LocalDate.of(10_000, 1, 1)).isEqualTo("100000101");
+        assertFoedselsdatoSomTall(100000101).isEqualTo("100000101");
     }
 
     @Test
@@ -80,19 +79,11 @@ public class FoedselsdatoTest {
         e.expect(IllegalArgumentException.class);
         e.expectMessage("fødselsdatoar eldre enn 18750101 er ikkje støtta");
         e.expectMessage("var 18741231");
-        foedselsdato(dato("1874.12.31"));
+        foedselsdato(18741231);
     }
 
     private AbstractCharSequenceAssert<?, String> assertFoedselsdatoSomTall(final int tall) {
         return assertFoedselsdatoSomTall(foedselsdato(tall));
-    }
-
-    private static AbstractCharSequenceAssert<?, String> assertFoedselsdatoSomTall(final String dato) {
-        return assertFoedselsdatoSomTall(dato(dato));
-    }
-
-    private static AbstractCharSequenceAssert<?, String> assertFoedselsdatoSomTall(final LocalDate dato) {
-        return assertFoedselsdatoSomTall(foedselsdato(dato));
     }
 
     private static AbstractCharSequenceAssert<?, String> assertFoedselsdatoSomTall(Foedselsdato value) {
