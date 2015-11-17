@@ -64,7 +64,7 @@ public class MaskineltGrunnlagRegelTest {
 
     /**
      * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom stillingsforholdet er under ny minstegrensa
-     * (201%) i perioda som blir beregna.
+     * (20%) i perioda som blir beregna.
      */
     @Test
     public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUnderMinstegrensaVersjon2() {
@@ -73,6 +73,21 @@ public class MaskineltGrunnlagRegelTest {
                         .med(new Aarstall(2016))
                         .med(new DeltidsjustertLoenn(kroner(75_000)))
                         .med(new Stillingsprosent(new Prosent("15%")))
+        ).isEqualTo(kroner(0));
+    }
+
+    /**
+     * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom stillingsforholdet er under minstegrensa
+     * (50%) i perioda som blir beregna, når ordning er Opera.
+     */
+    @Test
+    public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUnderMinstegrensaVersjon2Opera() {
+        assertMaskineltGrunnlag(
+                periodeFom2016("2016.01.01", "2016.12.31")
+                        .med(Ordning.OPERA)
+                        .med(new Aarstall(2016))
+                        .med(new DeltidsjustertLoenn(kroner(75_000)))
+                        .med(new Stillingsprosent(new Prosent("49%")))
         ).isEqualTo(kroner(0));
     }
 
