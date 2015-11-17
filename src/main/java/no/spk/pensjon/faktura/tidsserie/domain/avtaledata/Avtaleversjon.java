@@ -29,24 +29,6 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
     private final Premiestatus status;
     private final Optional<Premiekategori> kategori;
 
-    /**
-     * Konstruerer ei ny avtaleversjon som har ein frå og med-dato og som kan ha
-     * ein til og med-dato, eller som kan vere løpande og dermed har ein tom til og med-dato
-     *
-     * @param fraOgMed første dag i tidsperioda
-     * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
-     * @param avtale   som versjonen gjelder
-     * @param status   for avtalen i perioden
-     * @throws NullPointerException dersom nokon av parameterverdiane er <code>null</code>
-     * @see #avtaleversjon(no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId)
-     * @deprecated
-     */
-    @Deprecated
-    public Avtaleversjon(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
-                         final AvtaleId avtale, final Premiestatus status) {
-        this(fraOgMed, tilOgMed, avtale, status, empty());
-    }
-
     private Avtaleversjon(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
                           final AvtaleId avtale, final Premiestatus status, final Optional<Premiekategori> kategori) {
         super(fraOgMed, tilOgMed);

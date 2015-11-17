@@ -7,11 +7,13 @@ import org.junit.rules.ExpectedException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
@@ -112,14 +114,14 @@ public class StillingsforholdPerioderTest {
     public void skalKrevePerioderVedKonstruksjon() {
         e.expect(NullPointerException.class);
         e.expectMessage("perioder er påkrevd, men var null");
-        new StillingsforholdPerioder(new StillingsforholdId(1l), (List) null);
+        new StillingsforholdPerioder(new StillingsforholdId(1l), (List<StillingsforholdPeriode>) null);
     }
 
     @Test
     public void skalTaVarePåPeriodeneSomBlirSendtInnVedKonstruksjon() {
         final StillingsforholdPerioder stillingsforhold = new StillingsforholdPerioder(
                 new StillingsforholdId(1L),
-                asList(
+                singletonList(
                         new StillingsforholdPeriode(dato("2000.01.01"), empty()
                         )
                 )

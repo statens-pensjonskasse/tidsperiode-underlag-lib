@@ -88,6 +88,7 @@ public class LoennstrinnperioderTest {
      * ein av hotspotane i beregningsprosessen.
      */
     @Test
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void skalIkkjeSjekkeLoennForPerioderTilhoeyrandeAndreLoennstrinn() {
         final Loennstrinnperiode annaLoennstrinn = mock(Loennstrinnperiode.class, "lønnstrinnperiode for lønnstrinn 2");
         when(annaLoennstrinn.trinn()).thenReturn(loennstrinn(2));

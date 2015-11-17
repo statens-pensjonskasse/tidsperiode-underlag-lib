@@ -106,7 +106,7 @@ public class UnderlagTest {
      */
     @Test
     public void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
-        final Object verdi = new String("valgfrie annotasjonar fungerer fint");
+        final Object verdi = "valgfrie annotasjonar fungerer fint";
 
         final Underlag underlag = eitTomtUnderlag();
         underlag.annoter(Object.class, verdi);
@@ -144,7 +144,6 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneKonstruereUnderlagMedOverlappandeUnderlagsperioder() {
-        e.handleAssertionErrors();
         e.expect(AssertionError.class);
         e.expectMessage("Eit underlag kan ikkje inneholde underlagsperioder som overlappar kvarandre");
         e.expectMessage("2015-01-15->2015-12-31");
@@ -163,7 +162,6 @@ public class UnderlagTest {
      */
     @Test
     public void skalInneholdeUnderlagsperioderIKronologiskRekkefoelge() {
-        e.handleAssertionErrors();
         e.expect(AssertionError.class);
         e.expectMessage("underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge");
         final Underlagsperiode b = periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.08.14")).bygg();
@@ -178,7 +176,6 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneKonstruereUnderlagMedTidsgapMellomUnderlagsperiodene() {
-        e.handleAssertionErrors();
         e.expect(AssertionError.class);
         e.expectMessage("kan ikkje inneholde tidsgap");
         e.expectMessage("31 dagar tidsgap mellom");
@@ -198,15 +195,14 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneAvgrenseUnderlagSlikAtDetOppstaarTidsgapMellomUnderlagsperiodene() {
-        e.handleAssertionErrors();
         e.expect(AssertionError.class);
 
         final Underlag uavgrensa = create(
-                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(new Integer(2)),
-                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(new Integer(3)),
-                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.12.31")).med(new Integer(2))
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(2),
+                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(3),
+                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.12.31")).med(2)
         );
-        uavgrensa.restrict(p -> p.annotasjonFor(Integer.class).intValue() == 2);
+        uavgrensa.restrict(p -> p.annotasjonFor(Integer.class) == 2);
     }
 
     /**
@@ -216,17 +212,17 @@ public class UnderlagTest {
     @Test
     public void skalFjerneAlleUoenskaUnderlagsperioderVedAvgrensing() {
         final Underlag uavgrensa = create(
-                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(new Integer(2)),
-                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.12.31")).med(new Integer(3))
+                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(2),
+                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.12.31")).med(3)
         );
-        final Underlag avgrensa = uavgrensa.restrict(p -> p.annotasjonFor(Integer.class).intValue() == 2);
+        final Underlag avgrensa = uavgrensa.restrict(p -> p.annotasjonFor(Integer.class) == 2);
         assertThat(
                 avgrensa
                         .stream()
                         .map(p -> p.valgfriAnnotasjonFor(Integer.class))
-                        .map(o -> o.get())
+                        .map(Optional::get)
                         .collect(toList())
-        ).containsOnly(new Integer(2));
+        ).containsOnly(2);
     }
 
     /**
@@ -258,7 +254,7 @@ public class UnderlagTest {
     }
 
     private Underlag create(UnderlagsperiodeBuilder... perioder) {
-        return new Underlag(asList(perioder).stream().map(b -> b.bygg()));
+        return new Underlag(asList(perioder).stream().map(UnderlagsperiodeBuilder::bygg));
     }
 
     private static Underlag eitTomtUnderlag() {
