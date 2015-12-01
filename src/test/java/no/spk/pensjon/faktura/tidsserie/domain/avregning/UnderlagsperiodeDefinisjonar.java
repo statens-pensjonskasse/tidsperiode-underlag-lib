@@ -1,21 +1,30 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 import static java.time.LocalDate.now;
+import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
+import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErUnderMinstegrensaRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 
 import cucumber.api.DataTable;
@@ -56,6 +65,8 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
         Supports("Årsverk", AarsverkRegel.class, KonverterFraTekst::aarsverkRegel);
         Supports("Årsfaktor", AarsfaktorRegel.class, KonverterFraTekst::aarsfaktorRegel);
+        Supports("Stillingsprosent", Stillingsprosent.class, KonverterFraTekst::stillingsprosent);
+        Supports("Ordning", Ordning.class, KonverterFraTekst::ordning);
 
         // Språkdefinisjon for annotering av underlagsperioder
         Gitt("^en underlagsperiode med følgende innhold:$", (DataTable underlagsperioder) -> {
@@ -64,7 +75,10 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
             populerFra(underlagsperioder);
         });
-
+        Gitt("^underlagsperioden sin fra og med-dato er ([0-9\\.]{10})$", this::fraOgMed);
+        Gitt("^underlagsperioden sin til og med-dato er ([0-9\\.]{10})$", this::tilOgMed);
+        Gitt("^underlagsperioden benytter regler for avregning$", this::avregningsreglar);
+        Så("^er stillingen (.+) minstegrensen.?$", this::assertErOverEllerUnderMinstegrensen);
     }
 
     @Before
@@ -109,6 +123,43 @@ public class UnderlagsperiodeDefinisjonar implements No {
                 .map(k -> "\t- " + k)
                 .collect(joining("\n"))
         );
+    }
+
+
+    private void assertErOverEllerUnderMinstegrensen(final String resultat) {
+        final Underlagsperiode periode = this.periode.bygg();
+        assertThat(periode.beregn(ErUnderMinstegrensaRegel.class) ? "under" : "over")
+                .as(
+                        "er stillingen under minstegrensen i perioden "
+                                + periode
+                                + " når stillingsstørrelsen er "
+                                + periode.valgfriAnnotasjonFor(Stillingsprosent.class).map(Object::toString).orElse("ukjent") + "?"
+                                + resultat
+                )
+                .isEqualTo(overEllerUnder(resultat));
+    }
+
+    private String overEllerUnder(final String resultat) {
+        switch (resultat.toLowerCase()) {
+            case "over":
+            case "under":
+                return resultat.toLowerCase();
+            default:
+                throw new IllegalArgumentException(resultat + " er ikkje ei gyldig verdi når du skal sjekke om ein er over eller under minstegrensa, lovlige verdiar er: over, under");
+        }
+    }
+
+    private void fraOgMed(final String fraOgMed) {
+        periode.fraOgMed(dato(fraOgMed));
+    }
+
+    private void tilOgMed(final String tilOgMed) {
+        periode.tilOgMed(dato(tilOgMed));
+    }
+
+    private void avregningsreglar() {
+        final AvregningsRegelsett regler = new AvregningsRegelsett();
+        regler.reglar().forEach(r -> r.annoter(periode));
     }
 
     private static class Datatype<T> {
