@@ -32,8 +32,8 @@ public class FinnLoennForLoennstrinnTest {
             .tilOgMed(dato("2007.07.31"));
 
     /**
-     * Verifiserer at algoritma ikkje feilar dersom det ikkje eksisterer ei gruppering som inneheld lønnstrinnperioder
-     * som er gjeldande for lønnstrinnet innanfor underlagsperioda.
+     * Verifiserer at algoritma ikkje feilar dersom det ikkje eksisterer ei gruppering som inneheld lÃ¸nnstrinnperioder
+     * som er gjeldande for lÃ¸nnstrinnet innanfor underlagsperioda.
      */
     @Test
     public void skalIkkjeFeileDersomDetIkkjeEksistererEiLoennstrinnperiodeSomTilhoeyrerLoennstrinnet() {
@@ -49,8 +49,8 @@ public class FinnLoennForLoennstrinnTest {
     }
 
     /**
-     * Verifiserer at algoritma feilar dersom det eksisterer fleire grupperingar som inneheld lønnstrinnperioder
-     * som er gjeldande for lønnstrinnet innanfor ei og samme underlagsperiode.
+     * Verifiserer at algoritma feilar dersom det eksisterer fleire grupperingar som inneheld lÃ¸nnstrinnperioder
+     * som er gjeldande for lÃ¸nnstrinnet innanfor ei og samme underlagsperiode.
      */
     @Test
     public void skalFeileDersomDetEksistererFleireLoennstrinnperioderSomTilhoeyrerLoennstrinnet() {
@@ -58,7 +58,7 @@ public class FinnLoennForLoennstrinnTest {
         final Loennstrinn loennstrinn = loennstrinn(27);
 
         e.expect(IllegalStateException.class);
-        e.expectMessage("Det er oppdaga fleire lønnstrinnperioder for");
+        e.expectMessage("Det er oppdaga fleire lÃ¸nnstrinnperioder for");
         e.expectMessage(loennstrinn.toString());
 
         new FinnLoennForLoennstrinn(
@@ -85,7 +85,7 @@ public class FinnLoennForLoennstrinnTest {
     }
 
     /**
-     * Verifiserer at algoritma klarer å finne lønn for lønnstrinnet både når det eksisterer kun ei og når det
+     * Verifiserer at algoritma klarer Ã¥ finne lÃ¸nn for lÃ¸nnstrinnet bÃ¥de nÃ¥r det eksisterer kun ei og nÃ¥r det
      * eksisterer fleire grupperingar som er gjeldande innanfor underlagsperioda.
      */
     @Test
@@ -127,6 +127,6 @@ public class FinnLoennForLoennstrinnTest {
     private static OptionalAssert<LoennstrinnBeloep> assertLoennForLoennstrinn(
             final UnderlagsperiodeBuilder builder, final Loennstrinn loennstrinn) {
         return assertThat(new FinnLoennForLoennstrinn(builder.bygg()).loennForLoennstrinn())
-                .as("lønn for lønnstrinn " + loennstrinn);
+                .as("lÃ¸nn for lÃ¸nnstrinn " + loennstrinn);
     }
 }

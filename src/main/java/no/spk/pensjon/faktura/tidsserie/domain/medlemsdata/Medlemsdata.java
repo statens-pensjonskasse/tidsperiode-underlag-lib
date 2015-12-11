@@ -17,56 +17,56 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata} representerer all
- * informasjon tilknytta eit bestemt medlem, som er påkrevd for å støtte premie- og lønnsberegning for medlemet.
+ * informasjon tilknytta eit bestemt medlem, som er pÃ¥krevd for Ã¥ stÃ¸tte premie- og lÃ¸nnsberegning for medlemet.
  * <p>
- * Dei tre primære datatypene som er påkrevd for dette er stillingsendringar frå stillingshistorikken,
+ * Dei tre primÃ¦re datatypene som er pÃ¥krevd for dette er stillingsendringar frÃ¥ stillingshistorikken,
  * medregningar og avtalekoblingar for alle stillingsforholda tilknytta medlemmet og som ein skal gjere beregningar
  * for.
  * </p>
  * <p>
  * Den medlemsspesifikke informasjonen som objektet inneheld blir internt og eksternt handtert som ei samling med tekstverdiar,
  * organisert som rader og kolonner i form av ei liste som inneheld lister som igjen inneheld strengar.
- * Denne representaasjonen er valgt for å holde serialiseringa enkel og forenkle handtering av stillingshistorikk,
- * medregning og avtalekoblingar utan å måtte lage spesialisert serialisering for kvar og ein av desse.
+ * Denne representaasjonen er valgt for Ã¥ holde serialiseringa enkel og forenkle handtering av stillingshistorikk,
+ * medregning og avtalekoblingar utan Ã¥ mÃ¥tte lage spesialisert serialisering for kvar og ein av desse.
  * </p>
  * <p>
- * Kontrakta for korleis kvar rad må sjå ut, varierer mellom dei 3 forskjellige datatypene. Men 4 felt er likevel
- * påkrevd for at ting skal fungere som ønska:
+ * Kontrakta for korleis kvar rad mÃ¥ sjÃ¥ ut, varierer mellom dei 3 forskjellige datatypene. Men 4 felt er likevel
+ * pÃ¥krevd for at ting skal fungere som Ã¸nska:
  * </p>
  * <ol>
  * <li>Typeindikator</li>
- * <li>Fødselsdato</li>
+ * <li>FÃ¸dselsdato</li>
  * <li>Personnummer</li>
  * <li>Stillingsforholdnummer</li>
  * </ol>
  * <h3>Stillingshistorikk</h3>
  * <p>
- * Informasjon henta frå stillingshistorikken blir mappa om og representert som
- * {@link Stillingsendring}. Dette blir automatisk utført for alle
+ * Informasjon henta frÃ¥ stillingshistorikken blir mappa om og representert som
+ * {@link Stillingsendring}. Dette blir automatisk utfÃ¸rt for alle
  * medlemsdata som har verdien <code>0</code> som sin typeindikator.
  * </p>
  * <p>
- * Ansvaret for handtering og mapping frå råformat til {@link Stillingsendring} er klientane
- * sitt ansvar. Sjå dei konkrete implementasjonane av
+ * Ansvaret for handtering og mapping frÃ¥ rÃ¥format til {@link Stillingsendring} er klientane
+ * sitt ansvar. SjÃ¥ dei konkrete implementasjonane av
  * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.MedlemsdataOversetter} for informasjon
- * om kontrakta som input-datane må oppfylle.
+ * om kontrakta som input-datane mÃ¥ oppfylle.
  * </p>
  *
  * @author Tarjei Skorgenes
  */
 public class Medlemsdata {
     /**
-     * Indexen fødselsdatoen blir henta frå i radene som utgjer medlemsdatane.
+     * Indexen fÃ¸dselsdatoen blir henta frÃ¥ i radene som utgjer medlemsdatane.
      */
     private static final int INDEX_FOEDSELSDATO_ID = 1;
 
     /**
-     * Indexen personnummeret blir henta frå i radene som utgjer medlemsdatane.
+     * Indexen personnummeret blir henta frÃ¥ i radene som utgjer medlemsdatane.
      */
     private static final int INDEX_PERSONNUMMER_ID = 2;
 
     /**
-     * Indexen stillingsforholdnummeret blir henta frå i radene som utgjer medlemsdatane.
+     * Indexen stillingsforholdnummeret blir henta frÃ¥ i radene som utgjer medlemsdatane.
      */
     private static final int INDEX_STILLINGSFORHOLD_ID = 3;
 
@@ -75,36 +75,36 @@ public class Medlemsdata {
     private final List<List<String>> data;
 
     /**
-     * Konstruerer eit nytt sett med medlemsdata basert på <code>medlemsdata</code>.
+     * Konstruerer eit nytt sett med medlemsdata basert pÃ¥ <code>medlemsdata</code>.
      * <p>
-     * Referansen til datasettet som blir sendt inn blir brukt direkte for å unngå allokering og kopiering til ei ny
-     * samling, data gjort på <code>medlemsdata</code> etter konstruksjon vil derfor vere direkte synlig for Medlemsdata.
+     * Referansen til datasettet som blir sendt inn blir brukt direkte for Ã¥ unngÃ¥ allokering og kopiering til ei ny
+     * samling, data gjort pÃ¥ <code>medlemsdata</code> etter konstruksjon vil derfor vere direkte synlig for Medlemsdata.
      * <p>
-     * Ettersom kontrakta for formatet på verdiane i <code>medlemsdata</code> er at alt skal representerast som svakt typa
-     * lister av tekst, er det implementert støtte for å konvertere frå desse tekstlige verdaine til sterkt typa
-     * datatyper som er bedre tilrettelagt for vidare behdnaling. Denne konverteringa blir ikkje utført ved konstruksjon,
-     * den blir utført kvar gang metoder som returnerer sterkt typa data, blir kalla på det konstruerte objektet.
+     * Ettersom kontrakta for formatet pÃ¥ verdiane i <code>medlemsdata</code> er at alt skal representerast som svakt typa
+     * lister av tekst, er det implementert stÃ¸tte for Ã¥ konvertere frÃ¥ desse tekstlige verdaine til sterkt typa
+     * datatyper som er bedre tilrettelagt for vidare behdnaling. Denne konverteringa blir ikkje utfÃ¸rt ved konstruksjon,
+     * den blir utfÃ¸rt kvar gang metoder som returnerer sterkt typa data, blir kalla pÃ¥ det konstruerte objektet.
      *
      * @param medlemsdata datasettet som inneholder den medlemsspesifikke informasjonen som skal behandles
-     * @param oversettere oversettere som er ansvarlige for å konvertere radene i <code>medlemsdata</code> til sterkt
+     * @param oversettere oversettere som er ansvarlige for Ã¥ konvertere radene i <code>medlemsdata</code> til sterkt
      *                    typa verdiar ved senere behandling
      * @throws NullPointerException     viss noen av parameterverdiene er <code>null</code>
      * @throws IllegalArgumentException viss <code>medlemsdata</code> ikkje inneheld noko informasjon og er tom eller
-     *                                  viss <code>medlemsdata</code> inneheld medlemsdata frå meir enn eit medlem
+     *                                  viss <code>medlemsdata</code> inneheld medlemsdata frÃ¥ meir enn eit medlem
      */
     public Medlemsdata(final List<List<String>> medlemsdata, final Map<Class<?>, MedlemsdataOversetter<?>> oversettere) {
-        requireNonNull(medlemsdata, () -> "medlemsdata er påkrevd, men var null");
-        requireNonNull(oversettere, () -> "oversettere er påkrevd, men var null");
+        requireNonNull(medlemsdata, () -> "medlemsdata er pÃ¥krevd, men var null");
+        requireNonNull(oversettere, () -> "oversettere er pÃ¥krevd, men var null");
         if (medlemsdata.isEmpty()) {
             throw new IllegalArgumentException(
-                    "medlemsdata må inneholde minst ei stillingsendring, medregning eller avtalekobling, men var tom"
+                    "medlemsdata mÃ¥ inneholde minst ei stillingsendring, medregning eller avtalekobling, men var tom"
             );
         }
         final Set<String> foedselsnummer = tilFoedselsnummer(medlemsdata);
         if (foedselsnummer.size() > 1) {
             throw new IllegalArgumentException(
                     "medlemsdata kan kun inneholde data for eit medlem om gangen, "
-                            + "men inneholdt rader tilhøyrande følgjande medlemmar:\n"
+                            + "men inneholdt rader tilhÃ¸yrande fÃ¸lgjande medlemmar:\n"
                             + foedselsnummer
                             .stream()
                             .map(f -> "- " + f)
@@ -117,10 +117,10 @@ public class Medlemsdata {
 
     /**
      * Listar ut alle avtalekoblingar tilknytta medlemmet sine stillingsforhold, som matchar
-     * det angitte søkekriteriet.
+     * det angitte sÃ¸kekriteriet.
      *
      * @param predikat eit predikat som indikerer kva avtalekoblingar som skal returnerast
-     * @return ein straum med alle avtalekoblingane som tilhøyrer medlemmet sine stillingsforhold og som ikkje
+     * @return ein straum med alle avtalekoblingane som tilhÃ¸yrer medlemmet sine stillingsforhold og som ikkje
      * blir filtrert bort
      */
     public Stream<Avtalekoblingsperiode> avtalekoblingar(final Predicate<Avtalekoblingsperiode> predikat) {
@@ -133,8 +133,8 @@ public class Medlemsdata {
      * @return ein straum med alle dei unike stillingsforholda som medlemmet er tilknytta
      */
     public Stream<StillingsforholdId> allePeriodiserbareStillingsforhold() {
-        // Dersom vi endrar designet til å også ta inn data som ikkje er kobla mot stillingsforhold må denne straumen
-        // filtrerast til kun å inneholde data tilknytta stillingsforhold
+        // Dersom vi endrar designet til Ã¥ ogsÃ¥ ta inn data som ikkje er kobla mot stillingsforhold mÃ¥ denne straumen
+        // filtrerast til kun Ã¥ inneholde data tilknytta stillingsforhold
         return data
                 .stream()
                 .map(e -> e.get(INDEX_STILLINGSFORHOLD_ID))
@@ -146,12 +146,12 @@ public class Medlemsdata {
     /**
      * Periodiserer alle unike stillingsforhold som vi har stillingsendringar tilknytta.
      * <p>
-     * For kvart stillingsforhold blir alle tilknytta stillingsendringar henta ut og brukt for å bygge opp
+     * For kvart stillingsforhold blir alle tilknytta stillingsendringar henta ut og brukt for Ã¥ bygge opp
      * ein ny instans av {@link StillingsforholdPerioder} for kvart
      * stillingsforhold.
      * <p>
-     * For stillingsforhold som ikkje har nokon stillingsendringar men som har medregning vil det foreløpig ikkje blir
-     * generert nokon periodisering basert på dette.
+     * For stillingsforhold som ikkje har nokon stillingsendringar men som har medregning vil det forelÃ¸pig ikkje blir
+     * generert nokon periodisering basert pÃ¥ dette.
      *
      * @return ein straum som inneheld alle stillingsforholdperioder for alle stillingsforhold som vi har stillingsendringar for
      * @see #allePeriodiserbareStillingsforhold()
@@ -169,7 +169,7 @@ public class Medlemsdata {
      * @param stillingsforhold stillingsforholdet som skal periodiserast
      * @return ein periodisert representasjon av stillingsforholdet viss det er tilknytta stillingsendringar eller medregning,
      * eller {@link java.util.Optional#empty()} dersom det ikkje eksisterer nokon informasjon tilknytta stillingsforholdet
-     * @throws IllegalStateException viss det eksisterer både historikk og medregningar som tilhøyrer stillingsforholdet
+     * @throws IllegalStateException viss det eksisterer bÃ¥de historikk og medregningar som tilhÃ¸yrer stillingsforholdet
      */
     private Optional<StillingsforholdPerioder> periodiserStillingsforhold(final StillingsforholdId stillingsforhold) {
         final Optional<StillingsforholdPerioder> historikk = periodiserHistorikk(stillingsforhold);
@@ -219,10 +219,10 @@ public class Medlemsdata {
      * stillingsforholdperioder for kvar av desse.
      * <p>
      * Periodene som blir returnert blir sortert i henhold til fra og med dato slik at dei kjem i kronologisk
-     * rekkefølge på samme måte som perioder generert basert på stillingshistorikk gjer.
+     * rekkefÃ¸lge pÃ¥ samme mÃ¥te som perioder generert basert pÃ¥ stillingshistorikk gjer.
      *
-     * @param stillingsforhold stillingsforholdet som skal forsøkast periodisert basert på medregning
-     * @return alle stillingsforholdperioder generert for stillingsforholdet basert på medregning, eller ingenting
+     * @param stillingsforhold stillingsforholdet som skal forsÃ¸kast periodisert basert pÃ¥ medregning
+     * @return alle stillingsforholdperioder generert for stillingsforholdet basert pÃ¥ medregning, eller ingenting
      * dersom stillingsforholdet ikkje har nokon medregningar
      */
     private Optional<StillingsforholdPerioder> periodiserMedregning(final StillingsforholdId stillingsforhold) {
@@ -238,13 +238,13 @@ public class Medlemsdata {
 
     /**
      * Lokaliserer alle stillingsendringar tilknytta det angitte stillingsforholdet og periodiserer
-     * stillingsforholdet basert på dette.
+     * stillingsforholdet basert pÃ¥ dette.
      * <p>
      * Dersom det ikkje eksisterer nokon stillingsendringar tilknytta stillingsforhold blir dette ignorert
-     * sidan det høgst sannsynlig då vil eksisterer ei medregning tilknytta stillingsforholdet og den
+     * sidan det hÃ¸gst sannsynlig dÃ¥ vil eksisterer ei medregning tilknytta stillingsforholdet og den
      * forventast handtert av den som kallar denne metoda.
      *
-     * @param stillingsforhold stillingsforholdet som skal forsøkast periodisert basert på stillingsendringar
+     * @param stillingsforhold stillingsforholdet som skal forsÃ¸kast periodisert basert pÃ¥ stillingsendringar
      * @return alle stillingsforholdperioder generert for stillingsforholdet, eller ingenting dersom det ikkje
      * eksisterer nokon stillingsendringar som er tilknytta stillingsforholdet
      */
@@ -261,7 +261,7 @@ public class Medlemsdata {
     }
 
     /**
-     * Genererer ei tekstlig oversikt over all medlemsinformasjonen, gruppert på type.
+     * Genererer ei tekstlig oversikt over all medlemsinformasjonen, gruppert pÃ¥ type.
      *
      * @return ein tekstlig representaasjon av alle medlemsdatane som er tilgjengelig for medlemmet
      */
@@ -314,10 +314,10 @@ public class Medlemsdata {
     }
 
     /**
-     * Bygger opp medlemsperioder basert på alle medlemmets stillingsendringar og medregningar.
+     * Bygger opp medlemsperioder basert pÃ¥ alle medlemmets stillingsendringar og medregningar.
      * <p>
-     * Avtalekoblingar blir utelatt sidan dei primært har med avtalen og medlemmets stillingsforhold å gjere, ikkje
-     * tilstanda til sjølve medlemmet.
+     * Avtalekoblingar blir utelatt sidan dei primÃ¦rt har med avtalen og medlemmets stillingsforhold Ã¥ gjere, ikkje
+     * tilstanda til sjÃ¸lve medlemmet.
      *
      * @return alle medlemmet sine medlemsperioder, eller ingenting om medlemmet kun har avtalekoblingar
      * utan nokon stillingsendringar eller medregningar

@@ -18,18 +18,18 @@ public class Prosent implements Sats{
      */
     public static final Prosent ZERO = new Prosent(0d);
 
-    private static final Supplier<String> VALIDER_TEKST = () -> "prosentsatsen er påkrevd, men var null";
+    private static final Supplier<String> VALIDER_TEKST = () -> "prosentsatsen er pÃ¥krevd, men var null";
 
     private final double verdi;
 
     /**
-     * Konstruerer ein ny prosentsats ut frå den tekstlige representasjonen av satsen.
+     * Konstruerer ein ny prosentsats ut frÃ¥ den tekstlige representasjonen av satsen.
      * <p>
      * <code>tekst</code> blir strippa for mellomrom og %-tegn og konvertert direkte til ein prosentsats
      * <br>
-     * Prosentsatsen støttar spesifisering av prosentsatsar med desimalar, både komma og punktum blir handtert.
+     * Prosentsatsen stÃ¸ttar spesifisering av prosentsatsar med desimalar, bÃ¥de komma og punktum blir handtert.
      *
-     * @param tekst ein <code>String</code> som inneheld ein prosentsats, formatert på forma <code>123%</code>
+     * @param tekst ein <code>String</code> som inneheld ein prosentsats, formatert pÃ¥ forma <code>123%</code>
      * @throws java.lang.NullPointerException  viss <code>tekst</code> er <code>null</code>
      * @throws java.lang.NumberFormatException viss <code>tekst</code> ikkje kan konverterast til ein prosentsats
      *                                         fordi den inneheld andre tegn enn tall, %-tegn eller mellomrom.
@@ -45,11 +45,11 @@ public class Prosent implements Sats{
     }
 
     /**
-     * Konstruerer ein ny prosentsats ut frå den numeriske representasjonen av satsen.
+     * Konstruerer ein ny prosentsats ut frÃ¥ den numeriske representasjonen av satsen.
      * <br>
      * Merk at verdien blir tolka som ein skalert prosentsats av samme type som returnert av {@link #toDouble()},
-     * den blir ikkje delt på 100 eller tilsvarande slik som den tekstlige representasjonen blir ved parsing. Ergo vil ein verdi på 100
-     * bli tolka som ein prosentsats på 10 000%.
+     * den blir ikkje delt pÃ¥ 100 eller tilsvarande slik som den tekstlige representasjonen blir ved parsing. Ergo vil ein verdi pÃ¥ 100
+     * bli tolka som ein prosentsats pÃ¥ 10 000%.
      *
      * @param verdi ein <code>double</code> som inneheld ein ferdig vekta numerisk representasjon av ein prosentsat
      */
@@ -70,7 +70,7 @@ public class Prosent implements Sats{
     }
 
     /**
-     * Trekker verdien av den andre prosenten frå verdien av gjeldande prosent.
+     * Trekker verdien av den andre prosenten frÃ¥ verdien av gjeldande prosent.
      *
      * @param other den andre prosenten
      * @return gjeldande prosentverdi minus den andre prosentverdien
@@ -104,7 +104,7 @@ public class Prosent implements Sats{
      * <br>
      * -50% =&gt; -0.5
      *
-     * @return prosentsatsen representert som eit desimaltall i form av prosentsatsen delt på 100
+     * @return prosentsatsen representert som eit desimaltall i form av prosentsatsen delt pÃ¥ 100
      */
     public double toDouble() {
         return verdi;
@@ -113,7 +113,7 @@ public class Prosent implements Sats{
     /**
      * Listar ut prosentsatsen som tekst med 3 desimalar, utan tusen-separator og med % som postfix.
      * <br>
-     * NB: Dette er ein potensielt dyr operasjon då formateringa og avrundinga blir utført via ein ny
+     * NB: Dette er ein potensielt dyr operasjon dÃ¥ formateringa og avrundinga blir utfÃ¸rt via ein ny
      * {@link java.text.NumberFormat} pr kall.
      */
     @Override
@@ -137,7 +137,7 @@ public class Prosent implements Sats{
 
     /**
      * @see #Prosent(String)
-     * @param text ein <code>String</code> som inneheld ein prosentsats, formatert på forma <code>123%</code>
+     * @param text ein <code>String</code> som inneheld ein prosentsats, formatert pÃ¥ forma <code>123%</code>
      * @return Ny prosent
      */
     public static Prosent prosent(final String text) {

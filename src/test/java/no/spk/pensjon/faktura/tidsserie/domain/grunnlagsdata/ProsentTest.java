@@ -44,7 +44,7 @@ public class ProsentTest {
     @Test
     public void skalFeileVissTekstErNull() {
         e.expect(NullPointerException.class);
-        e.expectMessage("er påkrevd");
+        e.expectMessage("er pÃ¥krevd");
         e.expectMessage("men var null");
         prosent(null);
     }

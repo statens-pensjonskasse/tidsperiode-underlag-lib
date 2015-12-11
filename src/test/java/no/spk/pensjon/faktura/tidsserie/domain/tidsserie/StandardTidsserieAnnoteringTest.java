@@ -129,8 +129,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at perioda blir annotert med ein {@link Avtale} basert på avtalen avtalekoblinga er tilknytta og
-     * avtaleversjonen og avtaleprodukta som tilhøyrer den avtalen.
+     * Verifiserer at perioda blir annotert med ein {@link Avtale} basert pÃ¥ avtalen avtalekoblinga er tilknytta og
+     * avtaleversjonen og avtaleprodukta som tilhÃ¸yrer den avtalen.
      */
     @Test
     public void skalAnnotereMedAvtaleBygdOppBasertPaaAvtaleversjonOgAvtaleproduktaTilknyttaAvtalekoblingasAvtale() {
@@ -176,7 +176,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene blir annotert med aktivestillingar frå medlemsperiodene.
+     * Verifiserer at underlagsperiodene blir annotert med aktivestillingar frÃ¥ medlemsperiodene.
      */
     @Test
     public void skalAnnotereMedAktiveStillingaFraaMedlemsperioda() {
@@ -200,11 +200,11 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene blir annotert med medregningskode frå stillingsforholdperioder tilknytta
+     * Verifiserer at underlagsperiodene blir annotert med medregningskode frÃ¥ stillingsforholdperioder tilknytta
      * medregning.
      */
     @Test
-    public void skalAnnotereMedMedregningskodeFråStillingsforholdperioderTilknyttaMedregning() {
+    public void skalAnnotereMedMedregningskodeFrÃ¥StillingsforholdperioderTilknyttaMedregning() {
         final Medregningskode expected = Medregningskode.BISTILLING;
         final Underlag underlag = annoterAllePerioder(
                 eiPeriode()
@@ -220,11 +220,11 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene blir annotert med medregna beløp frå stillingsforholdperioder tilknytta
+     * Verifiserer at underlagsperiodene blir annotert med medregna belÃ¸p frÃ¥ stillingsforholdperioder tilknytta
      * medregning.
      */
     @Test
-    public void skalAnnotereMedMedregningsbeløpFråStillingsforholdperioderTilknyttaMedregning() {
+    public void skalAnnotereMedMedregningsbelÃ¸pFrÃ¥StillingsforholdperioderTilknyttaMedregning() {
         final Medregning expected = new Medregning(kroner(10_000));
         final Underlag underlag = annoterAllePerioder(
                 eiPeriode()
@@ -240,7 +240,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene blir annotert med aksjonskode frå stillingsforholdperioda dei overlappar.
+     * Verifiserer at underlagsperiodene blir annotert med aksjonskode frÃ¥ stillingsforholdperioda dei overlappar.
      */
     @Test
     public void skalAnnotereUnderlagsperioderMedAksjonskodeFraGjeldandeStillingsendring() {
@@ -263,7 +263,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene blir annotert med stillingsforhold frå stillingsforholdperioder tilknytta
+     * Verifiserer at underlagsperiodene blir annotert med stillingsforhold frÃ¥ stillingsforholdperioder tilknytta
      * medregning.
      */
     @Test
@@ -283,8 +283,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene blir annotert med stillingsforhold frå stillingsforholdperioda dei overlappar
-     * når den er tilknytta stillingsendring.
+     * Verifiserer at underlagsperiodene blir annotert med stillingsforhold frÃ¥ stillingsforholdperioda dei overlappar
+     * nÃ¥r den er tilknytta stillingsendring.
      */
     @Test
     public void skalAnnotereUnderlagsperioderMedStillingsforholdFraGjeldandeStillingsendring() {
@@ -389,7 +389,7 @@ public class StandardTidsserieAnnoteringTest {
     @Test
     public void skalFeileDersomUnderlagsperiodeOverlapparMeirEnnEinAvtaleversjon() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Avtaleversjon");
+        e.expectMessage("Klarer ikkje Ã¥ entydig avgjere kva som er gjeldande Avtaleversjon");
         AvtaleId avtale = new AvtaleId(12345L);
         annoterAllePerioder(
                 eiTomPeriode()
@@ -450,8 +450,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at oppslag av lønnstrinnbeløp for apotekordninga fungerer viss ein har informasjon om både
-     * lønnstrinn, stillingskode og lønnstrinnperiode for apotekordninga for avtalar tilknytta Apotekordninga.
+     * Verifiserer at oppslag av lÃ¸nnstrinnbelÃ¸p for apotekordninga fungerer viss ein har informasjon om bÃ¥de
+     * lÃ¸nnstrinn, stillingskode og lÃ¸nnstrinnperiode for apotekordninga for avtalar tilknytta Apotekordninga.
      */
     @Test
     public void skalAnnotereLoennstrinnBeloepForApotekOrdninga() {
@@ -503,7 +503,7 @@ public class StandardTidsserieAnnoteringTest {
 
     /**
      * Verifiserer at et stillingsforhold som er kynttet til en avtale som er knyttet en arbeidsgiver
-     * annoterer arbeidsgiverid på underlagsperioden
+     * annoterer arbeidsgiverid pÃ¥ underlagsperioden
      */
     @Test
     public void skalAnnotereArbeidsgiveridVedTilkobletArbeidsgiverperiode() {
@@ -539,7 +539,7 @@ public class StandardTidsserieAnnoteringTest {
 
     /**
      * Verifiserer at et stillingsforhold som er kynttet til en avtale som er knyttet til kundedata via arbeidsgiverid
-     * annoterer Orgnummer på underlagsperioden
+     * annoterer Orgnummer pÃ¥ underlagsperioden
      */
     @Test
     public void skalAnnotereOrgnummerVedTilkobletKundedataperiode() {
@@ -578,9 +578,9 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at et stillingsforhold som gjennomgått avtalebytte slik at stillingsforholdet har kobling
-     * til overlappende arbeidsgiverperioder, så skal kun arbeidsgiverperioden som tilhører gjeldende avtale
-     * benyttes for å annotere underlagsperioden
+     * Verifiserer at et stillingsforhold som gjennomgÃ¥tt avtalebytte slik at stillingsforholdet har kobling
+     * til overlappende arbeidsgiverperioder, sÃ¥ skal kun arbeidsgiverperioden som tilhÃ¸rer gjeldende avtale
+     * benyttes for Ã¥ annotere underlagsperioden
      */
     @Test
     public void skalAnnotereArbeidsgiverIdKunForArbeidsgiverSomTilhorerAvtalenForPerioden() {
@@ -758,7 +758,7 @@ public class StandardTidsserieAnnoteringTest {
     @Test
     public void skalAvbryteAnnoteringDersomUnderlagsperiodeErTilkoblaMeirEnnEiAvtaleperiodeSomTilhoeyrerSammeAvtale() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Avtaleperiode");
+        e.expectMessage("Klarer ikkje Ã¥ entydig avgjere kva som er gjeldande Avtaleperiode");
         AvtaleId avtale = new AvtaleId(12345L);
         annoterAllePerioder(
                 eiTomPeriode()
@@ -787,7 +787,7 @@ public class StandardTidsserieAnnoteringTest {
     @Test
     public void skalAvbryteAnnoteringDersomUnderlagsperiodeErTilkoblaMeirEnnEiArbeidsgiverperiodeSomTilhoeyrerSammeAvtaleperiode() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Arbeidsgiverperiode");
+        e.expectMessage("Klarer ikkje Ã¥ entydig avgjere kva som er gjeldande Arbeidsgiverperiode");
         AvtaleId avtale = new AvtaleId(12345L);
         ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(2L);
         annoterAllePerioder(
@@ -822,7 +822,7 @@ public class StandardTidsserieAnnoteringTest {
     @Test
     public void skalAvbryteAnnoteringDersomUnderlagsperiodeErTilkoblaMeirEnnEiArbeidsgiverdataperiodeSomTilhoeyrerSammeAvtaleperiode() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("Klarer ikkje å entydig avgjere kva som er gjeldande Arbeidsgiverdataperiode");
+        e.expectMessage("Klarer ikkje Ã¥ entydig avgjere kva som er gjeldande Arbeidsgiverdataperiode");
         AvtaleId avtale = new AvtaleId(12345L);
         ArbeidsgiverId arbeidsgiverId = new ArbeidsgiverId(2L);
         annoterAllePerioder(
@@ -854,7 +854,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at annoteringa slår opp alle regelperiodene som overlappar underlagsperioda og brukar desse for å
+     * Verifiserer at annoteringa slÃ¥r opp alle regelperiodene som overlappar underlagsperioda og brukar desse for Ã¥
      * annotere kvar underlagsperiode med alle gjeldande beregingsreglar.
      */
     @Test
@@ -881,15 +881,15 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at annoteringa feila viss lønnstrinnperiodene er inkonsitente og det eksisterer meir
-     * enn ei lønnstrinnperiode som er gjeldande for eit og samme lønnstrinn innanfor samme tidsrom.
+     * Verifiserer at annoteringa feila viss lÃ¸nnstrinnperiodene er inkonsitente og det eksisterer meir
+     * enn ei lÃ¸nnstrinnperiode som er gjeldande for eit og samme lÃ¸nnstrinn innanfor samme tidsrom.
      */
     @Test
     public void skalFeileDersomMeirEnnEiLoennstrinnperiodeErGjeldandeInnanforSammeTidsperiode() {
         final Loennstrinn loennstrinn = new Loennstrinn(53);
 
         e.expect(IllegalStateException.class);
-        e.expectMessage("Det er oppdaga fleire lønnstrinnperioder for");
+        e.expectMessage("Det er oppdaga fleire lÃ¸nnstrinnperioder for");
         e.expectMessage(loennstrinn.toString());
 
         final StillingsforholdPeriode stilling = new StillingsforholdPeriode(dato("2007.01.23"), empty())
@@ -924,8 +924,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioder der stillinga er innrapportert med lønnstrinn og der vi har ei kobling til
-     * lønnstrinnperioder, blir annotert med gjeldande lønnstrinnbeløp.
+     * Verifiserer at underlagsperioder der stillinga er innrapportert med lÃ¸nnstrinn og der vi har ei kobling til
+     * lÃ¸nnstrinnperioder, blir annotert med gjeldande lÃ¸nnstrinnbelÃ¸p.
      */
     @Test
     public void skalAnnotereUnderlagsperiodeMedLoennstrinnBeloepForLoennstrinnetDersomStillingaBrukarLoennstrinnOgPeriodaErKoblaTilLoennstrinnPerioder() {
@@ -966,8 +966,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at annoteringa ikkje feilar dersom den ikkje klarer å finne gjeldande lønnstrinnbeløp for
-     * stillingas lønnstrinn.
+     * Verifiserer at annoteringa ikkje feilar dersom den ikkje klarer Ã¥ finne gjeldande lÃ¸nnstrinnbelÃ¸p for
+     * stillingas lÃ¸nnstrinn.
      */
     @Test
     public void skalIkkjeFeileDersomAnnoteringaIkkjeFinnEitLoennstrinnBeloepForPeriodasLoennstrinn() {
@@ -1001,7 +1001,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioda ikkje blir annotert med deltidsjustert lønn dersom
+     * Verifiserer at underlagsperioda ikkje blir annotert med deltidsjustert lÃ¸nn dersom
      * den ikkje har ei kobling til ei stillingsforholdperiode.
      */
     @Test
@@ -1010,7 +1010,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioda ikkje blir annotert med lønnstrinn dersom
+     * Verifiserer at underlagsperioda ikkje blir annotert med lÃ¸nnstrinn dersom
      * den ikkje har ei kobling til ei stillingsforholdperiode.
      */
     @Test
@@ -1019,8 +1019,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiode ikkje blir annotert med årstall dersom
-     * den ikkje har ei kobling til månedsperiode.
+     * Verifiserer at underlagsperiode ikkje blir annotert med Ã¥rstall dersom
+     * den ikkje har ei kobling til mÃ¥nedsperiode.
      */
     @Test
     public void skalIkkjeAnnotereUnderlagsperiodeMedMaanedIAarDersomMaanedsperiodeManglar() {
@@ -1028,8 +1028,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioda ikkje blir annotert med årstall dersom
-     * den ikkje har ei kobling til årsperiode.
+     * Verifiserer at underlagsperioda ikkje blir annotert med Ã¥rstall dersom
+     * den ikkje har ei kobling til Ã¥rsperiode.
      */
     @Test
     public void skalIkkjeAnnotereUnderlagsperiodeMedAarstallDersomAarsperiodeManglar() {
@@ -1037,8 +1037,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioda blir annotert med lønnstrinn dersom den er tilknytta
-     * ei stillingsforholdperiode der gjeldande stillingsendring er innrapportert med lønnstrinn.
+     * Verifiserer at underlagsperioda blir annotert med lÃ¸nnstrinn dersom den er tilknytta
+     * ei stillingsforholdperiode der gjeldande stillingsendring er innrapportert med lÃ¸nnstrinn.
      */
     @Test
     public void skalAnnotereUnderlagsperiodeMedLoennstrinnFraTilkoblaStillingsforholdperiode() {
@@ -1059,8 +1059,8 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioda blir annotert med deltidsjustert lønn dersom den er tilknytta
-     * ei stillingsforholdperiode der gjeldande stillingsendring er innrapportert med lønn.
+     * Verifiserer at underlagsperioda blir annotert med deltidsjustert lÃ¸nn dersom den er tilknytta
+     * ei stillingsforholdperiode der gjeldande stillingsendring er innrapportert med lÃ¸nn.
      */
     @Test
     public void skalAnnotereUnderlagsperiodeMedDeltidsjustertLoennFraTilkoblaStillingsforholdperiode() {
@@ -1099,7 +1099,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioda blir annotert med samme årstall som årsperioda den er tilknytta.
+     * Verifiserer at underlagsperioda blir annotert med samme Ã¥rstall som Ã¥rsperioda den er tilknytta.
      */
     @Test
     public void skalAnnotereUnderlagsperiodeMedMaanedIAarFraTilkoblaMaanedsperiode() {
@@ -1113,7 +1113,7 @@ public class StandardTidsserieAnnoteringTest {
     }
 
     /**
-     * Verifiserer at underlagsperioda blir annotert med samme årstall som årsperioda den er tilknytta.
+     * Verifiserer at underlagsperioda blir annotert med samme Ã¥rstall som Ã¥rsperioda den er tilknytta.
      */
     @Test
     public void skalAnnotereUnderlagsperiodeMedAarstallFraTilkoblaAarsperiode() {

@@ -32,8 +32,8 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
     private Avtaleversjon(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
                           final AvtaleId avtale, final Premiestatus status, final Optional<Premiekategori> kategori) {
         super(fraOgMed, tilOgMed);
-        this.avtale = requireNonNull(avtale, "avtalenummer er påkrevd, men var null");
-        this.status = requireNonNull(status, "premiestatus er påkrevd, men var null");
+        this.avtale = requireNonNull(avtale, "avtalenummer er pÃ¥krevd, men var null");
+        this.status = requireNonNull(status, "premiestatus er pÃ¥krevd, men var null");
         this.kategori = kategori;
     }
 
@@ -48,7 +48,7 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
     }
 
     /**
-     * Oppdaterer avtalebyggarens tilstand til å reflektere kva som er gjeldande premiestatus for avtalen.
+     * Oppdaterer avtalebyggarens tilstand til Ã¥ reflektere kva som er gjeldande premiestatus for avtalen.
      *
      * @param avtale avtalebyggaren som inneheld avtaletilstanda som skal oppdaterast
      */
@@ -85,13 +85,13 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
     /**
      * Opprettar ein ny builder for konstruksjon av nye avtaleversjonar for ein bestemt avtale.
      *
-     * @param avtale avtalenummer for avtalen avtaleversjonane skal tilhøyre
+     * @param avtale avtalenummer for avtalen avtaleversjonane skal tilhÃ¸yre
      * @return ein ny builder for avtaleversjonar for ein bestemt avtale
      * @throws java.lang.NullPointerException viss <code>avtale</code> er <code>null</code>
      * @since 1.1.1
      */
     public static AvtaleversjonBuilder avtaleversjon(final AvtaleId avtale) {
-        return new AvtaleversjonBuilder(requireNonNull(avtale, "avtalenummer er påkrevd, men manglar"));
+        return new AvtaleversjonBuilder(requireNonNull(avtale, "avtalenummer er pÃ¥krevd, men manglar"));
     }
 
     /**
@@ -146,7 +146,7 @@ public class Avtaleversjon extends AbstractTidsperiode<Avtaleversjon> implements
         }
 
         private static Supplier<IllegalStateException> feltManglarVerdi(final String felt) {
-            return () -> new IllegalStateException(felt + " er påkrevd, men manglar verdi");
+            return () -> new IllegalStateException(felt + " er pÃ¥krevd, men manglar verdi");
         }
     }
 }

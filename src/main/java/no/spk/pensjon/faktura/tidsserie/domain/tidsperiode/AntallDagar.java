@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 /**
- * {@link AntallDagar} representerer lengda på ei tidsperiode.
+ * {@link AntallDagar} representerer lengda pÃ¥ ei tidsperiode.
  * <br>
  * Antall dagar skal aldri vere kortare enn 1 dag, 0 eller negative verdiar blir ikkje godtatt.
  *
@@ -16,7 +16,7 @@ public class AntallDagar {
     private final int antall;
 
     /**
-     * Konstruerer eit nytt verdiobjekt som representerer lengde på ei tidsperiode i antall dagar.
+     * Konstruerer eit nytt verdiobjekt som representerer lengde pÃ¥ ei tidsperiode i antall dagar.
      *
      * @param antall antall dagar
      * @throws java.lang.IllegalArgumentException dersom antall er mindre enn eller lik <code>0</code>
@@ -49,18 +49,18 @@ public class AntallDagar {
     }
 
     /**
-     * Beregnar antall dagar i perioda frå og med <code>fraOgMed</code> og til og med <code>tilOgMed</code>.
+     * Beregnar antall dagar i perioda frÃ¥ og med <code>fraOgMed</code> og til og med <code>tilOgMed</code>.
      * <br>
-     * Negativ lengde er ikkje støtta, til og med-dato må derfor vere større enn eller lik frå og med-datoen.
+     * Negativ lengde er ikkje stÃ¸tta, til og med-dato mÃ¥ derfor vere stÃ¸rre enn eller lik frÃ¥ og med-datoen.
      *
-     * @param fraOgMed frå og med-dato for perioda
+     * @param fraOgMed frÃ¥ og med-dato for perioda
      * @param tilOgMed til og med-dato for perioda
-     * @return lengda på tidsperioda mellom dei to dagane, inkludert sjølve frå og med- og til og med-datoane
+     * @return lengda pÃ¥ tidsperioda mellom dei to dagane, inkludert sjÃ¸lve frÃ¥ og med- og til og med-datoane
      * @throws IllegalArgumentException viss <code>fraOgMed</code> er etter <code>tilOgMed</code>
      */
     public static AntallDagar antallDagarMellom(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        requireNonNull(fraOgMed, "frå og med-dato må vere ulik null");
-        requireNonNull(tilOgMed, "til og med-dato må vere ulik null, løpande perioder er ikkje støtta");
+        requireNonNull(fraOgMed, "frÃ¥ og med-dato mÃ¥ vere ulik null");
+        requireNonNull(tilOgMed, "til og med-dato mÃ¥ vere ulik null, lÃ¸pande perioder er ikkje stÃ¸tta");
         Validering.feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilOgMed);
         return antallDagar((int) ChronoUnit.DAYS.between(fraOgMed, tilOgMed) + 1);
     }

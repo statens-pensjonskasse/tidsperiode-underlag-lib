@@ -10,7 +10,7 @@ import static java.util.Optional.of;
 /**
  * {@link Avregningsperiode} representerer informasjon om eit utkast til avregning.
  * <br>
- * Avregningsperioda inneheld informasjon om kva premieår som blir avregna, og versjonsnummeret for avregningsutkastet
+ * Avregningsperioda inneheld informasjon om kva premieÃ¥r som blir avregna, og versjonsnummeret for avregningsutkastet
  * som har blitt generert av avregningsutkast-batchen.
  *
  * @author Tarjei Skorgenes
@@ -21,7 +21,7 @@ public class Avregningsperiode extends AbstractTidsperiode<Avregningsperiode> {
 
     private Avregningsperiode(final AvregningsperiodeBuilder builder) {
         super(builder.fraOgMed.atStartOfYear(), of(builder.tilOgMed.atEndOfYear()));
-        this.avregningsversjon = requireNonNull(builder.avregningsversjon, "avregningsversjon er påkrevd, men var null");
+        this.avregningsversjon = requireNonNull(builder.avregningsversjon, "avregningsversjon er pÃ¥krevd, men var null");
     }
 
     /**
@@ -34,9 +34,9 @@ public class Avregningsperiode extends AbstractTidsperiode<Avregningsperiode> {
     }
 
     /**
-     * Annoterer perioda med informasjon om kva avregningsversjon perioda tilhøyrer.
+     * Annoterer perioda med informasjon om kva avregningsversjon perioda tilhÃ¸yrer.
      *
-     * @param periode underlagsperioda som avregningsversjonen skal annoterast på
+     * @param periode underlagsperioda som avregningsversjonen skal annoterast pÃ¥
      * @see Avregningsversjon
      */
     public void annoter(final Annoterbar<?> periode) {
@@ -49,12 +49,12 @@ public class Avregningsperiode extends AbstractTidsperiode<Avregningsperiode> {
         private Avregningsversjon avregningsversjon;
 
         public AvregningsperiodeBuilder fraOgMed(final Aarstall fraOgMed) {
-            this.fraOgMed = requireNonNull(fraOgMed, "fraOgMed er påkrevd, men var null");
+            this.fraOgMed = requireNonNull(fraOgMed, "fraOgMed er pÃ¥krevd, men var null");
             return this;
         }
 
         public AvregningsperiodeBuilder tilOgMed(final Aarstall tilOgMed) {
-            this.tilOgMed = requireNonNull(tilOgMed, "tilOgMed er påkrevd, men  var null");
+            this.tilOgMed = requireNonNull(tilOgMed, "tilOgMed er pÃ¥krevd, men  var null");
             return this;
         }
 

@@ -9,24 +9,24 @@ import java.util.Optional;
 /**
  * {@link Tidsperiode} representerer ei tidsperiode.
  * <p>
- * Tidsperioda kan enten vere lukka eller løpande. Ei lukka tidsperioder er ei periode som har ein til og med-dato.
- * Ei løpande tidsperiode er ei periode som har ein tom til og med-dato.
+ * Tidsperioda kan enten vere lukka eller lÃ¸pande. Ei lukka tidsperioder er ei periode som har ein til og med-dato.
+ * Ei lÃ¸pande tidsperiode er ei periode som har ein tom til og med-dato.
  *
  * @author Tarjei Skorgenes
  */
 public interface Tidsperiode<T extends Tidsperiode<T>> {
     /**
-     * Første dag i tidsperioda.
+     * FÃ¸rste dag i tidsperioda.
      *
-     * @return periodas frå og med-dato
+     * @return periodas frÃ¥ og med-dato
      */
     LocalDate fraOgMed();
 
     /**
-     * Siste dag i tidsperioda viss den ikkje er løpande.
+     * Siste dag i tidsperioda viss den ikkje er lÃ¸pande.
      *
-     * @return siste dag i tidsperioda viss den ikkje er løpande,
-     * ellers {@link java.util.Optional#empty()} for å indikere at den er løpande
+     * @return siste dag i tidsperioda viss den ikkje er lÃ¸pande,
+     * ellers {@link java.util.Optional#empty()} for Ã¥ indikere at den er lÃ¸pande
      */
 
     Optional<LocalDate> tilOgMed();
@@ -43,7 +43,7 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
     }
 
     /**
-     * Sjekkar om datoen er lik eller er mellom periodas frå og med- og til og med-datoar.
+     * Sjekkar om datoen er lik eller er mellom periodas frÃ¥ og med- og til og med-datoar.
      *
      * @param dato datoen som skal sjekkast om ligg innanfor perioda
      * @return <code>true</code> dersom datoen ligg innanfor perioda
@@ -53,18 +53,18 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
     }
 
     /**
-     * Sorterer tidsperiodene kronologisk basert på periodenes frå og med- og til og med-dato.
+     * Sorterer tidsperiodene kronologisk basert pÃ¥ periodenes frÃ¥ og med- og til og med-dato.
      * <p>
-     * Dersom periodene har ulik frå og med-dato blir perioda med lavast/eldste frå og med-dato sortert først.
+     * Dersom periodene har ulik frÃ¥ og med-dato blir perioda med lavast/eldste frÃ¥ og med-dato sortert fÃ¸rst.
      * <p>
-     * Dersom periodene har lik frå og med-dato, blir perioda med lavaste/eldste til og med-dato sortert først. Dersom
-     * ei av periodene er løpande/manglar til og med-dato, blir den sortert sist.
+     * Dersom periodene har lik frÃ¥ og med-dato, blir perioda med lavaste/eldste til og med-dato sortert fÃ¸rst. Dersom
+     * ei av periodene er lÃ¸pande/manglar til og med-dato, blir den sortert sist.
      * <p>
-     * Dersom periodene har lik til og med-dato eller begge er løpande, blir sorteringsrekkefølga tilfeldig.
+     * Dersom periodene har lik til og med-dato eller begge er lÃ¸pande, blir sorteringsrekkefÃ¸lga tilfeldig.
      *
-     * @param a første tidsperiode
+     * @param a fÃ¸rste tidsperiode
      * @param b andre tidsperiode
-     * @return <code>&lt; 0</code> dersom perioda <code>a</code> blir sortert før periode <code>b</code>,
+     * @return <code>&lt; 0</code> dersom perioda <code>a</code> blir sortert fÃ¸r periode <code>b</code>,
      * <code>0</code> dersom perioda <code>a</code> er lik periode <code>b</code>,
      * <code>&gt; 0</code> dersom perioda <code>a</code> blir sortert etter periode <code>b</code>
      * @since 1.1.2

@@ -31,7 +31,7 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
      * @see #StillingsforholdPerioder(StillingsforholdId, Stream)
      */
     public StillingsforholdPerioder(final StillingsforholdId stillingsforhold, final List<StillingsforholdPeriode> perioder) {
-        this(stillingsforhold, requireNonNull(perioder, () -> "perioder er påkrevd, men var null").stream());
+        this(stillingsforhold, requireNonNull(perioder, () -> "perioder er pÃ¥krevd, men var null").stream());
     }
 
     /**
@@ -42,13 +42,13 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
      * @throws java.lang.NullPointerException viss nokon av parametera er <code>null</code>
      */
     public StillingsforholdPerioder(final StillingsforholdId stillingsforhold, final Stream<StillingsforholdPeriode> perioder) {
-        requireNonNull(stillingsforhold, () -> "stillingsforhold er påkrevd, men var null");
-        requireNonNull(perioder, () -> "perioder er påkrevd, men var null");
+        requireNonNull(stillingsforhold, () -> "stillingsforhold er pÃ¥krevd, men var null");
+        requireNonNull(perioder, () -> "perioder er pÃ¥krevd, men var null");
 
         this.stillingsforhold = stillingsforhold;
         perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
-        assert harMinst1Periode() : /*        */ feilmeldingNårPerioderManglar();
-        assert erPeriodeneKronologiskSortert() : feilmeldingNårPeriodeneIkkjeErSortert();
+        assert harMinst1Periode() : /*        */ feilmeldingNÃ¥rPerioderManglar();
+        assert erPeriodeneKronologiskSortert() : feilmeldingNÃ¥rPeriodeneIkkjeErSortert();
         this.fraOgMed = this.perioder.get(0).fraOgMed();
         this.tilOgMed = this.perioder.get(this.perioder.size() - 1).tilOgMed();
     }
@@ -68,18 +68,18 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
     }
 
     /**
-     * Tilhøyrer avtalekobling dette stillingsforholdet?
+     * TilhÃ¸yrer avtalekobling dette stillingsforholdet?
      *
      * @param avtalekobling avtalekoblinga som skal sjekkast
-     * @return <code>true</code> dersom avtalekoblinga tilhøyrer samme stillingsforhold som oss,
-     * <code>false</code> viss avtalekoblinga tilhøyrer eit anna stillingsforhold
+     * @return <code>true</code> dersom avtalekoblinga tilhÃ¸yrer samme stillingsforhold som oss,
+     * <code>false</code> viss avtalekoblinga tilhÃ¸yrer eit anna stillingsforhold
      */
     public boolean tilhoeyrer(final Avtalekoblingsperiode avtalekobling) {
         return avtalekobling.tilhoeyrer(stillingsforhold);
     }
 
     /**
-     * Stillingsforholdsnummeret som unikt identifiserer og skiller stillingsforholdet frå alle andre stillingsforhold.
+     * Stillingsforholdsnummeret som unikt identifiserer og skiller stillingsforholdet frÃ¥ alle andre stillingsforhold.
      *
      * @return stillingsforholdnummeret
      */
@@ -90,9 +90,9 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
     /**
      * Returnerer stillingsforholdsperiodene som periodiseringa har generert.
      * <p>
-     * Innanfor kvar periode vil stillingsforholdets tilstand vere den samme frå dag til dag, ingen endringar i
+     * Innanfor kvar periode vil stillingsforholdets tilstand vere den samme frÃ¥ dag til dag, ingen endringar i
      * medregning eller historikk vil forekomme innanfor kvar periode. Alle endringar i tilstand for stillingsforholdet
-     * vil medføre at ei ny periode blir danna for kvar ny tilstand.
+     * vil medfÃ¸re at ei ny periode blir danna for kvar ny tilstand.
      *
      * @return alle periodene stillingsforholdet strekker seg over
      */
@@ -126,12 +126,12 @@ public class StillingsforholdPerioder implements Tidsperiode<StillingsforholdPer
         );
     }
 
-    private String feilmeldingNårPerioderManglar() {
+    private String feilmeldingNÃ¥rPerioderManglar() {
         return "Forventa minst 1 stillingsforholdperiode, men var 0";
     }
 
-    private String feilmeldingNårPeriodeneIkkjeErSortert() {
-        return "Stillingsforholdperiodene må vere sortert i kronologisk rekkefølge, men var ikkje det.\nPerioder:\n"
+    private String feilmeldingNÃ¥rPeriodeneIkkjeErSortert() {
+        return "Stillingsforholdperiodene mÃ¥ vere sortert i kronologisk rekkefÃ¸lge, men var ikkje det.\nPerioder:\n"
                 + this.perioder
                 .stream()
                 .map(Object::toString)

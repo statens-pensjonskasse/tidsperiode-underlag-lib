@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class AntallDagarRegelTest {
     /**
-     * Verifiserer at perioder som strekker seg over ein skuddårsdag får korrekt beregna lengde.
+     * Verifiserer at perioder som strekker seg over ein skuddÃ¥rsdag fÃ¥r korrekt beregna lengde.
      */
     @Test
     public void skalBeregneAntallDagarKorrektVissPeriodaOverlapparFebruarIEitSkuddaar() {
@@ -28,7 +28,7 @@ public class AntallDagarRegelTest {
     /**
      * Verifiserer at perioder med start og slutt samme dag blir beregna til antall dager lik 1.
      * <br>
-     * Denne testen verifiserer dermed også implisitt at både frå og med- og til og med-dato
+     * Denne testen verifiserer dermed ogsÃ¥ implisitt at bÃ¥de frÃ¥ og med- og til og med-dato
      * blir inkludert i tellinga av antall dagar.
      */
     @Test
@@ -39,11 +39,11 @@ public class AntallDagarRegelTest {
     }
 
     /**
-     * Verifiserer at regelen etller antall dagar i ei underlagsperiode sjølv om underlagsperioda strekker seg over
-     * meir enn eit år.
+     * Verifiserer at regelen etller antall dagar i ei underlagsperiode sjÃ¸lv om underlagsperioda strekker seg over
+     * meir enn eit Ã¥r.
      */
     @Test
-    public void skalBeregneAntallDagarUtanÅFeileVissPeriodaStrekkerSegOverFleireAar() {
+    public void skalBeregneAntallDagarUtanÃ…FeileVissPeriodaStrekkerSegOverFleireAar() {
         assertAntallDagar(
                 periode("2001.01.01", "2003.12.31")
         ).isEqualTo(antallDagar(365 * 3));

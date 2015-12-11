@@ -21,9 +21,9 @@ import org.assertj.core.api.AbstractListAssert;
 
 public class Assertions {
     /**
-     * Opprettar ein ny assertion som opererer på periodas unike identifikator.
+     * Opprettar ein ny assertion som opererer pÃ¥ periodas unike identifikator.
      *
-     * @param periode underlagsperioda UUIDen skal hentast frå
+     * @param periode underlagsperioda UUIDen skal hentast frÃ¥
      * @return ein ny assert med UUIDen til perioda
      * @see Underlagsperiode#id()
      */
@@ -32,10 +32,10 @@ public class Assertions {
     }
 
     /**
-     * Opprettar ein ny assertion som opererer på samlinga av alle koblingar av angitt type frå underlagsperioda.
+     * Opprettar ein ny assertion som opererer pÃ¥ samlinga av alle koblingar av angitt type frÃ¥ underlagsperioda.
      *
-     * @param periode underlagsperioda koblingane skal hentast frå
-     * @param type    kva type koblingar som skal hentast ut frå underlagsperioda
+     * @param periode underlagsperioda koblingane skal hentast frÃ¥
+     * @param type    kva type koblingar som skal hentast ut frÃ¥ underlagsperioda
      * @return ein ny assert med ei liste som inneheld alle koblingane av den angitte typen
      */
     @SuppressWarnings("rawtypes")
@@ -55,9 +55,9 @@ public class Assertions {
     }
 
     /**
-     * Opprettar ein ny assertion som opererer på samlinga av alle underlagsperioder i underlaga som blir matcha av predikatet.
+     * Opprettar ein ny assertion som opererer pÃ¥ samlinga av alle underlagsperioder i underlaga som blir matcha av predikatet.
      *
-     * @param underlag ei samling underlag som underlagsperiodene blir henta frå
+     * @param underlag ei samling underlag som underlagsperiodene blir henta frÃ¥
      * @param predikat predikatet som styrer kva for nokon underlagsperioder som blir henta ut og lagt inn i asserten
      * @return ein ny assert med alle underlagsperiodene som matchar predikatet
      */
@@ -74,17 +74,17 @@ public class Assertions {
     }
 
     /**
-     * Opprettar ein ny assertion som opererer på samlinga av verdiar henta av <code>mapper</code> frå
-     * underlagsperiodene på <code>underlag</code>.
+     * Opprettar ein ny assertion som opererer pÃ¥ samlinga av verdiar henta av <code>mapper</code> frÃ¥
+     * underlagsperiodene pÃ¥ <code>underlag</code>.
      *
-     * @param <T>        verditypen som det skal verifiserast på
-     * @param underlag   ei samling med underlag som underlagsperiodene som <code>mapper</code> opererer på skal
-     *                   hentast frå
-     * @param mapper     ein funksjon som hentar ut verdien som asserten skal operere på frå underlagsperiodene
+     * @param <T>        verditypen som det skal verifiserast pÃ¥
+     * @param underlag   ei samling med underlag som underlagsperiodene som <code>mapper</code> opererer pÃ¥ skal
+     *                   hentast frÃ¥
+     * @param mapper     ein funksjon som hentar ut verdien som asserten skal operere pÃ¥ frÃ¥ underlagsperiodene
      *                   i <code>underlag</code>
-     * @param predikater eit valgfritt sett med predikat som alle må slå til for at underlagsperioda skal bli
+     * @param predikater eit valgfritt sett med predikat som alle mÃ¥ slÃ¥ til for at underlagsperioda skal bli
      *                   tatt med i asserten
-     * @return ein ny asserter med verdiar henta frå alle underlagsperiodene
+     * @return ein ny asserter med verdiar henta frÃ¥ alle underlagsperiodene
      */
     @SuppressWarnings("unchecked")
     public static <T> AbstractListAssert<?, ? extends List<T>, T> assertVerdiFraUnderlagsperioder(
@@ -101,12 +101,12 @@ public class Assertions {
     }
 
     /**
-     * Lagar ein ny assertion som opererer på alle unike annotasjonsverdiar av angitt type, henta frå alle
+     * Lagar ein ny assertion som opererer pÃ¥ alle unike annotasjonsverdiar av angitt type, henta frÃ¥ alle
      * underlagsperiodene i <code>underlag</code>.
      *
-     * @param underlag        underlaget som periodene blir henta frå
+     * @param underlag        underlaget som periodene blir henta frÃ¥
      * @param annotasjonstype annotasjonstypen som verdiar skal hentast ut for
-     * @return ein assertion som opererer på alle unike annotasjonar av angitt type frå underlagsets perioder
+     * @return ein assertion som opererer pÃ¥ alle unike annotasjonar av angitt type frÃ¥ underlagsets perioder
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)
      */
     public static <T> AbstractListAssert<?, ? extends List<? extends T>, T> assertUnikeAnnotasjonsverdiar(
@@ -123,7 +123,7 @@ public class Assertions {
     /**
      * Underlagsperioder som er kobla til tidsperioder av den angitte typen.
      *
-     * @param type periodetypen som underlagsperiodene må vere kobla til
+     * @param type periodetypen som underlagsperiodene mÃ¥ vere kobla til
      * @return eit predikat som matchar underlagsperioder som er tilkobla tidsperioder av den angitte typen
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -145,7 +145,7 @@ public class Assertions {
      * Et composite predikat som returnerer <code>true</code> dersom alle predikatene i <code>predikater</code>
      * returnerer true, eller dersom <code>predikater</code> er tom.
      *
-     * @param predikater en samling predikater som en skal slås sammen til et samlet AND-separert predikat
+     * @param predikater en samling predikater som en skal slÃ¥s sammen til et samlet AND-separert predikat
      * @return et nytt predikat som returnerer <code>true</code> dersom alle predikatene returnerer true
      * eller <code>predikater</code> er tom, <code>false</code> ellers
      */
@@ -161,7 +161,7 @@ public class Assertions {
      * Et composite predikat som returnerer <code>true</code> dersom minst et av predikatene i <code>predikater</code>
      * returnerer true, eller dersom <code>predikater</code> er tom.
      *
-     * @param predikater en samling predikater som en skal slås sammen til et samlet OR-separert predikat
+     * @param predikater en samling predikater som en skal slÃ¥s sammen til et samlet OR-separert predikat
      * @return et nytt predikat som returnerer <code>true</code> dersom et av predikatene returnerer true
      * eller <code>predikater</code> er tom, <code>false</code> ellers
      */
@@ -174,7 +174,7 @@ public class Assertions {
     }
 
     /**
-     * Hentar ut verdien for ein påkrevd annotasjon av angitt type.
+     * Hentar ut verdien for ein pÃ¥krevd annotasjon av angitt type.
      *
      * @param <T>  verditypen til annotasjonen som skal hentast ut
      * @param type annotasjonstypen som verdien skal hentast ut for

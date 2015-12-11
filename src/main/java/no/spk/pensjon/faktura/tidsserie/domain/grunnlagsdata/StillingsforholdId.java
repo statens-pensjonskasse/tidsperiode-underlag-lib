@@ -6,12 +6,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId} representerer nummeret som unikt
- * identifiserer og skiller eit stillingsforhold frå alle andre stillingsforhold.
+ * identifiserer og skiller eit stillingsforhold frÃ¥ alle andre stillingsforhold.
  *
  * @author Tarjei Skorgenes
  */
 public class StillingsforholdId {
-    private static final Supplier<String> stillingsforholdPåkrevd = () -> "Stillingsforhold ID er påkrevd, men var tomt";
+    private static final Supplier<String> stillingsforholdPÃ¥krevd = () -> "Stillingsforhold ID er pÃ¥krevd, men var tomt";
 
     private final Long id;
 
@@ -22,7 +22,7 @@ public class StillingsforholdId {
      * @throws java.lang.NullPointerException viss <code>id</code> er <code>null</code>
      */
     public StillingsforholdId(final Long id) {
-        requireNonNull(id, stillingsforholdPåkrevd);
+        requireNonNull(id, stillingsforholdPÃ¥krevd);
         this.id = id;
     }
 

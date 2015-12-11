@@ -25,12 +25,12 @@ public class UnderlagsperiodeTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at kvar underlagsperiodeinstans får sin eigen unike id.
+     * Verifiserer at kvar underlagsperiodeinstans fÃ¥r sin eigen unike id.
      * <br>
-     * Også ved kopiering av perioder skal den nye perioda få ein identifikator som skiller den frå perioda den er
-     * kopiert frå.
+     * OgsÃ¥ ved kopiering av perioder skal den nye perioda fÃ¥ ein identifikator som skiller den frÃ¥ perioda den er
+     * kopiert frÃ¥.
      * <br>
-     * Derimot skal det ikkje genererast meir enn ein unik identifikator ved forsøk på uthenting av id frå
+     * Derimot skal det ikkje genererast meir enn ein unik identifikator ved forsÃ¸k pÃ¥ uthenting av id frÃ¥
      * samme periodeinstans.
      */
     @Test
@@ -57,7 +57,7 @@ public class UnderlagsperiodeTest {
     }
 
     /**
-     * Verifiserer at den kopierte underlagsperioda ikkje beheld datoane til perioda kopien blir danna frå.
+     * Verifiserer at den kopierte underlagsperioda ikkje beheld datoane til perioda kopien blir danna frÃ¥.
      */
     @Test
     public void skalIkkjeTaMedFraOgMedOgTilOgMedDatoTilUnderlagsperiodaEinKopiererFra() {
@@ -70,8 +70,8 @@ public class UnderlagsperiodeTest {
     }
 
     /**
-     * Verifiserer at koblingane til kildeperioda ikkje blir kopiert over på
-     * den nye periode når ein lagar ein kopi.
+     * Verifiserer at koblingane til kildeperioda ikkje blir kopiert over pÃ¥
+     * den nye periode nÃ¥r ein lagar ein kopi.
      */
     @Test
     public void skalIkkjeTaMedKoblingarFraUnderlagsperiodaEinKopiererFra() {
@@ -82,7 +82,7 @@ public class UnderlagsperiodeTest {
 
         final Underlagsperiode kopi = kilde.kopierUtenKoblinger(dato("1900.01.01"), dato("2999.01.01"));
         assertThat(kopi.koblingAvType(GenerellTidsperiode.class))
-                .as("kobling av type GenerellTidsperiode på den kopierte perioda")
+                .as("kobling av type GenerellTidsperiode pÃ¥ den kopierte perioda")
                 .isEqualTo(empty());
     }
 
@@ -120,16 +120,16 @@ public class UnderlagsperiodeTest {
     @Test
     public void skalFeileVissAnnotasjonstypeErOptional() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("Annotasjonar av type Optional er ikkje støtta, viss du vil legge til ein valgfri annotasjon må den registrerast under verdiens egen type");
+        e.expectMessage("Annotasjonar av type Optional er ikkje stÃ¸tta, viss du vil legge til ein valgfri annotasjon mÃ¥ den registrerast under verdiens egen type");
         eiPeriode().annoter(Optional.class, empty());
     }
 
     /**
-     * Verifiserer at uthenting av periodekobling kun slår opp basert på koblinga si hovedtype,
-     * ikkje basert på supertyper  eller interface som koblingstypen arvar frå eller implementerer.
+     * Verifiserer at uthenting av periodekobling kun slÃ¥r opp basert pÃ¥ koblinga si hovedtype,
+     * ikkje basert pÃ¥ supertyper  eller interface som koblingstypen arvar frÃ¥ eller implementerer.
      * <p>
-     * Intensjonen med dette er å unngå ytelsesproblem ved oppslag av koblingar som underlagsperioda manglar
-     * men der periodetypen som blir slått opp har eit djupt type-hierarki.
+     * Intensjonen med dette er Ã¥ unngÃ¥ ytelsesproblem ved oppslag av koblingar som underlagsperioda manglar
+     * men der periodetypen som blir slÃ¥tt opp har eit djupt type-hierarki.
      */
     @Test
     public void skalKunSlaaOppKoblingarBasertPaKoblingasHovedtype() {
@@ -153,8 +153,8 @@ public class UnderlagsperiodeTest {
     }
 
     /**
-     * Verifiserer at uthenting av periodekobling ikkje feilar når det ikkje eksisterer
-     * ei tilkobla tidsperioda av den ønska typen.
+     * Verifiserer at uthenting av periodekobling ikkje feilar nÃ¥r det ikkje eksisterer
+     * ei tilkobla tidsperioda av den Ã¸nska typen.
      */
     @SuppressWarnings("unchecked")
     @Test
@@ -164,7 +164,7 @@ public class UnderlagsperiodeTest {
 
     /**
      * Verifiserer at uthenting av ei periodekobling feilar dersom underlagsperioda er tilkobla meir enn ei
-     * tidsperiode av den ønska typen.
+     * tidsperiode av den Ã¸nska typen.
      */
     @Test
     public void skalFeileDersomUnderlagsperiodaErTilkoblaMeirEnnEiTidsperiodeAvDenOenskaTypen() {
@@ -191,7 +191,7 @@ public class UnderlagsperiodeTest {
     }
 
     /**
-     * Verifiserer at oppslag av valgfri annotasjon fungerer når perioda har ein verdi for annotasjonen.
+     * Verifiserer at oppslag av valgfri annotasjon fungerer nÃ¥r perioda har ein verdi for annotasjonen.
      */
     @Test
     public void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
@@ -204,9 +204,9 @@ public class UnderlagsperiodeTest {
     }
 
     /**
-     * Verifiserer at oppslag av påkrevde annotasjonar via
+     * Verifiserer at oppslag av pÃ¥krevde annotasjonar via
      * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)} feilar med
-     * ein exception dersom perioda ikkje er annotert med den ønska typen annotasjon.
+     * ein exception dersom perioda ikkje er annotert med den Ã¸nska typen annotasjon.
      */
     @Test
     public void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
@@ -214,7 +214,7 @@ public class UnderlagsperiodeTest {
 
         e.expect(PaakrevdAnnotasjonManglarException.class);
         e.expectMessage(periode.toString());
-        e.expectMessage("manglar ein påkrevd annotasjon av type");
+        e.expectMessage("manglar ein pÃ¥krevd annotasjon av type");
         e.expectMessage(Integer.class.getSimpleName());
 
         periode.annotasjonFor(Integer.class);
@@ -223,7 +223,7 @@ public class UnderlagsperiodeTest {
     /**
      * Verifiserer at oppslag av valgfrie annotasjonar via
      * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#valgfriAnnotasjonFor(Class)} ikkje
-     * feilar og returnerer ein tom verdi dersom perioda ikkje er annotert med den ønska typen annotasjon.
+     * feilar og returnerer ein tom verdi dersom perioda ikkje er annotert med den Ã¸nska typen annotasjon.
      */
     @Test
     public void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
@@ -233,20 +233,20 @@ public class UnderlagsperiodeTest {
     @Test
     public void skalIkkjeKunneOpprettUnderlagsPerioderMedFraOgMedDatoLikNull() {
         e.expect(NullPointerException.class);
-        e.expectMessage("fra og med-dato er påkrevd");
+        e.expectMessage("fra og med-dato er pÃ¥krevd");
         e.expectMessage("var null");
         create(null, "2007.12.31");
     }
 
     /**
-     * Verifiserer at underlagsperiodene handhevar at til og med-dato ikkje kan vere løpande, dette for å sikre
+     * Verifiserer at underlagsperiodene handhevar at til og med-dato ikkje kan vere lÃ¸pande, dette for Ã¥ sikre
      * at post-conditionen til oppbygginga av underlaget (som seier at eit underlag alltid skal representere ei lukka
      * tidsperiode) blir handheva.
      */
     @Test
     public void skalIkkjeKunneOpprettUnderlagsPerioderMedTilOgMedDatoLikNull() {
         e.expect(NullPointerException.class);
-        e.expectMessage("til og med-dato er påkrevd");
+        e.expectMessage("til og med-dato er pÃ¥krevd");
         e.expectMessage("var null");
         create("2007.12.31", null);
     }

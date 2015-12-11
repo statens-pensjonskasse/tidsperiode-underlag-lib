@@ -1,43 +1,43 @@
-# encoding: cp1252
+# encoding: utf-8
 # language: no
-Egenskap: Minstegrense ved beregning av pensjonsgivende lønn
+Egenskap: Minstegrense ved beregning av pensjonsgivende lÃ¸nn
 
-  Ved beregning av pensjonsgivende lønn, skal minstegrensen for medlemskap kunne påvirke
-  den pensjonsgivende lønnen for perioden.
+  Ved beregning av pensjonsgivende lÃ¸nn, skal minstegrensen for medlemskap kunne pÃ¥virke
+  den pensjonsgivende lÃ¸nnen for perioden.
 
-  For perioder der stillingsforholdet er under gjeldende minstegrense, skal pensjonsgivende lønn
-  alltid være lik kr 0.
+  For perioder der stillingsforholdet er under gjeldende minstegrense, skal pensjonsgivende lÃ¸nn
+  alltid vÃ¦re lik kr 0.
 
-  I motsetning til ved pensjonering, tar ikke fastsats-metodikken hensyn til medlemmets totale stillingsstørrelse.
-  Minstegrensen blir ved fakturering kun sett i forhold til stillingsforholdets individuelle stillingsstørrelse.
+  I motsetning til ved pensjonering, tar ikke fastsats-metodikken hensyn til medlemmets totale stillingsstÃ¸rrelse.
+  Minstegrensen blir ved fakturering kun sett i forhold til stillingsforholdets individuelle stillingsstÃ¸rrelse.
 
-  Minstegrensen tar heller ikke hensyn til medregninger, de er definert til alltid å være over minstegrensen
-  slik at bistillinger og tillegg fra annen arbeidsgiver, aldri blir avkortet til kr 0 på grunn av
-  stillingsstørrelse.
+  Minstegrensen tar heller ikke hensyn til medregninger, de er definert til alltid Ã¥ vÃ¦re over minstegrensen
+  slik at bistillinger og tillegg fra annen arbeidsgiver, aldri blir avkortet til kr 0 pÃ¥ grunn av
+  stillingsstÃ¸rrelse.
 
-  Gjeldende minstegrense for fakturering har endret seg over tid. I årene 2013 til 2015 har fastasts-metodikken
-  operert med en forenklet minstegrense for fastsatsfaktureringen når det gjelder SPK-ordningen.
+  Gjeldende minstegrense for fakturering har endret seg over tid. I Ã¥rene 2013 til 2015 har fastasts-metodikken
+  operert med en forenklet minstegrense for fastsatsfaktureringen nÃ¥r det gjelder SPK-ordningen.
 
-  Den forenklede minstegrensen for SPK-ordningen har basert seg på gjeldende premiestatus for avtalen
-  stillingsforholdet tilhører, ikkje stillingstype og stillingsbetegnelse slik som pensjoneringsområdet benytter.
+  Den forenklede minstegrensen for SPK-ordningen har basert seg pÃ¥ gjeldende premiestatus for avtalen
+  stillingsforholdet tilhÃ¸rer, ikkje stillingstype og stillingsbetegnelse slik som pensjoneringsomrÃ¥det benytter.
 
-  Fra og med 1. januar 2016 har gjeldende minstegrense blitt forenklet slik at både Apotek- og SPK-ordningene
-  har fått en flat minstegrense på 20% for alle stillinger tilknyttet ordningene.
+  Fra og med 1. januar 2016 har gjeldende minstegrense blitt forenklet slik at bÃ¥de Apotek- og SPK-ordningene
+  har fÃ¥tt en flat minstegrense pÃ¥ 20% for alle stillinger tilknyttet ordningene.
 
-  Opera-ordningen er holdt utenfor forenklingen av minstegrensen og beholder derfor sin gamleminstegrense på 50% både
-  før og etter 2016.
+  Opera-ordningen er holdt utenfor forenklingen av minstegrensen og beholder derfor sin gamleminstegrense pÃ¥ 50% bÃ¥de
+  fÃ¸r og etter 2016.
 
-  Bakgrunn: Minstegrenseregel ved avregning av perioder fra og med premieår 2016
+  Bakgrunn: Minstegrenseregel ved avregning av perioder fra og med premieÃ¥r 2016
     Gitt underlagsperioden sin fra og med-dato er 2016.01.01
     Og underlagsperioden sin til og med-dato er 2016.12.31
     Og underlagsperioden benytter regler for avregning
 
   Scenariomal: Opera
-    Gitt en underlagsperiode med følgende innhold:
+    Gitt en underlagsperiode med fÃ¸lgende innhold:
       | Ordning   | Stillingsprosent   |
       | <Ordning> | <Stillingsprosent> |
 
-    Så er stillingen <Over eller under?> minstegrensen?
+    SÃ¥ er stillingen <Over eller under?> minstegrensen?
 
     Eksempler:
       | Ordning | Stillingsprosent | Over eller under? |
@@ -46,11 +46,11 @@ Egenskap: Minstegrense ved beregning av pensjonsgivende lønn
       | Opera   | 100,00%          | Over              |
 
   Scenariomal: SPK og Apotek
-    Gitt en underlagsperiode med følgende innhold:
+    Gitt en underlagsperiode med fÃ¸lgende innhold:
       | Ordning   | Stillingsprosent   |
       | <Ordning> | <Stillingsprosent> |
 
-    Så er stillingen <Over eller under?> minstegrensen?
+    SÃ¥ er stillingen <Over eller under?> minstegrensen?
 
     Eksempler:
       | Ordning | Stillingsprosent | Over eller under? |
@@ -64,14 +64,14 @@ Egenskap: Minstegrense ved beregning av pensjonsgivende lønn
 
   Scenariomal: Minstegrense-paranoia
 
-  Det kan forekomme tilfeller av stillinger med stillingsprosent som er større enn 100% langt tilbake i tid.
-  % over 100 skal ikke forekomme fra PUMA, men skal ikke medføre at minstegrenseregelen feiler dersom
-  den blir forsøkt brukt på slike stillingsstørrelser.
+  Det kan forekomme tilfeller av stillinger med stillingsprosent som er stÃ¸rre enn 100% langt tilbake i tid.
+  % over 100 skal ikke forekomme fra PUMA, men skal ikke medfÃ¸re at minstegrenseregelen feiler dersom
+  den blir forsÃ¸kt brukt pÃ¥ slike stillingsstÃ¸rrelser.
 
-    Gitt en underlagsperiode med følgende innhold:
+    Gitt en underlagsperiode med fÃ¸lgende innhold:
       | Ordning   | Stillingsprosent   |
       | <Ordning> | <Stillingsprosent> |
-    Så er stillingen <Over eller under?> minstegrensen?
+    SÃ¥ er stillingen <Over eller under?> minstegrensen?
 
     Eksempler:
       | Ordning | Stillingsprosent | Over eller under? |

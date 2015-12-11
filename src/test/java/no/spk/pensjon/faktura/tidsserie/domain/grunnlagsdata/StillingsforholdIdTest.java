@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StillingsforholdIdTest {
     /**
      * Kort fortalt: Grovverifiserer at equal og hashcode er implementert korrekt slik at
-     * ein kan legge inn stillingsforholdid i eit set og vere sikker på at det ikkje vil inneholde nokon duplikat.
+     * ein kan legge inn stillingsforholdid i eit set og vere sikker pÃ¥ at det ikkje vil inneholde nokon duplikat.
      */
     @Test
     public void skalKunneLeggastIEitSetMedUnikeVerdiar() {

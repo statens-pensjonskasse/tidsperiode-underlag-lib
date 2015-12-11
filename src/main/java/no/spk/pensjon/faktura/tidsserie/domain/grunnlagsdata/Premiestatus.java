@@ -5,11 +5,11 @@ import static java.util.Objects.requireNonNull;
 import java.util.HashMap;
 
 /**
- * {@link Premiestatus} representerer ei kode som blir brukt av avtalar for å gruppere saman avtalar med liknande
+ * {@link Premiestatus} representerer ei kode som blir brukt av avtalar for Ã¥ gruppere saman avtalar med liknande
  * premierelaterte egenskapar.
  * <p>
  * Pr utgangen av 2014 eksisterer det totalt 17 forskjellige premiestatusar. Sidan tidsseriegenereringa kun
- * spesialbehandlar to av dei, grunnskuler og vidaregåande skular, er det kun desse to som er pre-definert som
+ * spesialbehandlar to av dei, grunnskuler og vidaregÃ¥ande skular, er det kun desse to som er pre-definert som
  * konstantar.
  *
  * @author Tarjei Skorgenes
@@ -23,7 +23,7 @@ public final class Premiestatus {
     public static final Premiestatus AAO_01 = newPremiestatus("AAO-01");
 
     /**
-     * Vidaregåande skular.
+     * VidaregÃ¥ande skular.
      */
     public static final Premiestatus AAO_02 = newPremiestatus("AAO-02");
 
@@ -51,11 +51,11 @@ public final class Premiestatus {
     private final String kode;
 
     private Premiestatus(final String kode) {
-        this.kode = requireNonNull(kode, () -> "premiestatus er påkrevd, men var null");
+        this.kode = requireNonNull(kode, () -> "premiestatus er pÃ¥krevd, men var null");
     }
 
     /**
-     * Premiestatuskoda som identifiserer og skiller premiestatusen frå andre premiestatusar.
+     * Premiestatuskoda som identifiserer og skiller premiestatusen frÃ¥ andre premiestatusar.
      *
      * @return premiestatuskoda
      */
@@ -72,8 +72,8 @@ public final class Premiestatus {
      * Dersom <code>kode</code> er tom, kun inneheld whitespace eller er <code>null</code> blir {@link #UKJENT}
      * alltid returnert.
      * <p>
-     * Oppslaget vil cache opp til 100 forskjellige premiestatusar, blir det forsøkt definert fleire enn det vil denne
-     * metoda returnere ein ny instans kvar gang ei kode som ikkje er blant dei 100, blir forsøkt slått opp.
+     * Oppslaget vil cache opp til 100 forskjellige premiestatusar, blir det forsÃ¸kt definert fleire enn det vil denne
+     * metoda returnere ein ny instans kvar gang ei kode som ikkje er blant dei 100, blir forsÃ¸kt slÃ¥tt opp.
      *
      * @param kode ein streng som skal konverterast til ein premiestatus
      * @return premiestatusen for den aktuelle koda

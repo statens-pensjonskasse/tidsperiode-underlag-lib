@@ -18,18 +18,18 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  * {@link MedlemsavtalarFactory} inneheld algoritma som periodiserer alle avtalekoblingane til medlemmet i
  * kombinasjon med all avtaleinformasjon tilknytta koblingane sine avtalar.
  * <p>
- * Outputen frå algoritma er delt i to:
+ * Outputen frÃ¥ algoritma er delt i to:
  * <ul>
- * <li>Ei samling tidsperioder som held på informasjon om alle avtalekoblingane som eit medlem har i kvar periode</li>
+ * <li>Ei samling tidsperioder som held pÃ¥ informasjon om alle avtalekoblingane som eit medlem har i kvar periode</li>
  * <li>For kvar avtalekobling, ein komplett representasjon av kva som er gjeldande tilstand for koblinga sin avtale i kvar periode</li>
  * </ul>
  * <p>
- * Innanfor kvar medlemsavtalarperiode gir algoritma følgjande garantiar:
+ * Innanfor kvar medlemsavtalarperiode gir algoritma fÃ¸lgjande garantiar:
  * <ul>
- * <li>ingen av medlemmet sine stillingar byttar avtale i løpet av perioda</li>
- * <li>ingen avtaleprodukt blir fjerna eller lagt til på nokon av koblingane sine avtalar i løpet av perioda</li>
- * <li>ingen avtaleprodukt på koblingane sine avtalar endrar tilstand i løpet av perioda</li>
- * <li>avtalane sine gjeldande avtaleversjonar endrar ikkje tilstand i løpet av perioda</li>
+ * <li>ingen av medlemmet sine stillingar byttar avtale i lÃ¸pet av perioda</li>
+ * <li>ingen avtaleprodukt blir fjerna eller lagt til pÃ¥ nokon av koblingane sine avtalar i lÃ¸pet av perioda</li>
+ * <li>ingen avtaleprodukt pÃ¥ koblingane sine avtalar endrar tilstand i lÃ¸pet av perioda</li>
+ * <li>avtalane sine gjeldande avtaleversjonar endrar ikkje tilstand i lÃ¸pet av perioda</li>
  * </ul>
  *
  * @author Tarjei Skorgenes
@@ -40,14 +40,14 @@ public class MedlemsavtalarFactory {
     private AvtaleinformasjonRepository avtalar = a -> Stream.empty();
 
     /**
-     * Overstyringsmetode for å sette hvilket avtaleinformasjonrepository dette MedlemsavtalarFactory skal benytte for
-     * å finne avtaler.
+     * Overstyringsmetode for Ã¥ sette hvilket avtaleinformasjonrepository dette MedlemsavtalarFactory skal benytte for
+     * Ã¥ finne avtaler.
       * @param avtalar AvtaleinformasjonRepository dette MedlemsavtalarFactory skal bruke.
      * @return dette MedlemsavtalarFactory for chaining
      * @throws NullPointerException dersom avtaler er null
      */
     public MedlemsavtalarFactory overstyr(final AvtaleinformasjonRepository avtalar) {
-        this.avtalar = requireNonNull(avtalar, () -> "Avtalar er påkrevd, men var null");
+        this.avtalar = requireNonNull(avtalar, () -> "Avtalar er pÃ¥krevd, men var null");
         return this;
     }
 

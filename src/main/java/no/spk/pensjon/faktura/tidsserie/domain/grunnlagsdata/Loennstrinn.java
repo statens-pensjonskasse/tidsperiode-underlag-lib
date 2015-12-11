@@ -1,11 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn} representerer et lønnstrinn fra
- * Statens lønnsregulativ.
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn} representerer et lÃ¸nnstrinn fra
+ * Statens lÃ¸nnsregulativ.
  * <br>
- * Ettersom bruttolønn i 100% stilling varierer fra år til år, representerer ikke lønnstrinnet hva som er bruttolønnen
- * som lønnstrinnet er assosiert med på et gitt tidspunkt, dette håndteres via
+ * Ettersom bruttolÃ¸nn i 100% stilling varierer fra Ã¥r til Ã¥r, representerer ikke lÃ¸nnstrinnet hva som er bruttolÃ¸nnen
+ * som lÃ¸nnstrinnet er assosiert med pÃ¥ et gitt tidspunkt, dette hÃ¥ndteres via
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode underlagsperiodens} annotasjon for
  * {@link LoennstrinnBeloep}.
  *
@@ -15,37 +15,37 @@ public class Loennstrinn {
     private final int trinn;
 
     /**
-     * Konstruerer et nytt lønnstrinn.
+     * Konstruerer et nytt lÃ¸nnstrinn.
      *
-     * @param trinn tallet som representerer hvilket lønnstrinn som skal konstrueres
+     * @param trinn tallet som representerer hvilket lÃ¸nnstrinn som skal konstrueres
      */
     public Loennstrinn(final int trinn) {
         this.trinn = trinn;
     }
 
     /**
-     * Konstruerer et nytt lønnstrinn.
+     * Konstruerer et nytt lÃ¸nnstrinn.
      *
-     * @param text ein tekstlig representasjon av tallet som representerer lønnstrinnet
+     * @param text ein tekstlig representasjon av tallet som representerer lÃ¸nnstrinnet
      */
     public Loennstrinn(final String text) {
         this(Integer.parseInt(text));
     }
 
     /**
-     * Konstruerer eit nytt lønnstrinn.
+     * Konstruerer eit nytt lÃ¸nnstrinn.
      *
-     * @param trinn eit tall som indikerer kva for eit lønnstrinn vi skal opprette
-     * @return eit nytt lønnstrinn for det angitte trinnet
+     * @param trinn eit tall som indikerer kva for eit lÃ¸nnstrinn vi skal opprette
+     * @return eit nytt lÃ¸nnstrinn for det angitte trinnet
      */
     public static Loennstrinn loennstrinn(final int trinn) {
         return new Loennstrinn(trinn);
     }
 
     /**
-     * Er verdien av lønnstrinnet lik den angitte verdien?
+     * Er verdien av lÃ¸nnstrinnet lik den angitte verdien?
      *
-     * @param trinn verdien som lønnstrinnets verdi skal samanliknast mot
+     * @param trinn verdien som lÃ¸nnstrinnets verdi skal samanliknast mot
      * @return <code>true</code> viss verdiane er like, <code>false</code> ellers
      */
     public boolean erTrinn(final int trinn) {
@@ -78,6 +78,6 @@ public class Loennstrinn {
 
     @Override
     public String toString() {
-        return "lønnstrinn " + trinn;
+        return "lÃ¸nnstrinn " + trinn;
     }
 }

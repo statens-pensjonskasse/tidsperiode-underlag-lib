@@ -17,40 +17,40 @@ import java.util.Optional;
 /**
  * Beregningsregel for {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn}.
  * <br>
- * Deltidsjustert lønn blir beregna på ein av tre mulig måtar:
+ * Deltidsjustert lÃ¸nn blir beregna pÃ¥ ein av tre mulig mÃ¥tar:
  * <ol>
- * <li>Dersom stillinga er tilknytta medregning, blir beløpet alltid lik kr 0</li>
- * <li>Dersom underlagsperioda er annotert med lønnstrinn, blir lønnstrinnet slått opp og konvertert til lønn i
- * 100% stilling, for deretter å blir deltidsjustert ut frå periodas stillingsprosent</li>
- * <li>Dersom underlagsperioda ikkje er annotert med lønnstrinn, blir deltidsjustert lønn slått opp direkte frå
+ * <li>Dersom stillinga er tilknytta medregning, blir belÃ¸pet alltid lik kr 0</li>
+ * <li>Dersom underlagsperioda er annotert med lÃ¸nnstrinn, blir lÃ¸nnstrinnet slÃ¥tt opp og konvertert til lÃ¸nn i
+ * 100% stilling, for deretter Ã¥ blir deltidsjustert ut frÃ¥ periodas stillingsprosent</li>
+ * <li>Dersom underlagsperioda ikkje er annotert med lÃ¸nnstrinn, blir deltidsjustert lÃ¸nn slÃ¥tt opp direkte frÃ¥
  * periodas annotasjonar</li>
- * <li>Dersom perioda ikkje er annotert med verken lønnstrinn eller deltidsjustert lønn, feilar beregninga</li>
+ * <li>Dersom perioda ikkje er annotert med verken lÃ¸nnstrinn eller deltidsjustert lÃ¸nn, feilar beregninga</li>
  * </ol>
  *
  * @author Tarjei Skorgenes
  */
 public class DeltidsjustertLoennRegel implements BeregningsRegel<Kroner> {
     /**
-     * Beregnar den deltidsjusterte årslønna som er gjeldande innanfor underlagsperioda.
+     * Beregnar den deltidsjusterte Ã¥rslÃ¸nna som er gjeldande innanfor underlagsperioda.
      * <br>
-     * Lønna blir enten beregna ut frå kombinasjonen av gjeldande lønnstrinnbeløp for periodas annoterte lønnstrinn,
-     * justert i henhold til stillingsprosent, eller direkte basert på periodas annoterte deltidsjusterte lønn.
+     * LÃ¸nna blir enten beregna ut frÃ¥ kombinasjonen av gjeldande lÃ¸nnstrinnbelÃ¸p for periodas annoterte lÃ¸nnstrinn,
+     * justert i henhold til stillingsprosent, eller direkte basert pÃ¥ periodas annoterte deltidsjusterte lÃ¸nn.
      * <p>
-     * For stillingar tilknytta medregning og som dermed ikkje har deltidsjustert lønn, blir kr 0 brukt som verdi for
-     * å unngå at regelen skal feile.
+     * For stillingar tilknytta medregning og som dermed ikkje har deltidsjustert lÃ¸nn, blir kr 0 brukt som verdi for
+     * Ã¥ unngÃ¥ at regelen skal feile.
      * <p>
-     * Beregninga genererer alltid den deltidsjusterte årslønna, den avkortar ikkje det genererte beløpet i henhold til
-     * periodas årsfaktor. Det er klienten sitt ansvar å foreta avkortinga til periodas årsfaktor.
+     * Beregninga genererer alltid den deltidsjusterte Ã¥rslÃ¸nna, den avkortar ikkje det genererte belÃ¸pet i henhold til
+     * periodas Ã¥rsfaktor. Det er klienten sitt ansvar Ã¥ foreta avkortinga til periodas Ã¥rsfaktor.
      * <p>
-     * Dersom periodas gjeldande aksjonskode er permisjon utan lønn, blir returnert lønn alltid lik kr 0.
+     * Dersom periodas gjeldande aksjonskode er permisjon utan lÃ¸nn, blir returnert lÃ¸nn alltid lik kr 0.
      *
-     * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
-     * @return den deltidsjusterte årslønna som er gjeldande innanfor underlagsperioda
+     * @param periode underlagsperioda som inneheld alle verdiar eller pÃ¥krevde reglar som skal benyttast av beregningsregelen
+     * @return den deltidsjusterte Ã¥rslÃ¸nna som er gjeldande innanfor underlagsperioda
      * @throws PaakrevdAnnotasjonManglarException dersom {@link LoennstrinnBeloep} eller {@link Stillingsprosent}
-     *                                            manglar når {@link Loennstrinn} er annotert på perioda,
+     *                                            manglar nÃ¥r {@link Loennstrinn} er annotert pÃ¥ perioda,
      *                                            dersom annotasjon for {@link DeltidsjustertLoenn} manglar
-     *                                            når perioda ikkje er annotert med lønnstrinn eller
-     *                                            dersom {@link Aksjonskode} ikkje er annotert på perioda når perioda
+     *                                            nÃ¥r perioda ikkje er annotert med lÃ¸nnstrinn eller
+     *                                            dersom {@link Aksjonskode} ikkje er annotert pÃ¥ perioda nÃ¥r perioda
      *                                            ikkje er tilknytta medregning
      */
     @Override

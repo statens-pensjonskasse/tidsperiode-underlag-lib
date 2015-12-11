@@ -7,29 +7,29 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner} representerer eit beløp angitt i norske kroner.
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner} representerer eit belÃ¸p angitt i norske kroner.
  * <br>
- * Kronebeløpet blir avrunda til nærmaste heile krone ved utlisting og samanlikning med andre kronebeløp, men blir
+ * KronebelÃ¸pet blir avrunda til nÃ¦rmaste heile krone ved utlisting og samanlikning med andre kronebelÃ¸p, men blir
  * internt behandla som eit desimaltall.
  *
  * @author Tarjei Skorgenes
  */
 public final class Kroner implements Comparable<Kroner>, Sats {
     /**
-     * Eit kronebeløp med verdi lik kr 0.
+     * Eit kronebelÃ¸p med verdi lik kr 0.
      */
     public static final Kroner ZERO = new Kroner(0);
 
-    private static final Supplier<String> VALIDER_BELOEP = () -> "beløp er påkrevd, men var null";
+    private static final Supplier<String> VALIDER_BELOEP = () -> "belÃ¸p er pÃ¥krevd, men var null";
 
     private final double beloep;
 
     /**
-     * Konstruerer eit nytt kronebeløp basert på den angitte beløpet.
+     * Konstruerer eit nytt kronebelÃ¸p basert pÃ¥ den angitte belÃ¸pet.
      * <br>
-     * Både positive, negative og beløp lik kr 0 er støtta, inkludert desimalverdiar.
+     * BÃ¥de positive, negative og belÃ¸p lik kr 0 er stÃ¸tta, inkludert desimalverdiar.
      *
-     * @param beloep beløpet i kroner
+     * @param beloep belÃ¸pet i kroner
      * @throws java.lang.NullPointerException viss <code>beloep</code> er <code>null</code>
      */
     public Kroner(final Number beloep) {
@@ -38,9 +38,9 @@ public final class Kroner implements Comparable<Kroner>, Sats {
     }
 
     /**
-     * Hentar ut verdien av beløpet, avrunda til nærmaste heile heiltal.
+     * Hentar ut verdien av belÃ¸pet, avrunda til nÃ¦rmaste heile heiltal.
      *
-     * @return kronebeløpet avrunda til nørmaste heile krone.
+     * @return kronebelÃ¸pet avrunda til nÃ¸rmaste heile krone.
      */
     public long verdi() {
         return Math.round(beloep);
@@ -49,8 +49,8 @@ public final class Kroner implements Comparable<Kroner>, Sats {
     /**
      * Konstruerer ein ny kronerepresentasjon for eit <code>beloep</code>.
      *
-     * @param beloep beløpet som skal representerast som eit kronebeløp
-     * @return eit nytt kronebeløp
+     * @param beloep belÃ¸pet som skal representerast som eit kronebelÃ¸p
+     * @return eit nytt kronebelÃ¸p
      */
     public static Kroner kroner(final int beloep) {
         if (beloep == 0) {
@@ -60,59 +60,59 @@ public final class Kroner implements Comparable<Kroner>, Sats {
     }
 
     /**
-     * Returnerer minste beløp av dei to kronebeløpa.
+     * Returnerer minste belÃ¸p av dei to kronebelÃ¸pa.
      *
-     * @param a første kronebeløp
-     * @param b andre kronebeløp
-     * @return eit nytt kronebeløp som inneheld beløpet til den av a og b som inneheld det minste kronebeløpet
+     * @param a fÃ¸rste kronebelÃ¸p
+     * @param b andre kronebelÃ¸p
+     * @return eit nytt kronebelÃ¸p som inneheld belÃ¸pet til den av a og b som inneheld det minste kronebelÃ¸pet
      */
     public static Kroner min(final Kroner a, final Kroner b) {
         return new Kroner(Math.min(a.beloep, b.beloep));
     }
 
     /**
-     * Multipliserer opp beløpet med <code>verdi</code>
-     * og returnerer eit nytt beløp.
+     * Multipliserer opp belÃ¸pet med <code>verdi</code>
+     * og returnerer eit nytt belÃ¸p.
      *
-     * @param verdi tallet beløpet skal gangast med
-     * @return eit nytt kronebeløp med resultatet av multiplikasjonen
+     * @param verdi tallet belÃ¸pet skal gangast med
+     * @return eit nytt kronebelÃ¸p med resultatet av multiplikasjonen
      */
     public Kroner multiply(final double verdi) {
         return new Kroner(beloep * verdi);
     }
 
     /**
-     * Multipliserer opp beløpet med <code>prosent</code>
-     * og returnerer det nye beløpet.
+     * Multipliserer opp belÃ¸pet med <code>prosent</code>
+     * og returnerer det nye belÃ¸pet.
      *
-     * @param prosent prosentsatsen beløpet skal gangast med
-     * @return eit nytt kronebeløp med resultatet av multiplikasjonen
+     * @param prosent prosentsatsen belÃ¸pet skal gangast med
+     * @return eit nytt kronebelÃ¸p med resultatet av multiplikasjonen
      */
     public Kroner multiply(final Prosent prosent) {
         return multiply(prosent.toDouble());
     }
 
     /**
-     * Legger saman gjeldande kronebeløp med det andre kronebeløpet
-     * og returnerer eit nytt kronebeløp med summen av dei to.
+     * Legger saman gjeldande kronebelÃ¸p med det andre kronebelÃ¸pet
+     * og returnerer eit nytt kronebelÃ¸p med summen av dei to.
      *
-     * @param other det andre kronebeløpet
-     * @return eit nytt kronebeløp som inneheld summen av dei to kronebeløpa
+     * @param other det andre kronebelÃ¸pet
+     * @return eit nytt kronebelÃ¸p som inneheld summen av dei to kronebelÃ¸pa
      */
     public Kroner plus(final Kroner other) {
         return new Kroner(beloep + other.beloep);
     }
 
     /**
-     * Samanliknar dei avrunda kronebeløpa numerisk.
+     * Samanliknar dei avrunda kronebelÃ¸pa numerisk.
      * <br>
-     * Merk at samanlikninga blir gjort basert på avrunda kronebeløp, to beløp med forskjellige desimalverdiar men
+     * Merk at samanlikninga blir gjort basert pÃ¥ avrunda kronebelÃ¸p, to belÃ¸p med forskjellige desimalverdiar men
      * som avrundast til samme tall er definert som like.
      *
-     * @param other kronebeløpet vi skal samanlikne mot
-     * @return ein verdi mindre enn 0 viss det andre kronebeløpet har ein større numerisk verdi,
-     * ein verdi større enn 0 viss det andre kronebeløpet har ein lavare numerisk verdi
-     * eller 0 dersom dei to beløpa har samme numerisk verdi når avrunda til nærmaste heile krone
+     * @param other kronebelÃ¸pet vi skal samanlikne mot
+     * @return ein verdi mindre enn 0 viss det andre kronebelÃ¸pet har ein stÃ¸rre numerisk verdi,
+     * ein verdi stÃ¸rre enn 0 viss det andre kronebelÃ¸pet har ein lavare numerisk verdi
+     * eller 0 dersom dei to belÃ¸pa har samme numerisk verdi nÃ¥r avrunda til nÃ¦rmaste heile krone
      */
     public int compareTo(final Kroner other) {
         return Double.compare(
@@ -142,9 +142,9 @@ public final class Kroner implements Comparable<Kroner>, Sats {
     }
 
     /**
-     * Listar ut kronebeløpet som tekst med 0 desimalar, utan tusen-separator og med kr som prefix.
+     * Listar ut kronebelÃ¸pet som tekst med 0 desimalar, utan tusen-separator og med kr som prefix.
      * <br>
-     * NB: Dette er ein potensielt dyr operasjon då formateringa og avrundinga blir utført via ein ny
+     * NB: Dette er ein potensielt dyr operasjon dÃ¥ formateringa og avrundinga blir utfÃ¸rt via ein ny
      * {@link java.text.NumberFormat} pr kall.
      */
     @Override

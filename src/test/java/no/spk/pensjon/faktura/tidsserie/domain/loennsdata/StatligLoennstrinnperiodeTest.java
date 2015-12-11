@@ -60,6 +60,6 @@ public class StatligLoennstrinnperiodeTest {
     }
 
     private static AbstractBooleanAssert<?> assertTilhoeyrer(final StatligLoennstrinnperiode periode, final Ordning ordning) {
-        return assertThat(periode.tilhoeyrer(ordning)).as("tilhøyrer " + periode + " " + ordning + "?");
+        return assertThat(periode.tilhoeyrer(ordning)).as("tilhÃ¸yrer " + periode + " " + ordning + "?");
     }
 }

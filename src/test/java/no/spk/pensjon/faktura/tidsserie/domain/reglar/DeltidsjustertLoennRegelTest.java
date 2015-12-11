@@ -32,7 +32,7 @@ public class DeltidsjustertLoennRegelTest {
     }
 
     @Test
-    public void skalIkkjeFeileBeregingNårDeltidsjustertLoennManglarPaaGrunnAvMedregning() {
+    public void skalIkkjeFeileBeregingNÃ¥rDeltidsjustertLoennManglarPaaGrunnAvMedregning() {
         assertDeltidsjustertLoenn(
                 perioda()
                         .med(new Medregning(kroner(12_000)))

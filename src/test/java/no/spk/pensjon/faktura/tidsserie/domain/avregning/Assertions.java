@@ -20,7 +20,7 @@ class Assertions {
 
     static AbstractObjectAssert<?, Premiebeloep> assertPremiebeloep(final Premiebeloep beloep, final int desimalarForventa) {
         assertDesimaler(beloep).isEqualTo(desimalarForventa);
-        return assertThat(beloep).as("premiebeløp " + beloep);
+        return assertThat(beloep).as("premiebelÃ¸p " + beloep);
     }
 
     static AbstractIntegerAssert<?> assertDesimaler(final Premiebeloep beloep) {

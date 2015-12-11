@@ -35,7 +35,7 @@ public class MaskineltGrunnlagRegelTest {
 
     /**
      * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom gjeldande aksjonskode for stillingsforholdet
-     * er permisjon utan lønn.
+     * er permisjon utan lÃ¸nn.
      */
     @Test
     public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUteIPermisjonUtanLoenn() {
@@ -78,7 +78,7 @@ public class MaskineltGrunnlagRegelTest {
 
     /**
      * Verifiserer at maskinelt grunnlag blir satt lik kr 0 dersom stillingsforholdet er under minstegrensa
-     * (50%) i perioda som blir beregna, når ordning er Opera.
+     * (50%) i perioda som blir beregna, nÃ¥r ordning er Opera.
      */
     @Test
     public void skalBeregneMaskineltGrunnlagLikKr0DersomStillingaErUnderMinstegrensaVersjon2Opera() {
@@ -129,10 +129,10 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     /**
-     * Verifiserer at maskinelt grunnlag blir avgrensa til 12G også for medregningar.
+     * Verifiserer at maskinelt grunnlag blir avgrensa til 12G ogsÃ¥ for medregningar.
      * <p>
-     * Merk at dette er oppførsel som er ulik den gamle løysinga, det blir der ikkje foretatt noko form for avgrensing
-     * oppover slik at skyhøge medregningar der vil medføre skyhøgt maskinelt grunnlag.
+     * Merk at dette er oppfÃ¸rsel som er ulik den gamle lÃ¸ysinga, det blir der ikkje foretatt noko form for avgrensing
+     * oppover slik at skyhÃ¸ge medregningar der vil medfÃ¸re skyhÃ¸gt maskinelt grunnlag.
      */
     @Test
     public void skalAvgrenseMaskineltGrunnlagTilOevregrense12GOgsaaForMedregningar() {
@@ -147,7 +147,7 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     /**
-     * Verifiserer at avgrensing til øvre grense blir utført før maskinelt grunnlag blir justert i henhold til årsfaktor.
+     * Verifiserer at avgrensing til Ã¸vre grense blir utfÃ¸rt fÃ¸r maskinelt grunnlag blir justert i henhold til Ã¥rsfaktor.
      */
     @Test
     public void skalAvgrenseMaskineltGrunnlagTilAarsfaktorEtterAvgrensingTilOevreloennsgrense() {
@@ -166,7 +166,7 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     /**
-     * Verifiserer at lønn blir avgrensa til 12G for stillingar tilknytta SPK-ordninga.
+     * Verifiserer at lÃ¸nn blir avgrensa til 12G for stillingar tilknytta SPK-ordninga.
      */
     @Test
     public void skalAvgrenseLoennTilOevregrense12GForStillingarTilknyttaSpkOrdninga() {
@@ -181,10 +181,10 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     /**
-     * Verifiserer at lønn blir avgrensa til 12G for stillingar tilknytta Opera-ordninga.
+     * Verifiserer at lÃ¸nn blir avgrensa til 12G for stillingar tilknytta Opera-ordninga.
      * <p>
-     * Merk at dette er kopiering av oppførsel frå den gamle systemløysinga for faktura fastsats, vi har ikkje funne
-     * nokon plass det er definert kva som er eller om det er ei øvre grense for Opera-ordninga.
+     * Merk at dette er kopiering av oppfÃ¸rsel frÃ¥ den gamle systemlÃ¸ysinga for faktura fastsats, vi har ikkje funne
+     * nokon plass det er definert kva som er eller om det er ei Ã¸vre grense for Opera-ordninga.
      */
     @Test
     public void skalAvgrenseLoennTilOevregrense12GForStillingarTilknyttaOperaOrdningaFordiViIkkjeHarNokoBedreKildeTilInformasjonOmDetteEnnOppfoerselIGamaltSystem() {
@@ -199,9 +199,9 @@ public class MaskineltGrunnlagRegelTest {
     }
 
     /**
-     * Verifiserer at lønn blir avrensa til 10G for stillingar tilknytta apotekordninga.
+     * Verifiserer at lÃ¸nn blir avrensa til 10G for stillingar tilknytta apotekordninga.
      * <p>
-     * Merk at dette er ei forenkling, perioda før 1. januar 2008 har andre reglar som ikkje er implementert.
+     * Merk at dette er ei forenkling, perioda fÃ¸r 1. januar 2008 har andre reglar som ikkje er implementert.
      */
     @Test
     public void skalAvgrenseLoennTilOevregrense10GForStillingarTilknyttaApotekordninga() {
@@ -284,8 +284,8 @@ public class MaskineltGrunnlagRegelTest {
                 .med(new OevreLoennsgrenseRegel())
                 .med(Premiestatus.valueOf("AAO-07"))
                 .med(Ordning.SPK)
-                        // Brukar urealistisk høgt beløp for å unngå at det skal påvirke testar som ikkje er fokusert
-                        // på å teste beløp som blir påvirka av grunnbeløpet
+                        // Brukar urealistisk hÃ¸gt belÃ¸p for Ã¥ unngÃ¥ at det skal pÃ¥virke testar som ikkje er fokusert
+                        // pÃ¥ Ã¥ teste belÃ¸p som blir pÃ¥virka av grunnbelÃ¸pet
                 .med(new Grunnbeloep(kroner(1_000_000)))
                 .med(MinstegrenseRegel.class, new MinstegrenseRegelVersjon1())
                 .med(new ErUnderMinstegrensaRegel())

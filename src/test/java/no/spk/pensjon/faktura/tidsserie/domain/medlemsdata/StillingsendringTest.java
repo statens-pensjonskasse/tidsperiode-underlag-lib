@@ -71,7 +71,7 @@ public class StillingsendringTest {
 
         final Stillingsendring endring = new Stillingsendring().stillingsforhold(id);
         assertThat(endring.tilhoerer(id))
-                .as("tilhøyrer stillingsendringa " + id + "?\n" + endring)
+                .as("tilhÃ¸yrer stillingsendringa " + id + "?\n" + endring)
                 .isTrue();
     }
 
@@ -96,7 +96,7 @@ public class StillingsendringTest {
     }
 
     /**
-     * Verifiserer at stillingsforhold blir annotert på perioda viss stillingsendringa er tilknytta eit
+     * Verifiserer at stillingsforhold blir annotert pÃ¥ perioda viss stillingsendringa er tilknytta eit
      * stillingsforhold.
      */
     @Test
@@ -123,7 +123,7 @@ public class StillingsendringTest {
     }
 
     /**
-     * Verifiserer at aksjonskode alltid blir annotert på underlagsperiode, enten med innrapportert verdi
+     * Verifiserer at aksjonskode alltid blir annotert pÃ¥ underlagsperiode, enten med innrapportert verdi
      * eller som ukjent viss endringa er innrapportert utan aksjonskode.
      */
     @Test
@@ -138,11 +138,11 @@ public class StillingsendringTest {
     }
 
     /**
-     * Verifiserer at underlagsperiodene ikkje blir annotert med lønnstrinn sjølv for
-     * endringar som er innrapportert med lønnstrinn.
+     * Verifiserer at underlagsperiodene ikkje blir annotert med lÃ¸nnstrinn sjÃ¸lv for
+     * endringar som er innrapportert med lÃ¸nnstrinn.
      * <p>
-     * Vi annoterer ikkje med lønnstrinn sidan det skal handterast av lønnstrinnoppslaget slik at både lønnstrinn
-     * og gjeldande lønnstrinnbeløp blir annotert som ei atomisk enheit.
+     * Vi annoterer ikkje med lÃ¸nnstrinn sidan det skal handterast av lÃ¸nnstrinnoppslaget slik at bÃ¥de lÃ¸nnstrinn
+     * og gjeldande lÃ¸nnstrinnbelÃ¸p blir annotert som ei atomisk enheit.
      */
     @Test
     public void skalAnnotereUnderlagsperioderMedLoennstrinn() {
@@ -208,7 +208,7 @@ public class StillingsendringTest {
     }
 
     /**
-     * Opprettar ei ny stillingsendring med alle påkrevde verdiar populert.
+     * Opprettar ei ny stillingsendring med alle pÃ¥krevde verdiar populert.
      *
      * @return
      */

@@ -9,9 +9,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 /**
  * Premieberegningsregel for {@link Produkt#TIP}.
  * <br>
- * Merk at det kun er avtalar med fiktivt fond som har tillegspremie-produktet. Sjølv om desse avtalane ikkje skal
- * avregnast blir det beregna årspremieandel for TIP-produktet så ein kan holde oversikt over kor mykje premie
- * avtalen skulle ha betalt for perioda om ein hadde valgt å avregne avtalar med fiktiv fond.
+ * Merk at det kun er avtalar med fiktivt fond som har tillegspremie-produktet. SjÃ¸lv om desse avtalane ikkje skal
+ * avregnast blir det beregna Ã¥rspremieandel for TIP-produktet sÃ¥ ein kan holde oversikt over kor mykje premie
+ * avtalen skulle ha betalt for perioda om ein hadde valgt Ã¥ avregne avtalar med fiktiv fond.
  *
  * @author Tarjei Skorgenes
  * @see Pensjonspremier#beregn(Beregningsperiode, Produkt)

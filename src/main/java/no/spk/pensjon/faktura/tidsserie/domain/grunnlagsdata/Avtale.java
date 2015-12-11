@@ -15,9 +15,9 @@ import java.util.stream.Stream;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagFactory;
 
 /**
- * Avtale er ein projeksjon av tilstanda til ein avtale på eit bestemt tidspunkt i tid.
+ * Avtale er ein projeksjon av tilstanda til ein avtale pÃ¥ eit bestemt tidspunkt i tid.
  * <p>
- * Projeksjonen blir utleda basert på ei bestemt
+ * Projeksjonen blir utleda basert pÃ¥ ei bestemt
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode periode} i ei
  * {@link UnderlagFactory#periodiser() periodisering} av avtalen sine avtaleversjonar og avtaleprodukt.
  *
@@ -47,7 +47,7 @@ public class Avtale {
      * @param kategori     avtalen sin premiekategori, eller ingenting dersom premiekategori er ukjent
      * @param produkt      produkta avtalen betalar premie til SPK for
      * @param satser       premiesatsane som er tilknytta avtalen, kan inkludere produkt som avtalen
-     * @param risikoklasse risikoklassa avtalen tilhøyrer viss den har eit YSK-produkt hos SPK
+     * @param risikoklasse risikoklassa avtalen tilhÃ¸yrer viss den har eit YSK-produkt hos SPK
      */
     private Avtale(final AvtaleId id, final Premiestatus status, final Optional<Premiekategori> kategori,
                    final Stream<Produkt> produkt, final Map<Produkt, Premiesats> satser,
@@ -141,13 +141,13 @@ public class Avtale {
     /**
      * Opprettar ein ny byggar for konstruksjon av nye {@link Avtale}-instansar.
      *
-     * @param id avtalenummeret som unikt identifiserer avtalen som ein ønskjer å bygge opp tilstanda til
+     * @param id avtalenummeret som unikt identifiserer avtalen som ein Ã¸nskjer Ã¥ bygge opp tilstanda til
      * @return ein ny avtalebyggar
      * @throws NullPointerException viss <code>id</code> er <code>null</code>
      */
     public static AvtaleBuilder avtale(final AvtaleId id) {
         return new AvtaleBuilder(
-                requireNonNull(id, () -> "Avtalenummer er påkrevd, men var null")
+                requireNonNull(id, () -> "Avtalenummer er pÃ¥krevd, men var null")
         );
     }
 
@@ -181,7 +181,7 @@ public class Avtale {
          * @throws NullPointerException viss <code>status</code> er <code>null</code>
          */
         public AvtaleBuilder premiestatus(Premiestatus status) {
-            this.status = requireNonNull(status, "Premiestatus er påkrevd, men vart forsøkt endra til null");
+            this.status = requireNonNull(status, "Premiestatus er pÃ¥krevd, men vart forsÃ¸kt endra til null");
             return this;
         }
 
@@ -205,7 +205,7 @@ public class Avtale {
          * @since 1.1.1
          */
         public AvtaleBuilder risikoklasse(final Optional<Risikoklasse> risikoklasse) {
-            this.risikoklasse = requireNonNull(risikoklasse, "risikoklasse er påkrevd, men var null");
+            this.risikoklasse = requireNonNull(risikoklasse, "risikoklasse er pÃ¥krevd, men var null");
             return this;
         }
 
@@ -219,7 +219,7 @@ public class Avtale {
          * @since 1.1.1
          */
         public AvtaleBuilder addPremiesats(final Premiesats premiesats) {
-            final Produkt produkt = requireNonNull(premiesats, "premiesats er påkrevd, men var null").produkt;
+            final Produkt produkt = requireNonNull(premiesats, "premiesats er pÃ¥krevd, men var null").produkt;
             if (premiesatser.containsKey(produkt)) {
                 throw new IllegalStateException(
                         "Avtale "
@@ -240,7 +240,7 @@ public class Avtale {
         }
 
         /**
-         * Bygger ein ny {@link Avtale} og populerer den basert på byggaren si tilstand.
+         * Bygger ein ny {@link Avtale} og populerer den basert pÃ¥ byggaren si tilstand.
          *
          * @return ein ny avtale
          */

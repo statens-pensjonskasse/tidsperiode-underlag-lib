@@ -23,14 +23,14 @@ public class AvtaleIdTest {
     public void skalKreveAvtalenummerVedKonstruksjon() {
         e.expect(NullPointerException.class);
         e.expectMessage("avtalenummer");
-        e.expectMessage("er påkrevd, men var null");
+        e.expectMessage("er pÃ¥krevd, men var null");
 
         new AvtaleId(null);
     }
 
     /**
      * Kort fortalt: Grovverifiserer at equal og hashcode er implementert korrekt slik at
-     * ein kan legge inn avtalenummer i eit set og vere sikker på at det ikkje vil inneholde nokon duplikat.
+     * ein kan legge inn avtalenummer i eit set og vere sikker pÃ¥ at det ikkje vil inneholde nokon duplikat.
      */
     @Test
     public void skalKunneLeggastIEitSetMedUnikeVerdiar() {

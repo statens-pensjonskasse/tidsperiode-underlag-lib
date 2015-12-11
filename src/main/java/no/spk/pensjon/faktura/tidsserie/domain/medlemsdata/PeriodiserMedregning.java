@@ -18,15 +18,15 @@ class PeriodiserMedregning {
     private final List<Medregningsperiode> perioder = new ArrayList<>();
 
     /**
-     * Bygger opp ein ny, periodisert representasjon av eit stillingsforhold som er basert på medregning.
+     * Bygger opp ein ny, periodisert representasjon av eit stillingsforhold som er basert pÃ¥ medregning.
      * <p>
      * Medregningsperiodene som er tilknytta stillingsforholdet dannar grunnlaget for periodiseringa som blir
-     * generert, dei blir brukt as is, sortert kronologisk og blir forventa å ikkje inneholde nokon tidsgap mellom
+     * generert, dei blir brukt as is, sortert kronologisk og blir forventa Ã¥ ikkje inneholde nokon tidsgap mellom
      * medregningsperiodene dersom det eksisterer meir enn ei medregningsperiode tilknytta stillingsforholdet.
      * <p>
      * Det blir ikkje foretatt noko form for validering av om desse antagelsane stemmer. Shit in -> shit out.
      *
-     * @return den periodiserte representasjonen av stillingsforholdet viss det er basert på medregning, eller
+     * @return den periodiserte representasjonen av stillingsforholdet viss det er basert pÃ¥ medregning, eller
      * ingenting dersom stillingsforholdet ikkje har nokon medregningar tilknytta seg
      */
     Optional<List<StillingsforholdPeriode>> periodiser() {

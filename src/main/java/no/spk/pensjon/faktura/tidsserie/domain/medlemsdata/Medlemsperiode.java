@@ -15,19 +15,19 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
- * {@link Medlemsperiode} representerer ei tidsperiode der det ikkje skjer nokon lønns- eller stillingsrelaterte
- * endringar på medlemmet.
+ * {@link Medlemsperiode} representerer ei tidsperiode der det ikkje skjer nokon lÃ¸nns- eller stillingsrelaterte
+ * endringar pÃ¥ medlemmet.
  * <p>
- * Periodene blir bygd opp basert på alle stillingsforhold- og medregningsperioder tilknytta medlemmet.
+ * Periodene blir bygd opp basert pÃ¥ alle stillingsforhold- og medregningsperioder tilknytta medlemmet.
  * <p>
  * Merk at i motsetning til {@link StillingsforholdPeriode} kan ei medlemsperiode indikere at medlemmet ikkje er aktivt,
- * det vil bli danna medlemsperioder også for periodene der medlemmet ikkje har ei aktiv stilling hos arbeidsgivarar
+ * det vil bli danna medlemsperioder ogsÃ¥ for periodene der medlemmet ikkje har ei aktiv stilling hos arbeidsgivarar
  * tilknytta nokon av ordninga som blir administrert av Statens Pensjonskasse.
  * <p>
  * Ved hjelp av medlemsperioda sine overlappande {@link #stillingsforhold} kan ein gjere utrekningar som utledar ting
  * som antall parallelle stillingsforhold og antall dagar med slike pr medlem, ein kan rekne ut total stillingsprosent
- * eller total lønn. Det blir forventa at dette kan bli brukt for å implementere meir presis handtering av øvre og
- * nedre lønnsgrenser (minstegrense/10G/12G) og liknande.
+ * eller total lÃ¸nn. Det blir forventa at dette kan bli brukt for Ã¥ implementere meir presis handtering av Ã¸vre og
+ * nedre lÃ¸nnsgrenser (minstegrense/10G/12G) og liknande.
  *
  * @author Tarjei Skorgenes
  */
@@ -35,10 +35,10 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
     private final List<StillingsforholdPeriode> stillingsforhold = new ArrayList<>(1);
 
     /**
-     * Konstruerer ei ny tidsperiode som har ein frå og med-dato og som kan ha
-     * ein til og med-dato, eller som kan vere løpande og dermed har ein tom til og med-dato
+     * Konstruerer ei ny tidsperiode som har ein frÃ¥ og med-dato og som kan ha
+     * ein til og med-dato, eller som kan vere lÃ¸pande og dermed har ein tom til og med-dato
      *
-     * @param fraOgMed første dag i tidsperioda
+     * @param fraOgMed fÃ¸rste dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
      */
     public Medlemsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
@@ -72,7 +72,7 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
 
     /**
      * Annoterer underlagsperioda med informasjon om kva stillingar
-     * medlemmet er aktivt på innanfor medlemsperioda.
+     * medlemmet er aktivt pÃ¥ innanfor medlemsperioda.
      *
      * @param periode underlagsperioda som skal annoterast
      */
@@ -81,12 +81,12 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
     }
 
     /**
-     * Opprettar eit nytt sett med aktive stillingar basert på stillingsforholdperiodene som er tilknytta medlemsperioda.
+     * Opprettar eit nytt sett med aktive stillingar basert pÃ¥ stillingsforholdperiodene som er tilknytta medlemsperioda.
      * <p>
-     * Dersom medlemmet innanfor perioda ikkje har nokon aktive stillingar på avtalar tilknytta SPK, blir ingenting
+     * Dersom medlemmet innanfor perioda ikkje har nokon aktive stillingar pÃ¥ avtalar tilknytta SPK, blir ingenting
      * returnert.
      *
-     * @return ein ny instans av aktive stillingar med informasjon om kvart stillingsforhold medlemmet er aktivt på
+     * @return ein ny instans av aktive stillingar med informasjon om kvart stillingsforhold medlemmet er aktivt pÃ¥
      * innanfor medlemsperioda, eller {@link Optional#empty() ingenting} dersom medlememt er inaktiv i perioda
      */
     Optional<AktiveStillingar> aktiveStillingar() {
@@ -101,7 +101,7 @@ public class Medlemsperiode extends AbstractTidsperiode<Medlemsperiode> {
     }
 
     /**
-     * Aktive stillingar gir oversikt over kva stillingsforhold medlemmet er aktivt på innanfor ei bestemt
+     * Aktive stillingar gir oversikt over kva stillingsforhold medlemmet er aktivt pÃ¥ innanfor ei bestemt
      * medlemsperiode.
      */
     private static class AktiveStillingsforhold implements AktiveStillingar {

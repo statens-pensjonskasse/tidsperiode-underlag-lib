@@ -28,7 +28,7 @@ public class MedregningsperiodeTest {
                 .bygg();
         assertThat(
                 periode.tilhoerer(id))
-                .as("tilhøyrer medregningsperioda " + id + "?\n" + periode)
+                .as("tilhÃ¸yrer medregningsperioda " + id + "?\n" + periode)
                 .isTrue();
     }
 

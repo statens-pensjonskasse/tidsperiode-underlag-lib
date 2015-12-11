@@ -30,9 +30,9 @@ public class DatoarTest {
     }
 
     /**
-     * Verifiserer at tom streng eller <code>null</code> fører til at <code>null</code> blir returnert.
+     * Verifiserer at tom streng eller <code>null</code> fÃ¸rer til at <code>null</code> blir returnert.
      * <br>
-     * Dette er omtrent den einaste jævla plassen i kodebasen der vi brukar null som returverdi, i etterpåklokskapens
+     * Dette er omtrent den einaste jÃ¦vla plassen i kodebasen der vi brukar null som returverdi, i etterpÃ¥klokskapens
      * lys var kanskje ikkje det den beste ideen ever.
      */
     @Test
@@ -44,9 +44,9 @@ public class DatoarTest {
     }
 
     /**
-     * Verifiserer at whitespace ikkje påvirkar parsinga på noko vis, spesifikt at
+     * Verifiserer at whitespace ikkje pÃ¥virkar parsinga pÃ¥ noko vis, spesifikt at
      * leading/trailing whitespace ikkje endrar handteringa slik at det som skulle blitt parsa som ein
-     * 8-tegns verdi blir forsøkt parsa med 10-tegns format på grunn av whitespace.
+     * 8-tegns verdi blir forsÃ¸kt parsa med 10-tegns format pÃ¥ grunn av whitespace.
      */
     @Test
     public void skalIkkjeBliPaaVirkaAvWhitespace() {

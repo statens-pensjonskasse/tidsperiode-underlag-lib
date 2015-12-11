@@ -26,7 +26,7 @@ public class Aksjonskode {
     public static final Aksjonskode SLUTTMELDING = newAksjonskode("031");
 
     /**
-     * Permisjon utan lønn.
+     * Permisjon utan lÃ¸nn.
      */
     public static final Aksjonskode PERMISJON_UTAN_LOENN = newAksjonskode("028");
 
@@ -44,11 +44,11 @@ public class Aksjonskode {
     private final String kode;
 
     private Aksjonskode(final String kode) {
-        this.kode = requireNonNull(kode, () -> "aksjonskode er påkrevd, men var null");
+        this.kode = requireNonNull(kode, () -> "aksjonskode er pÃ¥krevd, men var null");
     }
 
     /**
-     * Aksjonskoda som identifiserer og skiller aksjonskoda frå andre aksjonskoder.
+     * Aksjonskoda som identifiserer og skiller aksjonskoda frÃ¥ andre aksjonskoder.
      *
      * @return aksjonskoda
      */
@@ -65,8 +65,8 @@ public class Aksjonskode {
      * Dersom <code>kode</code> er tom, kun inneheld whitespace eller er <code>null</code> blir {@link #UKJENT}
      * alltid returnert.
      * <p>
-     * Oppslaget vil cache opp til 100 forskjellige aksjonskoder, blir det forsøkt definert fleire enn det vil denne
-     * metoda returnere ein ny instans kvar gang ei kode som ikkje er blant dei 100, blir forsøkt slått opp.
+     * Oppslaget vil cache opp til 100 forskjellige aksjonskoder, blir det forsÃ¸kt definert fleire enn det vil denne
+     * metoda returnere ein ny instans kvar gang ei kode som ikkje er blant dei 100, blir forsÃ¸kt slÃ¥tt opp.
      *
      * @param kode ein streng som skal konverterast til ein aksjonskode
      * @return aksjonskoda for den aktuelle koda

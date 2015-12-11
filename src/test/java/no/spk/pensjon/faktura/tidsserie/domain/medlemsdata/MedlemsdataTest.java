@@ -41,8 +41,8 @@ public class MedlemsdataTest {
 
     @Before
     public void _before() {
-        // Vi stubbar ut oversettinga her så vi slepp å måtte populere og sette opp eit komplett testdatasett kun for
-        // å teste medlemsdata som ikkje har noko direkte med datainnholdet å gjere (ut over stillingsforholdnummer og
+        // Vi stubbar ut oversettinga her sÃ¥ vi slepp Ã¥ mÃ¥tte populere og sette opp eit komplett testdatasett kun for
+        // Ã¥ teste medlemsdata som ikkje har noko direkte med datainnholdet Ã¥ gjere (ut over stillingsforholdnummer og
         // typeindikatoren)
         oversettere.put(Stillingsendring.class, new MedlemsdataOversetter<Stillingsendring>() {
             @Override
@@ -88,8 +88,8 @@ public class MedlemsdataTest {
     }
 
     /**
-     * Verifiserer at dersom rader frå forskjellige medlemmar blir sendt inn til samme Medlemsdata så blir det oppdaga
-     * og medfører at instansieringa feilar.
+     * Verifiserer at dersom rader frÃ¥ forskjellige medlemmar blir sendt inn til samme Medlemsdata sÃ¥ blir det oppdaga
+     * og medfÃ¸rer at instansieringa feilar.
      */
     @Test
     public void skalKunTillateDataTilknyttaEitMedlemPrMedlemsdata() {
@@ -122,7 +122,7 @@ public class MedlemsdataTest {
     }
 
     /**
-     * Verifiserer at endringar av type 2 er dei einaste som blir forsøkt konvertert til
+     * Verifiserer at endringar av type 2 er dei einaste som blir forsÃ¸kt konvertert til
      * {@link Medregningsperiode}.
      */
     @Test
@@ -142,7 +142,7 @@ public class MedlemsdataTest {
     }
 
     /**
-     * Verifiserer at endringar av type 1 er dei einaste som blir forsøkt konvertert til
+     * Verifiserer at endringar av type 1 er dei einaste som blir forsÃ¸kt konvertert til
      * {@link Avtalekoblingsperiode}.
      */
     @Test
@@ -159,7 +159,7 @@ public class MedlemsdataTest {
     }
 
     /**
-     * Verifiserer at endringar av type 0 er dei einaste som blir forsøkt konvertert til
+     * Verifiserer at endringar av type 0 er dei einaste som blir forsÃ¸kt konvertert til
      * {@link Stillingsendring}.
      */
     @Test
@@ -176,36 +176,36 @@ public class MedlemsdataTest {
     }
 
     /**
-     * Verifiserer at det ikkje er tillatt å opprette medlemsdata for eit medlem som vi ikkje har noko informasjon
-     * på.
+     * Verifiserer at det ikkje er tillatt Ã¥ opprette medlemsdata for eit medlem som vi ikkje har noko informasjon
+     * pÃ¥.
      */
     @Test
     public void skalIkkjeTillateMedlemsdataUtanInnhold() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("medlemsdata må inneholde minst ei stillingsendring, medregning eller avtalekobling, men var tom");
+        e.expectMessage("medlemsdata mÃ¥ inneholde minst ei stillingsendring, medregning eller avtalekobling, men var tom");
 
         new Medlemsdata(new ArrayList<>(), oversettere);
     }
 
     /**
-     * Verifiserer at det ikkje er tillatt å konstruere nye medlemsdata der data-parameteret er null ettersom det vil
-     * føre til NullPointerException ved seinare prosessering.
+     * Verifiserer at det ikkje er tillatt Ã¥ konstruere nye medlemsdata der data-parameteret er null ettersom det vil
+     * fÃ¸re til NullPointerException ved seinare prosessering.
      */
     @Test
     public void skalIkkjeTillateDataLikNullVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("medlemsdata er påkrevd, men var null");
+        e.expectMessage("medlemsdata er pÃ¥krevd, men var null");
         new Medlemsdata(null, oversettere);
     }
 
     /**
-     * Verifiserer at det ikkje er tillatt å konstruere nye medlemsdata der oversettere-parameteret er null ettersom det vil
-     * føre til NullPointerException ved seinare prosessering.
+     * Verifiserer at det ikkje er tillatt Ã¥ konstruere nye medlemsdata der oversettere-parameteret er null ettersom det vil
+     * fÃ¸re til NullPointerException ved seinare prosessering.
      */
     @Test
     public void skalIkkjeTillateOversettereLikNullVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("oversettere er påkrevd, men var null");
+        e.expectMessage("oversettere er pÃ¥krevd, men var null");
 
         new Medlemsdata(
                 asList(
@@ -220,7 +220,7 @@ public class MedlemsdataTest {
     }
 
     /**
-     * Verifiserer at vi feilar dersom eit stillingsforhold har både medregning og historikk ettersom
+     * Verifiserer at vi feilar dersom eit stillingsforhold har bÃ¥de medregning og historikk ettersom
      * dette ikkje er logisk mulig, slike tilfelle skal ha forskjellige stillingsforholdnummer.
      */
     @Test
@@ -240,8 +240,8 @@ public class MedlemsdataTest {
 
     /**
      * Verifiserer at dersom medlemsdata blir satt opp utan ein oversettar for ei datatype
-     * så blir det ikkje kasta nokon exception under konvertering, ein skal handterere denne
-     * feilen som om det ikkje er lagt til nokon medlemsdata av den ønska datatypen.
+     * sÃ¥ blir det ikkje kasta nokon exception under konvertering, ein skal handterere denne
+     * feilen som om det ikkje er lagt til nokon medlemsdata av den Ã¸nska datatypen.
      */
     @Test
     public void skalIgnorereManglandeOversettarVedKonvertering() {

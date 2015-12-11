@@ -41,18 +41,18 @@ public class AarTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at årstall er påkrevd ved konstruksjon av nye år.
+     * Verifiserer at Ã¥rstall er pÃ¥krevd ved konstruksjon av nye Ã¥r.
      */
     @Test
     public void skalKreveAarstallVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("årstall er påkrevd, men var null");
+        e.expectMessage("Ã¥rstall er pÃ¥krevd, men var null");
 
         new Aar(null);
     }
 
     /**
-     * Verifiserer at året overlappar alltid datoar som ligg innanfor året.
+     * Verifiserer at Ã¥ret overlappar alltid datoar som ligg innanfor Ã¥ret.
      */
     @Theory
     @Test
@@ -64,12 +64,12 @@ public class AarTest {
                         .mapToObj(d -> ofYearDay(aarstall.toYear().getValue(), d))
                         .filter(d -> !aar.overlapper(d))
                         .toArray()
-        ).as("datoar innanfor år " + aarstall + " som året ikke overlapper")
+        ).as("datoar innanfor Ã¥r " + aarstall + " som Ã¥ret ikke overlapper")
                 .isEmpty();
     }
 
     /**
-     * Verifiserer at året aldri overlappar datoar som ligg utanfor året.
+     * Verifiserer at Ã¥ret aldri overlappar datoar som ligg utanfor Ã¥ret.
      */
     @Theory
     @Test
@@ -88,12 +88,12 @@ public class AarTest {
                         .flatMap(datoer -> datoer)
                         .filter(aar::overlapper)
                         .toArray()
-        ).as("datoar utanfor år " + aarstall + " som året overlapper")
+        ).as("datoar utanfor Ã¥r " + aarstall + " som Ã¥ret overlapper")
                 .isEmpty();
     }
 
     /**
-     * Verifiserer at året overlappar perioder som ligg 100% innanfor året.
+     * Verifiserer at Ã¥ret overlappar perioder som ligg 100% innanfor Ã¥ret.
      */
     @Theory
     @Test
@@ -107,7 +107,7 @@ public class AarTest {
                         .map(d -> new GenerellTidsperiode(d, of(d)))
                         .filter(p -> !aar.overlapper(p))
                         .toArray()
-        ).as("perioder innenfor år " + aarstall + " som året ikke overlapper")
+        ).as("perioder innenfor Ã¥r " + aarstall + " som Ã¥ret ikke overlapper")
                 .isEmpty();
 
         assertThat(
@@ -118,14 +118,14 @@ public class AarTest {
                         .map(m -> new Maaned(aarstall, m))
                         .filter(p -> !aar.overlapper(p))
                         .toArray()
-        ).as("perioder innenfor år " + aarstall + " som året ikke overlapper")
+        ).as("perioder innenfor Ã¥r " + aarstall + " som Ã¥ret ikke overlapper")
                 .isEmpty();
 
         assertThat(aar.overlapper(aar)).as("overlapper aaret seg selv?").isTrue();
     }
 
     /**
-     * Verifiserer at året overlappar perioder som ligg delvis innanfor året.
+     * Verifiserer at Ã¥ret overlappar perioder som ligg delvis innanfor Ã¥ret.
      */
     @Theory
     @Test
@@ -140,16 +140,16 @@ public class AarTest {
                         .map(datoForrigeAar -> new GenerellTidsperiode(datoForrigeAar, of(datoForrigeAar.plusDays(200))))
                         .filter(periode -> !aar.overlapper(periode))
                         .toArray()
-        ).as("200 dagers perioder som startar før og sluttar i år " + aarstall + " men som året ikke overlapper")
+        ).as("200 dagers perioder som startar fÃ¸r og sluttar i Ã¥r " + aarstall + " men som Ã¥ret ikke overlapper")
                 .isEmpty();
 
         assertThat(aar.overlapper(new GenerellTidsperiode(forrige.atEndOfYear(), of(forrige.atEndOfYear().plusDays(1)))))
-                .as("overlapper " + aarstall + " 2-dagers perioda som starta nyttårsafta i fjor?")
+                .as("overlapper " + aarstall + " 2-dagers perioda som starta nyttÃ¥rsafta i fjor?")
                 .isTrue();
     }
 
     /**
-     * Verifiserer at året overlappar perioder som ligg delvis innanfor året.
+     * Verifiserer at Ã¥ret overlappar perioder som ligg delvis innanfor Ã¥ret.
      */
     @Theory
     @Test
@@ -164,20 +164,20 @@ public class AarTest {
                         .map(datoNesteAar -> new GenerellTidsperiode(datoNesteAar.minusDays(200), of(datoNesteAar)))
                         .filter(periode -> !aar.overlapper(periode))
                         .toArray()
-        ).as("200 dagers perioder som startar i og sluttar etter år " + aarstall + " men som året ikke overlapper")
+        ).as("200 dagers perioder som startar i og sluttar etter Ã¥r " + aarstall + " men som Ã¥ret ikke overlapper")
                 .isEmpty();
 
         assertThat(aar.overlapper(new GenerellTidsperiode(aarstall.atEndOfYear(), of(neste.atStartOfYear()))))
-                .as("overlapper år " + aar + " 2-dagers perioda som startar nyttårsafta i år?")
+                .as("overlapper Ã¥r " + aar + " 2-dagers perioda som startar nyttÃ¥rsafta i Ã¥r?")
                 .isTrue();
     }
 
     /**
-     * Verifiserer at året aldri overlappar perioder som ligg utanfor året.
+     * Verifiserer at Ã¥ret aldri overlappar perioder som ligg utanfor Ã¥ret.
      */
     @Theory
     @Test
-    public void skalAldriOverlappePerioderFørAaret(final Aarstall aarstall) {
+    public void skalAldriOverlappePerioderFÃ¸rAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
 
         final Aarstall forrige = aarstall.forrige();
@@ -200,7 +200,7 @@ public class AarTest {
     }
 
     /**
-     * Verifiserer at året aldri overlappar perioder som ligg utanfor året.
+     * Verifiserer at Ã¥ret aldri overlappar perioder som ligg utanfor Ã¥ret.
      */
     @Theory
     @Test
@@ -226,26 +226,26 @@ public class AarTest {
     }
 
     /**
-     * Verifiserer at årets fra og med-dato alltid er lik 1. januar.
+     * Verifiserer at Ã¥rets fra og med-dato alltid er lik 1. januar.
      */
     @Theory
     @Test
     public void skalBruke1JanuarSomFraOgMedDatoKvartAar(final Aarstall aar) {
         assertThat(new Aar(aar).fraOgMed())
-                .as("fra og med-dato for år " + aar)
+                .as("fra og med-dato for Ã¥r " + aar)
                 .isEqualTo(
                         LocalDate.of(aar.toYear().getValue(), JANUARY, 1)
                 );
     }
 
     /**
-     * Verifiserer at årets fra og med-dato alltid er lik 31. desember.
+     * Verifiserer at Ã¥rets fra og med-dato alltid er lik 31. desember.
      */
     @Theory
     @Test
     public void skalBruke31DesemberSomTilOgMedDatoKvartAar(final Aarstall aar) {
         assertThat(new Aar(aar).tilOgMed())
-                .as("til og med-dato for år " + aar)
+                .as("til og med-dato for Ã¥r " + aar)
                 .isEqualTo(
                         of(
                                 LocalDate.of(aar.toYear().getValue(), DECEMBER, 31)
@@ -254,7 +254,7 @@ public class AarTest {
     }
 
     /**
-     * Verifiserer at alle årstall skal inneholde 12 månedar.
+     * Verifiserer at alle Ã¥rstall skal inneholde 12 mÃ¥nedar.
      */
     @Theory
     @Test
@@ -263,7 +263,7 @@ public class AarTest {
     }
 
     private static AbstractListAssert<?, ? extends List<? extends Maaned>, Maaned> assertAar(final Aarstall aar) {
-        return assertThat(new Aar(aar).maaneder().collect(toList())).as("måneder i år " + aar);
+        return assertThat(new Aar(aar).maaneder().collect(toList())).as("mÃ¥neder i Ã¥r " + aar);
     }
 
     private static AbstractBooleanAssert<?> assertOverlapper(Aar aar, Tidsperiode periode) {

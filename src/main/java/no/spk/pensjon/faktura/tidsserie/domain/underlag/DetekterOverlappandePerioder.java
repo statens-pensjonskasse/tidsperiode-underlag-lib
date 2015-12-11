@@ -13,14 +13,14 @@ import java.util.stream.Stream;
  * @author Tarjei Skorgenes
  */
 class DetekterOverlappandePerioder implements BinaryOperator<Underlagsperiode> {
-    // Vi allokerer ei liste med ein initiell kapasitet på 0 element for å redusere minnebruken
-    // for dei 99.9% av underlaga som det ikkje eksisterer nokon overlappar på
+    // Vi allokerer ei liste med ein initiell kapasitet pÃ¥ 0 element for Ã¥ redusere minnebruken
+    // for dei 99.9% av underlaga som det ikkje eksisterer nokon overlappar pÃ¥
     private final List<Underlagsperiode[]> overlappar = new ArrayList<>(0);
 
     /**
      * Verifiserer at <code>current</code> ikkje overlappar <code>previous</code>.
      * <p>
-     * Dersom periodene overlappar indikerer det at underlaget er inkonsistent og er konstruert ut frå eit totally
+     * Dersom periodene overlappar indikerer det at underlaget er inkonsistent og er konstruert ut frÃ¥ eit totally
      * bollocks sett med underlagsperioder.
      *
      * @param previous forrige underlagsperiode

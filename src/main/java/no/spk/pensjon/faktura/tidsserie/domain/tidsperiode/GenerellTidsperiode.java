@@ -14,32 +14,32 @@ import static java.util.Objects.requireNonNull;
  */
 public class GenerellTidsperiode extends AbstractTidsperiode<GenerellTidsperiode> {
     /**
-     * Konstruerer ei ny tidsperiode som har ein frå og med-dato og som kan ha
-     * ein til og med-dato, eller som kan vere løpande og dermed har ein tom til og med-dato
+     * Konstruerer ei ny tidsperiode som har ein frÃ¥ og med-dato og som kan ha
+     * ein til og med-dato, eller som kan vere lÃ¸pande og dermed har ein tom til og med-dato
      *
-     * @param fraOgMed første dag i tidsperioda
+     * @param fraOgMed fÃ¸rste dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
-     *                 indikerer det at tidsperioda ikkje er avslutta, dvs løpande
+     *                 indikerer det at tidsperioda ikkje er avslutta, dvs lÃ¸pande
      */
     public GenerellTidsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         super(fraOgMed, tilOgMed);
     }
 
     /**
-     * Konstruerer ei ny tidsperiode der frå og med- og til og med-dato er lik
+     * Konstruerer ei ny tidsperiode der frÃ¥ og med- og til og med-dato er lik
      * <code>kilde</code> sine datoar.
      *
-     * @param kilde tidsperioda som frå og med- og til og med-dato skal kopierast frå
+     * @param kilde tidsperioda som frÃ¥ og med- og til og med-dato skal kopierast frÃ¥
      * @throws NullPointerException viss <code>kilde</code> er <code>null</code>
      */
     public GenerellTidsperiode(final Tidsperiode<?> kilde) {
-        super(requireNonNull(kilde, () -> "kilde er påkrevd, men var null").fraOgMed(), kilde.tilOgMed());
+        super(requireNonNull(kilde, () -> "kilde er pÃ¥krevd, men var null").fraOgMed(), kilde.tilOgMed());
     }
 
     /**
-     * Genererer ei hashkode basert på periodas frå og med- og til og med-dato.
+     * Genererer ei hashkode basert pÃ¥ periodas frÃ¥ og med- og til og med-dato.
      *
-     * @return ei hashcode basert på frå og med- og til og med-datoen til perioda
+     * @return ei hashcode basert pÃ¥ frÃ¥ og med- og til og med-datoen til perioda
      */
     @Override
     public int hashCode() {
@@ -48,10 +48,10 @@ public class GenerellTidsperiode extends AbstractTidsperiode<GenerellTidsperiode
 
     /**
      * Sjekkar om <code>obj</code> er ei {@link GenerellTidsperiode} med lik
-     * frå og med- og til og med-dato.
+     * frÃ¥ og med- og til og med-dato.
      *
      * @param obj eit anna objekt som tidsperioda skal samanliknast med
-     * @return <code>true</code> dersom <code>obj</code> er ei generell tidsperiode med lik frå og med- og
+     * @return <code>true</code> dersom <code>obj</code> er ei generell tidsperiode med lik frÃ¥ og med- og
      * til og med-dato, <code>false</code> ellers
      */
     @Override

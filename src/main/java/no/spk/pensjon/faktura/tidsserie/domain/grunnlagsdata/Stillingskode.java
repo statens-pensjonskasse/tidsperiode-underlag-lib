@@ -8,7 +8,7 @@ import java.util.Set;
  * Kodeverk for Stillingskode er definert som en konstantklasse ettersom antall verdier er begrenset, men ikke kjent. Verdi skal ligge
  * mellom 0 og 10000, mapper til TORT015.
  * <p>
- * Skamlaust kopiert frå pensjon-database-kodeverk-lib 49.1.0
+ * Skamlaust kopiert frÃ¥ pensjon-database-kodeverk-lib 49.1.0
  *
  * @author Per Otto Bergum Christensen
  */
@@ -30,7 +30,7 @@ public final class Stillingskode {
     public final static Stillingskode K_STIL_APO_GENERALSEKRETER = new Stillingskode(14);
 
     /**
-     * Disse stillingskoder (1,10,11,12,13,14) mappes ikke i TORT12 fordi de skal ikke ha lønn oppgitt som lønnstrinn
+     * Disse stillingskoder (1,10,11,12,13,14) mappes ikke i TORT12 fordi de skal ikke ha lÃ¸nn oppgitt som lÃ¸nnstrinn
      */
     private final static Set<Stillingskode> APOTEKERSTILLINGER = new HashSet<>(Arrays.asList(
             K_STIL_APO_APOTEKER,
@@ -60,7 +60,7 @@ public final class Stillingskode {
             K_STIL_APO_RESEPTAR));
 
     /**
-     * Disse stillingskoder (1,2,3,4,10,11) er farmasøyter, dvs har 39 timer per uke og egen minstegrense for medlemskap
+     * Disse stillingskoder (1,2,3,4,10,11) er farmasÃ¸yter, dvs har 39 timer per uke og egen minstegrense for medlemskap
      */
     private final static Set<Stillingskode> FARMASOYTER = new HashSet<>(Arrays.asList(
             K_STIL_APO_APOTEKER,
@@ -78,7 +78,7 @@ public final class Stillingskode {
     }
 
     /**
-     * Factory metode som må implementeres for at ClassMapper (spk-mapping) skal kunne konvertere en en string verdi til Kodeverk av denne
+     * Factory metode som mÃ¥ implementeres for at ClassMapper (spk-mapping) skal kunne konvertere en en string verdi til Kodeverk av denne
      * typen.
      *
      * @param kode som skal parses til riktig Kodeverk
@@ -89,7 +89,7 @@ public final class Stillingskode {
     }
 
     /**
-     * Factory metode som må implementeres for at ClassMapper (spk-mapping) skal kunne konvertere en en heltallsvverdi til Kodeverk av denne
+     * Factory metode som mÃ¥ implementeres for at ClassMapper (spk-mapping) skal kunne konvertere en en heltallsvverdi til Kodeverk av denne
      * typen.
      *
      * @param kode som skal parses til riktig Kodeverk
@@ -117,9 +117,9 @@ public final class Stillingskode {
     }
 
     /**
-     * Sjekker om stillingskoden er farmasøyt (1,2,3,4,10,11)
+     * Sjekker om stillingskoden er farmasÃ¸yt (1,2,3,4,10,11)
      *
-     * @return true hvis farmasøyt
+     * @return true hvis farmasÃ¸yt
      */
     public boolean erFarmasoyt() {
         return FARMASOYTER.contains(this);

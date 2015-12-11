@@ -9,47 +9,47 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 import java.util.Optional;
 
 /**
- * {@link Loennstrinnperiode} representerer ei lønnstrinnperiode som inneheld kva som er gjeldande lønn i 100%
- * stilling for stillingar tilknytta eit bestemt lønnstrinn.
+ * {@link Loennstrinnperiode} representerer ei lÃ¸nnstrinnperiode som inneheld kva som er gjeldande lÃ¸nn i 100%
+ * stilling for stillingar tilknytta eit bestemt lÃ¸nnstrinn.
  * <p>
- * Ettersom definisjonane av kva som er gjeldande lønn i 100% stilling varierer frå ordning til ordning, og
- * apotekordninga har forskjellig lønn for forskjellige stillingskoder, er dette grensesnittet trekt ut for å illustrere
- * den felles kontrakta som alle dei forskjellige lønnstrinndefinisjonane må oppfylle.
+ * Ettersom definisjonane av kva som er gjeldande lÃ¸nn i 100% stilling varierer frÃ¥ ordning til ordning, og
+ * apotekordninga har forskjellig lÃ¸nn for forskjellige stillingskoder, er dette grensesnittet trekt ut for Ã¥ illustrere
+ * den felles kontrakta som alle dei forskjellige lÃ¸nnstrinndefinisjonane mÃ¥ oppfylle.
  *
  * @param <T> type-referanse til klassa som implementerer grensesnittet
  * @author Tarjei Skorgenes
  */
 public interface Loennstrinnperiode<T extends Loennstrinnperiode<T>> extends Tidsperiode<T> {
     /**
-     * Er lønnstrinnperioda gjeldande for stillingar som jobbar på avtalar tilknytta den aktuelle ordninga?
+     * Er lÃ¸nnstrinnperioda gjeldande for stillingar som jobbar pÃ¥ avtalar tilknytta den aktuelle ordninga?
      *
-     * @param ordning pensjonsordninga lønnstrinnperioda skal sjekkast mot
-     * @return <code>true</code> dersom lønnstrinnet tilhøyrer den angitte ordninga, <code>false</code> ellers
+     * @param ordning pensjonsordninga lÃ¸nnstrinnperioda skal sjekkast mot
+     * @return <code>true</code> dersom lÃ¸nnstrinnet tilhÃ¸yrer den angitte ordninga, <code>false</code> ellers
      */
     boolean tilhoeyrer(Ordning ordning);
 
     /**
-     * Inneheld perioda gjeldande lønn for lønnstrinnet?
+     * Inneheld perioda gjeldande lÃ¸nn for lÃ¸nnstrinnet?
      *
-     * @param loennstrinn   lønnstrinnet som det skal sjekkast mot
-     * @param stillingskode kun påkrevd for ordningar som har forskjellige lønnstrinntabellar for forskjellige
+     * @param loennstrinn   lÃ¸nnstrinnet som det skal sjekkast mot
+     * @param stillingskode kun pÃ¥krevd for ordningar som har forskjellige lÃ¸nnstrinntabellar for forskjellige
      *                      stillingskoder
-     * @return <code>true</code> dersom perioda inneheld gjeldande lønn for lønnstrinnet (og stillingskoda viss den er
-     * påkrevd av ordningas lønnstrinntabell), <code>false</code> ellers
+     * @return <code>true</code> dersom perioda inneheld gjeldande lÃ¸nn for lÃ¸nnstrinnet (og stillingskoda viss den er
+     * pÃ¥krevd av ordningas lÃ¸nnstrinntabell), <code>false</code> ellers
      */
     boolean harLoennFor(Loennstrinn loennstrinn, Optional<Stillingskode> stillingskode);
 
     /**
-     * Gjeldande lønnsbeløp for ei 100% stilling på det aktuelle lønnstrinnet innanfor den aktuelle tidsperioda.
+     * Gjeldande lÃ¸nnsbelÃ¸p for ei 100% stilling pÃ¥ det aktuelle lÃ¸nnstrinnet innanfor den aktuelle tidsperioda.
      *
-     * @return lønna i 100% stilling tilknytta det aktuelle lønnstrinnet
+     * @return lÃ¸nna i 100% stilling tilknytta det aktuelle lÃ¸nnstrinnet
      */
     LoennstrinnBeloep beloep();
 
     /**
-     * Lønnstrinnet som perioda inneheld gjeldande lønn i 100% stilling for.
+     * LÃ¸nnstrinnet som perioda inneheld gjeldande lÃ¸nn i 100% stilling for.
      *
-     * @return lønnstrinner perioda representerer gjeldande lønn for
+     * @return lÃ¸nnstrinner perioda representerer gjeldande lÃ¸nn for
      * @since 1.1.2
      */
     Loennstrinn trinn();

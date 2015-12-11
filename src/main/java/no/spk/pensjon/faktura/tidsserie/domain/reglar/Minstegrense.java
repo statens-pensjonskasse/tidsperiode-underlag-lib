@@ -7,9 +7,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * {@link Minstegrense} representerer grenseverdien som regulerer korvidt ei stilling skal kunne betale premie
- * basert på om stillingsprosenten er over eller under minstegrensa sin grenseverdi.
+ * basert pÃ¥ om stillingsprosenten er over eller under minstegrensa sin grenseverdi.
  * <p>
- * Avtalen som stilling tilhøyrer skal ikkje betale premie for stillingars underlagsperioder der stillingsprosenten er
+ * Avtalen som stilling tilhÃ¸yrer skal ikkje betale premie for stillingars underlagsperioder der stillingsprosenten er
  * lavare enn grenseverdien til minstegrensa som er gjeldande for stillinga innanfor perioda.
  *
  * @author Tarjei Skorgenes
@@ -24,15 +24,15 @@ public class Minstegrense {
      * @throws NullPointerException dersom <code>grense</code> er <code>null</code>
      */
     public Minstegrense(final Prosent grense) {
-        this.grense = requireNonNull(grense, () -> "minstegrense er påkrevd, men var null");
+        this.grense = requireNonNull(grense, () -> "minstegrense er pÃ¥krevd, men var null");
     }
 
     /**
-     * Er den angitte stillingsstørrelsen under minstegrensa?
+     * Er den angitte stillingsstÃ¸rrelsen under minstegrensa?
      *
-     * @param stillingsprosent stillingsstørrelsen som skal samanliknast med minstegrensa
+     * @param stillingsprosent stillingsstÃ¸rrelsen som skal samanliknast med minstegrensa
      * @return <code>true</code> dersom stillingsprosenten er lavare enn minstegrensa sin grenseverdi,
-     * <code>false</code> om den er lik eller større enn grenseverdien
+     * <code>false</code> om den er lik eller stÃ¸rre enn grenseverdien
      */
     public boolean erUnderMinstegrensa(final Stillingsprosent stillingsprosent) {
         return grense.toDouble() > stillingsprosent.prosent().toDouble();
@@ -47,7 +47,7 @@ public class Minstegrense {
      * Er <code>obj</code> ei minstegrense med lik verdi som gjeldande minstegrense?
      * <p>
      * Sidan minstegrensene kan inneholde desimalar, blir likheita evaluert med opp til 2 desimalar, om verdien etter
-     * å ha blitt avrunda til 2 desimalar er lik, blir minstegrensene betrakta som like.
+     * Ã¥ ha blitt avrunda til 2 desimalar er lik, blir minstegrensene betrakta som like.
      *
      * @param obj objektet som minstegrensa skal samanliknast med
      * @return <code>true</code> dersom <code>obj</code> er ei minstegrense med lik prosentverdi,

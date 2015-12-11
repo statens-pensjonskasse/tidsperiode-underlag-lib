@@ -32,24 +32,24 @@ import cucumber.api.java.Before;
 import cucumber.api.java8.No;
 
 /**
- * Stegdefinisjonar for å bygge opp underlagsperioder for bruk til avregning.
+ * Stegdefinisjonar for Ã¥ bygge opp underlagsperioder for bruk til avregning.
  * <br>
- * Hovedformålet med definisjonane er å gjere det mulig å verifisere {@link BeregningsRegel}ar sin oppførsel. Sidan
+ * HovedformÃ¥let med definisjonane er Ã¥ gjere det mulig Ã¥ verifisere {@link BeregningsRegel}ar sin oppfÃ¸rsel. Sidan
  * reglane er avhengige av underlagsperiodene sine annotasjonar, skal stegdefinisjonane i denne klassa tilrettelegge
  * for at ein kan populere underlagsperioder med grunnlagsdata som reglane er avhengig av.
  * <br>
  * Grunnlagsdata er ikkje det einaste reglane er avhengig av, dei kan og vere avhengig av andre beregningsreglar.
- * For å unngå at ein alltid må spesifisere opp alt av grunnlagsdata som alle involverte reglar treng, tilbyr
- * stegdefinisjonane muligheit for å hardkode verdiar som forskjellige reglar skal returnere.
+ * For Ã¥ unngÃ¥ at ein alltid mÃ¥ spesifisere opp alt av grunnlagsdata som alle involverte reglar treng, tilbyr
+ * stegdefinisjonane muligheit for Ã¥ hardkode verdiar som forskjellige reglar skal returnere.
  * <br>
  * <h6>Eksempel</h6>
- * I eit scenario ønskjer ein å verifisere oppførselen til regelen for beregning av pensjonspremie for ei underlagsperiode.
- * Beregningsregelen for pensjonspremie, er avhengig av beregningsregelen for pensjonsgivande lønn. For å kunne beregne
- * pensjonsgivande lønn, ville underlagsperioda måtte blitt populert med ein lang rekke grunnlagsdata som ikkje er direkte
+ * I eit scenario Ã¸nskjer ein Ã¥ verifisere oppfÃ¸rselen til regelen for beregning av pensjonspremie for ei underlagsperiode.
+ * Beregningsregelen for pensjonspremie, er avhengig av beregningsregelen for pensjonsgivande lÃ¸nn. For Ã¥ kunne beregne
+ * pensjonsgivande lÃ¸nn, ville underlagsperioda mÃ¥tte blitt populert med ein lang rekke grunnlagsdata som ikkje er direkte
  * relevante for beregningsreglen for pensjonspremie.
  * <br>
- * Ved å angi at pensjonsgivande lønn for perioda skal vere lik kr 10 000, slepp ein dermed å støye til scenariet med
- * masse oppsett som gjer det vanskelig å sjå essensen i kva scenariet sine eksempel prøver å spesifisere.
+ * Ved Ã¥ angi at pensjonsgivande lÃ¸nn for perioda skal vere lik kr 10 000, slepp ein dermed Ã¥ stÃ¸ye til scenariet med
+ * masse oppsett som gjer det vanskelig Ã¥ sjÃ¥ essensen i kva scenariet sine eksempel prÃ¸ver Ã¥ spesifisere.
  *
  * @author Tarjei Skorgenes
  */
@@ -59,17 +59,17 @@ public class UnderlagsperiodeDefinisjonar implements No {
     private UnderlagsperiodeBuilder periode;
 
     public UnderlagsperiodeDefinisjonar() {
-        // Alle datatyper som underlagsperioder må kunne annoteres med for å støtte beregningsregler for avregning
-        Supports("Pensjonsgivende lønn", MaskineltGrunnlagRegel.class, KonverterFraTekst::pensjonsgivendeLoenn);
+        // Alle datatyper som underlagsperioder mÃ¥ kunne annoteres med for Ã¥ stÃ¸tte beregningsregler for avregning
+        Supports("Pensjonsgivende lÃ¸nn", MaskineltGrunnlagRegel.class, KonverterFraTekst::pensjonsgivendeLoenn);
         Supports("Premiestatus", Premiestatus.class, Premiestatus::valueOf);
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
-        Supports("Årsverk", AarsverkRegel.class, KonverterFraTekst::aarsverkRegel);
-        Supports("Årsfaktor", AarsfaktorRegel.class, KonverterFraTekst::aarsfaktorRegel);
+        Supports("Ã…rsverk", AarsverkRegel.class, KonverterFraTekst::aarsverkRegel);
+        Supports("Ã…rsfaktor", AarsfaktorRegel.class, KonverterFraTekst::aarsfaktorRegel);
         Supports("Stillingsprosent", Stillingsprosent.class, KonverterFraTekst::stillingsprosent);
         Supports("Ordning", Ordning.class, KonverterFraTekst::ordning);
 
-        // Språkdefinisjon for annotering av underlagsperioder
-        Gitt("^en underlagsperiode med følgende innhold:$", (DataTable underlagsperioder) -> {
+        // SprÃ¥kdefinisjon for annotering av underlagsperioder
+        Gitt("^en underlagsperiode med fÃ¸lgende innhold:$", (DataTable underlagsperioder) -> {
             assertThat(underlagsperioder.raw()).as("underlagsperioder").hasSize(2);
             assertThat(underlagsperioder.topCells()).as("underlagsperiode-kolonner").isNotEmpty();
 
@@ -78,7 +78,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Gitt("^underlagsperioden sin fra og med-dato er ([0-9\\.]{10})$", this::fraOgMed);
         Gitt("^underlagsperioden sin til og med-dato er ([0-9\\.]{10})$", this::tilOgMed);
         Gitt("^underlagsperioden benytter regler for avregning$", this::avregningsreglar);
-        Så("^er stillingen (.+) minstegrensen.?$", this::assertErOverEllerUnderMinstegrensen);
+        SÃ¥("^er stillingen (.+) minstegrensen.?$", this::assertErOverEllerUnderMinstegrensen);
     }
 
     @Before
@@ -116,7 +116,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
     private IllegalArgumentException ukjentDatatype(final String tittel) {
         return new IllegalArgumentException("'" + tittel + "'"
                 + " ble ikke gjenkjent som en datatype en underlagsperiode kan inneholde.\n"
-                + "En underlagsperiode kan inneholde følgende datatyper:\n"
+                + "En underlagsperiode kan inneholde fÃ¸lgende datatyper:\n"
                 + mappers
                 .keySet()
                 .stream()
@@ -132,7 +132,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
                 .as(
                         "er stillingen under minstegrensen i perioden "
                                 + periode
-                                + " når stillingsstørrelsen er "
+                                + " nÃ¥r stillingsstÃ¸rrelsen er "
                                 + periode.valgfriAnnotasjonFor(Stillingsprosent.class).map(Object::toString).orElse("ukjent") + "?"
                                 + resultat
                 )
@@ -145,7 +145,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
             case "under":
                 return resultat.toLowerCase();
             default:
-                throw new IllegalArgumentException(resultat + " er ikkje ei gyldig verdi når du skal sjekke om ein er over eller under minstegrensa, lovlige verdiar er: over, under");
+                throw new IllegalArgumentException(resultat + " er ikkje ei gyldig verdi nÃ¥r du skal sjekke om ein er over eller under minstegrensa, lovlige verdiar er: over, under");
         }
     }
 

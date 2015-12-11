@@ -3,10 +3,10 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 import java.util.Optional;
 
 /**
- * {@link Annoterbar} representerer eit objekt som kan annoterast med påkrevde og valgfrie verdiar.
+ * {@link Annoterbar} representerer eit objekt som kan annoterast med pÃ¥krevde og valgfrie verdiar.
  * <p>
- * Annotasjonar kan på mange måtar tenkast på som ein dynamisk skjema som gjer ein i stand til å utvide
- * forskjellige instansar av objekt av samme type, med forskjellige felt frå instans til instans.
+ * Annotasjonar kan pÃ¥ mange mÃ¥tar tenkast pÃ¥ som ein dynamisk skjema som gjer ein i stand til Ã¥ utvide
+ * forskjellige instansar av objekt av samme type, med forskjellige felt frÃ¥ instans til instans.
  *
  * @param <S> typen til objektet som implementerer grensesnittet (aka. <code>this</code>).
  * @author Tarjei Skorgenes
@@ -17,7 +17,7 @@ public interface Annoterbar<S extends Annoterbar<S>> {
      * <p>
      * Dersom <code>verdi</code> er av type {@link java.util.Optional}, er det den valgfrie, wrappa verdien som blir
      * registrert, viss den wrappa verdien ikkje eksisterer blir annotasjonsverdien som objektet potensielt sett kan
-     * vere annotert med frå tidligare.
+     * vere annotert med frÃ¥ tidligare.
      *
      * @param <T>   annotasjonstypen
      * @param type  annotasjonstypen
@@ -30,7 +30,7 @@ public interface Annoterbar<S extends Annoterbar<S>> {
     /**
      * Annoterer objektet med alle annotasjonar som <code>kilde</code> er annotert med.
      *
-     * @param kilde eit annotebart objekt som annotasjonane skal kopierast frå
+     * @param kilde eit annotebart objekt som annotasjonane skal kopierast frÃ¥
      * @return <code>this</code>
      */
     S annoterFra(final S kilde);

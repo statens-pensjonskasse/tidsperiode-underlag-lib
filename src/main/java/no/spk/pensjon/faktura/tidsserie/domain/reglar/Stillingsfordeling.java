@@ -11,7 +11,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 
 /**
- * <p>Strategi for å begrense total stillingsprosent til maksimalt 100% for parallelle stillingsforhold.</p>
+ * <p>Strategi for Ã¥ begrense total stillingsprosent til maksimalt 100% for parallelle stillingsforhold.</p>
  *
  * <p>Stillinger som legges til</p>
  *
@@ -23,7 +23,7 @@ public class Stillingsfordeling {
     private Map<StillingsforholdId, Prosent> andelar = new HashMap<>();
 
     /**
-     * Gir andelen i prosent et stillingforhold utgjør i stillingsfordelingen.
+     * Gir andelen i prosent et stillingforhold utgjÃ¸r i stillingsfordelingen.
      * @param stilling som stillingsfordelingen skal finne andelen for
      * @return Valgfi prosent-verdi som representerer stillingsfoholdets andel i stillingsfordelingen.
      */
@@ -32,12 +32,12 @@ public class Stillingsfordeling {
     }
 
     /**
-     * Legger til en aktiv stilling til stillingsfordelingen. Dersom stillingen fører til at total stillingsprosent for alle
+     * Legger til en aktiv stilling til stillingsfordelingen. Dersom stillingen fÃ¸rer til at total stillingsprosent for alle
      * stillinger som er lagt til stillingsfordelingen overstiger 100%, blir stillingsprosenten til stillingen avkortet slik
      * at den totale stillingsprosenten ikke overstiger 100%. Dvs. at dersom total stillingsprosent for
-     * stillingsfordelingen allerede er 100%, vil alle stillinger senere legges til utgjøre 0% av stillingsfordelingen.
+     * stillingsfordelingen allerede er 100%, vil alle stillinger senere legges til utgjÃ¸re 0% av stillingsfordelingen.
      *
-     * <p>Rekkefølgen stillinger bli lagt til stillingsfordelingen er avgjørende for hvilken andel en stilling vil få
+     * <p>RekkefÃ¸lgen stillinger bli lagt til stillingsfordelingen er avgjÃ¸rende for hvilken andel en stilling vil fÃ¥
      * i den endelige stillingsfordelingen.</p>
      *
      * @param stilling Stillingen som skal legges til stillingsfordelingen.
@@ -62,11 +62,11 @@ public class Stillingsfordeling {
     }
 
     /**
-     * Denne dummy metoden eksisterer for å kunne tilfredstille signaturen for reduce fra en strøm med aktive stillinger.
-     * Blir kun kalt ved parallellprossersering av størm, og det støttes ikke/brukes ikke.
-     * @param other Stillingsfordelinger kan ikke brukes i en parallell strøm
+     * Denne dummy metoden eksisterer for Ã¥ kunne tilfredstille signaturen for reduce fra en strÃ¸m med aktive stillinger.
+     * Blir kun kalt ved parallellprossersering av stÃ¸rm, og det stÃ¸ttes ikke/brukes ikke.
+     * @param other Stillingsfordelinger kan ikke brukes i en parallell strÃ¸m
      * @return Kaster alltid UnsupportedOperationException
-     * @throws UnsupportedOperationException Stillingsfordelinger kan ikke brukes i en parallell strøm
+     * @throws UnsupportedOperationException Stillingsfordelinger kan ikke brukes i en parallell strÃ¸m
      */
     public Stillingsfordeling kombinerIkkeStoettet(final Stillingsfordeling other) {
         throw new UnsupportedOperationException();

@@ -9,10 +9,10 @@ import java.util.Optional;
  */
 public interface HarAnnotasjonar {
     /**
-     * Slår opp verdien av den påkrevde annotasjonen med den angitte typen.
+     * SlÃ¥r opp verdien av den pÃ¥krevde annotasjonen med den angitte typen.
      * <p>
      * Dersom objektet ikkje har ein annotasjon av den angitte typen blir det kasta ein feil sidan annotasjonen blir
-     * behandla som påkrevd. og dermed skulle ha vore tilgjengelig.
+     * behandla som pÃ¥krevd. og dermed skulle ha vore tilgjengelig.
      *
      * @param <T>  annotasjonens type
      * @param type annotasjonens type
@@ -22,7 +22,7 @@ public interface HarAnnotasjonar {
     <T> T annotasjonFor(Class<T> type) throws PaakrevdAnnotasjonManglarException;
 
     /**
-     * Slår opp verdien av den valgfrie annotasjonen med den angitte typen.
+     * SlÃ¥r opp verdien av den valgfrie annotasjonen med den angitte typen.
      * <p>
      * Dersom objektet ikkje har ein annotasjon av den angitte typen blir det returnert ein {@link java.util.Optional#empty() tom}
      * verdi, det blir ikkje kasta nokon feil.

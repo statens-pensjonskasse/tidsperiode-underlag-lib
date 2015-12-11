@@ -57,7 +57,7 @@ public class ObservasjonsunderlagFactoryTest {
     private final ObservasjonsunderlagFactory observasjonsunderlagFactory = new ObservasjonsunderlagFactory();
 
     /**
-     * Verifiserer at kvart observasjonsunderlag får kopiert inn alle annotasjonane frå årsunderlaget.
+     * Verifiserer at kvart observasjonsunderlag fÃ¥r kopiert inn alle annotasjonane frÃ¥ Ã¥rsunderlaget.
      */
     @Test
     public void skalKopiereOverAlleAnnotasjonaneFraaAarsunderlagetTilObservasjonsunderlaga() {
@@ -81,7 +81,7 @@ public class ObservasjonsunderlagFactoryTest {
                         .filter(manglerAnnotasjonFraAarsunderlagetUnderlaget)
                         .collect(toList())
         )
-                .as("observasjonsunderlag utan alle annotasjonar som årsunderlaget var annotert med")
+                .as("observasjonsunderlag utan alle annotasjonar som Ã¥rsunderlaget var annotert med")
                 .hasSize(0);
 
         assertUnikeUnderlagsAnnotasjonar(alle, Integer.class).contains(123456789);
@@ -89,8 +89,8 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at observasjonsunderlaga blir annotert med observasjonsdatoen dei er tilrettelagt for å bli
-     * observert på.
+     * Verifiserer at observasjonsunderlaga blir annotert med observasjonsdatoen dei er tilrettelagt for Ã¥ bli
+     * observert pÃ¥.
      */
     @Test
     public void skalAnnotereObservasjonsunderlagMedAarstall() {
@@ -110,7 +110,7 @@ public class ObservasjonsunderlagFactoryTest {
                 .isEmpty();
 
         assertThat(alle.stream().map(paakrevdAnnotasjon(Observasjonsdato.class)).collect(toList()))
-                .as("observasjonsdato annotert på årsunderlaga")
+                .as("observasjonsdato annotert pÃ¥ Ã¥rsunderlaga")
                 .containsExactly(
                         new Observasjonsdato(dato("2000.01.31")),
                         new Observasjonsdato(dato("2000.02.29")),
@@ -128,20 +128,20 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at innsending av eit tomt underlag medfører at ingen observasjonsunderlag blir generert.
+     * Verifiserer at innsending av eit tomt underlag medfÃ¸rer at ingen observasjonsunderlag blir generert.
      */
     @Test
     public void skalIkkjeGenerereNokonObservasjonsunderlagVissAarsunderlagErTomt() {
         assertThat(observasjonsunderlagFactory
                         .genererUnderlagPrMaaned(new Underlag(Stream.empty()).annoter(Aarstall.class, new Aarstall(2007))).collect(toList())
         )
-                .as("observasjonsunderlag generert frå tomt årsunderlage")
+                .as("observasjonsunderlag generert frÃ¥ tomt Ã¥rsunderlage")
                 .isEmpty();
     }
 
     /**
-     * Verifiserer at observasjonsunderlaget inneheld ei ny fiktiv periode frå og med dagen etter
-     * siste synlige periode i årsunderlaget, til og med årets slutt, for alle
+     * Verifiserer at observasjonsunderlaget inneheld ei ny fiktiv periode frÃ¥ og med dagen etter
+     * siste synlige periode i Ã¥rsunderlaget, til og med Ã¥rets slutt, for alle
      * observasjonsunderlaga fram til og med observasjonsunderlaget for november.
      */
     @Test
@@ -154,14 +154,14 @@ public class ObservasjonsunderlagFactoryTest {
                 .collect(toList());
         rangeClosed(JANUARY.getValue(), NOVEMBER.getValue())
                 .forEach(nr -> {
-                    // Forventar at mnd nr X inneheld X synlige månedar + 1 fiktiv periode på slutten
+                    // Forventar at mnd nr X inneheld X synlige mÃ¥nedar + 1 fiktiv periode pÃ¥ slutten
                     assertObservasjonsunderlagMedFiktivPeriode(prMnd, nr - 1).hasSize(nr + 1);
                 });
     }
 
     /**
-     * Verifiserer at observasjonsunderlaget for desember ikkje er samme instans som årsunderlaget det
-     * er generert ut i frå.
+     * Verifiserer at observasjonsunderlaget for desember ikkje er samme instans som Ã¥rsunderlaget det
+     * er generert ut i frÃ¥.
      */
     @Test
     public void skalGenerereNyttObservasjonsunderlagForDesemberSjoelvOmStillingaBlirAvsluttaIDesember() {
@@ -185,7 +185,7 @@ public class ObservasjonsunderlagFactoryTest {
                 .reduce(this::last)
                 .get();
         assertThat(observasjonsunderlagDesember)
-                .as("observasjonsunderlag for desember skal ikkje vere identisk med årsunderlaget")
+                .as("observasjonsunderlag for desember skal ikkje vere identisk med Ã¥rsunderlaget")
                 .isNotSameAs(aarsunderlag);
     }
 
@@ -221,7 +221,7 @@ public class ObservasjonsunderlagFactoryTest {
 
     /**
      * Verifiserer at observasjonsunderlaget for desember ikkje inneheld ei fiktiv periode ettersom
-     * observasjonsunderlaget i desember alltid vil bli likt årsunderlaget.
+     * observasjonsunderlaget i desember alltid vil bli likt Ã¥rsunderlaget.
      */
     @Test
     public void skalIkkjeGenerereFiktivPeriodeUtAaretIObservasjonsunderlagetForDesember() {
@@ -238,11 +238,11 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at observasjonsunderlaget ikkje får noka fiktiv periode generert etter observasjonsdatoen
-     * dersom siste underlagsperiode i årsunderlaget er annotert med SistePeriode.
+     * Verifiserer at observasjonsunderlaget ikkje fÃ¥r noka fiktiv periode generert etter observasjonsdatoen
+     * dersom siste underlagsperiode i Ã¥rsunderlaget er annotert med SistePeriode.
      * <p>
-     * Intensjonen med dette er at når stillingsforholdet blir avslutta innanfor året så skal vi slutte å generere
-     * fiktive perioder i observasjonsunderlaga som blir generert frå og med den måneden som overlappar
+     * Intensjonen med dette er at nÃ¥r stillingsforholdet blir avslutta innanfor Ã¥ret sÃ¥ skal vi slutte Ã¥ generere
+     * fiktive perioder i observasjonsunderlaga som blir generert frÃ¥ og med den mÃ¥neden som overlappar
      * stillingsforholdets sluttdato.
      */
     @Test
@@ -259,7 +259,7 @@ public class ObservasjonsunderlagFactoryTest {
         final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
         rangeClosed(JANUARY.getValue(), APRIL.getValue())
                 .forEach(nr -> {
-                    // Forventar at mnd nr X inneheld X synlige månedar + 1 fiktiv periode for resten av året
+                    // Forventar at mnd nr X inneheld X synlige mÃ¥nedar + 1 fiktiv periode for resten av Ã¥ret
                     assertObservasjonsunderlagMedFiktivPeriode(prMnd, nr - 1).hasSize(nr + 1);
                     assertTilOgMed(prMnd.get(nr - 1).last().get()).isEqualTo(of(dato("2000.12.31")));
                 });
@@ -271,13 +271,13 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at genereringa feilar dersom årsunderlaget inneheld perioder tilknytta meir enn eit årstall.
+     * Verifiserer at genereringa feilar dersom Ã¥rsunderlaget inneheld perioder tilknytta meir enn eit Ã¥rstall.
      */
     @Test
     public void skalFeileDersomAntattAarsunderlagetIkkjeErEitAarsunderlag() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("Generering av observasjonsunderlag er kun støtta for årsunderlag");
-        e.expectMessage("er ikkje eit årsunderlag sidan det ikkje er annotert med årstall");
+        e.expectMessage("Generering av observasjonsunderlag er kun stÃ¸tta for Ã¥rsunderlag");
+        e.expectMessage("er ikkje eit Ã¥rsunderlag sidan det ikkje er annotert med Ã¥rstall");
         final Underlag underlag = underlag(
                 periode().fraOgMed(dato("2001.12.01")).tilOgMed(dato("2001.12.31")).med(new Aarstall(2001)).med(DECEMBER),
                 periode().fraOgMed(dato("2002.01.01")).tilOgMed(dato("2002.01.31")).med(new Aarstall(2002)).med(JANUARY)
@@ -287,7 +287,7 @@ public class ObservasjonsunderlagFactoryTest {
 
     /**
      * Verifiserer at det blir generert eit nytt observasjonsunderlag for kvar
-     * unike måned som det finnes perioder for i årsunderlaget.
+     * unike mÃ¥ned som det finnes perioder for i Ã¥rsunderlaget.
      */
     @Test
     public void skalGenerereEitUnderlagPrUnikeMaanedIAarsunderlaget() {
@@ -295,13 +295,13 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at dersom årsunderlagets underlagsperioder sluttar eit par månedar ut i året,
-     * så blir det framleis generert eit observasjonsunderlag for månedane som det ikkje er tilknytta nokon
-     * underlagsperioder til på slutten av året.
+     * Verifiserer at dersom Ã¥rsunderlagets underlagsperioder sluttar eit par mÃ¥nedar ut i Ã¥ret,
+     * sÃ¥ blir det framleis generert eit observasjonsunderlag for mÃ¥nedane som det ikkje er tilknytta nokon
+     * underlagsperioder til pÃ¥ slutten av Ã¥ret.
      * <p>
-     * Intensjonen med dette er at maskinelt grunnlag gjeld for heile året, så sjølv om stillingsforholdet
-     * er avslutta midt i året så skal ein framleis ta hensyn til dei tidligare periodenes bidrag til årets totale
-     * maskinelle grunnlag når ein utfører ein observasjon i månedane som gjennstår ut året.
+     * Intensjonen med dette er at maskinelt grunnlag gjeld for heile Ã¥ret, sÃ¥ sjÃ¸lv om stillingsforholdet
+     * er avslutta midt i Ã¥ret sÃ¥ skal ein framleis ta hensyn til dei tidligare periodenes bidrag til Ã¥rets totale
+     * maskinelle grunnlag nÃ¥r ein utfÃ¸rer ein observasjon i mÃ¥nedane som gjennstÃ¥r ut Ã¥ret.
      */
     @Test
     public void skalGenerereObservasjonsunderlagForMaanedarEtterSistePeriodesTilknyttaMaaned() {
@@ -320,12 +320,12 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at observasjonsunderlaga som blir generert frå og med underlagsperioda som er siste periode i
-     * årsunderlaget, perioda som inneheld stillingsforholdets sluttmelding, ikkje får generert nokon fiktive perioder
+     * Verifiserer at observasjonsunderlaga som blir generert frÃ¥ og med underlagsperioda som er siste periode i
+     * Ã¥rsunderlaget, perioda som inneheld stillingsforholdets sluttmelding, ikkje fÃ¥r generert nokon fiktive perioder
      * etter siste periodes til og med-dato.
      * <p>
-     * Intensjonen her er at inntil vi står etter sluttmeldinga til eit stillingsforhold så skal vi tru at det
-     * vil forbli aktivt til evig tid (vel, iallefall resten av året).
+     * Intensjonen her er at inntil vi stÃ¥r etter sluttmeldinga til eit stillingsforhold sÃ¥ skal vi tru at det
+     * vil forbli aktivt til evig tid (vel, iallefall resten av Ã¥ret).
      */
     @Test
     public void skalGenerereObservasjonsunderlagAvKorrektLengdeDersomStillingsforholdetBlirAvsluttaILoepetAvAaret() {
@@ -341,23 +341,23 @@ public class ObservasjonsunderlagFactoryTest {
         );
         final List<Underlag> prMnd = observasjonsunderlagFactory.genererUnderlagPrMaaned(aarsunderlag).collect(toList());
 
-        // 5 synlige periode + ei fiktiv periode ut året
+        // 5 synlige periode + ei fiktiv periode ut Ã¥ret
         assertObservasjonsunderlagMedFiktivPeriode(prMnd, 4).hasSize(5 + 1);
         assertThat(prMnd.get(4).last().get().tilOgMed()).isEqualTo(of(dato("2012.12.31")));
 
-        // 7 synlige periode, inga fiktiv periode sidan siste synlige periode er siste periode i årsunderlaget
+        // 7 synlige periode, inga fiktiv periode sidan siste synlige periode er siste periode i Ã¥rsunderlaget
         assertThat(prMnd.get(5)).hasSize(7);
         assertThat(prMnd.get(5).last().get().tilOgMed()).isEqualTo(of(dato("2012.06.15")));
     }
 
     /**
-     * Verifiserer at dersom årsunderlagets underlagsperioder ikkje startar før eit par månedar ut i året,
-     * så blir det ikkje generert eit observasjonsunderlag for månedane som det ikkje er tilknytta nokon
-     * underlagsperioder til i starten av året.
+     * Verifiserer at dersom Ã¥rsunderlagets underlagsperioder ikkje startar fÃ¸r eit par mÃ¥nedar ut i Ã¥ret,
+     * sÃ¥ blir det ikkje generert eit observasjonsunderlag for mÃ¥nedane som det ikkje er tilknytta nokon
+     * underlagsperioder til i starten av Ã¥ret.
      * <p>
-     * Intensjonen med dette er at før stillingsforholdet startar så skal det maskinelle grunnlaget for året som
-     * heilheit, ikkje ta hensyn til framtidige endringar. Ergo er det ønska at maskinelt grunnlag ikkje skal bli
-     * generert før ein er på eller har passert stillingsforholdets startdato.
+     * Intensjonen med dette er at fÃ¸r stillingsforholdet startar sÃ¥ skal det maskinelle grunnlaget for Ã¥ret som
+     * heilheit, ikkje ta hensyn til framtidige endringar. Ergo er det Ã¸nska at maskinelt grunnlag ikkje skal bli
+     * generert fÃ¸r ein er pÃ¥ eller har passert stillingsforholdets startdato.
      */
     @Test
     public void skalIkkjeGenerereObservasjonsunderlagForMaanedarFoerFoerstePeriodesTilknyttaMaaned() {
@@ -371,7 +371,7 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at det kun blir generert ei fiktiv periode når en synlig periode sluttmeldes før observasjonsdato.
+     * Verifiserer at det kun blir generert ei fiktiv periode nÃ¥r en synlig periode sluttmeldes fÃ¸r observasjonsdato.
      */
     @Test
     public void skalGenerereFiktivPeriodeForUnderlagSomSluttmeldesPaaObservasjonsdato() throws Exception {
@@ -386,8 +386,8 @@ public class ObservasjonsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at det kun blir generert ei fiktiv periode og at den er basert på siste underlagsperiode i den siste
-     * synlige månaden for observasjonsunderlaget, sjølv om siste synlig månad inneheld meir enn ei underlagsperiode.
+     * Verifiserer at det kun blir generert ei fiktiv periode og at den er basert pÃ¥ siste underlagsperiode i den siste
+     * synlige mÃ¥naden for observasjonsunderlaget, sjÃ¸lv om siste synlig mÃ¥nad inneheld meir enn ei underlagsperiode.
      */
     @Test
     public void skalGenerereFiktivPeriodeUtAaretBasertPaaSisteUnderlagsperiodeISisteSynligeMaanadIkkjeAllePerioderISisteSynligeMaanad() {
@@ -428,7 +428,7 @@ public class ObservasjonsunderlagFactoryTest {
     private AbstractListAssert<?, ? extends List<? extends Underlag>, Underlag> assertObservasjonsunderlag(final Underlag aarsunderlag) {
         return assertThat(
                 generer(aarsunderlag).collect(toList())
-        ).as("observasjonsunderlag generert basert på " + aarsunderlag);
+        ).as("observasjonsunderlag generert basert pÃ¥ " + aarsunderlag);
     }
 
     private static AbstractIterableAssert<?, ? extends Iterable<? extends Underlagsperiode>, Underlagsperiode> assertObservasjonsunderlagMedFiktivPeriode(
@@ -463,8 +463,8 @@ public class ObservasjonsunderlagFactoryTest {
     /**
      * Ein enkel operator som alltid returnerer verdien av parameter nr 2.
      * <p>
-     * Kombinert med {@link Stream#reduce(java.util.function.BinaryOperator)} vil den her gjere ein i stand til å
-     * hente ut siste verdi frå ein straum på ein enkel måte.
+     * Kombinert med {@link Stream#reduce(java.util.function.BinaryOperator)} vil den her gjere ein i stand til Ã¥
+     * hente ut siste verdi frÃ¥ ein straum pÃ¥ ein enkel mÃ¥te.
      *
      * @param ignored this value is totally ignored
      * @param value this value is always returned

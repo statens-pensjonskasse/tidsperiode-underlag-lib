@@ -13,9 +13,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
  */
 public interface AvtaleinformasjonRepository {
     /**
-     * Slår opp all tidsperiodisert informasjon som er relevant for tidsseriegenereringa for ein bestemt avtale.
+     * SlÃ¥r opp all tidsperiodisert informasjon som er relevant for tidsseriegenereringa for ein bestemt avtale.
      *
-     * @param avtale avtalen det skal slåast opp tidsperiodisert avtaleinformasjon om
+     * @param avtale avtalen det skal slÃ¥ast opp tidsperiodisert avtaleinformasjon om
      * @return ein straum med all avtalerelatert informasjon tilknytta <code>avtale</code>
      */
     Stream<Tidsperiode<?>> finn(final AvtaleId avtale);

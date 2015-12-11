@@ -13,8 +13,8 @@ class Annotasjonar {
     <T> void registrer(final Class<? extends T> type, final T verdi) {
         if (Optional.class.isAssignableFrom(type)) {
             throw new IllegalArgumentException(
-                    "Annotasjonar av type Optional er ikkje støtta, " +
-                            "viss du vil legge til ein valgfri annotasjon må den registrerast under verdiens egen type"
+                    "Annotasjonar av type Optional er ikkje stÃ¸tta, " +
+                            "viss du vil legge til ein valgfri annotasjon mÃ¥ den registrerast under verdiens egen type"
             );
         }
         Optional<T> v = ofNullable(verdi);

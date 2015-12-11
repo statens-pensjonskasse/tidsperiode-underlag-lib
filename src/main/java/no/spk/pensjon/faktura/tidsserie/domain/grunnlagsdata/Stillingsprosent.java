@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent} representerer ein andel av ei
- * fulltidsstilling mÂlt i prosent.
+ * fulltidsstilling m√•lt i prosent.
  *
  * @author Tarjei Skorgenes
  */
@@ -18,16 +18,16 @@ public class Stillingsprosent {
      * @throws NullPointerException viss <code>prosent</code> er <code>null</code>
      */
     public Stillingsprosent(final Prosent prosent) throws NullPointerException {
-        this.prosent = requireNonNull(prosent, () -> "stillingsprosent er pÂkrevd, men var null");
+        this.prosent = requireNonNull(prosent, () -> "stillingsprosent er p√•krevd, men var null");
         if (prosent.toDouble() < 0.0) {
-            throw new IllegalArgumentException("stillingsprosent mÂ vere positiv, men var " + prosent);
+            throw new IllegalArgumentException("stillingsprosent m√• vere positiv, men var " + prosent);
         }
     }
 
     /**
-     * Stillingsst¯rrelsen i prosent.
+     * Stillingsst√∏rrelsen i prosent.
      *
-     * @return stillingsst¯rrelsen i prosent.
+     * @return stillingsst√∏rrelsen i prosent.
      */
     public Prosent prosent() {
         return prosent;
@@ -35,7 +35,7 @@ public class Stillingsprosent {
 
     @Override
     public int hashCode() {
-        // Avrundar her til heiltal for Â sikre at variasjonar i desimalverdiane ikkje pÂvirkar resultatet for
+        // Avrundar her til heiltal for √• sikre at variasjonar i desimalverdiane ikkje p√•virkar resultatet for
         // stillingsprosentar som grunna avrunding vil bli evaluert som like av equals-metoda
         return Long.hashCode(Math.round(prosent.toDouble()));
     }

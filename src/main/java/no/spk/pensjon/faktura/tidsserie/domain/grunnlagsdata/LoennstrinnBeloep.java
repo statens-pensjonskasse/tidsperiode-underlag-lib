@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep} representerer hvilket beløp
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep} representerer hvilket belÃ¸p
  * som er gjeldende for {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn} innenfor
  * underlagsperioden.
  *
@@ -11,22 +11,22 @@ public class LoennstrinnBeloep {
     private final Kroner bruttoloenn;
 
     /**
-     * Konstruerer eit nytt lønnstrinnbeløp.
+     * Konstruerer eit nytt lÃ¸nnstrinnbelÃ¸p.
      *
-     * @param bruttoloenn bruttolønna som for ei 100% stilling tilknytta lønnstrinnet som beløpet gjeld for
+     * @param bruttoloenn bruttolÃ¸nna som for ei 100% stilling tilknytta lÃ¸nnstrinnet som belÃ¸pet gjeld for
      */
     public LoennstrinnBeloep(final Kroner bruttoloenn) {
         this.bruttoloenn = bruttoloenn;
     }
 
     /**
-     * Deltidsjusterer 100% bruttolønn i henhold til stillingas stillingsprosent.
+     * Deltidsjusterer 100% bruttolÃ¸nn i henhold til stillingas stillingsprosent.
      * <br>
      * Beregninga foretar inga form for avkortning for stillingsprosentar over 100% eller under 0%,
      * prosenten blir brukt as-is.
      *
-     * @param stillingsprosent stillingsprosenten som bruttolønna skal justerast i henhold til
-     * @return den deltidsjusterte lønna for lønnstrinnbeløpet og stillingsprosenten
+     * @param stillingsprosent stillingsprosenten som bruttolÃ¸nna skal justerast i henhold til
+     * @return den deltidsjusterte lÃ¸nna for lÃ¸nnstrinnbelÃ¸pet og stillingsprosenten
      */
     public DeltidsjustertLoenn deltidsJuster(final Stillingsprosent stillingsprosent) {
         return new DeltidsjustertLoenn(
@@ -35,9 +35,9 @@ public class LoennstrinnBeloep {
     }
 
     /**
-     * Returnerer ein hash for lønnstrinbeløpet.
+     * Returnerer ein hash for lÃ¸nnstrinbelÃ¸pet.
      *
-     * @return ein hash for lønnstrinbeløpet
+     * @return ein hash for lÃ¸nnstrinbelÃ¸pet
      */
     @Override
     public int hashCode() {
@@ -49,11 +49,11 @@ public class LoennstrinnBeloep {
     }
 
     /**
-     * Sjekkar om <code>obj</code> er eit lønnstrinnbeløp med samme kroneverdi
+     * Sjekkar om <code>obj</code> er eit lÃ¸nnstrinnbelÃ¸p med samme kroneverdi
      * som dette objektet.
      *
      * @param obj det andre objektet som dette objektet skal samanliknast med
-     * @return <code>true</code> dersom begge objekta er lønnstrinnbeløp og dei har samme kroneverdi, <code>false</code> ellers
+     * @return <code>true</code> dersom begge objekta er lÃ¸nnstrinnbelÃ¸p og dei har samme kroneverdi, <code>false</code> ellers
      */
     @Override
     public boolean equals(final Object obj) {

@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import java.util.stream.Stream;
 
 /**
- * {@link Personnummer} representerer den 5-sifra koda som i kombinasjon med fødselsdato
+ * {@link Personnummer} representerer den 5-sifra koda som i kombinasjon med fÃ¸dselsdato
  * unikt identifiserer eit medlem.
  *
  * @author Tarjei Skorgenes
@@ -14,14 +14,14 @@ public final class Personnummer {
     private final String value;
 
     /**
-     * Konstruerer eit nytt personnummer basert på den angitte, numeriske verdien.
+     * Konstruerer eit nytt personnummer basert pÃ¥ den angitte, numeriske verdien.
      *
      * @param value ein numerisk representasjon av personnummeret
      * @throws IllegalArgumentException viss <code>value</code> er mindre enn 0
      */
     public Personnummer(final int value) {
         if (value < 0) {
-            throw new IllegalArgumentException("personnummer må vere eit positivt heiltall, verdien var " + value);
+            throw new IllegalArgumentException("personnummer mÃ¥ vere eit positivt heiltall, verdien var " + value);
         }
         if (value > 99999) {
             throw new IllegalArgumentException("personnummer kan ikkje vere meir enn 5 siffer langt, verdien var " + value);
@@ -30,7 +30,7 @@ public final class Personnummer {
     }
 
     /**
-     * Konstruerer eit nytt personnummer basert på den angitte, numeriske verdien.
+     * Konstruerer eit nytt personnummer basert pÃ¥ den angitte, numeriske verdien.
      *
      * @param value ein numerisk representasjon av personnummeret
      * @return et nytt personnummer

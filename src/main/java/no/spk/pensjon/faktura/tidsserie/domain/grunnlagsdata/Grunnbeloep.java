@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link Grunnbeloep} representerer grunnbeløpet i folketrygda.
+ * {@link Grunnbeloep} representerer grunnbelÃ¸pet i folketrygda.
  *
  * @author Tarjei Skorgenes
  */
@@ -11,20 +11,20 @@ public class Grunnbeloep {
     private final Kroner beloep;
 
     /**
-     * Konstruerer eit nytt grunnbeløp med angitt kroneverdi.
+     * Konstruerer eit nytt grunnbelÃ¸p med angitt kroneverdi.
      *
-     * @param beloep kroneverdien til grunnbeløpet
+     * @param beloep kroneverdien til grunnbelÃ¸pet
      */
     public Grunnbeloep(final Kroner beloep) {
-        this.beloep = requireNonNull(beloep, () -> "grunnbeløp er påkrevd, men var null");
+        this.beloep = requireNonNull(beloep, () -> "grunnbelÃ¸p er pÃ¥krevd, men var null");
     }
 
     /**
-     * Genererer eit nytt kronebeløp som inneheld kroneverdien av grunnbeløpet oppjustert i henhold til
+     * Genererer eit nytt kronebelÃ¸p som inneheld kroneverdien av grunnbelÃ¸pet oppjustert i henhold til
      * <code>faktor</code>.
      *
-     * @param faktor eit heiltall som grunnbeløpet som kroneverdi skal gangast opp med
-     * @return eit nytt oppjustert kronebeløp basert på grunnbeløpet og faktoren
+     * @param faktor eit heiltall som grunnbelÃ¸pet som kroneverdi skal gangast opp med
+     * @return eit nytt oppjustert kronebelÃ¸p basert pÃ¥ grunnbelÃ¸pet og faktoren
      */
     public Kroner multiply(final int faktor) {
         return beloep.multiply(faktor);
@@ -52,7 +52,7 @@ public class Grunnbeloep {
 
     @Override
     public String toString() {
-        return "grunnbeløp " + beloep;
+        return "grunnbelÃ¸p " + beloep;
     }
 
     public Kroner beloep() {

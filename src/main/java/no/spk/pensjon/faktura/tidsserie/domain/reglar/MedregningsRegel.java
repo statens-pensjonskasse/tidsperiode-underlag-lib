@@ -14,22 +14,22 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.krone
 /**
  * {@link MedregningsRegel} representerer algoritma som bestemmer korvidt ei medregning er fakturerbar.
  * <p>
- * Korvidt ei medregning er fakturerbar blir styrt av medregningskoda. Bistilling og lønn hos annan arbeidsgivar er
+ * Korvidt ei medregning er fakturerbar blir styrt av medregningskoda. Bistilling og lÃ¸nn hos annan arbeidsgivar er
  * dei einaste fakturerbare medregningstypene.
  * <p>
- * Medregning blir forøvrig kun brukt i SPK-ordninga, i Apotekordninga er ikkje medregning i bruk.
+ * Medregning blir forÃ¸vrig kun brukt i SPK-ordninga, i Apotekordninga er ikkje medregning i bruk.
  * <p>
- * Beregninga genererer alltid den årlige medregninga, den avkortar ikkje det genererte beløpet i henhold til
- * periodas årsfaktor. Det er klienten sitt ansvar å foreta avkortinga til periodas årsfaktor.
+ * Beregninga genererer alltid den Ã¥rlige medregninga, den avkortar ikkje det genererte belÃ¸pet i henhold til
+ * periodas Ã¥rsfaktor. Det er klienten sitt ansvar Ã¥ foreta avkortinga til periodas Ã¥rsfaktor.
  *
  * @author Tarjei Skorgenes
  */
 public class MedregningsRegel implements BeregningsRegel<Kroner> {
     /**
-     * Returnerer medregningas beløp dersom den er ei av dei fakturerbare medregningstypene.
+     * Returnerer medregningas belÃ¸p dersom den er ei av dei fakturerbare medregningstypene.
      *
-     * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
-     * @return medregningas beløp viss den er fakturerbar, ellers eit beløp lik kr 0
+     * @param periode underlagsperioda som inneheld alle verdiar eller pÃ¥krevde reglar som skal benyttast av beregningsregelen
+     * @return medregningas belÃ¸p viss den er fakturerbar, ellers eit belÃ¸p lik kr 0
      */
     @Override
     public Kroner beregn(final Beregningsperiode<?> periode) {

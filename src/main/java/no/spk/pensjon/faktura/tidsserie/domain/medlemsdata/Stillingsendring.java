@@ -30,7 +30,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
  * representerer en tilstandsendring i et stillingsforhold der et eller flere stillingsrelaterte verdier
  * endres.
  * <p>
- * Stillingsendringer kommer fra stillingshistorikken til medlemmet og hver endring tilhører et bestemt stillingsforhold.
+ * Stillingsendringer kommer fra stillingshistorikken til medlemmet og hver endring tilhÃ¸rer et bestemt stillingsforhold.
  * Stillingsendringer som ikke er tilknyttet et stillingsforhold tas ikke hensyn til i tidsseriegenereringen og kan
  * derfor ses bort fra.
  *
@@ -66,20 +66,20 @@ public class Stillingsendring {
     private Optional<Medlemslinjenummer> linje = empty();
 
     /**
-     * Tilhøyrer stillingsendringa det angitte stillingsforholdet?
+     * TilhÃ¸yrer stillingsendringa det angitte stillingsforholdet?
      *
      * @param stillingsforhold stillingsforholdet som stillingsendringa skal sjekkast opp mot
-     * @return <code>true</code> dersom stillingsendringar tilhøyrer stillingsforholdet,
-     * <code>false</code> viss den tilhøyrer eit anna stillingsforhold
+     * @return <code>true</code> dersom stillingsendringar tilhÃ¸yrer stillingsforholdet,
+     * <code>false</code> viss den tilhÃ¸yrer eit anna stillingsforhold
      */
     public boolean tilhoerer(final StillingsforholdId stillingsforhold) {
         return this.stillingsforhold.map(id -> id.equals(stillingsforhold)).orElse(false);
     }
 
     /**
-     * Fødselsdatoen til medlemmet.
+     * FÃ¸dselsdatoen til medlemmet.
      *
-     * @param dato datoen medlemmet vart født
+     * @param dato datoen medlemmet vart fÃ¸dt
      * @return <code>this</code>
      */
     public Stillingsendring foedselsdato(final Foedselsdato dato) {
@@ -88,14 +88,14 @@ public class Stillingsendring {
     }
 
     /**
-     * Fødselsdatoen til medlemmet.
+     * FÃ¸dselsdatoen til medlemmet.
      *
-     * @return datoen medlemmet vart født
+     * @return datoen medlemmet vart fÃ¸dt
      */
     public Foedselsdato foedselsdato() {
         return foedselsdato.orElseThrow(
                 () -> new IllegalStateException(
-                        "fødselsdato har ikkje blitt populert inn i stillingsendringa.\n" + this
+                        "fÃ¸dselsdato har ikkje blitt populert inn i stillingsendringa.\n" + this
                 )
         );
     }
@@ -125,9 +125,9 @@ public class Stillingsendring {
     }
 
     /**
-     * Stillingsforholdet endringa tilhøyrer.
+     * Stillingsforholdet endringa tilhÃ¸yrer.
      *
-     * @param stillingsforhold stillingsforholdnummeret for stillingsforholdet endringa tilhøyrer
+     * @param stillingsforhold stillingsforholdnummeret for stillingsforholdet endringa tilhÃ¸yrer
      * @return <code>this</code>
      */
     public Stillingsendring stillingsforhold(final StillingsforholdId stillingsforhold) {
@@ -138,19 +138,19 @@ public class Stillingsendring {
     /**
      * Linjenummeret til stillingsendringa.
      *
-     * @param linje linjenummeret som i kombinasjon med fødselsnummeret unikt identifiserer stillingsendringa
+     * @param linje linjenummeret som i kombinasjon med fÃ¸dselsnummeret unikt identifiserer stillingsendringa
      * @return <code>this</code>
      * @since 1.1.1
      */
     public Stillingsendring linje(final Optional<Medlemslinjenummer> linje) {
-        this.linje = requireNonNull(linje, "linjenummer er påkrevd, men var null");
+        this.linje = requireNonNull(linje, "linjenummer er pÃ¥krevd, men var null");
         return this;
     }
 
     /**
      * Linjenummeret til stillingsendringa.
      *
-     * @return linjenummeret som i kombinasjon med fødselsnummeret unikt identifiserer stillingsendringa
+     * @return linjenummeret som i kombinasjon med fÃ¸dselsnummeret unikt identifiserer stillingsendringa
      * @since 1.1.1
      */
     public Optional<Medlemslinjenummer> linje() {
@@ -158,9 +158,9 @@ public class Stillingsendring {
     }
 
     /**
-     * Stillingsforholdet endringa tilhøyrer.
+     * Stillingsforholdet endringa tilhÃ¸yrer.
      *
-     * @return stillingsforholdnummeret for stillingsforholdet endringa tilhøyrer
+     * @return stillingsforholdnummeret for stillingsforholdet endringa tilhÃ¸yrer
      */
     public StillingsforholdId stillingsforhold() {
         return stillingsforhold.orElseThrow(
@@ -178,7 +178,7 @@ public class Stillingsendring {
      * @throws NullPointerException dersom <code>aksjonskode</code> er <code>null</code>
      */
     public Stillingsendring aksjonskode(final Aksjonskode aksjonskode) {
-        this.aksjonskode = of(requireNonNull(aksjonskode, () -> "aksjonskode er påkrevd, men var null"));
+        this.aksjonskode = of(requireNonNull(aksjonskode, () -> "aksjonskode er pÃ¥krevd, men var null"));
         return this;
     }
 
@@ -203,7 +203,7 @@ public class Stillingsendring {
     /**
      * Datoen som stillingsendringen gjelder fra og med.
      *
-     * @param dato en tekstlig representasjon av en dato på formatet yyyy.MM.dd
+     * @param dato en tekstlig representasjon av en dato pÃ¥ formatet yyyy.MM.dd
      * @return <code>this</code>
      */
     public Stillingsendring aksjonsdato(final LocalDate dato) {
@@ -214,7 +214,7 @@ public class Stillingsendring {
     /**
      * Datoen som stillingsendringen gjelder fra og med.
      *
-     * @return datoen stillingsendringen inntreffer på
+     * @return datoen stillingsendringen inntreffer pÃ¥
      */
     public LocalDate aksjonsdato() {
         return aksjonsdato.orElseThrow(this::stillingsendringHarIkkeAksjonsdato);
@@ -231,20 +231,20 @@ public class Stillingsendring {
     }
 
     /**
-     * Gjeldande lønnstrinn for stillinga.
+     * Gjeldande lÃ¸nnstrinn for stillinga.
      * <p>
-     * Ei stilling kan bli innrapportert enten med lønn eller med lønnstrinn, men aldri med begge to.
+     * Ei stilling kan bli innrapportert enten med lÃ¸nn eller med lÃ¸nnstrinn, men aldri med begge to.
      *
-     * @return stillingas lønnstrinn viss den ikkje innrapporteres med lønnsbeløp
+     * @return stillingas lÃ¸nnstrinn viss den ikkje innrapporteres med lÃ¸nnsbelÃ¸p
      */
     public Optional<Loennstrinn> loennstrinn() {
         return loennstrinn;
     }
 
     /**
-     * Gjeldende lønnstrinn for stillingen.
+     * Gjeldende lÃ¸nnstrinn for stillingen.
      *
-     * @param loennstrinn stillingens lønnstrinn
+     * @param loennstrinn stillingens lÃ¸nnstrinn
      * @return <code>this</code>
      */
     public Stillingsendring loennstrinn(final Optional<Loennstrinn> loennstrinn) {
@@ -253,22 +253,22 @@ public class Stillingsendring {
     }
 
     /**
-     * Gjeldande lønn for stillinga.
+     * Gjeldande lÃ¸nn for stillinga.
      * <p>
-     * Ei stilling kan bli innrapportert enten med lønn eller med lønnstrinn, men aldri med begge to.
+     * Ei stilling kan bli innrapportert enten med lÃ¸nn eller med lÃ¸nnstrinn, men aldri med begge to.
      *
-     * @return stillingas lønn viss den ikkje innrapporteres med lønnstrinn
+     * @return stillingas lÃ¸nn viss den ikkje innrapporteres med lÃ¸nnstrinn
      */
     public Optional<DeltidsjustertLoenn> loenn() {
         return loenn;
     }
 
     /**
-     * Gjeldande lønn for stillinga.
+     * Gjeldande lÃ¸nn for stillinga.
      * <p>
-     * Ei stilling kan bli innrapportert enten med lønn eller med lønnstrinn, men aldri med begge to.
+     * Ei stilling kan bli innrapportert enten med lÃ¸nn eller med lÃ¸nnstrinn, men aldri med begge to.
      *
-     * @param loenn stillingas lønn viss den ikkje innrapporteres med lønnstrinn
+     * @param loenn stillingas lÃ¸nn viss den ikkje innrapporteres med lÃ¸nnstrinn
      * @return <code>this</code>
      */
     public Stillingsendring loenn(final Optional<DeltidsjustertLoenn> loenn) {
@@ -277,20 +277,20 @@ public class Stillingsendring {
     }
 
     /**
-     * Det faste tillegget i årslønn for stillinga.
+     * Det faste tillegget i Ã¥rslÃ¸nn for stillinga.
      * <p>
      * Det faste tillegget som blir innrapportert skal vere innrapportert deltidsjustert og det skal representere
-     * totalt fast tillegg for heile premieåret, på samme måte som innrapportert lønn er deltidsjustert og gjeld
-     * heile året.
+     * totalt fast tillegg for heile premieÃ¥ret, pÃ¥ samme mÃ¥te som innrapportert lÃ¸nn er deltidsjustert og gjeld
+     * heile Ã¥ret.
      *
-     * @return det faste tillegget i årslønn for stillinga
+     * @return det faste tillegget i Ã¥rslÃ¸nn for stillinga
      */
     public Optional<Fastetillegg> fastetillegg() {
         return fastetillegg;
     }
 
     /**
-     * @param fastetillegg faste tillegget i årslønn for stillinga som skal settes for stillingsendringen
+     * @param fastetillegg faste tillegget i Ã¥rslÃ¸nn for stillinga som skal settes for stillingsendringen
      * @return <code>this</code>
      * @see #fastetillegg()
      */
@@ -300,20 +300,20 @@ public class Stillingsendring {
     }
 
     /**
-     * Det variable tillegget i årslønn for stillinga.
+     * Det variable tillegget i Ã¥rslÃ¸nn for stillinga.
      * <p>
      * Det variable tillegget som blir innrapportert skal vere innrapportert deltidsjustert og det skal representere
-     * totalt variabelt tillegg for heile premieåret, på samme måte som innrapportert lønn er deltidsjustert og gjeld
-     * heile året.
+     * totalt variabelt tillegg for heile premieÃ¥ret, pÃ¥ samme mÃ¥te som innrapportert lÃ¸nn er deltidsjustert og gjeld
+     * heile Ã¥ret.
      *
-     * @return det variable tillegget i årslønn for stillinga
+     * @return det variable tillegget i Ã¥rslÃ¸nn for stillinga
      */
     public Optional<Variabletillegg> variabletillegg() {
         return variabletillegg;
     }
 
     /**
-     * @param variabletillegg som skal settes i årslønn for stillinga
+     * @param variabletillegg som skal settes i Ã¥rslÃ¸nn for stillinga
      * @return <code>this</code>
      * @see #variabletillegg()
      */
@@ -323,20 +323,20 @@ public class Stillingsendring {
     }
 
     /**
-     * Funksjonstillegget i årslønn for stillinga.
+     * Funksjonstillegget i Ã¥rslÃ¸nn for stillinga.
      * <p>
-     * Funksjonstillegget som blir innrapportert skal ikkje deltidsjusterast og blir derfor innrapportert utan å ta
-     * vere kobla på noko vis til stillingas stillingsprosent. Tillegget skal representere totalt funksjonstillegg
-     * for heile premieåret, på samme måte som innrapportert lønn gjeld heile året.
+     * Funksjonstillegget som blir innrapportert skal ikkje deltidsjusterast og blir derfor innrapportert utan Ã¥ ta
+     * vere kobla pÃ¥ noko vis til stillingas stillingsprosent. Tillegget skal representere totalt funksjonstillegg
+     * for heile premieÃ¥ret, pÃ¥ samme mÃ¥te som innrapportert lÃ¸nn gjeld heile Ã¥ret.
      *
-     * @return funksjonstillegget for i årslønn for stillinga
+     * @return funksjonstillegget for i Ã¥rslÃ¸nn for stillinga
      */
     public Optional<Funksjonstillegg> funksjonstillegg() {
         return funksjonstillegg;
     }
 
     /**
-     * @param funksjonstillegg som skal settes i årslønn for stillinga
+     * @param funksjonstillegg som skal settes i Ã¥rslÃ¸nn for stillinga
      * @return <code>this</code>
      * @see #funksjonstillegg()
      */
@@ -346,18 +346,18 @@ public class Stillingsendring {
     }
 
     /**
-     * Stillingsbrøken for stillingsforholdet.
+     * StillingsbrÃ¸ken for stillingsforholdet.
      *
-     * @return stillingsbrøken for stillingsforholdet
+     * @return stillingsbrÃ¸ken for stillingsforholdet
      */
     public Stillingsprosent stillingsprosent() {
         return stillingsprosent.get();
     }
 
     /**
-     * Stillingsbrøken for stillingsforholdet.
+     * StillingsbrÃ¸ken for stillingsforholdet.
      *
-     * @param stillingsprosent stillingsbrøken for stillingsforholdet
+     * @param stillingsprosent stillingsbrÃ¸ken for stillingsforholdet
      * @return <code>this</code>
      */
     public Stillingsendring stillingsprosent(Stillingsprosent stillingsprosent) {
@@ -388,7 +388,7 @@ public class Stillingsendring {
     /**
      * Stillingsforholdet si stillingskode.
      * <p>
-     * For apotekordninga er feltet påkrevd for alle stillingar som er innrapportert, både med og uten lønnstrinn.
+     * For apotekordninga er feltet pÃ¥krevd for alle stillingar som er innrapportert, bÃ¥de med og uten lÃ¸nnstrinn.
      *
      * @return stillingsendringa si stillingskode
      */
@@ -407,9 +407,9 @@ public class Stillingsendring {
     }
 
     /**
-     * Annoterer underlagsperioda med stillingsendringas verdiar som er påkrevd for beregning av maskinelt grunnlag.
+     * Annoterer underlagsperioda med stillingsendringas verdiar som er pÃ¥krevd for beregning av maskinelt grunnlag.
      * <p>
-     * Følgjande verdiar blir forsøkt annotert på perioda viss stillingsendringa har ein ikkje-tom verdi for dei:
+     * FÃ¸lgjande verdiar blir forsÃ¸kt annotert pÃ¥ perioda viss stillingsendringa har ein ikkje-tom verdi for dei:
      * <ul>
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId}</li>
      * <li>{@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent}</li>
@@ -449,8 +449,8 @@ public class Stillingsendring {
         Stream.of(
                 line("Stillingsforhold: ", stillingsforhold),
                 line("Aksjonskode: ", aksjonskode),
-                line("Stillingsbrøk: ", stillingsprosent),
-                line("Lønnstrinn: ", loennstrinn)
+                line("StillingsbrÃ¸k: ", stillingsprosent),
+                line("LÃ¸nnstrinn: ", loennstrinn)
         ).forEach(line -> {
             builder.append(" - ");
             line.forEach(builder::append);

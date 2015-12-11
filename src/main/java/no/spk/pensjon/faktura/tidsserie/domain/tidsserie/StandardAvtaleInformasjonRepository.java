@@ -34,14 +34,14 @@ public class StandardAvtaleInformasjonRepository implements AvtaleinformasjonRep
      * Larger et nytt StandardAvtaleInformasjonRepository med tidsperiodene som er relevante for avtale- og arbeidsgiver-informasjon internt,
      * og eksponerer disse via {@link #finn(AvtaleId)}.
      *
-     * @param perioder tidsperioder gruppert etter periodetype, forventast å inneholde innslag
+     * @param perioder tidsperioder gruppert etter periodetype, forventast Ã¥ inneholde innslag
      *                 for alle avtale- og arbeidsgiverrelaterte periodetyper
      * @throws java.lang.NullPointerException viss <code>perioder</code> er <code>null</code>
      * @see no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtalerelatertperiode
      * @see no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Arbeidsgiverrelatertperiode
      */
     public StandardAvtaleInformasjonRepository(Map<Class<?>, List<Tidsperiode<?>>> perioder) {
-        requireNonNull(perioder, "perioder kan ikke være null");
+        requireNonNull(perioder, "perioder kan ikke vÃ¦re null");
         avtalar = grupperAvtaleperioder(perioder);
         arbeidsgivere = grupperArbeidsgiverperioder(perioder);
     }

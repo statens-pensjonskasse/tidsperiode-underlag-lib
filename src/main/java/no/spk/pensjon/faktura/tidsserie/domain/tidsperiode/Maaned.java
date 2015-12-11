@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 
 /**
- * {@link Maaned} representerer ein bestemt måned
+ * {@link Maaned} representerer ein bestemt mÃ¥ned
  * som ligg innanfor eit {@link Aar}.
  *
  * @author Tarjei Skorgenes
@@ -19,18 +19,18 @@ public class Maaned extends AbstractTidsperiode<Maaned> {
     private final Month maaned;
 
     /**
-     * Konstruerer ei ny tidsperiode som strekker seg frå første til siste dag i den aktuelle måneden
-     * for det aktuelle året.
+     * Konstruerer ei ny tidsperiode som strekker seg frÃ¥ fÃ¸rste til siste dag i den aktuelle mÃ¥neden
+     * for det aktuelle Ã¥ret.
      *
      * @param aar    aaret tidsperioda skal ligge innanfor
-     * @param maaned årets måned som tidsperioda skal strekke seg åver
+     * @param maaned Ã¥rets mÃ¥ned som tidsperioda skal strekke seg Ã¥ver
      * @throws NullPointerException if <code>dato</code> er <code>null</code>
      */
     public Maaned(final Aarstall aar, final Month maaned) {
         super(
                 dato(
-                        requireNonNull(aar, () -> "årstall er påkrevd, men var null"),
-                        requireNonNull(maaned, () -> "måned er påkrevd, men var null")
+                        requireNonNull(aar, () -> "Ã¥rstall er pÃ¥krevd, men var null"),
+                        requireNonNull(maaned, () -> "mÃ¥ned er pÃ¥krevd, men var null")
                 ).with(firstDayOfMonth()),
                 of(dato(aar, maaned).with(lastDayOfMonth()))
         );
@@ -39,19 +39,19 @@ public class Maaned extends AbstractTidsperiode<Maaned> {
     }
 
     /**
-     * Returnerer kva for ein måned i året perioda tilhøyrer.
+     * Returnerer kva for ein mÃ¥ned i Ã¥ret perioda tilhÃ¸yrer.
      *
-     * @return periodas tilhøyrande måned i året
+     * @return periodas tilhÃ¸yrande mÃ¥ned i Ã¥ret
      */
     public Month toMonth() {
         return maaned;
     }
 
     /**
-     * Er vi tilknytta den angitte måneden i året?
+     * Er vi tilknytta den angitte mÃ¥neden i Ã¥ret?
      *
-     * @param month måned i året som vi skal sjekke om vi er tilknytta
-     * @return <code>true</code> dersom perioda er tilknytta den angitte måneden i året,
+     * @param month mÃ¥ned i Ã¥ret som vi skal sjekke om vi er tilknytta
+     * @return <code>true</code> dersom perioda er tilknytta den angitte mÃ¥neden i Ã¥ret,
      * <code>false</code> ellers
      */
     public boolean tilhoeyrer(final Month month) {

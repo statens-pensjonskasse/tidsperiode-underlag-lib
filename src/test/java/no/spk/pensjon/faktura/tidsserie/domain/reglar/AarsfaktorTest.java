@@ -19,21 +19,21 @@ public class AarsfaktorTest {
     @Test
     public void skalIkkjeKunneVereStoerreEnn1() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("årsfaktor må vere mindre enn eller lik 1, men var 2");
+        e.expectMessage("Ã¥rsfaktor mÃ¥ vere mindre enn eller lik 1, men var 2");
         new Aarsfaktor(2d);
     }
 
     @Test
     public void skalIkkjeKunneVereLik0() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("årsfaktor må vere større enn 0, men var 0");
+        e.expectMessage("Ã¥rsfaktor mÃ¥ vere stÃ¸rre enn 0, men var 0");
         new Aarsfaktor(0d);
     }
 
     @Test
     public void skalIkkjeKunneVereNegativ() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("årsfaktor må vere større enn 0, men var -2");
+        e.expectMessage("Ã¥rsfaktor mÃ¥ vere stÃ¸rre enn 0, men var -2");
         new Aarsfaktor(-2d);
     }
 
@@ -50,7 +50,7 @@ public class AarsfaktorTest {
         for (int dagar = 1; dagar <= 366; dagar++) {
             final Kroner resultat = new Aarsfaktor(1d / dagar).multiply(aarsloenn);
             assertThat(resultat.compareTo(aarsloenn))
-                    .as("årslønn avkorta til " + dagar + " dagar kan ikkje overstige den totale årslønna for 366 dagar")
+                    .as("Ã¥rslÃ¸nn avkorta til " + dagar + " dagar kan ikkje overstige den totale Ã¥rslÃ¸nna for 366 dagar")
                     .isLessThanOrEqualTo(0);
         }
     }

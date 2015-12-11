@@ -6,8 +6,8 @@ import static java.util.Objects.requireNonNull;
  * {@link Medlemslinjenummer} representerer eit linjenummer som i kombinasjon med {@link Foedselsnummer}
  * unikt identifiserer ei stillingsendring.
  * <br>
- * Eit linjenummer må vere eit positivt heiltall større enn eller lik 1 og har som hensikt å gjere ein i stand til å
- * skille to stillingsendringar tilhøyrande samme medlem frå kvarandre.
+ * Eit linjenummer mÃ¥ vere eit positivt heiltall stÃ¸rre enn eller lik 1 og har som hensikt Ã¥ gjere ein i stand til Ã¥
+ * skille to stillingsendringar tilhÃ¸yrande samme medlem frÃ¥ kvarandre.
  *
  * @author Tarjei Skorgenes
  * @since 1.1.1
@@ -16,8 +16,8 @@ public final class Medlemslinjenummer {
     private final Integer value;
 
     private Medlemslinjenummer(final Integer value) {
-        if (requireNonNull(value, "linjenummer er påkrevd, men var null") < 1) {
-            throw new IllegalArgumentException("linjenummer må vere eit positivt heiltal, men var " + value);
+        if (requireNonNull(value, "linjenummer er pÃ¥krevd, men var null") < 1) {
+            throw new IllegalArgumentException("linjenummer mÃ¥ vere eit positivt heiltal, men var " + value);
         }
         this.value = value;
     }

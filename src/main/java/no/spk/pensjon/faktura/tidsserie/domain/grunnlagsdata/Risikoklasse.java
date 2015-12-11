@@ -4,9 +4,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * {@link Risikoklasse} er ei kategorisering av avtalar som ligg til grunn
- * for nivået på yrkesskadepremien avtalen skal betale pr årsverk.
+ * for nivÃ¥et pÃ¥ yrkesskadepremien avtalen skal betale pr Ã¥rsverk.
  * <br>
- * Yrkesskadepremien pr årsverk er høgst for dei øvre risikoklassene og lavast for dei nedre.
+ * Yrkesskadepremien pr Ã¥rsverk er hÃ¸gst for dei Ã¸vre risikoklassene og lavast for dei nedre.
  *
  * @author Tarjei Skorgenes
  */
@@ -18,10 +18,10 @@ public final class Risikoklasse {
      *
      * @param kode koda som inneheld risikoklassa til avtalen
      * @throws NullPointerException     viss <code>kode</code> er <code>null</code>
-     * @throws IllegalArgumentException viss <code>kode</code> ikkje er frå 1 til 3 tegn lang
+     * @throws IllegalArgumentException viss <code>kode</code> ikkje er frÃ¥ 1 til 3 tegn lang
      */
     public Risikoklasse(final String kode) {
-        if (!requireNonNull(kode, "risikoklasse er påkrevd, men var null").matches("[0-9,]{1,3}")) {
+        if (!requireNonNull(kode, "risikoklasse er pÃ¥krevd, men var null").matches("[0-9,]{1,3}")) {
             throw new IllegalArgumentException(
                     "risikoklasse kan kun vere 1-3 tegn lang, men inneholdt "
                             + kode.length()

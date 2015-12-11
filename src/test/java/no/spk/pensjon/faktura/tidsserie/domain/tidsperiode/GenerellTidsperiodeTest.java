@@ -105,7 +105,7 @@ public class GenerellTidsperiodeTest {
     }
 
     /**
-     * Verifiserer at tidsperioder med samme frå og med- og til og med-dato er like
+     * Verifiserer at tidsperioder med samme frÃ¥ og med- og til og med-dato er like
      */
     @Test
     public void skalVereLikeVissFraOgMedOgTilOgMedDatoHarLikVerdi() {
@@ -116,11 +116,11 @@ public class GenerellTidsperiodeTest {
     }
 
     /**
-     * Verifiserer at tidsperioder med forskjellig frå og med- eller til og med-dato er ulike
+     * Verifiserer at tidsperioder med forskjellig frÃ¥ og med- eller til og med-dato er ulike
      */
     @Test
     public void skalVereULikeVissFraOgMedEllerTilOgMedDatoHarUlikVerdi() {
-        // Frå og med ulik
+        // FrÃ¥ og med ulik
         final LocalDate fraOgMed = dato("1987.06.23");
         final LocalDate tilOgMed = dato("2011.09.01");
 
@@ -134,7 +134,7 @@ public class GenerellTidsperiodeTest {
     }
 
     /**
-     * Verifiserer at hashcode på to perioder som er like, har samme verdi.
+     * Verifiserer at hashcode pÃ¥ to perioder som er like, har samme verdi.
      */
     @Test
     public void skalHaLikHashCodeVissPeriodeneErLike() {
@@ -143,7 +143,7 @@ public class GenerellTidsperiodeTest {
     }
 
     /**
-     * Verifiserer at frå og med- og til og med-dato blir kopiert frå andre tidsperioder.
+     * Verifiserer at frÃ¥ og med- og til og med-dato blir kopiert frÃ¥ andre tidsperioder.
      */
     @Test
     public void skalKopiereFraOgMedOgTilOgMedDatoFraAnnaTidsperiodeVedKonstruksjon() {
@@ -159,7 +159,7 @@ public class GenerellTidsperiodeTest {
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtanKilde() {
         e.expect(NullPointerException.class);
-        e.expectMessage("kilde er påkrevd");
+        e.expectMessage("kilde er pÃ¥krevd");
         e.expectMessage("men var null");
         new GenerellTidsperiode(null);
     }
@@ -167,7 +167,7 @@ public class GenerellTidsperiodeTest {
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtenFraOgMedDato() {
         e.expect(NullPointerException.class);
-        e.expectMessage("fra og med-dato er påkrevd");
+        e.expectMessage("fra og med-dato er pÃ¥krevd");
         e.expectMessage("men var null");
         create(null, of(now()));
     }
@@ -175,7 +175,7 @@ public class GenerellTidsperiodeTest {
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
         e.expect(NullPointerException.class);
-        e.expectMessage("til og med-dato er påkrevd");
+        e.expectMessage("til og med-dato er pÃ¥krevd");
         e.expectMessage("men var null");
 
         create(now(), null);

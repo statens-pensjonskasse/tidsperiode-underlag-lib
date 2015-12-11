@@ -77,7 +77,7 @@ class KonverterFraTekst {
 
     private static IllegalArgumentException feilmeldingUkjentStillingsprosent(final String prosent) {
         return new IllegalArgumentException(
-                prosent + " er ikke formatert som en prosentverdi på formatet NN.NNN% og kunne derfor ikke konverteres til en stillingsprosent"
+                prosent + " er ikke formatert som en prosentverdi pÃ¥ formatet NN.NNN% og kunne derfor ikke konverteres til en stillingsprosent"
         );
     }
 
@@ -85,7 +85,7 @@ class KonverterFraTekst {
         return new IllegalArgumentException(
                 "Ukjent ordning: "
                         + verdi
-                        + ", det er kun følgende ordninger som støttes av fastsats: "
+                        + ", det er kun fÃ¸lgende ordninger som stÃ¸ttes av fastsats: "
                         + ordninger.collect(joining(","))
         );
     }
