@@ -63,7 +63,7 @@
                         <include>**/*IT.class</include>
                         <include>**/*AT.class</include>
                     </includes>
-                    <encoding>CP1252</encoding>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>

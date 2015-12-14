@@ -24,8 +24,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  */
 public class Observasjonsdato {
     private final LocalDate dato;
-    private final boolean erSisteForÅret;
-    private final LocalDate sisteDagIÅret;
+    private final boolean erSisteForAaret;
+    private final LocalDate sisteDagIAaret;
 
     /**
      * Konstruerer ein ny observasjondato.
@@ -35,8 +35,8 @@ public class Observasjonsdato {
      */
     public Observasjonsdato(final LocalDate dato) {
         this.dato = requireNonNull(dato, () -> "dato manglar verdi, men er påkrevd");
-        this.erSisteForÅret = Month.DECEMBER == dato.getMonth();
-        this.sisteDagIÅret = dato.with(lastDayOfYear());
+        this.erSisteForAaret = Month.DECEMBER == dato.getMonth();
+        this.sisteDagIAaret = dato.with(lastDayOfYear());
     }
 
     private Observasjonsdato(final Aarstall aarstall, final Month month) {
@@ -44,8 +44,8 @@ public class Observasjonsdato {
                 .toYear()
                 .atMonth(month)
                 .atEndOfMonth();
-        this.sisteDagIÅret = aarstall.atEndOfYear();
-        this.erSisteForÅret = dato.isEqual(sisteDagIÅret);
+        this.sisteDagIAaret = aarstall.atEndOfYear();
+        this.erSisteForAaret = dato.isEqual(sisteDagIAaret);
     }
 
     @Override
@@ -134,6 +134,6 @@ public class Observasjonsdato {
      * @since 1.1.2
      */
     public boolean erAaretsSisteDag() {
-        return erSisteForÅret;
+        return erSisteForAaret;
     }
 }
