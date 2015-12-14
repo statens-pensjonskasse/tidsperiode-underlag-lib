@@ -8,37 +8,37 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
- * {@link AarsverkRegel} beregnar årsverk for ei underlagsperiode.
+ * {@link AarsverkRegel} beregnar Ã¥rsverk for ei underlagsperiode.
  *
  * @author Tarjei Skorgenes
  */
 public class AarsverkRegel implements BeregningsRegel<Aarsverk> {
     /**
-     * Beregnar periodas årsverk basert på gjeldande stillingsprosent og periodas årsfaktor.
+     * Beregnar periodas Ã¥rsverk basert pÃ¥ gjeldande stillingsprosent og periodas Ã¥rsfaktor.
      * <p>
-     * For perioder der vi ikkje har informasjon om gjeldande stillingsprosent, noko som skjer når perioda
-     * er tilknytta medregning, blir resultatet av beregninga alltid lik 0 årsverk.
+     * For perioder der vi ikkje har informasjon om gjeldande stillingsprosent, noko som skjer nÃ¥r perioda
+     * er tilknytta medregning, blir resultatet av beregninga alltid lik 0 Ã¥rsverk.
      * <p>
-     * Merk at regelen kun implementerer beregning av årsverk innanfor eit og samme år, beregninga vil feile
-     * for perioder som strekker seg over meir enn eit år enten i lengde eller ved at periodas frå og med- og til og
-     * med-dato har forskjellig årstall.
+     * Merk at regelen kun implementerer beregning av Ã¥rsverk innanfor eit og samme Ã¥r, beregninga vil feile
+     * for perioder som strekker seg over meir enn eit Ã¥r enten i lengde eller ved at periodas frÃ¥ og med- og til og
+     * med-dato har forskjellig Ã¥rstall.
      * <p>
      * Eksempel 1:
      * <p>
-     * Ei periode som strekker seg frå 1. januar til 31. desember og der gjeldande stillingsprosent
-     * er 50% resulterer i eit halvt årsverk.
+     * Ei periode som strekker seg frÃ¥ 1. januar til 31. desember og der gjeldande stillingsprosent
+     * er 50% resulterer i eit halvt Ã¥rsverk.
      * <p>
      * Eksempel 2:
      * <p>
-     * Ei periode som strekker seg frå 1. januar til 30. juni 2005 med ein stillingsprosent på 20% resulterer i
-     * (181/365 * 20%) årsverk.
+     * Ei periode som strekker seg frÃ¥ 1. januar til 30. juni 2005 med ein stillingsprosent pÃ¥ 20% resulterer i
+     * (181/365 * 20%) Ã¥rsverk.
      * <p>
      * Eksempel 3:
      * <p>
-     * Ei periode som startar 1. mars 1999 og strekker seg til 1. mars 2000 vil beregninga feile på.
+     * Ei periode som startar 1. mars 1999 og strekker seg til 1. mars 2000 vil beregninga feile pÃ¥.
      *
-     * @param periode underlagsperioda som er annotert med stillingsprosent og årsfaktorregel
-     * @return antall årsverk for perioda
+     * @param periode underlagsperioda som er annotert med stillingsprosent og Ã¥rsfaktorregel
+     * @return antall Ã¥rsverk for perioda
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent
      * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel
      */
@@ -46,7 +46,7 @@ public class AarsverkRegel implements BeregningsRegel<Aarsverk> {
     public Aarsverk beregn(final Beregningsperiode<?> periode) {
         if (periode.fraOgMed().getYear() != periode.tilOgMed().get().getYear()) {
             throw new IllegalStateException(
-                    "årsverk kan kun beregnast for underlagsperioder som startar og sluttar innanfor samme årstall.\n" +
+                    "Ã¥rsverk kan kun beregnast for underlagsperioder som startar og sluttar innanfor samme Ã¥rstall.\n" +
                             "Underlagsperiode: " + periode
             );
         }

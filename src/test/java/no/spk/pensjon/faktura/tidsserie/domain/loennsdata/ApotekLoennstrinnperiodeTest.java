@@ -34,9 +34,9 @@ public class ApotekLoennstrinnperiodeTest {
     @Test
     public void skalKreveStillingskodeVedOppslagAvLoennstrinn() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("stillingskode er påkrevd ved oppslag av lønn");
+        e.expectMessage("stillingskode er pÃ¥krevd ved oppslag av lÃ¸nn");
         e.expectMessage("Apotekordninga");
-        e.expectMessage("lønnstrinn 10");
+        e.expectMessage("lÃ¸nnstrinn 10");
         eiPeriode().harLoennFor(Loennstrinn.loennstrinn(10), empty());
     }
 
@@ -51,6 +51,6 @@ public class ApotekLoennstrinnperiodeTest {
     }
 
     private static AbstractBooleanAssert<?> assertTilhoeyrer(final ApotekLoennstrinnperiode periode, final Ordning ordning) {
-        return assertThat(periode.tilhoeyrer(ordning)).as("tilhøyrer " + periode + " " + ordning + "?");
+        return assertThat(periode.tilhoeyrer(ordning)).as("tilhÃ¸yrer " + periode + " " + ordning + "?");
     }
 }

@@ -3,11 +3,11 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link Medregning} representerer eit beløp som medlemmet har tjent opp hos ein arbeidsgivar tilknytta ei anna
- * ordning enn SPK-ordninga og der den andre arbeidsgivaren er ein part i overføringsavtalen.
+ * {@link Medregning} representerer eit belÃ¸p som medlemmet har tjent opp hos ein arbeidsgivar tilknytta ei anna
+ * ordning enn SPK-ordninga og der den andre arbeidsgivaren er ein part i overfÃ¸ringsavtalen.
  * <p>
  * Medregning blir og benytta for bistillingar og pensjonsgivande inntekt hos annan arbeidsgivar. Dei to siste er dei
- * einaste typene medregning som blir tatt hensyn til og medregna i tillegg til lønn for fastsats faktureringa.
+ * einaste typene medregning som blir tatt hensyn til og medregna i tillegg til lÃ¸nn for fastsats faktureringa.
  *
  * @author Tarjei Skorgenes
  */
@@ -17,17 +17,17 @@ public class Medregning {
     /**
      * Konstruerer ei ny medregning
      *
-     * @param beloep lønna som medlemmet skal få medregna
+     * @param beloep lÃ¸nna som medlemmet skal fÃ¥ medregna
      * @throws NullPointerException dersom <code>beloep</code> er <code>null</code>
      */
     public Medregning(final Kroner beloep) {
-        this.beloep = requireNonNull(beloep, () -> "beløp er påkrevd, men var null");
+        this.beloep = requireNonNull(beloep, () -> "belÃ¸p er pÃ¥krevd, men var null");
     }
 
     /**
-     * Lønna medlemmet har tjent opp hos ein arbeidsgivar utanfor SPK-ordninga.
+     * LÃ¸nna medlemmet har tjent opp hos ein arbeidsgivar utanfor SPK-ordninga.
      *
-     * @return eit kronebeløp som representerer lønna som skal medregnast
+     * @return eit kronebelÃ¸p som representerer lÃ¸nna som skal medregnast
      */
     public Kroner beloep() {
         return beloep;

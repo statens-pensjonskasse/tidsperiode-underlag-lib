@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OevreLoennsgrenseRegelTest {
     /**
-     * Verifiserer at øvre lønnsgrense er lik fulltidsgrensa dersom perioda er tilknytta medregning.
+     * Verifiserer at Ã¸vre lÃ¸nnsgrense er lik fulltidsgrensa dersom perioda er tilknytta medregning.
      * <p>
-     * Merk at forventa oppførsel for øvre grense ved medregning ikkje er spesifisert nokon stad, regelsettet som
-     * medregningar skal handterast med er svært lite definert i den gamle løysinga. Vi har valgt å la øvre
-     * lønnsgrense vere gjeldande også for medregning i tidsserien slik at vi har eit sikkerheitsnett i tilfelle med
-     * lav datakvalitet på medregningane.
+     * Merk at forventa oppfÃ¸rsel for Ã¸vre grense ved medregning ikkje er spesifisert nokon stad, regelsettet som
+     * medregningar skal handterast med er svÃ¦rt lite definert i den gamle lÃ¸ysinga. Vi har valgt Ã¥ la Ã¸vre
+     * lÃ¸nnsgrense vere gjeldande ogsÃ¥ for medregning i tidsserien slik at vi har eit sikkerheitsnett i tilfelle med
+     * lav datakvalitet pÃ¥ medregningane.
      */
     @Test
     public void skalBrukeFulltidsgrensaTilOrdningaForMedregningar() {
@@ -37,7 +37,7 @@ public class OevreLoennsgrenseRegelTest {
     }
 
     /**
-     * Verifiserer at grenseverdien ikkje blir justert i henhold til årsfaktor, det er øvre grense for totalt maskinelt
+     * Verifiserer at grenseverdien ikkje blir justert i henhold til Ã¥rsfaktor, det er Ã¸vre grense for totalt maskinelt
      * grunnlag som skal bli returnert.
      */
     @Test
@@ -60,11 +60,11 @@ public class OevreLoennsgrenseRegelTest {
      * Verifiserer at grenseverdien blir deltidsjustert slik at grensa blir lavare enn fulle 12G/10G
      * dersom det er ei deltidssstilling.
      * <p>
-     * Ein alternativmåte å oppnå det som denne prøver å oppnå ville vere å ikkje deltidsjustere grensa og heller justere
-     * lønna og faste og variable tillegg opp til verdiar for ei 100% stilling, så legge på funksjonstillegg og samanlikne
-     * med grensa. Men den metodikken får store problem med å handtere nedjusteringa i etterkant viss summen er over
-     * øvre grense. Problemet skyldast at funksjonstillegget ikkje er og ikkje skal deltidsjusterast. Kva som då skal
-     * vere verdien av funksjonstillegg, faste- og variable-tillegg og lønn etter nedjusteringa er ikkje definert.
+     * Ein alternativmÃ¥te Ã¥ oppnÃ¥ det som denne prÃ¸ver Ã¥ oppnÃ¥ ville vere Ã¥ ikkje deltidsjustere grensa og heller justere
+     * lÃ¸nna og faste og variable tillegg opp til verdiar for ei 100% stilling, sÃ¥ legge pÃ¥ funksjonstillegg og samanlikne
+     * med grensa. Men den metodikken fÃ¥r store problem med Ã¥ handtere nedjusteringa i etterkant viss summen er over
+     * Ã¸vre grense. Problemet skyldast at funksjonstillegget ikkje er og ikkje skal deltidsjusterast. Kva som dÃ¥ skal
+     * vere verdien av funksjonstillegg, faste- og variable-tillegg og lÃ¸nn etter nedjusteringa er ikkje definert.
      */
     @Test
     public void skalDeltidsjustereGrenseverdien() {
@@ -81,10 +81,10 @@ public class OevreLoennsgrenseRegelTest {
     }
 
     /**
-     * Verifiserer at vi brukar kr 0 som øvre grense for ustøtta ordningar.
+     * Verifiserer at vi brukar kr 0 som Ã¸vre grense for ustÃ¸tta ordningar.
      * <p>
-     * Dette er ikkje eit funksjonelt krav, kun ein teknisk forenkling for å unngå å måtte feile i situasjonar der ustøtta
-     * ordningar blir forsøkt behandla.
+     * Dette er ikkje eit funksjonelt krav, kun ein teknisk forenkling for Ã¥ unngÃ¥ Ã¥ mÃ¥tte feile i situasjonar der ustÃ¸tta
+     * ordningar blir forsÃ¸kt behandla.
      */
     @Test
     public void skalBruke0SomGrenseForUstoettaOrdningar() {

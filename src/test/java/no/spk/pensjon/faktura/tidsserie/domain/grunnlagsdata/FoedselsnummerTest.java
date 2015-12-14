@@ -22,8 +22,8 @@ public class FoedselsnummerTest {
                 )
         )
                 .isNotSameAs(
-                        // Den her er med for å sikre at extract-variable-kåte utviklarar trekker den her ut til en
-                        // variabel uten å tenke på at bieffekten av det er å invalidere heile hensikta med testen :)
+                        // Den her er med for Ã¥ sikre at extract-variable-kÃ¥te utviklarar trekker den her ut til en
+                        // variabel uten Ã¥ tenke pÃ¥ at bieffekten av det er Ã¥ invalidere heile hensikta med testen :)
                         new Foedselsnummer(foedselsdato(19790101), personnummer(12321))
                 )
                 .isEqualTo(
@@ -34,7 +34,7 @@ public class FoedselsnummerTest {
     @Test
     public void skalVereLikSegSjoelv() {
         final Foedselsnummer me = new Foedselsnummer(foedselsdato(19790101), personnummer(12321));
-        assertThat(me).as("fødselsnummer").isSameAs(me).isEqualTo(me);
+        assertThat(me).as("fÃ¸dselsnummer").isSameAs(me).isEqualTo(me);
     }
 
     @Test
@@ -99,6 +99,6 @@ public class FoedselsnummerTest {
     }
 
     private static AbstractObjectAssert<?, Foedselsnummer> assertFoedselsnummer(final Foedselsnummer foedselsnummer) {
-        return assertThat(foedselsnummer).as("fødselsnummer");
+        return assertThat(foedselsnummer).as("fÃ¸dselsnummer");
     }
 }

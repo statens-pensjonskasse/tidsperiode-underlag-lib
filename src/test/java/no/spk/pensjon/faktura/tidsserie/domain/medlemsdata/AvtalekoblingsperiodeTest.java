@@ -24,7 +24,7 @@ public class AvtalekoblingsperiodeTest {
     public void skalKreveStillingsforholdVedKonstruksjon() {
         e.expect(NullPointerException.class);
         e.expectMessage("stillingsforhold");
-        e.expectMessage("er påkrevd, men var null");
+        e.expectMessage("er pÃ¥krevd, men var null");
 
         new Avtalekoblingsperiode(now(), of(now()), null, new AvtaleId(1L), SPK);
     }
@@ -33,7 +33,7 @@ public class AvtalekoblingsperiodeTest {
     public void skalKreveAvtaleVedKonstruksjon() {
         e.expect(NullPointerException.class);
         e.expectMessage("avtale");
-        e.expectMessage("er påkrevd, men var null");
+        e.expectMessage("er pÃ¥krevd, men var null");
 
         new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), null, SPK);
     }
@@ -42,7 +42,7 @@ public class AvtalekoblingsperiodeTest {
     public void skalKreveOrdningVedKonstruksjon() {
         e.expect(NullPointerException.class);
         e.expectMessage("ordning");
-        e.expectMessage("er påkrevd, men var null");
+        e.expectMessage("er pÃ¥krevd, men var null");
 
         new Avtalekoblingsperiode(now(), of(now()), new StillingsforholdId(1L), new AvtaleId(1L), null);
     }

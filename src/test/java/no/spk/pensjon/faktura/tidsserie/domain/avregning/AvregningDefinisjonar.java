@@ -94,13 +94,13 @@ public class AvregningDefinisjonar implements No {
             );
         });
 
-        Så("^skal totalt premiebeløp for produkt (PEN|AFP|TIP|YSK|GRU) være lik (kr -?[0-9 .]+)$", (String produkttype, String totalPremie) -> {
+        SÃ¥("^skal totalt premiebelÃ¸p for produkt (PEN|AFP|TIP|YSK|GRU) vÃ¦re lik (kr -?[0-9 .]+)$", (String produkttype, String totalPremie) -> {
 
             final Underlagsperiode p = bygg();
 
             final Produkt produkt = Produkt.fraKode(produkttype);
             assertThat(ofNullable(premieRegelForProdukt.get(produkt)).map(r -> p.beregn(r).total()))
-                    .as("totalt premiebeløp beregna for produkt " + produkt + " basert på underlagsperiode " + p)
+                    .as("totalt premiebelÃ¸p beregna for produkt " + produkt + " basert pÃ¥ underlagsperiode " + p)
                     .isEqualTo(of(premiebeloep(totalPremie)));
         });
     }

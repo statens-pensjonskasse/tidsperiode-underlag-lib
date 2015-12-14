@@ -21,24 +21,24 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonMangla
 /**
  * Regel med strategien som styrer kva underlagsperioder som skal fakturerast for gruppelivsproduktet.
  * <p>
- * Gruppeliv er eit forsikringsprodukt der beregningane av premie må skje pr medlem, ikkje pr stillingsforhold.
- * Gruppelivspremien blir betalt basert på antall dagar medlemmet er aktivt i løpet av eit år.
+ * Gruppeliv er eit forsikringsprodukt der beregningane av premie mÃ¥ skje pr medlem, ikkje pr stillingsforhold.
+ * Gruppelivspremien blir betalt basert pÃ¥ antall dagar medlemmet er aktivt i lÃ¸pet av eit Ã¥r.
  * <p>
- * Sidan premien er på medlemsnivå må ein for perioder der medlemmet har fleire parallelle stillingar, ha ein
+ * Sidan premien er pÃ¥ medlemsnivÃ¥ mÃ¥ ein for perioder der medlemmet har fleire parallelle stillingar, ha ein
  * strategi for kva for eit stillingsforhold og avtale som skal betale premien for dagane i perioda.
  * <p>
- * SPK har valgt å bruke stillingsstørrelse som strategi for kva stillinga og avtale som skal dekke inn premien.
- * Dersom stillingene er like store, brukes stillingsforholdid for å bestemme hvilken stilling som skal brukes,
- * slik at det blir deterministisk oppførsel mellom kjøringer på samme datasett,
+ * SPK har valgt Ã¥ bruke stillingsstÃ¸rrelse som strategi for kva stillinga og avtale som skal dekke inn premien.
+ * Dersom stillingene er like store, brukes stillingsforholdid for Ã¥ bestemme hvilken stilling som skal brukes,
+ * slik at det blir deterministisk oppfÃ¸rsel mellom kjÃ¸ringer pÃ¥ samme datasett,
  * <p>
- * Regelen er som følger:
+ * Regelen er som fÃ¸lger:
  * <ol>
  * <li>Stillingar tilknytta avtalar utan gruppelivsprodukt hos SPK skal aldri betale gruppelivspremie.</li>
  * <li>Stillingar tilknytta medregning skal ikke ha gruppelivspremie.</li>
- * <li>Stillingar some er ute i permisjon uten lønn skal ikke ha gruppelivspremie for perioden permisjonen gjelder.</li>
- * <li>Stillinga med størst stillingsprosent og der avtalen har gruppelivsprodukt, skal vere ansvarlig for periodas
+ * <li>Stillingar some er ute i permisjon uten lÃ¸nn skal ikke ha gruppelivspremie for perioden permisjonen gjelder.</li>
+ * <li>Stillinga med stÃ¸rst stillingsprosent og der avtalen har gruppelivsprodukt, skal vere ansvarlig for periodas
  * gruppelivspremie</li>
- * <li>Variant: I førre punkt, viss fleire stillingar har stillingsprosent lik medlemmet si største stilling i perioda,
+ * <li>Variant: I fÃ¸rre punkt, viss fleire stillingar har stillingsprosent lik medlemmet si stÃ¸rste stilling i perioda,
  * blir stillingen med lavest stillingsforholdid valgt.</li>
  * </ol>
  *
@@ -51,18 +51,18 @@ public class GruppelivsfaktureringRegel implements BeregningsRegel<Faktureringsa
      * Beregnar korvidt det skal trekkast inn gruppelivspremie for underlagsperioda.
      * <p>
      * Gjeldande strategi for fakturering av gruppelivspremie seier at kun ei stilling skal fakturerast pr periode,
-     * dette blir oppnådd ved å justere alle aktive stillingar opp til 100%. Dermed vil stillingsfordelinga ende opp
-     * med å avkorte alle stillingar etter første første stilling til 0%. Sidan aktive stillingar er sortert på
-     * reell stillingsstørrelse i forkant av denne oppjusteringa, medfører det at stillinga med den
-     * høgaste reelle stillingsstørrelsen endar opp med 100% av fordelinga og blir einaste fakturerbare stilling for
+     * dette blir oppnÃ¥dd ved Ã¥ justere alle aktive stillingar opp til 100%. Dermed vil stillingsfordelinga ende opp
+     * med Ã¥ avkorte alle stillingar etter fÃ¸rste fÃ¸rste stilling til 0%. Sidan aktive stillingar er sortert pÃ¥
+     * reell stillingsstÃ¸rrelse i forkant av denne oppjusteringa, medfÃ¸rer det at stillinga med den
+     * hÃ¸gaste reelle stillingsstÃ¸rrelsen endar opp med 100% av fordelinga og blir einaste fakturerbare stilling for
      * perioda.
      * <p>
-     * Aktive stillingar som i perioda er ute i permisjon utan lønn, blir ignorert sidan dei ikkje skal betale
+     * Aktive stillingar som i perioda er ute i permisjon utan lÃ¸nn, blir ignorert sidan dei ikkje skal betale
      * gruppelivspremie for perioda.
      *
-     * @param periode beregningsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av
+     * @param periode beregningsperioda som inneheld alle verdiar eller pÃ¥krevde reglar som skal benyttast av
      *                beregningsregelen
-     * @return status på korvidt avtalen periodas stillingsforhold er tilknytta, skal betale gruppelivspremien
+     * @return status pÃ¥ korvidt avtalen periodas stillingsforhold er tilknytta, skal betale gruppelivspremien
      * @throws PaakrevdAnnotasjonManglarException viss perioda ikkje er annotert med {@link StillingsforholdId},
      *                                            {@link Medlemsavtalar} eller {@link AktiveStillingar}
      */

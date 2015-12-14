@@ -16,8 +16,8 @@ public class Feilmeldingar {
     /**
      * Opprettar ein ny reducer som feilar umiddelbart viss den blir kalla ein eller fleire gangar.
      * <p>
-     * Feilen den genererer oppstår dersom det eksisterer meir enn ein avtaleversjon tilknytta <code>avtale</code>
-     * innanfor tidsperioda angitt av <code>periode</code>. Det blir då umulig å avgjere kva for ein av dei to
+     * Feilen den genererer oppstÃ¥r dersom det eksisterer meir enn ein avtaleversjon tilknytta <code>avtale</code>
+     * innanfor tidsperioda angitt av <code>periode</code>. Det blir dÃ¥ umulig Ã¥ avgjere kva for ein av dei to
      * avtaleversjonane som skal benyttast ved vidare annotering av underlagsperioda.
      *
      * @param <T>     periodetypa som det eksisterer meir enn 1 av
@@ -31,7 +31,7 @@ public class Feilmeldingar {
             final Class<T> type, final AvtaleId avtale, final Tidsperiode<?> periode) {
         return (a, b) -> {
             final StringBuilder builder = new StringBuilder();
-            builder.append("Klarer ikkje å entydig avgjere kva som er gjeldande " + type.getSimpleName() + " for ")
+            builder.append("Klarer ikkje Ã¥ entydig avgjere kva som er gjeldande " + type.getSimpleName() + " for ")
                     .append(avtale)
                     .append(" i perioda ")
                     .append(periode)

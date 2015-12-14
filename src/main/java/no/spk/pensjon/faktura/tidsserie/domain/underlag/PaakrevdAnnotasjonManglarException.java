@@ -1,8 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 /**
- * Blir kasta viss oppslag av ein påkrevd annotasjon frå ei {@link Annoterbar annoterbart} objekt ikkje er mulig
- * fordi objektet ikkje har blitt annotert med ein verdi av den påkrevde typen.
+ * Blir kasta viss oppslag av ein pÃ¥krevd annotasjon frÃ¥ ei {@link Annoterbar annoterbart} objekt ikkje er mulig
+ * fordi objektet ikkje har blitt annotert med ein verdi av den pÃ¥krevde typen.
  *
  * @author Tarjei Skorgenes
  */
@@ -14,10 +14,10 @@ public class PaakrevdAnnotasjonManglarException extends RuntimeException {
     private final Class<?> type;
 
     /**
-     * Konstruerer ein ny feil for eit annoterbart objekt som ikkje er annotert med den påkrevde typen.
+     * Konstruerer ein ny feil for eit annoterbart objekt som ikkje er annotert med den pÃ¥krevde typen.
      *
-     * @param kilde objektet som manglar den påkrevde annotasjonen
-     * @param type  typen til den påkrevde annotasjonen
+     * @param kilde objektet som manglar den pÃ¥krevde annotasjonen
+     * @param type  typen til den pÃ¥krevde annotasjonen
      */
     public PaakrevdAnnotasjonManglarException(final Object kilde, final Class<?> type) {
         this.kilde = kilde;
@@ -26,6 +26,6 @@ public class PaakrevdAnnotasjonManglarException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return kilde + " manglar ein påkrevd annotasjon av type " + type.getSimpleName();
+        return kilde + " manglar ein pÃ¥krevd annotasjon av type " + type.getSimpleName();
     }
 }

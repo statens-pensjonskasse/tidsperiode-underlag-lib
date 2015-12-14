@@ -5,29 +5,29 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link DeltidsjustertLoenn} representerer lønn som er justert
- * ut frå stillingsprosenten i perioda lønna gjeld for.
+ * {@link DeltidsjustertLoenn} representerer lÃ¸nn som er justert
+ * ut frÃ¥ stillingsprosenten i perioda lÃ¸nna gjeld for.
  * <br>
  * Eksempel:
  * <br>
- * Kåre har utbetalt kr 250 000 i året og jobbar i 50% stilling, deltidsjustert lønn blir her kr 250 000.
+ * KÃ¥re har utbetalt kr 250 000 i Ã¥ret og jobbar i 50% stilling, deltidsjustert lÃ¸nn blir her kr 250 000.
  * <br>
- * Else har utbetalt kr 440 000 i året og jobbar i 100% stilling, deltidjustert lønn blir her kr 440 000.
+ * Else har utbetalt kr 440 000 i Ã¥ret og jobbar i 100% stilling, deltidjustert lÃ¸nn blir her kr 440 000.
  * <br>
- * John jobbar i stilling med lønnstrinn 48 i 80% stilling, lønnstrinn 48 tilsvarar kr 400 000 i 100% stilling,
- * deltidsjustert lønn blir her kr 320 000.
+ * John jobbar i stilling med lÃ¸nnstrinn 48 i 80% stilling, lÃ¸nnstrinn 48 tilsvarar kr 400 000 i 100% stilling,
+ * deltidsjustert lÃ¸nn blir her kr 320 000.
  *
  * @author Tarjei Skorgenes
  */
 public class DeltidsjustertLoenn {
-    private static final Supplier<String> VALIDER_BELOEP = () -> "beløp er påkrevd, men var null";
+    private static final Supplier<String> VALIDER_BELOEP = () -> "belÃ¸p er pÃ¥krevd, men var null";
 
     private final Kroner beloep;
 
     /**
-     * Konstruerer ei ny instans som representerer den deltidsjusterte lønna i kroner.
+     * Konstruerer ei ny instans som representerer den deltidsjusterte lÃ¸nna i kroner.
      *
-     * @param beloep kronebeløpet som inneheld lønnsverdien
+     * @param beloep kronebelÃ¸pet som inneheld lÃ¸nnsverdien
      * @throws java.lang.NullPointerException if <code>beloep</code> er <code>null</code>
      */
     public DeltidsjustertLoenn(final Kroner beloep) {
@@ -36,9 +36,9 @@ public class DeltidsjustertLoenn {
     }
 
     /**
-     * Kronebeløpet som representerer den deltidsjusterte årslønna.
+     * KronebelÃ¸pet som representerer den deltidsjusterte Ã¥rslÃ¸nna.
      *
-     * @return kronebeløpet for den deltidsjusterte årslønna
+     * @return kronebelÃ¸pet for den deltidsjusterte Ã¥rslÃ¸nna
      */
     public Kroner beloep() {
         return beloep;

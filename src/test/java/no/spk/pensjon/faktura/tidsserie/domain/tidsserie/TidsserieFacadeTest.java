@@ -37,7 +37,7 @@ public class TidsserieFacadeTest {
         final StillingsforholdId id = new StillingsforholdId(1L);
         tidsserie.overstyr(feilhandtering);
 
-        // Enkelt consumer som slurpar til seg alle underlaga slik at den forventa feilen i årsunderlag-genereringa blir trigga
+        // Enkelt consumer som slurpar til seg alle underlaga slik at den forventa feilen i Ã¥rsunderlag-genereringa blir trigga
         final Observasjonspublikator consumer = s -> s.toArray();
         final StillingsforholdUnderlagCallback callback = tidsserie.lagObservasjonsunderlagGenerator(consumer);
         callback.prosesser(id,

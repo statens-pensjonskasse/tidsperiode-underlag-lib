@@ -11,10 +11,10 @@ public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements T
     protected final Optional<LocalDate> tilOgMed;
 
     /**
-     * Konstruerer ei ny tidsperiode som har ein frå og med-dato og som kan ha
-     * ein til og med-dato, eller som kan vere løpande og dermed har ein tom til og med-dato
+     * Konstruerer ei ny tidsperiode som har ein frÃ¥ og med-dato og som kan ha
+     * ein til og med-dato, eller som kan vere lÃ¸pande og dermed har ein tom til og med-dato
      *
-     * @param fraOgMed første dag i tidsperioda
+     * @param fraOgMed fÃ¸rste dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
      * @throws NullPointerException     viss <code>fraOgMed</code>
      *                                  eller <code>tilOgMed</code> er <code>null</code>
@@ -22,8 +22,8 @@ public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements T
      *                                  {@link LocalDate#isAfter(ChronoLocalDate) etter} <code>tilOgMed</code>
      */
     protected AbstractTidsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
-        requireNonNull(fraOgMed, "fra og med-dato er påkrevd, men var null");
-        requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null");
+        requireNonNull(fraOgMed, "fra og med-dato er pÃ¥krevd, men var null");
+        requireNonNull(tilOgMed, "til og med-dato er pÃ¥krevd, men var null");
         tilOgMed.ifPresent(tilDato -> {
             Validering.feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilDato);
         });

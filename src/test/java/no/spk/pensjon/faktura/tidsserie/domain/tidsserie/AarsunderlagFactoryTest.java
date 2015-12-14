@@ -42,7 +42,7 @@ public class AarsunderlagFactoryTest {
     private final AarsunderlagFactory aarsunderlagFactory = new AarsunderlagFactory();
 
     /**
-     * Verifiserer at årsunderlaget kopierer over alle annotasjonar frå stillingsforholdunderlaget det er generert frå.
+     * Verifiserer at Ã¥rsunderlaget kopierer over alle annotasjonar frÃ¥ stillingsforholdunderlaget det er generert frÃ¥.
      */
     @Test
     public void skalKopiereAlleAnnotasjonarFraaStillingsforholdUnderlaget() {
@@ -65,7 +65,7 @@ public class AarsunderlagFactoryTest {
                         .filter(manglerAnnotasjonFraStillingsforholdUnderlaget)
                         .collect(toList())
         )
-                .as("årsunderlag utan alle annotasjonar som stillingsforholdunderlaget var annotert med")
+                .as("Ã¥rsunderlag utan alle annotasjonar som stillingsforholdunderlaget var annotert med")
                 .hasSize(0);
 
         assertUnikeUnderlagsAnnotasjonar(alle, String.class).contains("Hello World!");
@@ -73,7 +73,7 @@ public class AarsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at årsunderlaget blir annotert med årstallet det er generert for.
+     * Verifiserer at Ã¥rsunderlaget blir annotert med Ã¥rstallet det er generert for.
      */
     @Test
     public void skalAnnotereAarsunderlagMedAarstall() {
@@ -84,17 +84,17 @@ public class AarsunderlagFactoryTest {
 
         final Predicate<Underlag> predikat = harAnnotasjon(Aarstall.class);
         assertThat(alle.stream().filter(predikat.negate()).collect(toList()))
-                .as("årsunderlag som ikkje er annotert med årstall")
+                .as("Ã¥rsunderlag som ikkje er annotert med Ã¥rstall")
                 .isEmpty();
 
         assertThat(alle.stream().map(paakrevdAnnotasjon(Aarstall.class)).collect(toList()))
-                .as("årstall annotert på årsunderlaga")
+                .as("Ã¥rstall annotert pÃ¥ Ã¥rsunderlaga")
                 .containsExactly(new Aarstall(2000), new Aarstall(2001), new Aarstall(2002));
     }
 
     /**
      * Verifiserer at underlaget blir splitta opp i tre mindre underlag der kvart nye underlag kun inneheld perioder
-     * tilknytta eit og samme årstall.
+     * tilknytta eit og samme Ã¥rstall.
      */
     @Test
     public void skalKunInneholdeUnderlagsperioderTilknyttaEitAarOmGangen() {
@@ -117,14 +117,14 @@ public class AarsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at årsunderlaga blir generert basert på underlagsperiodenes årstall-annotasjon, ikkje basert på
+     * Verifiserer at Ã¥rsunderlaga blir generert basert pÃ¥ underlagsperiodenes Ã¥rstall-annotasjon, ikkje basert pÃ¥
      * periodenes koblingar.
      */
     @Test
     public void skalFiltrereUnderlagsperioderBasertPaaAarstallAnnotasjonIkkjeBasertPaPeriodeKoblingar() {
         final Underlag underlag = underlag(
-                // Ei periode som er inkonsistent satt opp, tidsperioda den dekker og årstallet den er annotert med
-                // er ikkje samsvarande med årsperioda den er kobla mot
+                // Ei periode som er inkonsistent satt opp, tidsperioda den dekker og Ã¥rstallet den er annotert med
+                // er ikkje samsvarande med Ã¥rsperioda den er kobla mot
                 periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.10.12"))
                         .med(
                                 new Aarstall(2000)
@@ -139,7 +139,7 @@ public class AarsunderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at genereringa av årsunderlag feilar dersom minst ei underlagsperiode manglar
+     * Verifiserer at genereringa av Ã¥rsunderlag feilar dersom minst ei underlagsperiode manglar
      * Aarstall-annotasjonen.
      */
     @Test
@@ -177,13 +177,13 @@ public class AarsunderlagFactoryTest {
                                         .stream()
                                         .map((Underlagsperiode p) -> p.annotasjonFor(Aarstall.class))
                                         .reduce((a1, a2) -> {
-                                                    throw new IllegalArgumentException("Underlaget inneheld perioder som er annotert med forskjellige årstall (" + a1 + "," + a2 + ")");
+                                                    throw new IllegalArgumentException("Underlaget inneheld perioder som er annotert med forskjellige Ã¥rstall (" + a1 + "," + a2 + ")");
                                                 }
                                         )
                                         .get()
                         )
                 )
-        ).as("årsunderlag");
+        ).as("Ã¥rsunderlag");
     }
 
 }

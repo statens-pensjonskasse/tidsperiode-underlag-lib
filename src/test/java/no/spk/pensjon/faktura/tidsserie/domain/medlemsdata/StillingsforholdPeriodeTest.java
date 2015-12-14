@@ -34,10 +34,10 @@ public class StillingsforholdPeriodeTest {
 
     /**
      * Verifiserer at ei perioder som er i ei ugyldig tilstand uten medregning eller stillingsendringar, feilar
-     * om ein forsøker å sjekke om den tilhøyrer eit stillingsforhold.
+     * om ein forsÃ¸ker Ã¥ sjekke om den tilhÃ¸yrer eit stillingsforhold.
      * <p>
-     * Oppførselen er valgt for å gjere det enklare å lokalisere/feilsøke problem knytta til feil i periodiseringa av
-     * stillingsforholdet som kan føre til denne ugyldige tilstanda.
+     * OppfÃ¸rselen er valgt for Ã¥ gjere det enklare Ã¥ lokalisere/feilsÃ¸ke problem knytta til feil i periodiseringa av
+     * stillingsforholdet som kan fÃ¸re til denne ugyldige tilstanda.
      */
     @Test
     public void skalFeileTilhoeyrerSjekkDersomTilstandErUgyldig() {
@@ -54,7 +54,7 @@ public class StillingsforholdPeriodeTest {
     }
 
     /**
-     * Verifiserer at ei periode tilhøyrer stillingsforholdet som gjeldande stillingsendringa er tilknytta.
+     * Verifiserer at ei periode tilhÃ¸yrer stillingsforholdet som gjeldande stillingsendringa er tilknytta.
      */
     @Test
     public void skalTilhoeyreGjeldandeStillingsendringSittStillingsforhold() {
@@ -73,7 +73,7 @@ public class StillingsforholdPeriodeTest {
     }
 
     /**
-     * Verifiserer at ei periode tilhøyrer stillingsforholdet som medregninga er tilknytta.
+     * Verifiserer at ei periode tilhÃ¸yrer stillingsforholdet som medregninga er tilknytta.
      */
     @Test
     public void skalTilhoeyreMedregningaSittStillingsforhold() {
@@ -114,11 +114,11 @@ public class StillingsforholdPeriodeTest {
      * ei stillingsendring.
      * <p>
      * Bakgrunnen for denne begrensinga er at viss ein plukkar ei sluttmelding som gjeldande stillingsendring
-     * for ei periode så misser ein muligheita til å vite kva som har vore gjeldande aksjonskode for perioda.
+     * for ei periode sÃ¥ misser ein muligheita til Ã¥ vite kva som har vore gjeldande aksjonskode for perioda.
      * <p>
-     * Det vil kunne gi effektar som at ein ikkje er i stand til å sjå at medlemmet har vore ute i permisjon utan
-     * lønn heile siste periode av stillingsforholdet før det var avslutta og dermed får beregna ei langt høgare
-     * lønn for perioda enn det som ville blitt beregna om ein ikkje hadde plukka sluttmeldinga som gjeldande endring.
+     * Det vil kunne gi effektar som at ein ikkje er i stand til Ã¥ sjÃ¥ at medlemmet har vore ute i permisjon utan
+     * lÃ¸nn heile siste periode av stillingsforholdet fÃ¸r det var avslutta og dermed fÃ¥r beregna ei langt hÃ¸gare
+     * lÃ¸nn for perioda enn det som ville blitt beregna om ein ikkje hadde plukka sluttmeldinga som gjeldande endring.
      */
     @Test
     public void skalBrukeSistRegistrerteStillingsendringSomIkkjeErSluttmelding() {
@@ -144,7 +144,7 @@ public class StillingsforholdPeriodeTest {
     }
 
     /**
-     * Verifiserer at gjeldande stillingsendring blir plukka basert på kva endring som er nyligast registrert, under
+     * Verifiserer at gjeldande stillingsendring blir plukka basert pÃ¥ kva endring som er nyligast registrert, under
      * antagelsen om at den trulig er mest korrekt.
      */
     @Test
@@ -177,13 +177,13 @@ public class StillingsforholdPeriodeTest {
 
 
     /**
-     * Verifiserer at medregning er påkrevd ved konstruksjon og at ønska feilmelding blir generert viss ein prøver
-     * å sende inn <code>null</code> som verdi.
+     * Verifiserer at medregning er pÃ¥krevd ved konstruksjon og at Ã¸nska feilmelding blir generert viss ein prÃ¸ver
+     * Ã¥ sende inn <code>null</code> som verdi.
      */
     @Test
     public void skalKreveMedregningVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("medregning er påkrevd, men var null");
+        e.expectMessage("medregning er pÃ¥krevd, men var null");
         new StillingsforholdPeriode(null);
     }
 
@@ -192,6 +192,6 @@ public class StillingsforholdPeriodeTest {
     }
 
     private static AbstractBooleanAssert<?> assertTilhoeyrer(StillingsforholdPeriode periode, StillingsforholdId expected) {
-        return assertThat(periode.tilhoeyrer(expected)).as("perioda tilhøyrer " + expected);
+        return assertThat(periode.tilhoeyrer(expected)).as("perioda tilhÃ¸yrer " + expected);
     }
 }

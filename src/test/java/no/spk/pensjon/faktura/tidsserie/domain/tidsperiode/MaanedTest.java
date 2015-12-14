@@ -37,22 +37,22 @@ public class MaanedTest {
     @Test
     public void skalKreveAarstallVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("årstall er påkrevd, men var null");
+        e.expectMessage("Ã¥rstall er pÃ¥krevd, men var null");
         new Maaned(null, Month.AUGUST);
     }
 
     @Test
     public void skalKreveMaanedVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("måned er påkrevd, men var null");
+        e.expectMessage("mÃ¥ned er pÃ¥krevd, men var null");
         new Maaned(new Aarstall(1917), null);
     }
 
     /**
-     * Verifiserer den overordna regelen om at månedens fra og med-dato for skal vere lik 1. dag i måneden.
+     * Verifiserer den overordna regelen om at mÃ¥nedens fra og med-dato for skal vere lik 1. dag i mÃ¥neden.
      *
-     * @param aar    årstallet som måneden vi skal sjekke skal vere tilknytta
-     * @param maaned måned-i-året som måneden vi skal sjekke skal vere tilknytta
+     * @param aar    Ã¥rstallet som mÃ¥neden vi skal sjekke skal vere tilknytta
+     * @param maaned mÃ¥ned-i-Ã¥ret som mÃ¥neden vi skal sjekke skal vere tilknytta
      */
     @Theory
     @Test
@@ -63,11 +63,11 @@ public class MaanedTest {
     }
 
     /**
-     * Verifiserer den overordna regelen om at månedens til og med-dato skal vere lik siste dag i måneden velger 29. februar
-     * som siste dag i februar dersom året er eit skuddår.
+     * Verifiserer den overordna regelen om at mÃ¥nedens til og med-dato skal vere lik siste dag i mÃ¥neden velger 29. februar
+     * som siste dag i februar dersom Ã¥ret er eit skuddÃ¥r.
      *
-     * @param aar    årstallet som måneden vi skal sjekke skal vere tilknytta
-     * @param maaned måned-i-året som måneden vi skal sjekke skal vere tilknytta
+     * @param aar    Ã¥rstallet som mÃ¥neden vi skal sjekke skal vere tilknytta
+     * @param maaned mÃ¥ned-i-Ã¥ret som mÃ¥neden vi skal sjekke skal vere tilknytta
      */
     @Theory
     @Test
@@ -80,10 +80,10 @@ public class MaanedTest {
     }
 
     /**
-     * Verifiserer den overordna regelen om at månedens til og med-dato for skal vere lik siste dag i måneden.
+     * Verifiserer den overordna regelen om at mÃ¥nedens til og med-dato for skal vere lik siste dag i mÃ¥neden.
      *
-     * @param aar    årstallet som måneden vi skal sjekke skal vere tilknytta
-     * @param maaned måned-i-året som måneden vi skal sjekke skal vere tilknytta
+     * @param aar    Ã¥rstallet som mÃ¥neden vi skal sjekke skal vere tilknytta
+     * @param maaned mÃ¥ned-i-Ã¥ret som mÃ¥neden vi skal sjekke skal vere tilknytta
      */
     @Theory
     @Test

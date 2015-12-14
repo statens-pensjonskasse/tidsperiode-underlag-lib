@@ -22,15 +22,15 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 
 /**
- * {@link Loennstrinnperioder} representerer ei samling lønnstrinnperioder med
- * samme frå og med- og til og med-datoar.
+ * {@link Loennstrinnperioder} representerer ei samling lÃ¸nnstrinnperioder med
+ * samme frÃ¥ og med- og til og med-datoar.
  * <p>
- * Hovedhensikta med klassa er ytelsesoptimalisering med bakgrunn i at det er 80-100 lønnstrinnperioder pr
- * år. For {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag} med finkorna oppdeling av
- * underlagsperiodene kostar det etterkvart relativt sett mykje å sjekke om 80-100 lønnstrinnperioder
- * overlappar underlagsperiodene i underlaget. Sidan dei aller fleste lønnstrinnperioder har samme
- * gyldigheitsperiode er det derfor mykje å hente på å kun sjekke overlapp ein gang pr samling med
- * lønnstrinnperioder.
+ * Hovedhensikta med klassa er ytelsesoptimalisering med bakgrunn i at det er 80-100 lÃ¸nnstrinnperioder pr
+ * Ã¥r. For {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag} med finkorna oppdeling av
+ * underlagsperiodene kostar det etterkvart relativt sett mykje Ã¥ sjekke om 80-100 lÃ¸nnstrinnperioder
+ * overlappar underlagsperiodene i underlaget. Sidan dei aller fleste lÃ¸nnstrinnperioder har samme
+ * gyldigheitsperiode er det derfor mykje Ã¥ hente pÃ¥ Ã¥ kun sjekke overlapp ein gang pr samling med
+ * lÃ¸nnstrinnperioder.
  *
  * @author Tarjei Skorgenes
  */
@@ -49,38 +49,38 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
 
     /**
      * Feilmelding for tidsperioder som blir overlappa av meir enn 1
-     * lønnstrinnperiode tilknytta samme lønnstrinn.
+     * lÃ¸nnstrinnperiode tilknytta samme lÃ¸nnstrinn.
      * <p>
-     * Denne situasjonen indikerer at lønntrinna systemet opererer med er
-     * inkonsistente ettersom det aldri kan vere to aktive lønnstrinnperioder
-     * tilknytta samme lønnstrinn innanfor ei tidsperiode.
+     * Denne situasjonen indikerer at lÃ¸nntrinna systemet opererer med er
+     * inkonsistente ettersom det aldri kan vere to aktive lÃ¸nnstrinnperioder
+     * tilknytta samme lÃ¸nnstrinn innanfor ei tidsperiode.
      * <p>
-     * For apotekordninga er det ein heilt normal situasjon å finne fleire gjeldande lønnstrinnperioder med samme trinn
-     * i samme periode, men der lønnstrinna er tilknytta forskjellige stillingskoder. Stillingskode blir derfor tatt
-     * hensyn til kun for POA og bør kun sendast inn til feilmeldinga for oppslag som feilar for POA.
+     * For apotekordninga er det ein heilt normal situasjon Ã¥ finne fleire gjeldande lÃ¸nnstrinnperioder med samme trinn
+     * i samme periode, men der lÃ¸nnstrinna er tilknytta forskjellige stillingskoder. Stillingskode blir derfor tatt
+     * hensyn til kun for POA og bÃ¸r kun sendast inn til feilmeldinga for oppslag som feilar for POA.
      *
-     * @param periode            tidsperioda som lønnstrinnperiodene overlappar
-     * @param ordning            pensjonsordninga som lønnstrinnperiodene tilhøyrer
-     * @param loennstrinn        lønnstrinnet som vi har detektert meir enn ei overlappande
-     *                           lønnstrinnperiode for
-     * @param stillingskode      den valgfrie stillingskoda som kan ha påvirka kva lønnstrinntabell ein har slått opp lønnstrinnperiodene frå for apotekordninga
-     * @param loennstrinnperiode lønnstrinnperiodene som alle er tilknytta lønnstrinnet og som
-     *                           alle er gyldige innanfor den aktuelle tidsperioda  @return ei feilmelding med ein beskrivelse av kva som har feila og kva perioder som førte til feilen
-     * @return feilmelding som gir informasjon om overlappende gjeldene lønnstrinperioder
+     * @param periode            tidsperioda som lÃ¸nnstrinnperiodene overlappar
+     * @param ordning            pensjonsordninga som lÃ¸nnstrinnperiodene tilhÃ¸yrer
+     * @param loennstrinn        lÃ¸nnstrinnet som vi har detektert meir enn ei overlappande
+     *                           lÃ¸nnstrinnperiode for
+     * @param stillingskode      den valgfrie stillingskoda som kan ha pÃ¥virka kva lÃ¸nnstrinntabell ein har slÃ¥tt opp lÃ¸nnstrinnperiodene frÃ¥ for apotekordninga
+     * @param loennstrinnperiode lÃ¸nnstrinnperiodene som alle er tilknytta lÃ¸nnstrinnet og som
+     *                           alle er gyldige innanfor den aktuelle tidsperioda  @return ei feilmelding med ein beskrivelse av kva som har feila og kva perioder som fÃ¸rte til feilen
+     * @return feilmelding som gir informasjon om overlappende gjeldene lÃ¸nnstrinperioder
      */
     public static String meirEnnEiGjeldandeLoennstrinnPeriodeForSammeLoennstrinnPaaSammeTid(
             final Tidsperiode<?> periode,
             final Ordning ordning, final Loennstrinn loennstrinn, final Optional<Stillingskode> stillingskode,
             final Tidsperiode<?>... loennstrinnperiode) {
-        return "Det er oppdaga fleire lønnstrinnperioder for "
+        return "Det er oppdaga fleire lÃ¸nnstrinnperioder for "
                 + loennstrinn
                 + stillingskode.map(k -> " for " + k).orElse("")
                 + " tilknytta ordning "
                 + ordning
                 + " som overlappar perioda "
                 + periode
-                + ", oppslag av lønn for lønnstrinn krever "
-                + "at det kun eksisterer 1 overlappande lønnstrinnperiode pr tidsperiode\n"
+                + ", oppslag av lÃ¸nn for lÃ¸nnstrinn krever "
+                + "at det kun eksisterer 1 overlappande lÃ¸nnstrinnperiode pr tidsperiode\n"
                 + "Overlappande loennstrinnperiode:\n"
                 + asList(loennstrinnperiode)
                 .stream()
@@ -89,39 +89,39 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
     }
 
     /**
-     * Støttar alle lønnstrinnperiodene (som inngår i gjeldande gruppering) den angitte ordninga?
+     * StÃ¸ttar alle lÃ¸nnstrinnperiodene (som inngÃ¥r i gjeldande gruppering) den angitte ordninga?
      *
-     * @param ordning pensjonsordninga som alle dei grupperte lønnstrinnperiodene skal sjekkast mot
-     * @return <code>true</code> dersom alle lønnstrinnperioder i grupperinga gjeld for den angitte ordninga,
-     * <code>false</code> viss lønnstrinnperiodene gjeld for ei anna ordning enn den som er angitt
+     * @param ordning pensjonsordninga som alle dei grupperte lÃ¸nnstrinnperiodene skal sjekkast mot
+     * @return <code>true</code> dersom alle lÃ¸nnstrinnperioder i grupperinga gjeld for den angitte ordninga,
+     * <code>false</code> viss lÃ¸nnstrinnperiodene gjeld for ei anna ordning enn den som er angitt
      */
     public boolean tilhoeyrer(final Ordning ordning) {
         return ordning.equals(this.ordning);
     }
 
     /**
-     * Sjekkar om grupperinga inneheld minst ei lønnstrinnperiode som har lønn for lønnstrinnet.
+     * Sjekkar om grupperinga inneheld minst ei lÃ¸nnstrinnperiode som har lÃ¸nn for lÃ¸nnstrinnet.
      *
-     * @param loennstrinn   lønnstrinnet som det skal sjekkast mot
-     * @param stillingskode stillingskoda som lønnstrinnet skal sjekkast for
-     * @return <code>true</code> dersom grupperinga inneheldt minst ei lønnstrinnperiode tilknyttta
-     * lønnstrinnet for den angitte stillingskoda, <code>false</code> ellers
+     * @param loennstrinn   lÃ¸nnstrinnet som det skal sjekkast mot
+     * @param stillingskode stillingskoda som lÃ¸nnstrinnet skal sjekkast for
+     * @return <code>true</code> dersom grupperinga inneheldt minst ei lÃ¸nnstrinnperiode tilknyttta
+     * lÃ¸nnstrinnet for den angitte stillingskoda, <code>false</code> ellers
      */
     public boolean harLoennFor(final Loennstrinn loennstrinn, final Optional<Stillingskode> stillingskode) {
         return loennFor(loennstrinn, stillingskode).isPresent();
     }
 
     /**
-     * Kva er gjeldande lønn i perioda for ei 100% stilling med det angitte lønnstrinnet?
+     * Kva er gjeldande lÃ¸nn i perioda for ei 100% stilling med det angitte lÃ¸nnstrinnet?
      *
-     * @param loennstrinn   lønnstrinnet som det skal bli slått opp lønn for
-     * @param stillingskode stillingskoda som kan regulere kva lønnstrinntabell lønna for lønnstrinnet skal bli slått
-     *                      opp frå
-     * @return gjeldande lønn i 100% stilling for ei stilling med det angitte lønnstrinnet,
-     * {@link java.util.Optional#empty()} dersom det ikkje eksisterer noka lønnstrinnperiode
-     * som tilhøyrer det aktuelle lønnstrinnet
+     * @param loennstrinn   lÃ¸nnstrinnet som det skal bli slÃ¥tt opp lÃ¸nn for
+     * @param stillingskode stillingskoda som kan regulere kva lÃ¸nnstrinntabell lÃ¸nna for lÃ¸nnstrinnet skal bli slÃ¥tt
+     *                      opp frÃ¥
+     * @return gjeldande lÃ¸nn i 100% stilling for ei stilling med det angitte lÃ¸nnstrinnet,
+     * {@link java.util.Optional#empty()} dersom det ikkje eksisterer noka lÃ¸nnstrinnperiode
+     * som tilhÃ¸yrer det aktuelle lÃ¸nnstrinnet
      * @throws IllegalStateException viss grupperinga inneheld meir enn ei periode som
-     *                               definerer gjeldande lønn for lønnstrinnet
+     *                               definerer gjeldande lÃ¸nn for lÃ¸nnstrinnet
      */
     public Optional<LoennstrinnBeloep> loennFor(final Loennstrinn loennstrinn, final Optional<Stillingskode> stillingskode) {
         return cache.getOrDefault(loennstrinn, emptyList())
@@ -138,9 +138,9 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
     }
 
     /**
-     * Antall lønnstrinnperioder som er gjeldande innanfor perioda.
+     * Antall lÃ¸nnstrinnperioder som er gjeldande innanfor perioda.
      *
-     * @return antall lønnstrinnperioder
+     * @return antall lÃ¸nnstrinnperioder
      */
     public int size() {
         return perioder.size();
@@ -148,21 +148,21 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
 
     @Override
     public String toString() {
-        return "Lønnstrinnperioder[" + fraOgMed() + "->"
+        return "LÃ¸nnstrinnperioder[" + fraOgMed() + "->"
                 + tilOgMed().map(LocalDate::toString).orElse("")
                 + "," + perioder.size() + " stk]";
     }
 
     /**
-     * Grupperer alle lønnstrinnperiodene frå <code>perioder</code> basert på frå og med- og til og med-dato
+     * Grupperer alle lÃ¸nnstrinnperiodene frÃ¥ <code>perioder</code> basert pÃ¥ frÃ¥ og med- og til og med-dato
      * og returnerer ein ny straum som inneheld ein ny {@link Loennstrinnperioder} pr gruppering.
      * <p>
-     * Dersom <code>perioder</code> inneheld lønnstrinnperioder som ikkje tilhøyrer den angitte ordninga, vil desse
-     * periodene ikkje bli med i grupperinga, dei blir filtrert vekk og vil ikkje føre til at metoda feilar.
+     * Dersom <code>perioder</code> inneheld lÃ¸nnstrinnperioder som ikkje tilhÃ¸yrer den angitte ordninga, vil desse
+     * periodene ikkje bli med i grupperinga, dei blir filtrert vekk og vil ikkje fÃ¸re til at metoda feilar.
      *
-     * @param ordning  pensjonsordninga som lønnstrinna er tilknytta
-     * @param perioder lønnstrinnperiodene som skal grupperast etter tidperiode
-     * @return ein straum som inneheld lønntrinnperioder for kvar gruppering
+     * @param ordning  pensjonsordninga som lÃ¸nnstrinna er tilknytta
+     * @param perioder lÃ¸nnstrinnperiodene som skal grupperast etter tidperiode
+     * @return ein straum som inneheld lÃ¸nntrinnperioder for kvar gruppering
      */
     public static Stream<Loennstrinnperioder> grupper(final Ordning ordning, final Stream<Loennstrinnperiode<?>> perioder) {
         return perioder
@@ -180,9 +180,9 @@ public class Loennstrinnperioder extends AbstractTidsperiode<Loennstrinnperioder
 
     /**
      * @see #grupper(Ordning, Stream)
-     * @param ordning  pensjonsordninga som lønnstrinna er tilknytta
-     * @param perioder lønnstrinnperiodene som skal grupperast etter tidperiode
-     * @return ein straum som inneheld lønntrinnperioder for kvar gruppering
+     * @param ordning  pensjonsordninga som lÃ¸nnstrinna er tilknytta
+     * @param perioder lÃ¸nnstrinnperiodene som skal grupperast etter tidperiode
+     * @return ein straum som inneheld lÃ¸nntrinnperioder for kvar gruppering
      */
     public static Stream<Loennstrinnperioder> grupper(final Ordning ordning, final Loennstrinnperiode<?>... perioder) {
         return grupper(ordning, asList(perioder).stream());

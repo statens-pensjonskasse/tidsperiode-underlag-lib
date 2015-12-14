@@ -11,7 +11,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
- * Kundedataperiode holder på {@link Orgnummer} som en arbeidsgiver med gitt {@link ArbeidsgiverId} har i en gitt periode.
+ * Kundedataperiode holder pÃ¥ {@link Orgnummer} som en arbeidsgiver med gitt {@link ArbeidsgiverId} har i en gitt periode.
  * @author Snorre E. Brekke - Computas
  */
 public class Arbeidsgiverdataperiode extends AbstractTidsperiode<Arbeidsgiverdataperiode> implements Arbeidsgiverrelatertperiode<Arbeidsgiverdataperiode> {

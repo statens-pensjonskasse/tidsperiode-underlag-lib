@@ -17,7 +17,7 @@ public class Orgnummer {
      * @throws NullPointerException viss <code>id</code> er <code>null</code>
      */
     public Orgnummer(final Long id) {
-        this.id = requireNonNull(id, () -> "orgnummer er pÂkrevd, men var null");
+        this.id = requireNonNull(id, () -> "orgnummer er p√•krevd, men var null");
     }
 
     @Override

@@ -18,15 +18,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
 /**
  * <p>Avtaleprodukt representrer et pensjonsprodukt med gitt produktinfo knyttet til en avtale.<br>
- * En avtale kan være knyttet til flere forskjellig produkt. <br>
- * Betydningen av produktinfo er avhengig av produktet, og kan påvirke om avtalen faktisk har produktet eller ikke.
+ * En avtale kan vÃ¦re knyttet til flere forskjellig produkt. <br>
+ * Betydningen av produktinfo er avhengig av produktet, og kan pÃ¥virke om avtalen faktisk har produktet eller ikke.
  * </p>
  * <p>
  * For eksempel:
  * For produkt 'GRU' betyr produktinfo 35 og 36 at avtalen <i>skal</i> faktureres for 'GRU'.
  * Alle andre produktinfo-verdier betyr at avtalen <i>ikke skal</i> faktureres for produktet 'GRU'.
  * </p>
- * <p>Avtaleprodukt er oppført med premiesatser. Disse er oppgitt enten i prosent eller i kronebeløp.</p>
+ * <p>Avtaleprodukt er oppfÃ¸rt med premiesatser. Disse er oppgitt enten i prosent eller i kronebelÃ¸p.</p>
  *
  * @author Snorre E. Brekke - Computas
  */
@@ -38,7 +38,7 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
     private Optional<Risikoklasse> risikoklasse = empty();
 
     /**
-     * Konstruktør for å opprette et avtaleprodukt koblet til en avtale som for en bestemt tidsperiode.
+     * KonstruktÃ¸r for Ã¥ opprette et avtaleprodukt koblet til en avtale som for en bestemt tidsperiode.
      *
      * @param fraOgMed    fra og med-dato for perioden
      * @param tilOgMed    til og med-datp for perioden
@@ -51,7 +51,7 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
     public Avtaleprodukt(LocalDate fraOgMed, Optional<LocalDate> tilOgMed,
                          AvtaleId avtaleId, Produkt produkt, Produktinfo produktinfo, Satser<?> satser) {
         super(fraOgMed, tilOgMed);
-        this.avtaleId = requireNonNull(avtaleId, "avtaleId er påkrevd, men var null");
+        this.avtaleId = requireNonNull(avtaleId, "avtaleId er pÃ¥krevd, men var null");
         this.premiesats = premiesats(produkt).produktinfo(produktinfo).satser(satser).bygg();
     }
 
@@ -66,10 +66,10 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
     }
 
     /**
-     * Legger til avtaleproduktet sin premiesats på builderen.
+     * Legger til avtaleproduktet sin premiesats pÃ¥ builderen.
      * <br>
-     * Merk at premiesatsen blir lagt til uavhengig av om produktet er fakturerbart eller ikkje. For å avgjere
-     * om ein faktisk skal fakturere for produktet, sjå {@link Premiesats#erFakturerbar()}.
+     * Merk at premiesatsen blir lagt til uavhengig av om produktet er fakturerbart eller ikkje. For Ã¥ avgjere
+     * om ein faktisk skal fakturere for produktet, sjÃ¥ {@link Premiesats#erFakturerbar()}.
      *
      * @param avtale builderen som inneheld avtaletilstanda som skal oppdaterast
      * @return <code>avtale</code>
@@ -99,19 +99,19 @@ public class Avtaleprodukt extends AbstractTidsperiode<Avtaleprodukt> implements
     /**
      * Overstyrer avtaleproduktets risikoklasse.
      *
-     * @param risikoklasse risikoklassa avtalen tilhøyrer, eller {@link Optional#empty()} viss avtalen
+     * @param risikoklasse risikoklassa avtalen tilhÃ¸yrer, eller {@link Optional#empty()} viss avtalen
      *                     ikkje har ei risikoklasse
      * @return <code>this</code>
      * @throws IllegalArgumentException viss avtaleproduktet ikkje er {@link Produkt#YSK} og risikoklassa ikkje er tom
      * @since 1.1.1
      */
     public Avtaleprodukt risikoklasse(final Optional<Risikoklasse> risikoklasse) {
-        requireNonNull(risikoklasse, "risikoklasse er påkrevd, men var null");
+        requireNonNull(risikoklasse, "risikoklasse er pÃ¥krevd, men var null");
         if (produkt() != Produkt.YSK && risikoklasse.isPresent()) {
             throw new IllegalArgumentException(
-                    "risikoklasse er ikkje støtta for "
+                    "risikoklasse er ikkje stÃ¸tta for "
                             + produkt()
-                            + ", risikoklasse er kun støtta for avtaleprodukt tilknytta "
+                            + ", risikoklasse er kun stÃ¸tta for avtaleprodukt tilknytta "
                             + Produkt.YSK
             );
         }

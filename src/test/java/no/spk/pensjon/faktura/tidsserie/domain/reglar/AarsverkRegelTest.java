@@ -30,11 +30,11 @@ public class AarsverkRegelTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Perioder utan stillingsprosent skal ikkje føre til at beregningane feilar, dei skal
-     * då generere 0 årsverk som svar.
+     * Perioder utan stillingsprosent skal ikkje fÃ¸re til at beregningane feilar, dei skal
+     * dÃ¥ generere 0 Ã¥rsverk som svar.
      * <p>
      * Strategien er valgt for at vi skal kunne handtere/ignorere underlagsperioder tilknytta medregning. Medregningane
-     * har ikkje nokon stillingsprosent så vi er dermed ikkje i stand til å beregne årsverk for dei.
+     * har ikkje nokon stillingsprosent sÃ¥ vi er dermed ikkje i stand til Ã¥ beregne Ã¥rsverk for dei.
      */
     @Test
     public void skalBeregneIngenAarsverkVedManglandeStillingsprosent() {
@@ -67,7 +67,7 @@ public class AarsverkRegelTest {
     @Test
     public void skalFeileDersomFraOgMedOgTilOgMedTilhoererForskjelligeAarstall() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("årsverk kan kun beregnast for underlagsperioder som startar og sluttar innanfor samme årstall");
+        e.expectMessage("Ã¥rsverk kan kun beregnast for underlagsperioder som startar og sluttar innanfor samme Ã¥rstall");
         beregn(periode("2000.12.31", "2001.01.01"));
     }
 

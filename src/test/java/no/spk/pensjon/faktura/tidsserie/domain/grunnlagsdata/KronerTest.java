@@ -88,7 +88,7 @@ public class KronerTest {
     @Test
     public void skalKreveTallUlikNullVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("beløp er påkrevd, men var null");
+        e.expectMessage("belÃ¸p er pÃ¥krevd, men var null");
         new Kroner(null);
     }
 

@@ -74,7 +74,7 @@ public class PeriodiserMedlemTest {
     }
 
     @Test
-    public void skalReturnereEiLøpandePeriodeDersomMedlemmetKunHarEiStillingsendringSomIkkjeErEiSluttmelding() {
+    public void skalReturnereEiLÃ¸pandePeriodeDersomMedlemmetKunHarEiStillingsendringSomIkkjeErEiSluttmelding() {
         final List<Medlemsperiode> perioder = periodiser(
                 new StillingsforholdPeriode(dato("1975.01.04"), empty())
                         .leggTilOverlappendeStillingsendringer(
@@ -88,7 +88,7 @@ public class PeriodiserMedlemTest {
     }
 
     @Test
-    public void skalReturnereEiLøpandePeriodeDersomMedlemmetKunHarEiLøpandeMedregning() {
+    public void skalReturnereEiLÃ¸pandePeriodeDersomMedlemmetKunHarEiLÃ¸pandeMedregning() {
         final List<Medlemsperiode> perioder = periodiser(
                 new StillingsforholdPeriode(
                         eiMedregning()
@@ -103,11 +103,11 @@ public class PeriodiserMedlemTest {
     }
 
     /**
-     * Verifiserer at siste medlemsperiode startar dagen etter medregningas sluttdato sidan det først
-     * er då medlemstilstanden har blitt endra.
+     * Verifiserer at siste medlemsperiode startar dagen etter medregningas sluttdato sidan det fÃ¸rst
+     * er dÃ¥ medlemstilstanden har blitt endra.
      * <p>
-     * Hensikta med dette er å sikre at vi ikkje splittar medlemsperioda og genererer ei en-dag lang medlemsperiode på
-     * sjølve sluttdatoen. Det er funksjonelt sett relativt uproblematisk men også 100% overflødig.
+     * Hensikta med dette er Ã¥ sikre at vi ikkje splittar medlemsperioda og genererer ei en-dag lang medlemsperiode pÃ¥
+     * sjÃ¸lve sluttdatoen. Det er funksjonelt sett relativt uproblematisk men ogsÃ¥ 100% overflÃ¸dig.
      */
     @Test
     public void skalStarteNyPeriodeDagenEtterMedregningsperiodasTilOgMedDato() {
@@ -133,11 +133,11 @@ public class PeriodiserMedlemTest {
     }
 
     /**
-     * Verifiserer at siste medlemsperiode startar dagen etter sluttmeldingas aksjonsdato sidan det først
-     * er då medlemstilstanden har blitt endra.
+     * Verifiserer at siste medlemsperiode startar dagen etter sluttmeldingas aksjonsdato sidan det fÃ¸rst
+     * er dÃ¥ medlemstilstanden har blitt endra.
      * <p>
-     * Hensikta med dette er å sikre at vi ikkje splittar medlemsperioda og genererer ei en-dag lang medlemsperiode på
-     * sjølve aksjonsdatoen for sluttmeldinga. Det er funksjonelt sett relativt uproblematisk men også 100% overflødig.
+     * Hensikta med dette er Ã¥ sikre at vi ikkje splittar medlemsperioda og genererer ei en-dag lang medlemsperiode pÃ¥
+     * sjÃ¸lve aksjonsdatoen for sluttmeldinga. Det er funksjonelt sett relativt uproblematisk men ogsÃ¥ 100% overflÃ¸dig.
      */
     @Test
     public void skalStarteNyPeriodeDagenEtterStilling2ErAvslutta() {

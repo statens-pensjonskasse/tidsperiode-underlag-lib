@@ -6,18 +6,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * {@link Foedselsdato} representerer datoen eit medlem vart født på.
+ * {@link Foedselsdato} representerer datoen eit medlem vart fÃ¸dt pÃ¥.
  * <br>
- * Merk at for personar med D- eller H-nummer er ikkje fødselsdatoen ein gyldig dato, ein må i desse tilfella
- * manipulere på tallverdien for å få ut den reelle fødselsdatoen.
+ * Merk at for personar med D- eller H-nummer er ikkje fÃ¸dselsdatoen ein gyldig dato, ein mÃ¥ i desse tilfella
+ * manipulere pÃ¥ tallverdien for Ã¥ fÃ¥ ut den reelle fÃ¸dselsdatoen.
  * <br>
- * Av denne grunn bør ikkje {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato} brukast
- * i andre samanhengar enn situasjonar der ein treng å holde på ein fødselsdato som skal inngå som ein del av
+ * Av denne grunn bÃ¸r ikkje {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Foedselsdato} brukast
+ * i andre samanhengar enn situasjonar der ein treng Ã¥ holde pÃ¥ ein fÃ¸dselsdato som skal inngÃ¥ som ein del av
  * eit personnummer.
  * <h3>Referansar</h3>
  * <ul>
- * <li><a href="https://no.wikipedia.org/wiki/F%C3%B8dselsnummer#D-nummer">Fødselsnummer</a></li>
- * <li><a href="http://www.fnrinfo.no/Info/Oppbygging.aspx">Hvilken informasjon finnes i et fødselsnummer?</a></li>
+ * <li><a href="https://no.wikipedia.org/wiki/F%C3%B8dselsnummer#D-nummer">FÃ¸dselsnummer</a></li>
+ * <li><a href="http://www.fnrinfo.no/Info/Oppbygging.aspx">Hvilken informasjon finnes i et fÃ¸dselsnummer?</a></li>
  * </ul>
  *
  * @author Tarjei Skorgenes
@@ -26,9 +26,9 @@ public final class Foedselsdato {
     private static final DateTimeFormatter yyyyMMddFormatUtenPunktum = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     /**
-     * Nedre grense for datoar som er tillatt å bruke i FFF-sammenheng.
+     * Nedre grense for datoar som er tillatt Ã¥ bruke i FFF-sammenheng.
      * <br>
-     * Datoen er semi-tilfeldig valgt for å sikre at vi er i stand til å beregne alle medlemmar som nokonsinne har
+     * Datoen er semi-tilfeldig valgt for Ã¥ sikre at vi er i stand til Ã¥ beregne alle medlemmar som nokonsinne har
      * blitt registrert i kasper pr juli 2015.
      */
     private static final int NEDRE_DATOGRENSE = 18750101;
@@ -36,35 +36,35 @@ public final class Foedselsdato {
     private final Integer dato;
 
     /**
-     * Konstruerer ein ny fødselsdato.
+     * Konstruerer ein ny fÃ¸dselsdato.
      * <br>
-     * For å gjere det mulig å oppdage inkonsistens i grunnlagsdatane fører datoar eldre enn 1. januar 1875 til at det
-     * blir kasta ein feil. Det eksisterer pr 29. juni 2015 ingen medlemmar i kasper som er født før 1875 og det er vel
-     * rimelig å anta at det ikkje dukkar opp fleire medlemmar eldre enn dette nokon gang i framtida.
+     * For Ã¥ gjere det mulig Ã¥ oppdage inkonsistens i grunnlagsdatane fÃ¸rer datoar eldre enn 1. januar 1875 til at det
+     * blir kasta ein feil. Det eksisterer pr 29. juni 2015 ingen medlemmar i kasper som er fÃ¸dt fÃ¸r 1875 og det er vel
+     * rimelig Ã¥ anta at det ikkje dukkar opp fleire medlemmar eldre enn dette nokon gang i framtida.
      *
-     * @param dato datoen medlemmet vart født.
+     * @param dato datoen medlemmet vart fÃ¸dt.
      * @throws NullPointerException     viss <code>dato</code> var <code>null</code>
-     * @throws IllegalArgumentException viss <code>dato</code> er før år 1875 sidan det er
+     * @throws IllegalArgumentException viss <code>dato</code> er fÃ¸r Ã¥r 1875 sidan det er
      */
     private Foedselsdato(final Integer dato) {
-        if (requireNonNull(dato, "fødseldato er påkrevd, men var null") < NEDRE_DATOGRENSE) {
+        if (requireNonNull(dato, "fÃ¸dseldato er pÃ¥krevd, men var null") < NEDRE_DATOGRENSE) {
             throw new IllegalArgumentException(
-                    "fødselsdatoar eldre enn " + NEDRE_DATOGRENSE + " er ikkje støtta, var " + dato
+                    "fÃ¸dselsdatoar eldre enn " + NEDRE_DATOGRENSE + " er ikkje stÃ¸tta, var " + dato
             );
         }
         this.dato = dato;
     }
 
     /**
-     * Konstruerer ein ny fødselsdato.
+     * Konstruerer ein ny fÃ¸dselsdato.
      * <br>
-     * Fødselsdatoar oppretta via denne metoda støttar både D- og H-nummer. Desse datoverdiane er ikkje
-     * gyldige datoar sidan dei inneheld dagar større enn 31 eller månedar større enn 12.
+     * FÃ¸dselsdatoar oppretta via denne metoda stÃ¸ttar bÃ¥de D- og H-nummer. Desse datoverdiane er ikkje
+     * gyldige datoar sidan dei inneheld dagar stÃ¸rre enn 31 eller mÃ¥nedar stÃ¸rre enn 12.
      *
-     * @param dato datoen medlemmet vart født.
-     * @return ny fødselsdato
+     * @param dato datoen medlemmet vart fÃ¸dt.
+     * @return ny fÃ¸dselsdato
      * @throws NullPointerException     viss <code>dato</code> var <code>null</code>
-     * @throws IllegalArgumentException viss <code>dato</code> er før år 1875 sidan det er
+     * @throws IllegalArgumentException viss <code>dato</code> er fÃ¸r Ã¥r 1875 sidan det er
      * @see Foedselsdato#Foedselsdato(Integer)
      */
     public static Foedselsdato foedselsdato(final Integer dato) {
@@ -88,12 +88,12 @@ public final class Foedselsdato {
     /**
      * Konverterer datoen til eit tall.
      * <br>
-     * Tallet blir generert basert på følgjande formel:
+     * Tallet blir generert basert pÃ¥ fÃ¸lgjande formel:
      * <code>
-     * abs(årstall) x 10 000 + måned i året x 100 + dag
+     * abs(Ã¥rstall) x 10 000 + mÃ¥ned i Ã¥ret x 100 + dag
      * </code>
      *
-     * @return fødselsdato konvertert til eit tall
+     * @return fÃ¸dselsdato konvertert til eit tall
      */
     public String tilKode() {
         return dato.toString();
@@ -101,13 +101,13 @@ public final class Foedselsdato {
 
     @Override
     public String toString() {
-        return "født " + dato.toString();
+        return "fÃ¸dt " + dato.toString();
     }
 
     private static Integer tilNummer(final LocalDate dato) {
         return Integer.valueOf(
                 yyyyMMddFormatUtenPunktum.format(
-                        requireNonNull(dato, "fødseldato er påkrevd, men var null")
+                        requireNonNull(dato, "fÃ¸dseldato er pÃ¥krevd, men var null")
                 )
         );
     }

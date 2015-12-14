@@ -36,7 +36,7 @@ public class LoennstrinnperioderTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at lønnstrinnperioder som ikkje tilhøyrer ordninga vi grupperer for, blir filtrert bort.
+     * Verifiserer at lÃ¸nnstrinnperioder som ikkje tilhÃ¸yrer ordninga vi grupperer for, blir filtrert bort.
      */
     @Test
     public void skalFiltrereBortLoennstrinnperioderForAndreOrdningarVedGruppering() {
@@ -56,8 +56,8 @@ public class LoennstrinnperioderTest {
     }
 
     /**
-     * Verifiserer at oppslag av lønn feilar viss det eksisterer meir enn ei lønnstrinnperiode
-     * pr lønnstrinn i grupperinga.
+     * Verifiserer at oppslag av lÃ¸nn feilar viss det eksisterer meir enn ei lÃ¸nnstrinnperiode
+     * pr lÃ¸nnstrinn i grupperinga.
      */
     @Test
     public void skalFeileUnderOppslagIGrupperingVissDetEksistererMeirEnnEiPeriodeMedLiktLoennstrinnInnanforGrupperinga() {
@@ -65,12 +65,12 @@ public class LoennstrinnperioderTest {
         final LocalDate fraOgMed = dato("2000.09.11");
 
         e.expect(IllegalStateException.class);
-        e.expectMessage("Det er oppdaga fleire lønnstrinnperioder for");
+        e.expectMessage("Det er oppdaga fleire lÃ¸nnstrinnperioder for");
         e.expectMessage(loennstrinn.toString());
         e.expectMessage("som overlappar perioda");
         e.expectMessage(fraOgMed.toString());
         e.expectMessage("->");
-        e.expectMessage("oppslag av lønn for lønnstrinn krever at det kun eksisterer 1 overlappande lønnstrinnperiode pr tidsperiode");
+        e.expectMessage("oppslag av lÃ¸nn for lÃ¸nnstrinn krever at det kun eksisterer 1 overlappande lÃ¸nnstrinnperiode pr tidsperiode");
 
         grupper(
                 Ordning.SPK, Stream.of(
@@ -81,16 +81,16 @@ public class LoennstrinnperioderTest {
     }
 
     /**
-     * Verifiserer at ein ikkje kallar {@link Loennstrinnperiode#harLoennFor(Loennstrinn, Optional)} for lønnstrinnperioder som tilhøyrer andre lønnstrinn
-     * enn det som blir forsøkt slått opp.
+     * Verifiserer at ein ikkje kallar {@link Loennstrinnperiode#harLoennFor(Loennstrinn, Optional)} for lÃ¸nnstrinnperioder som tilhÃ¸yrer andre lÃ¸nnstrinn
+     * enn det som blir forsÃ¸kt slÃ¥tt opp.
      * <p>
-     * Intensjonen med dette er å sikre at ytelsen på oppslaga av lønn for lønnstrinn ikkje blir forringa ettersom ytelsestuninga har vist at dette er
+     * Intensjonen med dette er Ã¥ sikre at ytelsen pÃ¥ oppslaga av lÃ¸nn for lÃ¸nnstrinn ikkje blir forringa ettersom ytelsestuninga har vist at dette er
      * ein av hotspotane i beregningsprosessen.
      */
     @Test
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void skalIkkjeSjekkeLoennForPerioderTilhoeyrandeAndreLoennstrinn() {
-        final Loennstrinnperiode annaLoennstrinn = mock(Loennstrinnperiode.class, "lønnstrinnperiode for lønnstrinn 2");
+        final Loennstrinnperiode annaLoennstrinn = mock(Loennstrinnperiode.class, "lÃ¸nnstrinnperiode for lÃ¸nnstrinn 2");
         when(annaLoennstrinn.trinn()).thenReturn(loennstrinn(2));
 
         final Loennstrinn trinn = loennstrinn(1);

@@ -79,7 +79,7 @@ public class AarstallTest {
     @Test
     public void skalInneholdeKorrektAntallDagar(final Integer aarstall) {
         assertThat(new Aarstall(aarstall).lengde())
-                .as("antall dagar i år " + aarstall)
+                .as("antall dagar i Ã¥r " + aarstall)
                 .isEqualTo(
                         new AntallDagar(
                                 Year.of(aarstall).length())

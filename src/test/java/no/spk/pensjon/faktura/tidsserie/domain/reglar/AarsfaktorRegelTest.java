@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
 /**
- * Enheitstestar for beregningsregelen for årsfaktor.
+ * Enheitstestar for beregningsregelen for Ã¥rsfaktor.
  */
 public class AarsfaktorRegelTest {
     private static final Offset<Double> PRESISJON = offset(0.00001);
@@ -39,8 +39,8 @@ public class AarsfaktorRegelTest {
 
     @Test
     public void skalFeileVedForsoekPaaBeregningAvAarsfaktorForPerioderLengerEnnEitAar() {
-        e.expectMessage("årsfaktor");
-        e.expectMessage("kan kun beregnast for perioder på 1 år eller kortare");
+        e.expectMessage("Ã¥rsfaktor");
+        e.expectMessage("kan kun beregnast for perioder pÃ¥ 1 Ã¥r eller kortare");
         e.expectMessage("perioda var " + (365 * 3) + " dagar lang");
 
         beregn(periode("2001.01.01", "2003.12.31").med(new Aarstall(2001)));
@@ -59,10 +59,10 @@ public class AarsfaktorRegelTest {
     }
 
     /**
-     * Tiltenkt brukt for testar som ikkje er avhengig eller interessert i sjølve tidsintervallet underlagsperioda
+     * Tiltenkt brukt for testar som ikkje er avhengig eller interessert i sjÃ¸lve tidsintervallet underlagsperioda
      * strekker seg over.
      *
-     * @return ei ny underlagsperiodebuilder med fra og med- og til og med-dato + alle nødvendige reglar satt
+     * @return ei ny underlagsperiodebuilder med fra og med- og til og med-dato + alle nÃ¸dvendige reglar satt
      */
     private static UnderlagsperiodeBuilder enperiode() {
         return periode("2000.01.01", "2000.01.12");

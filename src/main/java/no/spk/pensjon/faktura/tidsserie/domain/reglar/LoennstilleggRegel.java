@@ -9,22 +9,22 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
 /**
  * {@link LoennstilleggRegel} representerer
- * algoritma som reknar ut kor stort beløp som blir utbetalt i lønnstillegg for ei bestemt underlagsperiode.
+ * algoritma som reknar ut kor stort belÃ¸p som blir utbetalt i lÃ¸nnstillegg for ei bestemt underlagsperiode.
  * <p>
- * Det totale lønnstillegget er utregna basert på summen av faste-, variable- og funksjonstillegg for perioda.
- * Det blir ikkje foretatt noka form for avkortning av lønnstillegga dersom stillinga er under minstegrensa eller
- * over øvre grense for pensjonsgivande lønn (10G/12G pr 2014).
+ * Det totale lÃ¸nnstillegget er utregna basert pÃ¥ summen av faste-, variable- og funksjonstillegg for perioda.
+ * Det blir ikkje foretatt noka form for avkortning av lÃ¸nnstillegga dersom stillinga er under minstegrensa eller
+ * over Ã¸vre grense for pensjonsgivande lÃ¸nn (10G/12G pr 2014).
  * <p>
  * Ingen av tillegga blir justert i henhold til stillingas stillingsprosent i perioda ettersom dei to
- * tilleggstypene som skal deltidjusterast, skal ha blitt det av arbeidsgivar før innrapportering. Den resterande
+ * tilleggstypene som skal deltidjusterast, skal ha blitt det av arbeidsgivar fÃ¸r innrapportering. Den resterande
  * tilleggstypen, funksjonstillegg, skal aldri deltidsjusterast og blir innrapportert av arbeidsgivar i henhold til
  * dette.
  * <p>
- * Beregningsregelen returnerer alltid gjeldande årlige tillegg uten å avkorte beløpet i henhold til periodas
- * årsfaktor. Avkorting i henhold til årsfaktor er det derfor klienten som er ansvarlig for, dette er valgt
- * fordi ein antar at avkorting til årsfaktor er eit felles ansvar som vil måtte bli utført fleire gangar pr periode
- * når ein skal gjere mange delberegningar. Ergo blir dette ansvaret plassert ute hos klienten for å hindre at ein skal
- * måtte beregne årsfaktor fleire gangar pr periode.
+ * Beregningsregelen returnerer alltid gjeldande Ã¥rlige tillegg uten Ã¥ avkorte belÃ¸pet i henhold til periodas
+ * Ã¥rsfaktor. Avkorting i henhold til Ã¥rsfaktor er det derfor klienten som er ansvarlig for, dette er valgt
+ * fordi ein antar at avkorting til Ã¥rsfaktor er eit felles ansvar som vil mÃ¥tte bli utfÃ¸rt fleire gangar pr periode
+ * nÃ¥r ein skal gjere mange delberegningar. Ergo blir dette ansvaret plassert ute hos klienten for Ã¥ hindre at ein skal
+ * mÃ¥tte beregne Ã¥rsfaktor fleire gangar pr periode.
  *
  * @author Tarjei Skorgenes
  */
@@ -36,10 +36,10 @@ public class LoennstilleggRegel implements BeregningsRegel<Kroner> {
     private static final Funksjonstillegg INGEN_FUNKSJONSTILLEGG = new Funksjonstillegg(new Kroner(0));
 
     /**
-     * Reknar ut den totale summen av dei tre lønnstillegga som stillinga har i den angitte perioda.
+     * Reknar ut den totale summen av dei tre lÃ¸nnstillegga som stillinga har i den angitte perioda.
      *
-     * @param periode underlagsperioda som totalt lønnstillegg skal beregnast for
-     * @return underlagsperiodas bidrag til premieårets totale lønnstillegg
+     * @param periode underlagsperioda som totalt lÃ¸nnstillegg skal beregnast for
+     * @return underlagsperiodas bidrag til premieÃ¥rets totale lÃ¸nnstillegg
      */
     @Override
     public Kroner beregn(final Beregningsperiode<?> periode) {

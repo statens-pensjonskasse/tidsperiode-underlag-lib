@@ -27,30 +27,30 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 /**
  * {@link StillingsforholdunderlagFactory} inneheld algoritma som bygger opp stillingsforholdunderlag.
  * <p>
- * Algoritma går iterativt gjennom medlemmet sine
+ * Algoritma gÃ¥r iterativt gjennom medlemmet sine
  * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPerioder} og bygger eit nytt underlag
- * basert på det, observasjonsperioda og alle referanseperioder som det skal kombinerast og periodiserast basert på.
+ * basert pÃ¥ det, observasjonsperioda og alle referanseperioder som det skal kombinerast og periodiserast basert pÃ¥.
  * <p>
- * Når underlaget er bygd opp blir det deretter filtrert ned til eit nytt stillingsforholdunderlag som kun inneheld
+ * NÃ¥r underlaget er bygd opp blir det deretter filtrert ned til eit nytt stillingsforholdunderlag som kun inneheld
  * underlagsperioder der stillingsforholdet er aktivt.
  * <p>
- * For å unngå at ein må holde på underlaga for alle stillingsforholda til medlemmet i minne på samme tid,
+ * For Ã¥ unngÃ¥ at ein mÃ¥ holde pÃ¥ underlaga for alle stillingsforholda til medlemmet i minne pÃ¥ samme tid,
  * mottar klienten ein callback kvar gang eit nytt stillingsforholdunderlag er ferdig generert.
  * <h2>Annotering</h2>
- * Før stillingsforholdunderlaget blir sendt til klienten, kan underlaget og underlagsperiodene bli annotert med
- * grunnlagsdata. Som standardoppførsel blir inga annotert utført, klienten
+ * FÃ¸r stillingsforholdunderlaget blir sendt til klienten, kan underlaget og underlagsperiodene bli annotert med
+ * grunnlagsdata. Som standardoppfÃ¸rsel blir inga annotert utfÃ¸rt, klienten
  * kan {@link #endreAnnoteringsstrategi(Annoteringsstrategi) plugge inn} ein alternativ {@link Annoteringsstrategi}
- * viss det er ønskelig annotere underlagsperiodene med grunnlagsdata.
+ * viss det er Ã¸nskelig annotere underlagsperiodene med grunnlagsdata.
  * <h2>Avtaledata</h2>
- * Ettersom antall avtaleperioder for alle avtalar som til ei kvar tid er gyldige, er i størrelsesorden mange tusen
- * perioder, er det ikkje ønskelig å legge alle desse til i periodiseringa for eit enkelt stillingsforhold.
- * Derimot er det ønskelig å legge til alle avtaleperioder for alle avtalar stillingsforholdet har vore tilknytta.
+ * Ettersom antall avtaleperioder for alle avtalar som til ei kvar tid er gyldige, er i stÃ¸rrelsesorden mange tusen
+ * perioder, er det ikkje Ã¸nskelig Ã¥ legge alle desse til i periodiseringa for eit enkelt stillingsforhold.
+ * Derimot er det Ã¸nskelig Ã¥ legge til alle avtaleperioder for alle avtalar stillingsforholdet har vore tilknytta.
  * <p>
  * Klienten kan {@link #endreAvtaleinformasjonRepository(AvtaleinformasjonRepository) plugge inn} eit lager som gir
- * tilgang til tidsperiodisert avtaleinformasjon basert på avtalenummera stillingaforholda har vore tilknytta.
+ * tilgang til tidsperiodisert avtaleinformasjon basert pÃ¥ avtalenummera stillingaforholda har vore tilknytta.
  * <p>
  * Merk at det er heilt essensielt for ytelsen til prosesseringa at denne informasjonen ikkje krever eksterne oppslage
- * som medfører I/O mot disk eller over nettet.
+ * som medfÃ¸rer I/O mot disk eller over nettet.
  *
  * @author Tarjei Skorgenes
  */
@@ -73,20 +73,20 @@ public class StillingsforholdunderlagFactory {
      * <p>
      * Dersom eit eller fleire av medlemmets stillingsforhold ikkje har vore aktive innanfor observasjonsperioda
      * vil det likevel bli generert underlag for desse. Dei genererte underlaga vil i desse tilfella vere tomme, det
-     * blir opp til callbacken å avgjere korleis desse stillingsforholda skal handterast vidare.
+     * blir opp til callbacken Ã¥ avgjere korleis desse stillingsforholda skal handterast vidare.
      * <p>
      * Kva som skal bli gjort med underlaget etter generering blir fullt og heilt bestemt av callbacken,
      * fasada gjer ingen antagelsar om kva som skjer vidare med underlaga etter at dei har blitt generert.
      * <p>
-     * Dersom ein callback feilar og kastar ein exception vil fasada sluke og ignorere denne for å unngå at feil
-     * som er spesifikke for eit underlag påvirkar prosesseringa av andre underlag for samme medlem. Det er derfor
-     * heilt og holdent opp til callbacken og klienten å handtere alle typer feil og eventuelt sikre at dei blir
-     * propagert vidare etter at fasada har fullført generering av underlag for kvart stillingsforhold.
+     * Dersom ein callback feilar og kastar ein exception vil fasada sluke og ignorere denne for Ã¥ unngÃ¥ at feil
+     * som er spesifikke for eit underlag pÃ¥virkar prosesseringa av andre underlag for samme medlem. Det er derfor
+     * heilt og holdent opp til callbacken og klienten Ã¥ handtere alle typer feil og eventuelt sikre at dei blir
+     * propagert vidare etter at fasada har fullfÃ¸rt generering av underlag for kvart stillingsforhold.
      *
      * @param medlem              alle medlemsdata for medlemmet som stillingsforholda det skal byggast opp underlag
-     *                            for tilhøyrer
-     * @param callback            callback som blir notifisert fortløpande etterkvart som nye underlag blir generert
-     * @param observasjonsperiode observasjonsperioda som underlagets perioder skal avgrensast til å ligge innanfor
+     *                            for tilhÃ¸yrer
+     * @param callback            callback som blir notifisert fortlÃ¸pande etterkvart som nye underlag blir generert
+     * @param observasjonsperiode observasjonsperioda som underlagets perioder skal avgrensast til Ã¥ ligge innanfor
      */
     public void prosesser(final Medlemsdata medlem, final StillingsforholdUnderlagCallback callback,
                           final Observasjonsperiode observasjonsperiode) {
@@ -134,30 +134,30 @@ public class StillingsforholdunderlagFactory {
                                 underlag
                         );
                     } catch (final RuntimeException e) {
-                        // Callbacken er ansvarlig for å handtere egne feil, vi sluker derfor slike feil her
-                        // for å unngå at dei hindrar prosessering av underlag for andre stillingsforhold enn
-                        // det callbacken feila på
+                        // Callbacken er ansvarlig for Ã¥ handtere egne feil, vi sluker derfor slike feil her
+                        // for Ã¥ unngÃ¥ at dei hindrar prosessering av underlag for andre stillingsforhold enn
+                        // det callbacken feila pÃ¥
                     }
                 });
     }
 
     /**
-     * Forsøker å innskrenke lengda på observasjonsperioda til å kun strekke seg over dei dagane som stillingsforholdet
+     * ForsÃ¸ker Ã¥ innskrenke lengda pÃ¥ observasjonsperioda til Ã¥ kun strekke seg over dei dagane som stillingsforholdet
      * og den overordna observasjonsperioda overlappar kvarandre.
      * <br>
-     * Dette blir gjort for å redusere størrelsen på det første underlaget som blir generert ettersom det kun er
-     * underlagsperiodene som overlappar stillingsforholdet som vil bli brukt når stillingsforholdunderlaget blir danna.
+     * Dette blir gjort for Ã¥ redusere stÃ¸rrelsen pÃ¥ det fÃ¸rste underlaget som blir generert ettersom det kun er
+     * underlagsperiodene som overlappar stillingsforholdet som vil bli brukt nÃ¥r stillingsforholdunderlaget blir danna.
      * <br>
-     * Utan denne optimaliseringa vil det første underlaget inneholde ei underlagsperiode pr måned også for tidsperiodene
-     * før og/eller etter stillingsforholdperiodet er starta/avslutta. Desse underlagsperiodene må så koblast opp mot
-     * eventuelle andre tidsperioder med lønns- eller avtaledata. Sidan desse periodene ikkje har nokon verdi blir det
-     * bere sløsing med køyretid å skulle utføre denne samankoblinga. Ergo kan vi unngå å generere dei ved å avgrense
-     * lengda på observasjonsperioda her.
+     * Utan denne optimaliseringa vil det fÃ¸rste underlaget inneholde ei underlagsperiode pr mÃ¥ned ogsÃ¥ for tidsperiodene
+     * fÃ¸r og/eller etter stillingsforholdperiodet er starta/avslutta. Desse underlagsperiodene mÃ¥ sÃ¥ koblast opp mot
+     * eventuelle andre tidsperioder med lÃ¸nns- eller avtaledata. Sidan desse periodene ikkje har nokon verdi blir det
+     * bere slÃ¸sing med kÃ¸yretid Ã¥ skulle utfÃ¸re denne samankoblinga. Ergo kan vi unngÃ¥ Ã¥ generere dei ved Ã¥ avgrense
+     * lengda pÃ¥ observasjonsperioda her.
      * <br>
      * Dersom dei to periodene ikkje overlappar kvarandre blir den opprinnelige observasjonsperioda returnert as-is for
-     * å forenkle handteringa av denne relativt sjeldent forekommande situasjonen.
+     * Ã¥ forenkle handteringa av denne relativt sjeldent forekommande situasjonen.
      *
-     * @param observasjonsperiode den overordna observasjonsperioda som styrer maksimal lengde på alle underlaga som skal genererast for tidsserien
+     * @param observasjonsperiode den overordna observasjonsperioda som styrer maksimal lengde pÃ¥ alle underlaga som skal genererast for tidsserien
      * @param stillingsforhold    stillingsforholdperiodene som indikerer kva tidsperiode stillinga er aktiv i
      * @return ei ny, potensielt avkorta observasjonsperiode som kun inneheld dei dagane som dei to periodene overlappar kvarandre,
      * eller den opprinnelige observasjonsperioda viss dei to ikkje overlappar kvarandre nokonsinne
@@ -181,11 +181,11 @@ public class StillingsforholdunderlagFactory {
     }
 
     /**
-     * Annoterer stillingsforholdunderlaget og underlagsperiodene som det inneheld med informasjon henta frå
+     * Annoterer stillingsforholdunderlaget og underlagsperiodene som det inneheld med informasjon henta frÃ¥
      * kvar underlagsperiodes koblingar.
      * <p>
      * Ansvaret for detaljane i korleis underlaget og -periodene blir annotert blir delegert til annoteringsstrategien
-     * fasade er satt opp til å bruke.
+     * fasade er satt opp til Ã¥ bruke.
      *
      * @param stillingsforholdunderlag eit underlag som kun inneheld underlagsperioder tilkobla eit stillingsforhold
      * @return <code>stillingsforholdunderlag</code>
@@ -198,18 +198,18 @@ public class StillingsforholdunderlagFactory {
 
     /**
      * Legger til tidsperioder som inneheld globale referansedata som ein ynskjer at periodiseringa skal ta hensyn til
-     * når den bygger opp underlagsperiodene.
+     * nÃ¥r den bygger opp underlagsperiodene.
      * <p>
      * Kvar tidsperiode vil bli inkludert i periodiseringa og kobla til den eller dei underlagsperiodene
      * som dei overlappar.
      * <p>
-     * Hovedintensjonen med dette er å støtte oppslag av tidsperiodisert informasjon som ikkje er direkte knytta
-     * til eit medlem eller stillingsforhold, f.eks. informasjon om avtale, omregningsperioder, lønnstrinn eller
+     * Hovedintensjonen med dette er Ã¥ stÃ¸tte oppslag av tidsperiodisert informasjon som ikkje er direkte knytta
+     * til eit medlem eller stillingsforhold, f.eks. informasjon om avtale, omregningsperioder, lÃ¸nnstrinn eller
      * liknande.
      * <p>
      * Referanseperiodene blir tatt hensyn til ved periodisering av underlaget splittar og genererer nye
-     * underlagsperioder som startar ved kvar referanseperiodes frå og med dato og dagen etter kvar referanseperiodes
-     * til og med-dato (for dei periodene som ikkje er løpande).
+     * underlagsperioder som startar ved kvar referanseperiodes frÃ¥ og med dato og dagen etter kvar referanseperiodes
+     * til og med-dato (for dei periodene som ikkje er lÃ¸pande).
      *
      * @param perioder tidsperiodene som skal inkluderast i tillegg til medlemsdata ved periodisering av
      *                 underlag
@@ -238,7 +238,7 @@ public class StillingsforholdunderlagFactory {
      * Legger til ein beregningsregel som skal inkluderast ved periodisering av underlag.
      * <p>
      * Periodiseringa av alle underlag skal ta hensyn til og splitte underlagsperioder som overlappar
-     * alle innlagte regelperioders frå og med- og til og med-datoar.
+     * alle innlagte regelperioders frÃ¥ og med- og til og med-datoar.
      *
      * @param perioder beregingsreglane og periodene dei er gjeldande for, som skal inkluderast ved periodisering
      *                 av underlag
@@ -267,60 +267,60 @@ public class StillingsforholdunderlagFactory {
     /**
      * Endrar annoteringsstrategi for fasada.
      * <p>
-     * Fasadas standardstrategi er å ikkje annotere periodene den genererer, bruk denne metoda for å overstyre denne
-     * oppførselen.
+     * Fasadas standardstrategi er Ã¥ ikkje annotere periodene den genererer, bruk denne metoda for Ã¥ overstyre denne
+     * oppfÃ¸rselen.
      *
      * @param strategi den nye annoteringsstrategien som skal benyttast
      * @throws NullPointerException viss <code>strategi</code> er <code>null</code>
      */
     public void endreAnnoteringsstrategi(final Annoteringsstrategi strategi) {
-        this.annotator = requireNonNull(strategi, () -> "annoteringsstrategi er påkrevd, men var null");
+        this.annotator = requireNonNull(strategi, () -> "annoteringsstrategi er pÃ¥krevd, men var null");
     }
 
     /**
      * Endrar repository for oppslag av avtaleinformasjon.
      * <p>
-     * Fasadas standardstrategi for oppslag av tidsperiodisert avtaleinformasjon er å ikkje slå opp noko
+     * Fasadas standardstrategi for oppslag av tidsperiodisert avtaleinformasjon er Ã¥ ikkje slÃ¥ opp noko
      * ekstra informasjon om dei avtalane som kvart enkelt stillingsforhold er tilknytta via sine avtalekoblingar.
      *
      * @param repository det nye repositoriet for oppslag av tidsperiodisert avtaleinformasjon
      * @throws NullPointerException dersom <code>repository</code> er <code>null</code>
      */
     public void endreAvtaleinformasjonRepository(final AvtaleinformasjonRepository repository) {
-        this.avtalar = requireNonNull(repository, () -> "avtaleinformasjonrepository er påkrevd, men var null");
+        this.avtalar = requireNonNull(repository, () -> "avtaleinformasjonrepository er pÃ¥krevd, men var null");
     }
 
     private static Supplier<IllegalStateException> feilmeldingForMedlemSomKunHarAvtalekobling() {
         return () -> new IllegalStateException(
-                "Eit medlem må ha minst ei stillingsendring eller medregning, det kan ikkje kun ha avtalekoblingar"
+                "Eit medlem mÃ¥ ha minst ei stillingsendring eller medregning, det kan ikkje kun ha avtalekoblingar"
         );
     }
 
     /**
      * {@link StillingsforholdunderlagFactory.Annoteringsstrategi}
-     * representerer ein strategi for å annotere
+     * representerer ein strategi for Ã¥ annotere
      * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode underlagsperiode}.
      *
      * @author Tarjei Skorgenes
      */
     public static interface Annoteringsstrategi {
         /**
-         * Populerer underlagsperioda med annotasjonar ut frå tilstand i perioda sjølv eller underlaget.
+         * Populerer underlagsperioda med annotasjonar ut frÃ¥ tilstand i perioda sjÃ¸lv eller underlaget.
          *
-         * @param underlag underlaget som perioda inngår i
+         * @param underlag underlaget som perioda inngÃ¥r i
          * @param periode  underlagsperioda som skal populerast med annotasjonar
          * @see Underlagsperiode#annoter(Class, Object)
          */
         public void annoter(final Underlag underlag, final Underlagsperiode periode);
 
         /**
-         * Populerer underlaget med annotasjonar ut frå tilstand henta frå underlagets underlagsperioder.
+         * Populerer underlaget med annotasjonar ut frÃ¥ tilstand henta frÃ¥ underlagets underlagsperioder.
          * <p>
-         * Annoteringa av underlaget blir utført etter at alle perioder har blitt annotert via
-         * {@link #annoter(Underlag, Underlagsperiode)} slik at annotasjonar kan bli henta frå perioder og lagt på
-         * underlaget viss det er ønskelig.
+         * Annoteringa av underlaget blir utfÃ¸rt etter at alle perioder har blitt annotert via
+         * {@link #annoter(Underlag, Underlagsperiode)} slik at annotasjonar kan bli henta frÃ¥ perioder og lagt pÃ¥
+         * underlaget viss det er Ã¸nskelig.
          * <p>
-         * Standardoppførsel er å ikkje legge til nokon annotasjonar på underlaget eller på underlagsperiodene.
+         * StandardoppfÃ¸rsel er Ã¥ ikkje legge til nokon annotasjonar pÃ¥ underlaget eller pÃ¥ underlagsperiodene.
          *
          * @param underlag underlaget som skal annoterast
          */

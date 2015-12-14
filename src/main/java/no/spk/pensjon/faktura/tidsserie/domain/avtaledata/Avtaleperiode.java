@@ -10,7 +10,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
 /**
- * En tidsperiode som gjelder så lenge en avtale er gyldig.
+ * En tidsperiode som gjelder sÃ¥ lenge en avtale er gyldig.
  * @author Snorre E. Brekke - Computas
  */
 public class Avtaleperiode extends AbstractTidsperiode<Avtaleperiode> implements Avtalerelatertperiode<Avtaleperiode>  {
@@ -19,8 +19,8 @@ public class Avtaleperiode extends AbstractTidsperiode<Avtaleperiode> implements
 
     public Avtaleperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, AvtaleId avtaleId, ArbeidsgiverId arbeidsgiverId) {
         super(fraOgMed, tilOgMed);
-        requireNonNull(avtaleId, "Avtaleperiode må ha avtaleid, men avtaleid var null");
-        requireNonNull(avtaleId, "Avtaleperiode må ha arbeidsgiverId, men arbeidsgiverId var null");
+        requireNonNull(avtaleId, "Avtaleperiode mÃ¥ ha avtaleid, men avtaleid var null");
+        requireNonNull(avtaleId, "Avtaleperiode mÃ¥ ha arbeidsgiverId, men arbeidsgiverId var null");
         this.avtaleId = avtaleId;
         this.arbeidsgiverId = arbeidsgiverId;
     }

@@ -14,16 +14,16 @@ import java.util.Set;
 import static no.spk.pensjon.faktura.tidsserie.domain.loennsdata.Loennstrinnperioder.meirEnnEiGjeldandeLoennstrinnPeriodeForSammeLoennstrinnPaaSammeTid;
 
 /**
- * {@link FinnLoennForLoennstrinn} representerer algoritma som konverterer lønnstrinn til lønn i 100% stilling
- * basert på ei underlagsperiodes {@link Loennstrinnperioder grupperte lønnstrinn}-koblingar.
+ * {@link FinnLoennForLoennstrinn} representerer algoritma som konverterer lÃ¸nnstrinn til lÃ¸nn i 100% stilling
+ * basert pÃ¥ ei underlagsperiodes {@link Loennstrinnperioder grupperte lÃ¸nnstrinn}-koblingar.
  * <p>
- * Algoritma forventar å finne maksimalt 1 gruppering som inneheld gjeldande lønn for lønnstrinnet i underlagsperiodas
+ * Algoritma forventar Ã¥ finne maksimalt 1 gruppering som inneheld gjeldande lÃ¸nn for lÃ¸nnstrinnet i underlagsperiodas
  * tidsperiode.
  * <p>
- * Dersom det eksisterer meir enn ei gruppering som inneheld lønn for lønnstrinnet, indikerer det at ein har dårlig
- * datakvalitet og algoritma feilar derfor for å gjere klientane oppmerksome på problemet.
+ * Dersom det eksisterer meir enn ei gruppering som inneheld lÃ¸nn for lÃ¸nnstrinnet, indikerer det at ein har dÃ¥rlig
+ * datakvalitet og algoritma feilar derfor for Ã¥ gjere klientane oppmerksome pÃ¥ problemet.
  * <p>
- * Dersom det ikkje eksisterer ei lønnstrinnperiode som tilhøyrer lønnstrinnet vil algoritma avslutte utan å feile.
+ * Dersom det ikkje eksisterer ei lÃ¸nnstrinnperiode som tilhÃ¸yrer lÃ¸nnstrinnet vil algoritma avslutte utan Ã¥ feile.
  *
  * @author Tarjei Skorgenes
  */
@@ -39,10 +39,10 @@ public class FinnLoennForLoennstrinn {
     private final Optional<Stillingskode> stillingskode;
 
     /**
-     * Konstruerer ei ny algoritme som vil slå opp lønnstrinnets lønn
-     * frå underlagsperiodas overlappande lønnstrinnperioder.
+     * Konstruerer ei ny algoritme som vil slÃ¥ opp lÃ¸nnstrinnets lÃ¸nn
+     * frÃ¥ underlagsperiodas overlappande lÃ¸nnstrinnperioder.
      *
-     * @param periode underlagsperioda som inneheld annotasjonane og koblingane som lønna skal hentast ut basert på
+     * @param periode underlagsperioda som inneheld annotasjonane og koblingane som lÃ¸nna skal hentast ut basert pÃ¥
      */
     public FinnLoennForLoennstrinn(final Underlagsperiode periode) {
         this.periode = periode;
@@ -52,12 +52,12 @@ public class FinnLoennForLoennstrinn {
     }
 
     /**
-     * Slår opp kva som er gjeldande lønn for lønnstrinnet kvar einaste dag i underlagsperioda.
+     * SlÃ¥r opp kva som er gjeldande lÃ¸nn for lÃ¸nnstrinnet kvar einaste dag i underlagsperioda.
      *
-     * @return gjeldande lønn for lønnstrinnet, eller ingenting dersom underlagsperiode ikkje overlappar nokon
-     * lønnstrinnperioder som inneheld lønn for lønnstrinnet
-     * @throws IllegalStateException dersom underlagsperioda er tilkobla fleire lønnstrinnperioder som alle indikerer
-     *                               at dei inneheld gjeldande lønn for lønnstrinnet
+     * @return gjeldande lÃ¸nn for lÃ¸nnstrinnet, eller ingenting dersom underlagsperiode ikkje overlappar nokon
+     * lÃ¸nnstrinnperioder som inneheld lÃ¸nn for lÃ¸nnstrinnet
+     * @throws IllegalStateException dersom underlagsperioda er tilkobla fleire lÃ¸nnstrinnperioder som alle indikerer
+     *                               at dei inneheld gjeldande lÃ¸nn for lÃ¸nnstrinnet
      */
     public Optional<LoennstrinnBeloep> loennForLoennstrinn() {
         return periode.koblingarAvType(Loennstrinnperioder.class)
@@ -69,21 +69,21 @@ public class FinnLoennForLoennstrinn {
     }
 
     /**
-     * Sjekkar om grupperinga inneheld ei lønnstrinnperiode som tilhøyrer lønnstrinnet vi skal finne lønn for.
+     * Sjekkar om grupperinga inneheld ei lÃ¸nnstrinnperiode som tilhÃ¸yrer lÃ¸nnstrinnet vi skal finne lÃ¸nn for.
      *
-     * @param gruppering lønnstrinngrupperinga som ein skal sjekke om inneheld lønn for lønnstrinnet
-     * @return <code>true</code> dersom grupperinga inneheld lønn for lønnstrinnet, <code>false</code> ellers
+     * @param gruppering lÃ¸nnstrinngrupperinga som ein skal sjekke om inneheld lÃ¸nn for lÃ¸nnstrinnet
+     * @return <code>true</code> dersom grupperinga inneheld lÃ¸nn for lÃ¸nnstrinnet, <code>false</code> ellers
      */
     private boolean harLoennFor(final Loennstrinnperioder gruppering) {
         return gruppering.harLoennFor(loennstrinn, stillingskode);
     }
 
     /**
-     * Tar vare på den den eller dei av dei to periodene som inneheld gjeldande lønn for lønnstrinnet i tidsperioda
+     * Tar vare pÃ¥ den den eller dei av dei to periodene som inneheld gjeldande lÃ¸nn for lÃ¸nnstrinnet i tidsperioda
      * underlagsperioda strekker seg over.
      *
-     * @param current ei lønnstrinnperiode som har lønn for lønnstrinnet
-     * @param next    ei anna lønnstrinnperiode som har lønn for lønnstrinnet
+     * @param current ei lÃ¸nnstrinnperiode som har lÃ¸nn for lÃ¸nnstrinnet
+     * @param next    ei anna lÃ¸nnstrinnperiode som har lÃ¸nn for lÃ¸nnstrinnet
      * @return <code>next</code>
      */
     private Loennstrinnperioder avbrytVissMeirEnnEinKandidat(final Loennstrinnperioder current, final Loennstrinnperioder next) {
@@ -93,9 +93,9 @@ public class FinnLoennForLoennstrinn {
     }
 
     /**
-     * Tar vare på grupperinga viss den inneheld gjeldande lønn for lønnstrinnet.
+     * Tar vare pÃ¥ grupperinga viss den inneheld gjeldande lÃ¸nn for lÃ¸nnstrinnet.
      *
-     * @param gruppering ei samling lønnstrinnperioder som ein skal sjekke om inneheld gjeldande lønn for lønnstrinnet
+     * @param gruppering ei samling lÃ¸nnstrinnperioder som ein skal sjekke om inneheld gjeldande lÃ¸nn for lÃ¸nnstrinnet
      */
     private void add(final Loennstrinnperioder gruppering) {
         perioderForLoennstrinn.add(gruppering);

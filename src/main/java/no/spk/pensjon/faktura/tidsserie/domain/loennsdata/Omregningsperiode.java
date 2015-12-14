@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 /**
- * {@link Omregningsperiode} representerer ei tidsperiode der grunnbeløpet i folketrygda har samme verdi kvar dag.
+ * {@link Omregningsperiode} representerer ei tidsperiode der grunnbelÃ¸pet i folketrygda har samme verdi kvar dag.
  *
  * @author Tarjei Skorgenes
  */
@@ -18,12 +18,12 @@ public class Omregningsperiode extends AbstractTidsperiode<Omregningsperiode> {
     private final Grunnbeloep grunnbeloep;
 
     /**
-     * Konstruerer ei ny omregningsperiode som har ein frå og med-dato og som kan ha
-     * ein til og med-dato, eller som kan vere løpande og dermed har ein tom til og med-dato
+     * Konstruerer ei ny omregningsperiode som har ein frÃ¥ og med-dato og som kan ha
+     * ein til og med-dato, eller som kan vere lÃ¸pande og dermed har ein tom til og med-dato
      *
-     * @param fraOgMed første dag i tidsperioda
+     * @param fraOgMed fÃ¸rste dag i tidsperioda
      * @param tilOgMed viss {@link java.util.Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
-     * @param beloep grunnbeløp for perioden
+     * @param beloep grunnbelÃ¸p for perioden
      */
     public Omregningsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final Kroner beloep) {
         super(fraOgMed, tilOgMed);
@@ -31,9 +31,9 @@ public class Omregningsperiode extends AbstractTidsperiode<Omregningsperiode> {
     }
 
     /**
-     * Annoterer underlagsperiode med gjeldande grunnbeløp.
+     * Annoterer underlagsperiode med gjeldande grunnbelÃ¸p.
      *
-     * @param periode underlagsperioda som skal annoterast med grunnbeløp
+     * @param periode underlagsperioda som skal annoterast med grunnbelÃ¸p
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep
      */
     public void annoter(final Annoterbar<?> periode) {

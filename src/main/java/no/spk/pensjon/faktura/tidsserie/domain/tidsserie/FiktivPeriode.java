@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 
 /**
- * Markør-annotasjon for fiktive perioder generert av observasjonsunderlaget for perioder etter
+ * MarkÃ¸r-annotasjon for fiktive perioder generert av observasjonsunderlaget for perioder etter
  * underlagets observasjonsdato.
  *
  * @author Tarjei Skorgenes

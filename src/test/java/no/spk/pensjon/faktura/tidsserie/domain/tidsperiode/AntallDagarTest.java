@@ -14,7 +14,7 @@ public class AntallDagarTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Vi skal aldri kunne ha tidsperioder som er kortare enn 1 dag, verifiser at vi feilar viss det blir forsøkt
+     * Vi skal aldri kunne ha tidsperioder som er kortare enn 1 dag, verifiser at vi feilar viss det blir forsÃ¸kt
      * brukt som verdi for antall dagar.
      */
     @Test
@@ -25,7 +25,7 @@ public class AntallDagarTest {
     }
 
     /**
-     * Vi skal aldri kunne ha tidsperioder med negativ lengde, verifiser at vi feilar viss ein negativ verdi blir forsøkt
+     * Vi skal aldri kunne ha tidsperioder med negativ lengde, verifiser at vi feilar viss ein negativ verdi blir forsÃ¸kt
      * brukt som verdi for antall dagar.
      */
     @Test
@@ -64,7 +64,7 @@ public class AntallDagarTest {
     }
 
     /**
-     * Verifiserer første del av kontrakta for {@link Object#hashCode()}, at to instansar som er like
+     * Verifiserer fÃ¸rste del av kontrakta for {@link Object#hashCode()}, at to instansar som er like
      * i henhold til {@link Object#equals(Object)} returnerer samme hashcode.
      */
     @Test
@@ -75,8 +75,8 @@ public class AntallDagarTest {
 
     /**
      * Verifiserer andre del av kontrakta for {@link Object#hashCode()}, at samme instans
-     * returnerer samme hashcode viss ein ber om den fleire gangar frå samme instans
-     * innanfor samme køyring av JVMen.
+     * returnerer samme hashcode viss ein ber om den fleire gangar frÃ¥ samme instans
+     * innanfor samme kÃ¸yring av JVMen.
      */
     @Test
     public void skalReturnereSammeHashCodeForKvartKall() {
@@ -91,24 +91,24 @@ public class AntallDagarTest {
     @Test
     public void skalIkkjeStoetteFraOgMedDatoLikNull() {
         e.expect(NullPointerException.class);
-        e.expectMessage("frå og med-dato må vere ulik null");
+        e.expectMessage("frÃ¥ og med-dato mÃ¥ vere ulik null");
         antallDagarMellom(null, dato("2005.01.01"));
     }
 
     /**
-     * Antall dagar skal kun kunne beregnast for lukka tidsperioder, løpande tidsperioder skal ikkje vere støtta.
+     * Antall dagar skal kun kunne beregnast for lukka tidsperioder, lÃ¸pande tidsperioder skal ikkje vere stÃ¸tta.
      */
     @Test
     public void skalIkkjeStoetteTilOgMedDatoLikNull() {
         e.expect(NullPointerException.class);
-        e.expectMessage("til og med-dato må vere ulik null");
-        e.expectMessage("løpande perioder er ikkje støtta");
+        e.expectMessage("til og med-dato mÃ¥ vere ulik null");
+        e.expectMessage("lÃ¸pande perioder er ikkje stÃ¸tta");
         antallDagarMellom(dato("2005.01.01"), null);
     }
 
     /**
      * Antall dagar mellom to like datoar skal vere lik 1 ettersom {@link Tidsperiode#tilOgMed()} er inkludert
-     * i tidsperioder ein skal måle antall dagar i.
+     * i tidsperioder ein skal mÃ¥le antall dagar i.
      */
     @Test
     public void skalBeregneLengdeLik1DagForPerioderMedLikFraOgMedOgTilOgMedDato() {

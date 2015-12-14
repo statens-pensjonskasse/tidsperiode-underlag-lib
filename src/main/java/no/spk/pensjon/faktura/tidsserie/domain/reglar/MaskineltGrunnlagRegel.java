@@ -15,19 +15,19 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.krone
  */
 public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
     /**
-     * Beregnar underlagsperiodas andel av premieårets totale maskinelle grunnlag.
+     * Beregnar underlagsperiodas andel av premieÃ¥rets totale maskinelle grunnlag.
      * <br>
-     * Beregninga som blir foretatt er foreløpig ein forenkla variant som kun tar hensyn til
-     * lønnstillegg og deltidsjustert lønn, enten innrapportert frå arbeidsgivar eller utleda basert på
-     * innrapportert lønnstrinn som er justert i henhold til stillingsprosent.
+     * Beregninga som blir foretatt er forelÃ¸pig ein forenkla variant som kun tar hensyn til
+     * lÃ¸nnstillegg og deltidsjustert lÃ¸nn, enten innrapportert frÃ¥ arbeidsgivar eller utleda basert pÃ¥
+     * innrapportert lÃ¸nnstrinn som er justert i henhold til stillingsprosent.
      * <p>
      * I motsetning til dei andre beregningsreglane, genererer vi her maskinelt grunnlag som er justert i henhold
-     * til periodas årsfaktor slik at klienten kan akkumulere delberegningane for året og ende opp med totalt
-     * maskinelt grunnlag pr år uten å måtte foreta justering av returnert beløp i henhold til periodas årsfaktor.
+     * til periodas Ã¥rsfaktor slik at klienten kan akkumulere delberegningane for Ã¥ret og ende opp med totalt
+     * maskinelt grunnlag pr Ã¥r uten Ã¥ mÃ¥tte foreta justering av returnert belÃ¸p i henhold til periodas Ã¥rsfaktor.
      *
-     * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av
+     * @param periode underlagsperioda som inneheld alle verdiar eller pÃ¥krevde reglar som skal benyttast av
      *                beregningsregelen
-     * @return underlagsperiodas andel av det totale maskinelle grunnlaget for premieåret
+     * @return underlagsperiodas andel av det totale maskinelle grunnlaget for premieÃ¥ret
      */
     @Override
     public Kroner beregn(final Beregningsperiode<?> periode) {
@@ -38,7 +38,7 @@ public class MaskineltGrunnlagRegel implements BeregningsRegel<Kroner> {
                 Kroner.min(
                         periode.beregn(DeltidsjustertLoennRegel.class)
                                 .plus(
-                                        // Lønstillegga blir justert i henhold til årsfaktor av den andre regelen
+                                        // LÃ¸nstillegga blir justert i henhold til Ã¥rsfaktor av den andre regelen
                                         periode.beregn(LoennstilleggRegel.class)
                                 )
                                 .plus(

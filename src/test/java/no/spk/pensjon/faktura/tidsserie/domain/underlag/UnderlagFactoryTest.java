@@ -64,8 +64,8 @@ public class UnderlagFactoryTest {
 
     /**
      * Verifiserer at dersom ingen av tidsperiodene som blir brukt som input til periodiseringa av underlag
-     * ovarlappar observasjonsperioda så blir eit tom underlag generert, dvs det er ein normal
-     * situasjon som ikkje skal medføre nokon exception.
+     * ovarlappar observasjonsperioda sÃ¥ blir eit tom underlag generert, dvs det er ein normal
+     * situasjon som ikkje skal medfÃ¸re nokon exception.
      */
     @Test
     public void skalIkkjeFeileVissAllePerioderLiggUtanforObservasjonsperioda() {
@@ -80,7 +80,7 @@ public class UnderlagFactoryTest {
 
     /**
      * Verifiserer at perioder som ligg utanfor observasjonsperioda, dvs ikkje oerlappar den med minst ein dag,
-     * ikkje får sine frå og med- og til og med-datoar brukt i forbindelse med periodiseringa av underlaget.
+     * ikkje fÃ¥r sine frÃ¥ og med- og til og med-datoar brukt i forbindelse med periodiseringa av underlaget.
      */
     @Test
     public void skalIkkjeSplittePaaInputPerioderSomLiggUtanforObservasjonsperioda() {
@@ -97,8 +97,8 @@ public class UnderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at underlaget som kun er generert ut frå stillingsforholdperioder, får oppretta ei underlagsperiode
-     * for kvar frå og med-dato frå alle stillingsforholdperiodene.
+     * Verifiserer at underlaget som kun er generert ut frÃ¥ stillingsforholdperioder, fÃ¥r oppretta ei underlagsperiode
+     * for kvar frÃ¥ og med-dato frÃ¥ alle stillingsforholdperiodene.
      */
     @Test
     public void skalLageUnderlagsperiodeForKvarStillingsendring() {
@@ -118,8 +118,8 @@ public class UnderlagFactoryTest {
 
     /**
      * Verifiserer at viss det eksisterer fleire input-perioder med samme fra og med-dato
-     * så blir underlaget kun forsøkt splitta ein gang på den aktuelle datoen, ikkje ein gang
-     * pr fra og med-dato slik at ein endar opp med å forsøke å konstruere underlagsperioder som har fra og med-dato
+     * sÃ¥ blir underlaget kun forsÃ¸kt splitta ein gang pÃ¥ den aktuelle datoen, ikkje ein gang
+     * pr fra og med-dato slik at ein endar opp med Ã¥ forsÃ¸ke Ã¥ konstruere underlagsperioder som har fra og med-dato
      * etter sin til og med-dato.
      */
     @Test
@@ -136,8 +136,8 @@ public class UnderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at underlaget blir bygd opp med underlagsperioder i kronologisk rekkefølge sjølv om periodene som
-     * blir lagt inn i underlaget blir lagt inn i ei anna rekkefølge.
+     * Verifiserer at underlaget blir bygd opp med underlagsperioder i kronologisk rekkefÃ¸lge sjÃ¸lv om periodene som
+     * blir lagt inn i underlaget blir lagt inn i ei anna rekkefÃ¸lge.
      */
     @Test
     public void skalByggeOppUnderlagsperiodeneIKronologiskRekkefoelgeSjoelvOmInputPeriodeneKanVereIAnnaRekkefoelge() {
@@ -167,7 +167,7 @@ public class UnderlagFactoryTest {
 
     /**
      * Verifiserer at underlagets siste underlagsperiode blir avgrensa til siste dag i observasjonsperioda
-     * viss den kronologisk siste tidsperioda brukt for å bygge opp underlaget, er løpande.
+     * viss den kronologisk siste tidsperioda brukt for Ã¥ bygge opp underlaget, er lÃ¸pande.
      */
     @Test
     public void skalAvslutteSisteUnderlagsperiodaPaaSisteDagIObservasjonsperiodaVissSisteTidsperiodeErLoepande() {
@@ -183,7 +183,7 @@ public class UnderlagFactoryTest {
 
     /**
      * Verifiserer at underlagets siste underlagsperiode blir avgrensa til siste dag i observasjonsperioda
-     * viss den kronologisk siste tidsperioda brukt for å bygge opp underlaget, er avslutta etter observasjonsperiodas
+     * viss den kronologisk siste tidsperioda brukt for Ã¥ bygge opp underlaget, er avslutta etter observasjonsperiodas
      * siste dag.
      * <h6>Grafisk illustrasjon</h6>
      * <pre>
@@ -205,13 +205,13 @@ public class UnderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at vi ikkje har nokon ekle +/- 1 dag feil i handtering av øvre grense for dato i underlaget.
+     * Verifiserer at vi ikkje har nokon ekle +/- 1 dag feil i handtering av Ã¸vre grense for dato i underlaget.
      * <p>
      * Dersom vi har ei periode som har til og med-dato lik observasjonsperiodas til og med-dato og ei underlagsperiode
-     * som startar dagen etter så skal det ikkje genererast meir enn ei periode i underlaget.
+     * som startar dagen etter sÃ¥ skal det ikkje genererast meir enn ei periode i underlaget.
      * <p>
-     * Dersom vi har ei periode som har frå og med-dato lik observasjonsperiodas til og med-dato så skal underlaget
-     * splittast på denne dagen så ein endar opp med ei en-dag lang underlagsperiode som siste periode i underlaget.
+     * Dersom vi har ei periode som har frÃ¥ og med-dato lik observasjonsperiodas til og med-dato sÃ¥ skal underlaget
+     * splittast pÃ¥ denne dagen sÃ¥ ein endar opp med ei en-dag lang underlagsperiode som siste periode i underlaget.
      */
     @Test
     public void skalHandtereGrenseverdiarVedAvgrensingAvOevredatoGrenseKorrekt() {
@@ -241,9 +241,9 @@ public class UnderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at underlagets første underlagsperiode blir avgrensa til første dag i observasjonsperioda
-     * viss den kronologisk første tidsperioda brukt for å bygge opp underlaget, startar før observasjonsperiodas
-     * første dag.
+     * Verifiserer at underlagets fÃ¸rste underlagsperiode blir avgrensa til fÃ¸rste dag i observasjonsperioda
+     * viss den kronologisk fÃ¸rste tidsperioda brukt for Ã¥ bygge opp underlaget, startar fÃ¸r observasjonsperiodas
+     * fÃ¸rste dag.
      * <h6>Grafisk illustrasjon</h6>
      * <pre>
      *     Observasjonsperiode:               |============|
@@ -262,10 +262,10 @@ public class UnderlagFactoryTest {
 
     /**
      * Verifiserer at underlaget endar opp med kun ei underlagsperiode dersom input periodene som overlappar
-     * observasjonsperioda har sine frå og med- og til og med-dato utanfor observasjonsperioda.
+     * observasjonsperioda har sine frÃ¥ og med- og til og med-dato utanfor observasjonsperioda.
      * <p>
-     * Hovedintensjonen her er å sikre at periodiseringa ikkje gjer nokon antagelsar om at det alltid vil eksistere
-     * datoar å splitte på innanfor observasjonsperioda dersom den har overlappande tidsperioder som input.
+     * Hovedintensjonen her er Ã¥ sikre at periodiseringa ikkje gjer nokon antagelsar om at det alltid vil eksistere
+     * datoar Ã¥ splitte pÃ¥ innanfor observasjonsperioda dersom den har overlappande tidsperioder som input.
      */
     @Test
     public void skalKonstruereUnderlagMedKunEiUnderlagsperiodeVissInputPeriodeneOverlapparMenFraOgMedOgTilOgMedDatoaneAlleLiggUtanforObservasjonsperioda() {
@@ -279,16 +279,16 @@ public class UnderlagFactoryTest {
 
     /**
      * Verifiserer at eit underlagets grenser, som representerer grenseverdiane for eldste
-     * mulige frå og med-dato og yngste mulige til og med-dato, er påkrevd.
+     * mulige frÃ¥ og med-dato og yngste mulige til og med-dato, er pÃ¥krevd.
      * <br>
-     * Intensjonen med denne begrensinga er å forenkle periodiseringa og den seinare bruken av underlaget sidan ein no
-     * kan avgrense maksimal lengde og unngå "kanskje er har, kanskje eg ikkje har" sjekkar på sluttdato til siste
+     * Intensjonen med denne begrensinga er Ã¥ forenkle periodiseringa og den seinare bruken av underlaget sidan ein no
+     * kan avgrense maksimal lengde og unngÃ¥ "kanskje er har, kanskje eg ikkje har" sjekkar pÃ¥ sluttdato til siste
      * underlagsperiode.
      */
     @Test
     public void skalKreveEiObservasjonsperiode() {
         e.expect(NullPointerException.class);
-        e.expectMessage("observasjonsperiode er påkrevd, men var null");
+        e.expectMessage("observasjonsperiode er pÃ¥krevd, men var null");
         new UnderlagFactory(null);
     }
 

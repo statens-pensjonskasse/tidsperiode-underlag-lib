@@ -23,7 +23,7 @@ public class AarsLengdeRegelTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at regelen beregnar antall dagar basert på årstallet periode er annotert med, ikkje lengda på
+     * Verifiserer at regelen beregnar antall dagar basert pÃ¥ Ã¥rstallet periode er annotert med, ikkje lengda pÃ¥
      * underlagsperioda.
      */
     @Test
@@ -35,7 +35,7 @@ public class AarsLengdeRegelTest {
     }
 
     /**
-     * Verifiserer at periode må vere annotert med årstall for at regelen skal kunne beregne eit resultat.
+     * Verifiserer at periode mÃ¥ vere annotert med Ã¥rstall for at regelen skal kunne beregne eit resultat.
      */
     @Test
     public void skalFeileDersomUnderlagsperiodaIkkjeErAnnotertMedAarstall() {

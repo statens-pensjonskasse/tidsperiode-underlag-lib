@@ -26,9 +26,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
- * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinære
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsserie.StandardTidsserieAnnotering} representerer den ordinÃ¦re
  * {@link StillingsforholdunderlagFactory.Annoteringsstrategi strategien}
- * som bør brukast når ein skal annotere underlagsperioder som blir brukt til å generere ein ny tidsserie.
+ * som bÃ¸r brukast nÃ¥r ein skal annotere underlagsperioder som blir brukt til Ã¥ generere ein ny tidsserie.
  *
  * @author Tarjei Skorgenes
  */
@@ -38,7 +38,7 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
     /**
      * Populerer underlaget og underlagets underlagsperioder med annotasjonar.
      * <p>
-     * Kvar underlagsperiode blir først annotert via {@link #annoter(Underlag, Underlagsperiode)}.
+     * Kvar underlagsperiode blir fÃ¸rst annotert via {@link #annoter(Underlag, Underlagsperiode)}.
      * <p>
      * Dersom siste underlagsperiode er annotert med premiestatus blir underlaget annotert med denne heilt til slutt.
      *
@@ -55,10 +55,10 @@ public class StandardTidsserieAnnotering implements StillingsforholdunderlagFact
     }
 
     /**
-     * Annoterer underlagsperioda basert på gjeldande stillingsendring viss perioda
+     * Annoterer underlagsperioda basert pÃ¥ gjeldande stillingsendring viss perioda
      * er tilknytta eit stillingsforhold
      *
-     * @param underlag underlaget som perioda inngår i
+     * @param underlag underlaget som perioda inngÃ¥r i
      * @param periode  underlagsperioda som skal populerast med annotasjonar
      * @see Underlagsperiode#koblingarAvType(Class)
      * @see StillingsforholdPeriode#annoter(no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar)

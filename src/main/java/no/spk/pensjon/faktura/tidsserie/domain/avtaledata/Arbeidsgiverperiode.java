@@ -10,7 +10,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
- * Holder på en arbeidsgiverid for en gitt periode.
+ * Holder pÃ¥ en arbeidsgiverid for en gitt periode.
  *
  * @author Snorre E. Brekke - Computas
  */

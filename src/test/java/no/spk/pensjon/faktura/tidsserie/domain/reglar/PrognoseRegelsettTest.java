@@ -112,7 +112,7 @@ public class PrognoseRegelsettTest {
     private static AbstractComparableAssert<?, Kroner> assertPensjonsgivendeAarsloenn(final UnderlagsperiodeBuilder builder) {
         final Underlagsperiode p = bygg(builder);
         return assertThat(p.beregn(MaskineltGrunnlagRegel.class))
-                .as("pensjonsgivende årslønn pr dags dato for periode " + p);
+                .as("pensjonsgivende Ã¥rslÃ¸nn pr dags dato for periode " + p);
     }
 
     private static AbstractCharSequenceAssert<?, String> assertAarsverk(final UnderlagsperiodeBuilder builder) {
@@ -122,7 +122,7 @@ public class PrognoseRegelsettTest {
                         .beregn(AarsverkRegel.class)
                         .tilProsent()
                         .toString()
-        ).as("årsverk for periode " + p);
+        ).as("Ã¥rsverk for periode " + p);
     }
 
     private static Underlagsperiode bygg(UnderlagsperiodeBuilder builder) {

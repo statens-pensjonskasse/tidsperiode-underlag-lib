@@ -3,13 +3,13 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link Variabletillegg} representerer eit variabelt tillegg som inngår som ein del av den totale, utbetalte årslønna
- * for stillinga den er innrapportert på.
+ * {@link Variabletillegg} representerer eit variabelt tillegg som inngÃ¥r som ein del av den totale, utbetalte Ã¥rslÃ¸nna
+ * for stillinga den er innrapportert pÃ¥.
  * <p>
- * I likheit med grunnlønna forventast variable tillegg å vere innrapportert deltidsjustert slik at ein ikkje treng å
- * foreta nokon vidare justering av dei variable tillegga basert på stillingsprosenten til stillingsendringa.
+ * I likheit med grunnlÃ¸nna forventast variable tillegg Ã¥ vere innrapportert deltidsjustert slik at ein ikkje treng Ã¥
+ * foreta nokon vidare justering av dei variable tillegga basert pÃ¥ stillingsprosenten til stillingsendringa.
  * <p>
- * Variable tillegg blir innrapportert som ein årsverdi, på samme måte som deltidsjustert lønn.
+ * Variable tillegg blir innrapportert som ein Ã¥rsverdi, pÃ¥ samme mÃ¥te som deltidsjustert lÃ¸nn.
  *
  * @author Tarjei Skorgenes
  */
@@ -17,19 +17,19 @@ public class Variabletillegg {
     private final Kroner beloep;
 
     /**
-     * Konstruerer eit nytt variabelt tillegg i årslønn.
+     * Konstruerer eit nytt variabelt tillegg i Ã¥rslÃ¸nn.
      *
-     * @param beloep kronebeløpet som kjem som eit variabelt tillegg i lønn
+     * @param beloep kronebelÃ¸pet som kjem som eit variabelt tillegg i lÃ¸nn
      * @throws NullPointerException viss <code>beloep</code> er <code>null</code>
      */
     public Variabletillegg(final Kroner beloep) {
-        this.beloep = requireNonNull(beloep, () -> "beløp er påkrevd, men var null");
+        this.beloep = requireNonNull(beloep, () -> "belÃ¸p er pÃ¥krevd, men var null");
     }
 
     /**
-     * Returnerer det variable, årlige lønnstillegget.
+     * Returnerer det variable, Ã¥rlige lÃ¸nnstillegget.
      *
-     * @return det variable tillegget i årslønn
+     * @return det variable tillegget i Ã¥rslÃ¸nn
      */
     public Kroner beloep() {
         return beloep;

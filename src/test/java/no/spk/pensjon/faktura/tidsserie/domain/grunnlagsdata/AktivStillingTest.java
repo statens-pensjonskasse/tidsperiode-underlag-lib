@@ -23,7 +23,7 @@ public class AktivStillingTest {
     @Test
     public void skalKreveAksjonskodeForStillingarBasertPaaStillingsendring() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("stillingsforhold som ikkje er medregningsbaserte må ha både stillingsprosent og aksjonskode");
+        e.expectMessage("stillingsforhold som ikkje er medregningsbaserte mÃ¥ ha bÃ¥de stillingsprosent og aksjonskode");
         new AktivStilling(
                 stillingsforhold(1L),
                 of(fulltid().prosent()),
@@ -34,7 +34,7 @@ public class AktivStillingTest {
     @Test
     public void skalKreveStillingsprosentOgAksjonskodeForStillingarBasertPaaStillingsendring() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("stillingsforhold som ikkje er medregningsbaserte må ha både stillingsprosent og aksjonskode");
+        e.expectMessage("stillingsforhold som ikkje er medregningsbaserte mÃ¥ ha bÃ¥de stillingsprosent og aksjonskode");
         new AktivStilling(
                 stillingsforhold(1L),
                 Optional.<Prosent>empty(),

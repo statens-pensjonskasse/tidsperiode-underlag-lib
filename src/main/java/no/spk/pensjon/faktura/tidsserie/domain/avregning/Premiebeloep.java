@@ -10,14 +10,14 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Premiebeløp representerer ein årspremieandel for eit produkt
+ * PremiebelÃ¸p representerer ein Ã¥rspremieandel for eit produkt
  * som har premiesatsar med opp til to desimalar i satsen.
  * <br>
- * Ved alle beregningar som slår saman to premiebeløp eller multipliserer premiebeløpet opp
- * med ein prosentandel, blir delresultatet avrunda til 2 desimalar etter beregninga er utført.
- * Ved avrunding blir {@link RoundingMode#HALF_EVEN} benytta for å redusere den kumulative
- * feilen ved beregning av årspremieandelar for fleire hundretusen til millionar perioder i ein
- * tidsserie for avregningsformål.
+ * Ved alle beregningar som slÃ¥r saman to premiebelÃ¸p eller multipliserer premiebelÃ¸pet opp
+ * med ein prosentandel, blir delresultatet avrunda til 2 desimalar etter beregninga er utfÃ¸rt.
+ * Ved avrunding blir {@link RoundingMode#HALF_EVEN} benytta for Ã¥ redusere den kumulative
+ * feilen ved beregning av Ã¥rspremieandelar for fleire hundretusen til millionar perioder i ein
+ * tidsserie for avregningsformÃ¥l.
  *
  * @author Tarjei Skorgenes
  * @since 1.2.0
@@ -33,21 +33,21 @@ public final class Premiebeloep {
     }
 
     /**
-     * Opprettar eit nytt premiebeløp lik kr 0,00.
+     * Opprettar eit nytt premiebelÃ¸p lik kr 0,00.
      *
-     * @return eit nytt premiebeløp med verdi lik kr 0,00.
+     * @return eit nytt premiebelÃ¸p med verdi lik kr 0,00.
      */
     public static Premiebeloep premiebeloep() {
         return ZERO;
     }
 
     /**
-     * Konverterer heltallsverdien av kronebeløpet til et premiebeløp.
+     * Konverterer heltallsverdien av kronebelÃ¸pet til et premiebelÃ¸p.
      * <br>
-     * Premiebeløpet blir utvidet til å inneholde 2 desimaltegn med begge to lik 0.
+     * PremiebelÃ¸pet blir utvidet til Ã¥ inneholde 2 desimaltegn med begge to lik 0.
      *
-     * @param verdi heltallsverdien for det nye premiebeløpet
-     * @return et nytt premiebeløp med heltallsverdien + 2 desimaltegn lik 0
+     * @param verdi heltallsverdien for det nye premiebelÃ¸pet
+     * @return et nytt premiebelÃ¸p med heltallsverdien + 2 desimaltegn lik 0
      */
     public static Premiebeloep premiebeloep(final Kroner verdi) {
         return new Premiebeloep(
@@ -60,18 +60,18 @@ public final class Premiebeloep {
     }
 
     /**
-     * Konverterer <code>text</code> til et premiebeløp med 2 desimaltegn.
+     * Konverterer <code>text</code> til et premiebelÃ¸p med 2 desimaltegn.
      * <br>
-     * Desimalverdien fra <code>text</code> blir med over i premiebeløpet og premiebeløpet
+     * Desimalverdien fra <code>text</code> blir med over i premiebelÃ¸pet og premiebelÃ¸pet
      * avrundes til 2 desimaler dersom inputen inneholder mer enn 2 desimaler.
      * <br>
      * Konverteringen ignorerer alle mellomrom, kr-prefix eller -postfix. Teksten kan inneholde opp til
      * 1 norsk eller 1 engelsk desimalseparator, men ingen andre separatorer for heltallsdelen av teksten
-     * (utenom mellomrom) er støttet.
+     * (utenom mellomrom) er stÃ¸ttet.
      *
-     * @param text teksten som skal konverteres til et premiebeløp angitt i norske kroner med 2 desimaler
-     * @return det nye premiebeløpet avrundet til 2 desimaler
-     * @throws IllegalArgumentException dersom <code>text</code> ikke kan konverteres til et premiebeløp angitt i norske kroner
+     * @param text teksten som skal konverteres til et premiebelÃ¸p angitt i norske kroner med 2 desimaler
+     * @return det nye premiebelÃ¸pet avrundet til 2 desimaler
+     * @throws IllegalArgumentException dersom <code>text</code> ikke kan konverteres til et premiebelÃ¸p angitt i norske kroner
      */
     public static Premiebeloep premiebeloep(final String text) {
         if (!text.matches("^(kr )?-?[0-9 ]+([,\\.][0-9]{1,})?( kr)?$")) {
@@ -94,11 +94,11 @@ public final class Premiebeloep {
     }
 
     /**
-     * Legger sammen gjeldende premiebeløp med <code>other</code> og runder av resultatet til
+     * Legger sammen gjeldende premiebelÃ¸p med <code>other</code> og runder av resultatet til
      * 2 desimaler.
      *
-     * @param other det andre premiebeløpet som vi skal legges sammen med
-     * @return et nytt premiebeløp med summen av de to premiebeløpene, avrundet til 2 desimaler
+     * @param other det andre premiebelÃ¸pet som vi skal legges sammen med
+     * @return et nytt premiebelÃ¸p med summen av de to premiebelÃ¸pene, avrundet til 2 desimaler
      */
     public Premiebeloep plus(final Premiebeloep other) {
         return new Premiebeloep(
@@ -112,17 +112,17 @@ public final class Premiebeloep {
     }
 
     /**
-     * Multipliserer gjeldende premiebeløp med den angitte prosentsatsen og avrunder til
+     * Multipliserer gjeldende premiebelÃ¸p med den angitte prosentsatsen og avrunder til
      * 2 desimaler.
      * <br>
-     * Prosentsatsen avrundes til 2 desimaler før den multipliseres med det gjeldende premiebeløpet. Dette fordi
-     * prosentsatsen forventes å representere en premiesats og premiesatsene skal maksimalt inneholde 2 desimaler.
+     * Prosentsatsen avrundes til 2 desimaler fÃ¸r den multipliseres med det gjeldende premiebelÃ¸pet. Dette fordi
+     * prosentsatsen forventes Ã¥ representere en premiesats og premiesatsene skal maksimalt inneholde 2 desimaler.
      * <br>
-     * Som en følge av dette vil multiplisering med premiesatser mindre enn eller lik 0.005%, gi et premiebeløp lik
+     * Som en fÃ¸lge av dette vil multiplisering med premiesatser mindre enn eller lik 0.005%, gi et premiebelÃ¸p lik
      * kr 0.
      *
-     * @param other prosentsatsen som vi skal legges sammen med, maksimalt 4 desimaler støttes
-     * @return et nytt premiebeløp med resultatet av multiplikasjonen
+     * @param other prosentsatsen som vi skal legges sammen med, maksimalt 4 desimaler stÃ¸ttes
+     * @return et nytt premiebelÃ¸p med resultatet av multiplikasjonen
      */
     public Premiebeloep multiply(final Prosent other) {
         return new Premiebeloep(
@@ -185,7 +185,7 @@ public final class Premiebeloep {
     /**
      * For test-usage only.
      *
-     * @return antall desimaler i premiebeløpet
+     * @return antall desimaler i premiebelÃ¸pet
      */
     int desimaler() {
         return value.scale();

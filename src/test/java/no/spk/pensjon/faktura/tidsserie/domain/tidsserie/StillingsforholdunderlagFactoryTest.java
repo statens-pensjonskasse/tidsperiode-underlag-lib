@@ -24,13 +24,13 @@ public class StillingsforholdunderlagFactoryTest {
     /**
      * Verifiserer at prosessering av medlemsdata for medlemmar som kun har avtalekoblingar, feilar.
      * <p>
-     * Denne situasjonen er typisk ein indikasjon på dårlig datakvalitet, oftast på grunn av sletta stillingsforhold
-     * der alle medregningar eller stillingsendringar er sletta utan å rydde opp og fjerne stillinganes avtalekoblingar.
+     * Denne situasjonen er typisk ein indikasjon pÃ¥ dÃ¥rlig datakvalitet, oftast pÃ¥ grunn av sletta stillingsforhold
+     * der alle medregningar eller stillingsendringar er sletta utan Ã¥ rydde opp og fjerne stillinganes avtalekoblingar.
      */
     @Test
     public void skalFeileDersomMedlemsdataKunInneheldAvtalekoblingar() {
         e.expect(IllegalStateException.class);
-        e.expectMessage("Eit medlem må ha minst ei stillingsendring eller medregning");
+        e.expectMessage("Eit medlem mÃ¥ ha minst ei stillingsendring eller medregning");
         e.expectMessage("det kan ikkje kun ha avtalekoblingar");
 
         final Medlemsdata medlem = mock(Medlemsdata.class);

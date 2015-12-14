@@ -19,12 +19,12 @@ public interface MedlemsdataOversetter<T> {
     T oversett(List<String> rad);
 
     /**
-     * Støttar oversettaren oversetting av den medlemsspesifikke informasjonen i <code>rad</code>
+     * StÃ¸ttar oversettaren oversetting av den medlemsspesifikke informasjonen i <code>rad</code>
      * til ein sterkt typa datatype?
      *
      * @param rad ei rad som inneheld medlemsspesifikk informasjon
-     * @return <code>true</code> dersom oversettaren støttar datatypen som <code>rad</code> representerer,
-     * <code>false</code> viss oversettaren ikkje kan brukast for å oversette denne datatypen
+     * @return <code>true</code> dersom oversettaren stÃ¸ttar datatypen som <code>rad</code> representerer,
+     * <code>false</code> viss oversettaren ikkje kan brukast for Ã¥ oversette denne datatypen
      */
     boolean supports(List<String> rad);
 }

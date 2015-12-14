@@ -32,7 +32,7 @@ public class StillingsforholdPerioderTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at frå og med- og til og med-dato blir henta frå henholdsvis første og siste periode.
+     * Verifiserer at frÃ¥ og med- og til og med-dato blir henta frÃ¥ henholdsvis fÃ¸rste og siste periode.
      */
     @Test
     public void skalHenteStillingsforholdetSinFraaOgMedOgTilOgMedDatoFraaFoersteOgSistePeriode() {
@@ -53,7 +53,7 @@ public class StillingsforholdPerioderTest {
     }
 
     /**
-     * Verifiserer at det ikkje er mulig  å opprette ein ny instans av StillingsforholdPerioder utan 1 eller fleire
+     * Verifiserer at det ikkje er mulig  Ã¥ opprette ein ny instans av StillingsforholdPerioder utan 1 eller fleire
      * {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.StillingsforholdPeriode}r.
      */
     @Test
@@ -62,18 +62,18 @@ public class StillingsforholdPerioderTest {
 
         try {
             new StillingsforholdPerioder(new StillingsforholdId(1L), Stream.empty());
-            fail("StillingsforholdPerioder skal kreve minst 1 periode ved konstruksjon, men feila ikkje når vi sendte inn 0 perioder");
+            fail("StillingsforholdPerioder skal kreve minst 1 periode ved konstruksjon, men feila ikkje nÃ¥r vi sendte inn 0 perioder");
         } catch (final AssertionError e) {
             // Brukar ikkje ExpectedException her sidan den ikkje plukkar opp dersom feilmeldinga som blir kasta er
-            // noko anna enn forventa når det er AssertionError som blir kasta
+            // noko anna enn forventa nÃ¥r det er AssertionError som blir kasta
             assertThat(e).hasMessageContaining("Forventa minst 1 stillingsforholdperiode, men var 0");
         }
     }
 
     /**
-     * Verifiserer at det blir verifisert at periodene blir sendt inn i kronologisk sortert rekkefølge.
+     * Verifiserer at det blir verifisert at periodene blir sendt inn i kronologisk sortert rekkefÃ¸lge.
      * <p>
-     * Merk at dette kravet av ytelsesmessige hensyn kun gjeld når assertions er aktivert.
+     * Merk at dette kravet av ytelsesmessige hensyn kun gjeld nÃ¥r assertions er aktivert.
      */
     @Test
     public void skalKreveAtPeriodeneErSortertKronologisk() {
@@ -90,35 +90,35 @@ public class StillingsforholdPerioderTest {
             fail("StillingsforholdPerioder skal kreve at periodene er sortert, men den gjorde ikkje det");
         } catch (final AssertionError e) {
             // Brukar ikkje ExpectedException her sidan den ikkje plukkar opp dersom feilmeldinga som blir kasta er
-            // noko anna enn forventa når det er AssertionError som blir kasta
-            assertThat(e).hasMessageContaining("Stillingsforholdperiodene må vere sortert i kronologisk rekkefølge, men var ikkje det");
+            // noko anna enn forventa nÃ¥r det er AssertionError som blir kasta
+            assertThat(e).hasMessageContaining("Stillingsforholdperiodene mÃ¥ vere sortert i kronologisk rekkefÃ¸lge, men var ikkje det");
         }
     }
 
     /**
-     * Verifiserer at stillingsforholdnummer er påkrevd ved konstruksjon slik at ein unngår at alle brukarane av klassa
-     * må legge til null-sjekkar kvar gang dei skal prøve å bruke denne verdien seinare.
+     * Verifiserer at stillingsforholdnummer er pÃ¥krevd ved konstruksjon slik at ein unngÃ¥r at alle brukarane av klassa
+     * mÃ¥ legge til null-sjekkar kvar gang dei skal prÃ¸ve Ã¥ bruke denne verdien seinare.
      */
     @Test
     public void skalKreveStillingsforholdIdVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("stillingsforhold er påkrevd, men var null");
+        e.expectMessage("stillingsforhold er pÃ¥krevd, men var null");
         new StillingsforholdPerioder(null, new ArrayList<>());
     }
 
     /**
-     * Verifiserer at ei samling med perioder er påkrevd ved konstruksjon slik at ein unngår at alle brukarane av klassa
-     * må legge til null-sjekkar kvar gang dei skal prøve å bruke denne verdien seinare.
+     * Verifiserer at ei samling med perioder er pÃ¥krevd ved konstruksjon slik at ein unngÃ¥r at alle brukarane av klassa
+     * mÃ¥ legge til null-sjekkar kvar gang dei skal prÃ¸ve Ã¥ bruke denne verdien seinare.
      */
     @Test
     public void skalKrevePerioderVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("perioder er påkrevd, men var null");
+        e.expectMessage("perioder er pÃ¥krevd, men var null");
         new StillingsforholdPerioder(new StillingsforholdId(1l), (List<StillingsforholdPeriode>) null);
     }
 
     @Test
-    public void skalTaVarePåPeriodeneSomBlirSendtInnVedKonstruksjon() {
+    public void skalTaVarePÃ¥PeriodeneSomBlirSendtInnVedKonstruksjon() {
         final StillingsforholdPerioder stillingsforhold = new StillingsforholdPerioder(
                 new StillingsforholdId(1L),
                 singletonList(
@@ -136,6 +136,6 @@ public class StillingsforholdPerioderTest {
     private static void assumeAssertionsEnabled() {
         boolean assertsEnabled = false;
         assert assertsEnabled = true; // http://stackoverflow.com/questions/13029915/how-to-programmatically-test-if-assertions-are-enabled
-        assumeTrue("Testen blir kun verifisert når assertions er aktivert", assertsEnabled);
+        assumeTrue("Testen blir kun verifisert nÃ¥r assertions er aktivert", assertsEnabled);
     }
 }

@@ -12,10 +12,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 final class AvtaleFactory {
     /**
      * Orkestrerer oppbygging av ein ny representasjon av gjeldande tilstand for ein avtale basert
-     * på underlagsperiodas {@link Avtalerelatertperiode avtale-relaterte periodekoblingar}.
+     * pÃ¥ underlagsperiodas {@link Avtalerelatertperiode avtale-relaterte periodekoblingar}.
      * <p>
-     * Avtalen sin tilstand blir bygd opp basert på alle avtaleprodukt og avtaleversjonen som er
-     * kobla til underlagsperioda og som tilhøyrer avtalen.
+     * Avtalen sin tilstand blir bygd opp basert pÃ¥ alle avtaleprodukt og avtaleversjonen som er
+     * kobla til underlagsperioda og som tilhÃ¸yrer avtalen.
      *
      * @param periode underlagsperioda som inneheld informasjon om gjeldande tilstand for avtalen
      * @param avtale  avtalen gjeldande tilstand skal byggast opp for

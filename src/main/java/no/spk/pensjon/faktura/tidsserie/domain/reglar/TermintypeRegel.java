@@ -12,7 +12,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
 /**
  * {@link TermintypeRegel} representerer reglen som bestemmer hvilken termintype perioden knyttes til
- * basert på ordning, premiekategori og premiestatus.
+ * basert pÃ¥ ordning, premiekategori og premiestatus.
  *
  */
 

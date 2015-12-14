@@ -74,7 +74,7 @@ public class MedlemsavtalarPeriode extends AbstractTidsperiode<MedlemsavtalarPer
     }
 
     /**
-     * Opprettar ein byggar som kan benyttast for Â konstruere nye medlemsavtaleperioder.
+     * Opprettar ein byggar som kan benyttast for √• konstruere nye medlemsavtaleperioder.
      *
      * @return ein ny byggar uten nokon datoar eller avtalekoblingar/avtalar populert
      */
@@ -107,11 +107,11 @@ public class MedlemsavtalarPeriode extends AbstractTidsperiode<MedlemsavtalarPer
         }
 
         public LocalDate fraOgMed() {
-            return fraOgMed.orElseThrow(() -> new IllegalStateException("Fra og med-dato er pÂkrevd, men er ikkje satt"));
+            return fraOgMed.orElseThrow(() -> new IllegalStateException("Fra og med-dato er p√•krevd, men er ikkje satt"));
         }
 
         public Builder fraOgMed(final LocalDate fraOgMed) {
-            this.fraOgMed = of(requireNonNull(fraOgMed, "fra og med-dato er pÂkrevd, men var null"));
+            this.fraOgMed = of(requireNonNull(fraOgMed, "fra og med-dato er p√•krevd, men var null"));
             return this;
         }
 
@@ -120,7 +120,7 @@ public class MedlemsavtalarPeriode extends AbstractTidsperiode<MedlemsavtalarPer
         }
 
         public Builder tilOgMed(final Optional<LocalDate> tilOgMed) {
-            this.tilOgMed = requireNonNull(tilOgMed, "til og med-dato er pÂkrevd, men var null");
+            this.tilOgMed = requireNonNull(tilOgMed, "til og med-dato er p√•krevd, men var null");
             return this;
         }
 
