@@ -12,7 +12,7 @@ public class PersonnummerTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at personnummer alltid blir representert som ei 5-sifra kode sjølv om tallverdien til personnummeret
+     * Verifiserer at personnummer alltid blir representert som ei 5-sifra kode sjÃ¸lv om tallverdien til personnummeret
      * tilfeldigvis kun har 1-4 siffer i seg.
      */
     @Test
@@ -27,7 +27,7 @@ public class PersonnummerTest {
     @Test
     public void skalAlltidVereEitPositivtHeiltal() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("personnummer må vere eit positivt heiltal");
+        e.expectMessage("personnummer mÃ¥ vere eit positivt heiltal");
         e.expectMessage("var -1");
         new Personnummer(-1);
     }

@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link AvtaleId} representerer nummeret som unikt identifiserer og skiller ein avtale frÂ alle andre avtalar.
+ * {@link AvtaleId} representerer nummeret som unikt identifiserer og skiller ein avtale fr√• alle andre avtalar.
  *
  * @author Tarjei Skorgenes
  */
@@ -17,7 +17,7 @@ public class AvtaleId {
      * @throws NullPointerException viss <code>id</code> er <code>null</code>
      */
     public AvtaleId(final Long id) {
-        this.id = requireNonNull(id, () -> "avtalenummer er pÂkrevd, men var null");
+        this.id = requireNonNull(id, () -> "avtalenummer er p√•krevd, men var null");
     }
 
     @Override

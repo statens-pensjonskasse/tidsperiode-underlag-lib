@@ -6,21 +6,21 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 /**
  * {@link StillingsforholdUnderlagCallback} representerer
  * kontrakta mellom {@link StillingsforholdunderlagFactory}
- * og klientar av den som ønskjer å behandle/prosessere underlag avgrensa til eit og eit stillingsforhold
+ * og klientar av den som Ã¸nskjer Ã¥ behandle/prosessere underlag avgrensa til eit og eit stillingsforhold
  * om gangen.
  * <p>
- * Designet brukar callbacks for å ein Stream-aktig prosessering så ein slepp å bygge underlag for alle
- * stillingsforholda tilknytta eit medlem før prosessering av desse kan starte.
+ * Designet brukar callbacks for Ã¥ ein Stream-aktig prosessering sÃ¥ ein slepp Ã¥ bygge underlag for alle
+ * stillingsforholda tilknytta eit medlem fÃ¸r prosessering av desse kan starte.
  *
  * @author Tarjei Skorgenes
  */
 public interface StillingsforholdUnderlagCallback {
     /**
-     * Notifiserer om at eit nytt underlag har blitt generert basert på grunnlagsdata tilknytta
+     * Notifiserer om at eit nytt underlag har blitt generert basert pÃ¥ grunnlagsdata tilknytta
      * <code>stillingsforhold</code> i tillegg til andre tidsperiodiserte referansedata og regelsett.
      * <p>
-     * Underlaga som blir generert blir automatisk avgrensa til å inneholde kun underlagsperioder
-     * i perioda mellom stillingsforholdets første stillingsendring og stillingsforholdets sluttdato, eller
+     * Underlaga som blir generert blir automatisk avgrensa til Ã¥ inneholde kun underlagsperioder
+     * i perioda mellom stillingsforholdets fÃ¸rste stillingsendring og stillingsforholdets sluttdato, eller
      * observasjonsperiodas sluttdato viss stillingsforholdet er aktivt ut forbi observasjonsperiodas sluttdato.
      *
      * @param stillingsforhold stillingsforholdet som har eit nytt underlag har blitt generert for

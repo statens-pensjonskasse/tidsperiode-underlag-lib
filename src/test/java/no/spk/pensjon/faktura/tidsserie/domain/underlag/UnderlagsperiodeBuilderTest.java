@@ -17,7 +17,7 @@ public class UnderlagsperiodeBuilderTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at alle annotasjonane som er lagt til på den opprinnelige builderen, blir kopiert
+     * Verifiserer at alle annotasjonane som er lagt til pÃ¥ den opprinnelige builderen, blir kopiert
      * over til den nye builderen.
      */
     @Test
@@ -67,8 +67,8 @@ public class UnderlagsperiodeBuilderTest {
 
     /**
      * Verifiserer at {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder#med(Object)}
-     * kun annoterer perioda basert på verdiens eksakte {@link Object#getClass()}, ikkje eventuelle interface eller
-     * superklasser som verdien implementerer eller arvar frå, direkte eller indirekte.
+     * kun annoterer perioda basert pÃ¥ verdiens eksakte {@link Object#getClass()}, ikkje eventuelle interface eller
+     * superklasser som verdien implementerer eller arvar frÃ¥, direkte eller indirekte.
      */
     @Test
     public void skalIkkjeAnnoterePeriodeMedVerdiensSuperTyper() {

@@ -107,10 +107,10 @@ public class TidsserieObservasjonTest {
         }
 
         public TidsserieObservasjon bygg() {
-            requireNonNull(dato, "observasjonsdato er påkrevd, men var null");
-            requireNonNull(stillingsforhold, "stillingsforhold er påkrevd, men var null");
-            requireNonNull(avtale, "avtale er påkrevd, men var null");
-            requireNonNull(maskineltgrunnlag, "maskinelt grunnlag er påkrevd, men var null");
+            requireNonNull(dato, "observasjonsdato er pÃ¥krevd, men var null");
+            requireNonNull(stillingsforhold, "stillingsforhold er pÃ¥krevd, men var null");
+            requireNonNull(avtale, "avtale er pÃ¥krevd, men var null");
+            requireNonNull(maskineltgrunnlag, "maskinelt grunnlag er pÃ¥krevd, men var null");
             return new TidsserieObservasjon(
                     new StillingsforholdId(stillingsforhold),
                     new AvtaleId(avtale),
@@ -130,7 +130,7 @@ public class TidsserieObservasjonTest {
 
     private static AbstractBooleanAssert<?> assertTilhoeyrer(final TidsserieObservasjon observasjon, final Aarstall aarstall) {
         return assertThat(observasjon.tilhoeyrer(aarstall)).
-                as("Tilhøyrer " + observasjon + ", årstall " + 2008 + "?");
+                as("TilhÃ¸yrer " + observasjon + ", Ã¥rstall " + 2008 + "?");
     }
 
 

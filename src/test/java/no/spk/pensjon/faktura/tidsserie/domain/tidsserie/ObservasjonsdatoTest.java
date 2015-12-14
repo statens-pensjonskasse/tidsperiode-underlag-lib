@@ -46,16 +46,16 @@ public class ObservasjonsdatoTest {
             .toArray(Year[]::new);
 
     /**
-     * Verifiserer at observasjonsdatoen for desember indikerer at den er for siste dag i året for alle årstall.
+     * Verifiserer at observasjonsdatoen for desember indikerer at den er for siste dag i Ã¥ret for alle Ã¥rstall.
      */
     @Theory
     public void skalAlltidVereSisteDagIAaret(final Year year) {
         final Observasjonsdato dato = Observasjonsdato.forSisteDag(new Aarstall(year.getValue()), Month.DECEMBER);
-        assertThat(dato.erAaretsSisteDag()).as("er " + dato + " siste dag i året?").isTrue();
+        assertThat(dato.erAaretsSisteDag()).as("er " + dato + " siste dag i Ã¥ret?").isTrue();
     }
 
     /**
-     * Verifiserer at observasjonsdatoen tilhøyrer rett årstall.
+     * Verifiserer at observasjonsdatoen tilhÃ¸yrer rett Ã¥rstall.
      */
     @Theory
     public void skalAlltidTilhoeyreAarstalletDatoenErOpprettaFor(final Year year, final Month month) {
@@ -67,10 +67,10 @@ public class ObservasjonsdatoTest {
     }
 
     /**
-     * Verifiserer at observasjonsdatoen er 30. i månden for månedar som alltid er 31 dagar lange.
+     * Verifiserer at observasjonsdatoen er 30. i mÃ¥nden for mÃ¥nedar som alltid er 31 dagar lange.
      *
-     * @param year  årstallet observasjonsdatoen skal ligge innanfor
-     * @param month månaden vi skal sjekke om observasjonsdatoen blir rett generert for
+     * @param year  Ã¥rstallet observasjonsdatoen skal ligge innanfor
+     * @param month mÃ¥naden vi skal sjekke om observasjonsdatoen blir rett generert for
      */
     @Theory
     public void skalGenerereObservasjonsdatoLik31IMaanedarSomInneheld31Dagar(final Year year, final Month month) {
@@ -81,10 +81,10 @@ public class ObservasjonsdatoTest {
     }
 
     /**
-     * Verifiserer at observasjonsdatoen er 30. i månden for månedar som alltid er 30 dagar lange.
+     * Verifiserer at observasjonsdatoen er 30. i mÃ¥nden for mÃ¥nedar som alltid er 30 dagar lange.
      *
-     * @param year  årstallet observasjonsdatoen skal ligge innanfor
-     * @param month månaden vi skal sjekke om observasjonsdatoen blir rett generert for
+     * @param year  Ã¥rstallet observasjonsdatoen skal ligge innanfor
+     * @param month mÃ¥naden vi skal sjekke om observasjonsdatoen blir rett generert for
      */
     @Theory
     public void skalGenerereObservasjonsdatoLik30IMaanedarSomInneheld30Dagar(final Year year, final Month month) {
@@ -95,10 +95,10 @@ public class ObservasjonsdatoTest {
     }
 
     /**
-     * Verifiserer at observasjonsdatoen er 29. februar for alle skuddår.
+     * Verifiserer at observasjonsdatoen er 29. februar for alle skuddÃ¥r.
      *
-     * @param year  årstallet observasjonsdatoen skal ligge innanfor
-     * @param month månaden vi skal sjekke om observasjonsdatoen blir rett generert for
+     * @param year  Ã¥rstallet observasjonsdatoen skal ligge innanfor
+     * @param month mÃ¥naden vi skal sjekke om observasjonsdatoen blir rett generert for
      */
     @Theory
     public void skalGenerereObservasjonsdatoLik29FebruarISkuddaar(final Year year, final Month month) {
@@ -110,10 +110,10 @@ public class ObservasjonsdatoTest {
     }
 
     /**
-     * Verifiserer at observasjonsdatoen er 28. februar for alle år som ikkje er skuddår.
+     * Verifiserer at observasjonsdatoen er 28. februar for alle Ã¥r som ikkje er skuddÃ¥r.
      *
-     * @param year  årstallet observasjonsdatoen skal ligge innanfor
-     * @param month månaden vi skal sjekke om observasjonsdatoen blir rett generert for
+     * @param year  Ã¥rstallet observasjonsdatoen skal ligge innanfor
+     * @param month mÃ¥naden vi skal sjekke om observasjonsdatoen blir rett generert for
      */
     @Theory
     public void skalGenerereObservasjonsdatoLik28FebruarIAlleAarSomIkkjeErSkuddaar(final Year year, final Month month) {
@@ -125,7 +125,7 @@ public class ObservasjonsdatoTest {
     }
 
     private static AbstractBooleanAssert<?> assertTilhoeyrer(Observasjonsdato dato, Aarstall aar) {
-        return assertThat(dato.tilhoeyrer(aar)).as("tilhøyrer " + dato + " år " + aar + "?");
+        return assertThat(dato.tilhoeyrer(aar)).as("tilhÃ¸yrer " + dato + " Ã¥r " + aar + "?");
     }
 
     private static AbstractObjectAssert<?, Observasjonsdato> assertObservasjonsdatoForSisteDag(Year year, Month month) {

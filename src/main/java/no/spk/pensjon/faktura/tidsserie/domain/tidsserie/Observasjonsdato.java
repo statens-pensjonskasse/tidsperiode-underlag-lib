@@ -11,21 +11,21 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
- * {@link Observasjonsdato} representerer dagen ein observasjon blir simulert utført.
+ * {@link Observasjonsdato} representerer dagen ein observasjon blir simulert utfÃ¸rt.
  * <p>
- * Observasjonsdatoen regulerer kva perioder i årsunderlaget som er synlige når ein utfører observasjonen.
- * Underlagsperioder og endringar med frå og med- eller aksjonsdato etter denne dagen blir ikkje tatt hensyn
- * til når observasjonen blir generert.
+ * Observasjonsdatoen regulerer kva perioder i Ã¥rsunderlaget som er synlige nÃ¥r ein utfÃ¸rer observasjonen.
+ * Underlagsperioder og endringar med frÃ¥ og med- eller aksjonsdato etter denne dagen blir ikkje tatt hensyn
+ * til nÃ¥r observasjonen blir generert.
  * <p>
  * Observasjonsdatoen regulerer og kva underlagsperiode og endringar som blir lagt til grunn som gjeldande ut det
- * aktuelle året observasjondatoen ligg innanfor, viss stillingsforholdets framleis er aktivt på observasjonsdatoen.
+ * aktuelle Ã¥ret observasjondatoen ligg innanfor, viss stillingsforholdets framleis er aktivt pÃ¥ observasjonsdatoen.
  *
  * @author Tarjei Skorgenes
  */
 public class Observasjonsdato {
     private final LocalDate dato;
-    private final boolean erSisteForÅret;
-    private final LocalDate sisteDagIÅret;
+    private final boolean erSisteForAaret;
+    private final LocalDate sisteDagIAaret;
 
     /**
      * Konstruerer ein ny observasjondato.
@@ -34,9 +34,9 @@ public class Observasjonsdato {
      * @throws NullPointerException dersom <code>dato</code> er <code>null</code>
      */
     public Observasjonsdato(final LocalDate dato) {
-        this.dato = requireNonNull(dato, () -> "dato manglar verdi, men er påkrevd");
-        this.erSisteForÅret = Month.DECEMBER == dato.getMonth();
-        this.sisteDagIÅret = dato.with(lastDayOfYear());
+        this.dato = requireNonNull(dato, () -> "dato manglar verdi, men er pÃ¥krevd");
+        this.erSisteForAaret = Month.DECEMBER == dato.getMonth();
+        this.sisteDagIAaret = dato.with(lastDayOfYear());
     }
 
     private Observasjonsdato(final Aarstall aarstall, final Month month) {
@@ -44,8 +44,8 @@ public class Observasjonsdato {
                 .toYear()
                 .atMonth(month)
                 .atEndOfMonth();
-        this.sisteDagIÅret = aarstall.atEndOfYear();
-        this.erSisteForÅret = dato.isEqual(sisteDagIÅret);
+        this.sisteDagIAaret = aarstall.atEndOfYear();
+        this.erSisteForAaret = dato.isEqual(sisteDagIAaret);
     }
 
     @Override
@@ -74,31 +74,31 @@ public class Observasjonsdato {
     }
 
     /**
-     * Opprettar ein ny observasjonsdato siste dag i det aktuelle årets månad.
+     * Opprettar ein ny observasjonsdato siste dag i det aktuelle Ã¥rets mÃ¥nad.
      *
-     * @param aarstall årstallet observasjonsdatoen ligg innanfor
-     * @param month    månaden som observasjonsdatoen skal vere siste dag i månaden for
-     * @return ein ny observasjonsdato som er siste dag i det angitte årets måned
+     * @param aarstall Ã¥rstallet observasjonsdatoen ligg innanfor
+     * @param month    mÃ¥naden som observasjonsdatoen skal vere siste dag i mÃ¥naden for
+     * @return ein ny observasjonsdato som er siste dag i det angitte Ã¥rets mÃ¥ned
      */
     public static Observasjonsdato forSisteDag(final Aarstall aarstall, final Month month) {
         return new Observasjonsdato(aarstall, month);
     }
 
     /**
-     * Ligg observasjonsdatoen innanfor det angitte året?
+     * Ligg observasjonsdatoen innanfor det angitte Ã¥ret?
      *
-     * @param aarstall årstallet til året datoen skal sjekkast mot
-     * @return <code>true</code> dersom datoen ligg innanfor det angitt året, <code>false</code> ellers
+     * @param aarstall Ã¥rstallet til Ã¥ret datoen skal sjekkast mot
+     * @return <code>true</code> dersom datoen ligg innanfor det angitt Ã¥ret, <code>false</code> ellers
      */
     public boolean tilhoeyrer(final Aarstall aarstall) {
         return dato.getYear() == aarstall.toYear().getValue();
     }
 
     /**
-     * Ligg observasjonsdatoen innanfor den angitte månaden?
+     * Ligg observasjonsdatoen innanfor den angitte mÃ¥naden?
      *
-     * @param month månaden som datoen skal sjekkast mot
-     * @return <code>true</code> dersom datoen ligg innanfor den angitte månaden,  <code>false</code> ellers
+     * @param month mÃ¥naden som datoen skal sjekkast mot
+     * @return <code>true</code> dersom datoen ligg innanfor den angitte mÃ¥naden,  <code>false</code> ellers
      */
     public boolean tilhoeyrer(final Month month) {
         return dato.getMonth().equals(month);
@@ -114,13 +114,13 @@ public class Observasjonsdato {
     }
 
     /**
-     * Er <code>perioda</code> synlig frå gjeldande observasjonsdato?
+     * Er <code>perioda</code> synlig frÃ¥ gjeldande observasjonsdato?
      * <br>
-     * Ei periode definerast som synlig dersom den har sin til og med-dato på eller før observasjonsdatoen.
+     * Ei periode definerast som synlig dersom den har sin til og med-dato pÃ¥ eller fÃ¸r observasjonsdatoen.
      * Dersom perioda er avslutta etter observasjonsdatoen er den ikkje synlig.
      *
-     * @param perioda underlagsperioda som ein skal sjekke om er synlig på observasjonsdatoen
-     * @return <code>true</code> dersom perioda er avslutta før observasjonsdatoen, <code>false</code> ellers
+     * @param perioda underlagsperioda som ein skal sjekke om er synlig pÃ¥ observasjonsdatoen
+     * @return <code>true</code> dersom perioda er avslutta fÃ¸r observasjonsdatoen, <code>false</code> ellers
      * @since 1.1.2
      */
     public boolean erPeriodenSynligFra(final Underlagsperiode perioda) {
@@ -128,12 +128,12 @@ public class Observasjonsdato {
     }
 
     /**
-     * Sjekkar om observasjonsdatoen er lik siste dag i året den er tilknytta, aka 31. desember?
+     * Sjekkar om observasjonsdatoen er lik siste dag i Ã¥ret den er tilknytta, aka 31. desember?
      *
      * @return <code>true</code> dersom observasjonsdatoen er lik 31. desember, <code>false</code> ellers
      * @since 1.1.2
      */
     public boolean erAaretsSisteDag() {
-        return erSisteForÅret;
+        return erSisteForAaret;
     }
 }

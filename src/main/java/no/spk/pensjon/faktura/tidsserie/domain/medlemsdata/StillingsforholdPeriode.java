@@ -20,10 +20,10 @@ import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
 /**
- * {@link StillingsforholdPeriode} representerer ei periode der det ikkje skjer nokon endringar på eit bestemt
+ * {@link StillingsforholdPeriode} representerer ei periode der det ikkje skjer nokon endringar pÃ¥ eit bestemt
  * stillingsforhold.
  * <p>
- * Periodene kan bli bygd opp enten basert på ei medregningsperiode, eller som ei periode mellom to endringar i
+ * Periodene kan bli bygd opp enten basert pÃ¥ ei medregningsperiode, eller som ei periode mellom to endringar i
  * stillingshistorikken tilknytta stillingsforholdet.
  *
  * @author Tarjei Skorgenes
@@ -37,8 +37,8 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * Konstruerer ei ny periode for eit stillingsforhold.
      *
      * @param fraOgMed aksjonsdatoen stillingsforholdet endrar tilstand
-     * @param tilOgMed dagen før neste endring i tilstanden til stillingsforholdet, eller stillingsforholdets sluttdato
-     *                 viss perioda representerer siste periode stillingsforholdet er aktivt før det blir sluttmeldt
+     * @param tilOgMed dagen fÃ¸r neste endring i tilstanden til stillingsforholdet, eller stillingsforholdets sluttdato
+     *                 viss perioda representerer siste periode stillingsforholdet er aktivt fÃ¸r det blir sluttmeldt
      * @throws NullPointerException viss nokon av parameterverdiane er <code>null</code>
      */
     public StillingsforholdPeriode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
@@ -47,33 +47,33 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
     }
 
     /**
-     * Konstruerer ei ny periode basert på medregning.
+     * Konstruerer ei ny periode basert pÃ¥ medregning.
      *
      * @param medregning medregningsperioda som stillingsforholdperioda representerer
      * @throws NullPointerException viss <code>medregning</code> er <code>null</code>
      */
     public StillingsforholdPeriode(final Medregningsperiode medregning) {
         super(
-                requireNonNull(medregning, () -> "medregning er påkrevd, men var null").fraOgMed(),
+                requireNonNull(medregning, () -> "medregning er pÃ¥krevd, men var null").fraOgMed(),
                 medregning.tilOgMed()
         );
         this.medregning = of(medregning);
     }
 
     /**
-     * Stillingsendringene som gjelder fra og med periodens første dag.
+     * Stillingsendringene som gjelder fra og med periodens fÃ¸rste dag.
      * <p>
      * For stillingsforholdets siste periode vil det og kunne ligge inne en eller flere stillingsendringer som
      * representerer sluttmeldingen eller sluttmeldinger som avslutter stillingsforholdet.
      * <p>
-     * Antagelse: For stillingsforhold der datakvaliteten er som forventet skal alle perioder før stillingsforholdets
-     * siste periode kun være tillknyttet 1 stillingsendring.
+     * Antagelse: For stillingsforhold der datakvaliteten er som forventet skal alle perioder fÃ¸r stillingsforholdets
+     * siste periode kun vÃ¦re tillknyttet 1 stillingsendring.
      * <p>
      * Og for stillingsforholdets siste periode for stillingsforhold som ikke er aktive, dvs stillingsforhold som har
      * blitt korrekt registrert som sluttmeldt, vil siste periode inneholde to stillingsendringer, en for siste endring
-     * før sluttmeldingen og en for selve sluttmeldingen.
+     * fÃ¸r sluttmeldingen og en for selve sluttmeldingen.
      *
-     * @return alle stillingsendringer som har en aksjonsdato som perioden overlapper, er garantert å inneholde minst
+     * @return alle stillingsendringer som har en aksjonsdato som perioden overlapper, er garantert Ã¥ inneholde minst
      * en endring
      */
     Iterable<Stillingsendring> endringer() {
@@ -83,7 +83,7 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
     /**
      * @see #leggTilOverlappendeStillingsendringer(java.util.List)
      * @see java.util.Arrays#asList
-     * @param endringer en liste som inneholder alle stillingsendringer som skal forsøkes tilkoblet perioden
+     * @param endringer en liste som inneholder alle stillingsendringer som skal forsÃ¸kes tilkoblet perioden
      * @return <code>this</code>
      */
     public StillingsforholdPeriode leggTilOverlappendeStillingsendringer(final Stillingsendring... endringer) {
@@ -97,7 +97,7 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
      * Kun stillingsendringer som faktisk overlapper perioden vil bli lagt til, <code>endringer</code> kan godt inneholde
      * ikke overlappende perioder, de vil ikke bli koblet til perioden.
      *
-     * @param endringer en liste som inneholder alle stillingsendringer som skal forsøkes tilkoblet perioden
+     * @param endringer en liste som inneholder alle stillingsendringer som skal forsÃ¸kes tilkoblet perioden
      * @return <code>this</code>
      */
     public StillingsforholdPeriode leggTilOverlappendeStillingsendringer(final List<Stillingsendring> endringer) {
@@ -110,26 +110,26 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
     }
 
     /**
-     * Returnerer gjeldende stillingsendring for stillingsforholdperioder som er basert på stillingshistorikk.
+     * Returnerer gjeldende stillingsendring for stillingsforholdperioder som er basert pÃ¥ stillingshistorikk.
      * <p>
      * I situasjoner der en har mer enn en endring vil sist registrerte endring som ikke er en sluttmelding, bli brukt
-     * som gjeldende endring. Sluttmeldinger blir ignorert fordi det ikke vil være mulig å vite hva som er gjeldende
+     * som gjeldende endring. Sluttmeldinger blir ignorert fordi det ikke vil vÃ¦re mulig Ã¥ vite hva som er gjeldende
      * aksjonskode for perioden dersom man plukker sluttmeldingen som gjeldende endring.
      * <p>
-     * I situasjoner der stillingsperioden kun har tilknyttet en endring vil denne alltid være gjeldende endring for
+     * I situasjoner der stillingsperioden kun har tilknyttet en endring vil denne alltid vÃ¦re gjeldende endring for
      * perioden, selv om endringen er en sluttmelding. Dette impliserer at dersom stillingsforholdet er registrert med
-     * kun en stillingsendring og det er en sluttmelding så vil den 1 dag lange perioden aldri kunne bli tolket som
-     * permisjon uten lønn eller andre spesielle typer perioder der aksjonskode regulerer hvordan perioden skal beregnes.
+     * kun en stillingsendring og det er en sluttmelding sÃ¥ vil den 1 dag lange perioden aldri kunne bli tolket som
+     * permisjon uten lÃ¸nn eller andre spesielle typer perioder der aksjonskode regulerer hvordan perioden skal beregnes.
      * <p>
-     * Det å bruke sist registrerte endring er forøvrig en forenkling som ikke nødvendigvis er funksjonelt ønskelig.
-     * Det gjennstår å finne gode konflikthåndteringsstrategier for å velge "rett" endring for slike situasjonar
-     * ettersom det i 90% av tilfellene vil vere en indikasjon på at stillingens historikk er inkonsistent eller
+     * Det Ã¥ bruke sist registrerte endring er forÃ¸vrig en forenkling som ikke nÃ¸dvendigvis er funksjonelt Ã¸nskelig.
+     * Det gjennstÃ¥r Ã¥ finne gode konflikthÃ¥ndteringsstrategier for Ã¥ velge "rett" endring for slike situasjonar
+     * ettersom det i 90% av tilfellene vil vere en indikasjon pÃ¥ at stillingens historikk er inkonsistent eller
      * mangelfull.
      * <p>
-     * Dersom stillingsforholdet er basert på medregning har ikkje perioden noen gjeldende stillingsendring.
+     * Dersom stillingsforholdet er basert pÃ¥ medregning har ikkje perioden noen gjeldende stillingsendring.
      *
-     * @return stillingsendringen som er utvalgt til å representere gjeldende tilstand for stillingsforholde i perioden,
-     * eller {@link Optional#empty()} dersom stillingsforholdet er basert på medregning
+     * @return stillingsendringen som er utvalgt til Ã¥ representere gjeldende tilstand for stillingsforholde i perioden,
+     * eller {@link Optional#empty()} dersom stillingsforholdet er basert pÃ¥ medregning
      */
     Optional<Stillingsendring> gjeldendeEndring() {
         if (gjeldendeVerdier.size() == 1) {
@@ -143,19 +143,19 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
     }
 
     /**
-     * Returnerer medregningsperioden som stillingsforholdperioden er basert på.
+     * Returnerer medregningsperioden som stillingsforholdperioden er basert pÃ¥.
      * <p>
-     * For stillingsforhold basert på historikk har ikkje perioden noen medregningsperiode.
+     * For stillingsforhold basert pÃ¥ historikk har ikkje perioden noen medregningsperiode.
      *
-     * @return medregningsperioden som stillingsforholdperioden er basert på, eller {@link Optional#empty()} dersom
-     * stillingsforholdet er basert på historikk
+     * @return medregningsperioden som stillingsforholdperioden er basert pÃ¥, eller {@link Optional#empty()} dersom
+     * stillingsforholdet er basert pÃ¥ historikk
      */
     private Optional<Medregningsperiode> medregning() {
         return medregning;
     }
 
     /**
-     * Annoterer underlagsperioda med grunnlagsdata frå stillingsforholdet gjeldande endring eller medregning.
+     * Annoterer underlagsperioda med grunnlagsdata frÃ¥ stillingsforholdet gjeldande endring eller medregning.
      *
      * @param periode underlagsperioda som skal annoterast med grunnlagsdata
      * @see Medregningsperiode#annoter(Annoterbar)
@@ -171,10 +171,10 @@ public class StillingsforholdPeriode extends AbstractTidsperiode<Stillingsforhol
     }
 
     /**
-     * Tilhøyrer denne perioda stillingsforholdet identifisert av <code>id</code>?
+     * TilhÃ¸yrer denne perioda stillingsforholdet identifisert av <code>id</code>?
      *
      * @param id stillingsforholdnummeret som perioda skal sjekkast mot
-     * @return <code>true</code> dersom perioda tilhøyrer stillingsforholdet identifisert av <code>id</code>,
+     * @return <code>true</code> dersom perioda tilhÃ¸yrer stillingsforholdet identifisert av <code>id</code>,
      * <code>false</code> ellers
      * @throws IllegalStateException dersom perioda er i ei ugyldig tilstand og verken har medregning eller stillingsendring(ar)
      */

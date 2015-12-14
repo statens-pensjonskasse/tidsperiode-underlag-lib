@@ -17,16 +17,16 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 /**
- * {@link PeriodiserMedlem} representerer algoritma som bygger opp medlemsperioder basert på
+ * {@link PeriodiserMedlem} representerer algoritma som bygger opp medlemsperioder basert pÃ¥
  * alle stillingsforholdperioder tilknytta stillingsforholda til medlemmet.
  * <p>
- * Algoritma bygger vidare på periodiseringa som {@link PeriodiserStillingshistorikk} og {@link PeriodiserMedregning} har
- * utført i forkant for å bygge opp {@link StillingsforholdPeriode}r frå medlemmet sine {@link Stillingsendring}ar og
+ * Algoritma bygger vidare pÃ¥ periodiseringa som {@link PeriodiserStillingshistorikk} og {@link PeriodiserMedregning} har
+ * utfÃ¸rt i forkant for Ã¥ bygge opp {@link StillingsforholdPeriode}r frÃ¥ medlemmet sine {@link Stillingsendring}ar og
  * {@link Medregningsperiode}r.
  * <p>
- * Ei medlemsperiode er definert som ei tidsperiode der det ikkje skjer nokon tilstandsendringar på nokon av
+ * Ei medlemsperiode er definert som ei tidsperiode der det ikkje skjer nokon tilstandsendringar pÃ¥ nokon av
  * medlemmet sine stillingsforhold. Algoritma bygger opp eit
- * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag} basert på alle stillingsforholdperioder tilknytta
+ * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag} basert pÃ¥ alle stillingsforholdperioder tilknytta
  * medlemmet. Kvar {@link Underlagsperiode} i underlaget blir konvertert til ei medlemsperiode. Kvar medlemsperiode
  * blir deretter kobla saman med alle stillingsforholdperioder som den overlappar, enten heilt eller delvis. Sidan
  * det for medlemsperioder og er mulig at medlemmet i perioder ikkje har nokon aktive stillingsforhold
@@ -47,10 +47,10 @@ class PeriodiserMedlem {
             return empty();
         }
         final Observasjonsperiode observasjonsperiode = new Observasjonsperiode(
-                // SPK eksisterte ikkje før 1. januar 1917, ergo kan heller ikkje nokon vere medlem tidligare enn det
+                // SPK eksisterte ikkje fÃ¸r 1. januar 1917, ergo kan heller ikkje nokon vere medlem tidligare enn det
                 LocalDate.of(1917, JANUARY, 1),
-                // Periodiseringa legger på 1 dag seinare, ergo -1 her for å unngå
-                // å wrappe rundt til latterlig, latterlig langt inn i fortida
+                // Periodiseringa legger pÃ¥ 1 dag seinare, ergo -1 her for Ã¥ unngÃ¥
+                // Ã¥ wrappe rundt til latterlig, latterlig langt inn i fortida
                 MAX.minusDays(1)
         );
         final Function<Underlagsperiode, Medlemsperiode> tilMedlemsperiode = p -> nyPeriode(observasjonsperiode, p);

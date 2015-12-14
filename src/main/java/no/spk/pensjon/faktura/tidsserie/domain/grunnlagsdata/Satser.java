@@ -27,16 +27,16 @@ public class Satser<T extends Sats> {
     private final T administrasjonsgebyr;
 
     public Satser(T arbeidsgiverpremie, T medlemspremie, T administrasjonsgebyr) {
-        this.arbeidsgiverpremie = requireNonNull(arbeidsgiverpremie, "sats for arbeidsgiver er påkrevd, men var null");
-        this.medlemspremie = requireNonNull(medlemspremie, "sats for medlem er påkrevd, men var null");
-        this.administrasjonsgebyr = requireNonNull(administrasjonsgebyr, "sats for administrasjonsgebyr er påkrevd, men var null");
+        this.arbeidsgiverpremie = requireNonNull(arbeidsgiverpremie, "sats for arbeidsgiver er pÃ¥krevd, men var null");
+        this.medlemspremie = requireNonNull(medlemspremie, "sats for medlem er pÃ¥krevd, men var null");
+        this.administrasjonsgebyr = requireNonNull(administrasjonsgebyr, "sats for administrasjonsgebyr er pÃ¥krevd, men var null");
 
         final Set<Class<?>> typer = Stream.of(arbeidsgiverpremie, medlemspremie, administrasjonsgebyr).map(Sats::getClass).distinct().collect(toSet());
         if (typer.size() > 1) {
             throw new IllegalArgumentException(
-                    "Alle satser på et enkelt avtaleprodukt må være av samme type, men "
+                    "Alle satser pÃ¥ et enkelt avtaleprodukt mÃ¥ vÃ¦re av samme type, men "
                             + typer.size()
-                            + " forskjellige typer satser vart forsøkt brukt.\n"
+                            + " forskjellige typer satser vart forsÃ¸kt brukt.\n"
                             + typer.stream().map(Class::getSimpleName).map(n -> "- " + n).collect(joining("\n")
                     )
             );
@@ -44,7 +44,7 @@ public class Satser<T extends Sats> {
     }
 
     /**
-     * @return Satser som representer at ingen satser er satt. Operasjoner på statsene vil gi 0-verdier.
+     * @return Satser som representer at ingen satser er satt. Operasjoner pÃ¥ statsene vil gi 0-verdier.
      */
     public static Satser<? extends Sats> ingenSatser() {
         return INGEN_SATSER;
@@ -85,10 +85,10 @@ public class Satser<T extends Sats> {
     }
 
     /**
-     * Returnerer en sterkt typa versjon av satsane angitt som beløp forutsatt at
+     * Returnerer en sterkt typa versjon av satsane angitt som belÃ¸p forutsatt at
      * alle satsane er av type {@link Kroner}.
      *
-     * @return <code>this</code> viss alle satsane er angitt som kronebeløp, ellers {@link Optional#empty()}
+     * @return <code>this</code> viss alle satsane er angitt som kronebelÃ¸p, ellers {@link Optional#empty()}
      * @since 1.1.1
      */
     @SuppressWarnings("unchecked")

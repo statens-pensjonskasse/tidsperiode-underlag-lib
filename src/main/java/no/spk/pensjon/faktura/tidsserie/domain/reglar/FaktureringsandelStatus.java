@@ -22,8 +22,8 @@ public class FaktureringsandelStatus {
      * @param andel            prosentandelen av gruppelivspremien som stillingsforholdet sin avtale skal betale
      */
     public FaktureringsandelStatus(final StillingsforholdId stillingsforhold, final Prosent andel) {
-        this.id = requireNonNull(stillingsforhold, "stillingsforhold var null, men er påkrevd");
-        this.andel = requireNonNull(andel, "andel var null, men er påkrevd");
+        this.id = requireNonNull(stillingsforhold, "stillingsforhold var null, men er pÃ¥krevd");
+        this.andel = requireNonNull(andel, "andel var null, men er pÃ¥krevd");
     }
 
     /**

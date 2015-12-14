@@ -8,7 +8,7 @@ import static java.time.Month.JANUARY;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
 
 /**
- * {@link Aarstall} representerer eit årstall.
+ * {@link Aarstall} representerer eit Ã¥rstall.
  *
  * @author Tarjei Skorgenes
  */
@@ -21,7 +21,7 @@ public class Aarstall {
     /**
      * Konstruerer eit nytt verdiobjekt.
      *
-     * @param aarstall årstallet det skal konstruerast eit verdiobjekt for
+     * @param aarstall Ã¥rstallet det skal konstruerast eit verdiobjekt for
      */
     public Aarstall(final int aarstall) {
         this.aarstall = aarstall;
@@ -34,27 +34,27 @@ public class Aarstall {
     }
 
     /**
-     * Returnerer første dag i året årstallet tilhøyrer.
+     * Returnerer fÃ¸rste dag i Ã¥ret Ã¥rstallet tilhÃ¸yrer.
      *
-     * @return 1. januar i det aktuelle året
+     * @return 1. januar i det aktuelle Ã¥ret
      */
     public LocalDate atStartOfYear() {
         return fraOgMed;
     }
 
     /**
-     * Returnerer siste dag i året årstallet tilhøyrer.
+     * Returnerer siste dag i Ã¥ret Ã¥rstallet tilhÃ¸yrer.
      *
-     * @return 31. desember i det aktuelle året
+     * @return 31. desember i det aktuelle Ã¥ret
      */
     public LocalDate atEndOfYear() {
         return tilOgMed;
     }
 
     /**
-     * Returnerer antall dagar i det aktuelle året.
+     * Returnerer antall dagar i det aktuelle Ã¥ret.
      *
-     * @return antall dagar i det aktuelle året
+     * @return antall dagar i det aktuelle Ã¥ret
      * @since 1.1.2
      */
     public AntallDagar lengde() {
@@ -87,27 +87,27 @@ public class Aarstall {
     }
 
     /**
-     * Opprettar ein ny instans av {@link java.time.Year} som representerer det aktuelle årstallet.
+     * Opprettar ein ny instans av {@link java.time.Year} som representerer det aktuelle Ã¥rstallet.
      *
-     * @return ein ny instans av Year for samme årstall
+     * @return ein ny instans av Year for samme Ã¥rstall
      */
     public Year toYear() {
         return Year.of(aarstall);
     }
 
     /**
-     * Returnerer eit årstall for det kronologisk foregåande året.
+     * Returnerer eit Ã¥rstall for det kronologisk foregÃ¥ande Ã¥ret.
      *
-     * @return forrige årstall
+     * @return forrige Ã¥rstall
      */
     public Aarstall forrige() {
         return new Aarstall(aarstall - 1);
     }
 
     /**
-     * Returnerer eit årstall for det kronologisk etterfølgande året.
+     * Returnerer eit Ã¥rstall for det kronologisk etterfÃ¸lgande Ã¥ret.
      *
-     * @return neste årstall
+     * @return neste Ã¥rstall
      */
     public Aarstall neste() {
         return new Aarstall(aarstall + 1);

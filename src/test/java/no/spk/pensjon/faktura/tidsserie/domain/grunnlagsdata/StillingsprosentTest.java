@@ -18,7 +18,7 @@ public class StillingsprosentTest {
     @Test
     public void skalFeileVedNegativStillingsprosent() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("stillingsprosent må vere positiv");
+        e.expectMessage("stillingsprosent mÃ¥ vere positiv");
         e.expectMessage("men var");
         e.expectMessage("-20%");
 
@@ -28,7 +28,7 @@ public class StillingsprosentTest {
     @Test
     public void skalKreveProsentVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("prosent er påkrevd, men var null");
+        e.expectMessage("prosent er pÃ¥krevd, men var null");
 
         new Stillingsprosent(null);
     }

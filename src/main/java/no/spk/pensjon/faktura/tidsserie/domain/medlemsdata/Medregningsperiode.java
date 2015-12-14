@@ -17,7 +17,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 
 /**
- * {@link Medregningsperiode} representerer medregninga for eit bistilling eller ei stilling med tillegg frå annan
+ * {@link Medregningsperiode} representerer medregninga for eit bistilling eller ei stilling med tillegg frÃ¥ annan
  * arbeidsgivar.
  *
  * @author Tarjei Skorgenes
@@ -30,16 +30,16 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     private final Personnummer personnummer;
 
     /**
-     * Konstruerer ei ny medregning som har ein frå og med-dato og som kan ha
-     * ein til og med-dato, eller som kan vere løpande og dermed har ein tom til og med-dato
+     * Konstruerer ei ny medregning som har ein frÃ¥ og med-dato og som kan ha
+     * ein til og med-dato, eller som kan vere lÃ¸pande og dermed har ein tom til og med-dato
      *
-     * @param fraOgMed         første dag i tidsperioda
+     * @param fraOgMed         fÃ¸rste dag i tidsperioda
      * @param tilOgMed         viss {@link Optional#isPresent() present}, siste dag i tidsperioda, viss ikkje
-     * @param medregning       beløpet som skal medregnast for stillingsforholdet
+     * @param medregning       belÃ¸pet som skal medregnast for stillingsforholdet
      * @param kode             medregningskoda som indikerer kva type medregning det er snakk om
-     * @param stillingsforhold stillingsforholdnummeret som identifiserer stillingsforholdet medregningar tilhøyrer
-     * @param foedselsdato     datoen medlemmet vart født
-     * @param personnummer     personnummeret som i kombinasjon med fødselsdato, unikt identifiserer medlemmet
+     * @param stillingsforhold stillingsforholdnummeret som identifiserer stillingsforholdet medregningar tilhÃ¸yrer
+     * @param foedselsdato     datoen medlemmet vart fÃ¸dt
+     * @param personnummer     personnummeret som i kombinasjon med fÃ¸dselsdato, unikt identifiserer medlemmet
      * @throws NullPointerException viss nokon av parameterverdiane er <code>null</code>
      */
     private Medregningsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
@@ -47,26 +47,26 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
                                final StillingsforholdId stillingsforhold,
                                final Foedselsdato foedselsdato, final Personnummer personnummer) {
         super(fraOgMed, tilOgMed);
-        this.medregning = requireNonNull(medregning, "medregning er påkrevd, men var null");
-        this.kode = requireNonNull(kode, "medregningskode er påkrevd, men var null");
-        this.stillingsforhold = requireNonNull(stillingsforhold, "stillingsforhold er påkrevd, men var null");
-        this.foedselsdato = requireNonNull(foedselsdato, "fødselsdato er påkrevd, men var null");
-        this.personnummer = requireNonNull(personnummer, "personnummer er påkrevd, men var null");
+        this.medregning = requireNonNull(medregning, "medregning er pÃ¥krevd, men var null");
+        this.kode = requireNonNull(kode, "medregningskode er pÃ¥krevd, men var null");
+        this.stillingsforhold = requireNonNull(stillingsforhold, "stillingsforhold er pÃ¥krevd, men var null");
+        this.foedselsdato = requireNonNull(foedselsdato, "fÃ¸dselsdato er pÃ¥krevd, men var null");
+        this.personnummer = requireNonNull(personnummer, "personnummer er pÃ¥krevd, men var null");
     }
 
     /**
-     * Tilhøyrer medregninge det angitte stillingsforholdet?
+     * TilhÃ¸yrer medregninge det angitte stillingsforholdet?
      *
-     * @param stillingsforhold stillingsforholdet som medregninga skal sjekkast om tilhøyrer
-     * @return <code>true</code> dersom medreginga tilhøyrer stillingsforholdet,
-     * <code>false</code> viss den tilhøyrer eit anna stillingsforhold
+     * @param stillingsforhold stillingsforholdet som medregninga skal sjekkast om tilhÃ¸yrer
+     * @return <code>true</code> dersom medreginga tilhÃ¸yrer stillingsforholdet,
+     * <code>false</code> viss den tilhÃ¸yrer eit anna stillingsforhold
      */
     public boolean tilhoerer(final StillingsforholdId stillingsforhold) {
         return this.stillingsforhold.equals(stillingsforhold);
     }
 
     /**
-     * @return Beløpet som skal medregnast for stillingsforholdet.
+     * @return BelÃ¸pet som skal medregnast for stillingsforholdet.
      */
     public Medregning beloep() {
         return medregning;
@@ -75,7 +75,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     /**
      * Kode som indikerer kva type medregning det er snakk om.
      * <p>
-     * For fastsatsfaktureringa er det kun bistillingar og lønn annen arbeidsgivar som skal medregnast.
+     * For fastsatsfaktureringa er det kun bistillingar og lÃ¸nn annen arbeidsgivar som skal medregnast.
      *
      * @return Medredningskode i perioden
      */
@@ -93,9 +93,9 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     }
 
     /**
-     * Fødselsdatoen til medlemmet.
+     * FÃ¸dselsdatoen til medlemmet.
      *
-     * @return fødselsdatoen til medlemmet.
+     * @return fÃ¸dselsdatoen til medlemmet.
      */
     public Foedselsdato foedselsdato() {
         return foedselsdato;
@@ -111,7 +111,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
     }
 
     /**
-     * Annoterer underlagsperioda med informasjon om medregningskode, medregna beløp og stillingsforhold.
+     * Annoterer underlagsperioda med informasjon om medregningskode, medregna belÃ¸p og stillingsforhold.
      *
      * @param periode underlagsperioda som skal annoterast
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning
@@ -167,37 +167,37 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
         /**
          * Lagar ein ny builder som er pre-populert med ein kopi av gjeldande builders tilstand.
          *
-         * @return ein ny, pre-populert builder basert på gjeldande builder sin tilstand
+         * @return ein ny, pre-populert builder basert pÃ¥ gjeldande builder sin tilstand
          */
         public Builder kopi() {
             return new Builder(this);
         }
 
         /**
-         * Konstruerer og populerer ei ny medregningsperiode basert på builderens tilstand.
+         * Konstruerer og populerer ei ny medregningsperiode basert pÃ¥ builderens tilstand.
          *
          * @return ei ny medregningsperiode
          */
         public Medregningsperiode bygg() {
             return new Medregningsperiode(
-                    requireNonNull(fraOgMed, "fra og med-dato er påkrevd, men var null"),
-                    requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null"),
-                    requireNonNull(beloep, "beløp er påkrevd, men var null"),
-                    requireNonNull(kode, "medregningskode er påkrevd, men var null"),
-                    requireNonNull(stilling, "stillingsforholdnummer er påkrevd, men var null"),
-                    requireNonNull(foedselsdato, "fødselsdato er påkrevd, men var null"),
-                    requireNonNull(personnummer, "personnummer er påkrevd, men var null")
+                    requireNonNull(fraOgMed, "fra og med-dato er pÃ¥krevd, men var null"),
+                    requireNonNull(tilOgMed, "til og med-dato er pÃ¥krevd, men var null"),
+                    requireNonNull(beloep, "belÃ¸p er pÃ¥krevd, men var null"),
+                    requireNonNull(kode, "medregningskode er pÃ¥krevd, men var null"),
+                    requireNonNull(stilling, "stillingsforholdnummer er pÃ¥krevd, men var null"),
+                    requireNonNull(foedselsdato, "fÃ¸dselsdato er pÃ¥krevd, men var null"),
+                    requireNonNull(personnummer, "personnummer er pÃ¥krevd, men var null")
             );
         }
 
         /**
-         * Frå og med-datoen for nye medregningsperioder.
+         * FrÃ¥ og med-datoen for nye medregningsperioder.
          *
-         * @param dato datoen nye medregningsperioder skal starte på
+         * @param dato datoen nye medregningsperioder skal starte pÃ¥
          * @return <code>this</code>
          */
         public Builder fraOgMed(final LocalDate dato) {
-            this.fraOgMed = requireNonNull(dato, "fra og med-dato er påkrevd, men var null");
+            this.fraOgMed = requireNonNull(dato, "fra og med-dato er pÃ¥krevd, men var null");
             return this;
         }
 
@@ -205,16 +205,16 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
          * Til og med-datoen for nye medregningsperioder.
          *
          * @param dato til og med-datoen nye medregningsperioder skal avsluttast,
-         *             {@link Optional#empty()} for å indikere at perioda er løpande
+         *             {@link Optional#empty()} for Ã¥ indikere at perioda er lÃ¸pande
          * @return <code>this</code>
          */
         public Builder tilOgMed(final Optional<LocalDate> dato) {
-            this.tilOgMed = requireNonNull(dato, "til og med-dato er påkrevd, men var null");
+            this.tilOgMed = requireNonNull(dato, "til og med-dato er pÃ¥krevd, men var null");
             return this;
         }
 
         /**
-         * Indikerer at nye medregningsperioder skal vere løpande.
+         * Indikerer at nye medregningsperioder skal vere lÃ¸pande.
          *
          * @return <code>this</code>
          */
@@ -223,14 +223,14 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
         }
 
         /**
-         * Fødselsdatoen til medlemmet nye medregningsperioder skal vere tilknytta.
+         * FÃ¸dselsdatoen til medlemmet nye medregningsperioder skal vere tilknytta.
          *
-         * @param dato fødselsdatoen til medlemmet
+         * @param dato fÃ¸dselsdatoen til medlemmet
          * @return <code>this</code>
          */
 
         public Builder foedselsdato(final Foedselsdato dato) {
-            this.foedselsdato = requireNonNull(dato, "fødselsdato er påkrevd, men var null");
+            this.foedselsdato = requireNonNull(dato, "fÃ¸dselsdato er pÃ¥krevd, men var null");
             return this;
         }
 
@@ -241,7 +241,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
          * @return <code>this</code>
          */
         public Builder personnummer(final Personnummer nummer) {
-            this.personnummer = requireNonNull(nummer, "personnummer er påkrevd, men var null");
+            this.personnummer = requireNonNull(nummer, "personnummer er pÃ¥krevd, men var null");
             return this;
         }
 
@@ -253,7 +253,7 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
          * @throws java.lang.NullPointerException viss <code>id</code> er <code>null</code>
          */
         public Builder stillingsforhold(final StillingsforholdId id) {
-            this.stilling = requireNonNull(id, "stillingsforholdnummer er påkrevd, men var null");
+            this.stilling = requireNonNull(id, "stillingsforholdnummer er pÃ¥krevd, men var null");
             return this;
         }
 
@@ -264,25 +264,25 @@ public class Medregningsperiode extends AbstractTidsperiode<Medregningsperiode> 
          * @return <code>this</code>
          */
         public Builder kode(final Medregningskode kode) {
-            this.kode = requireNonNull(kode, "medregningskode er påkrevd, men var null");
+            this.kode = requireNonNull(kode, "medregningskode er pÃ¥krevd, men var null");
             return this;
         }
 
         /**
-         * Beløpet som nye periode skal indikere at medlemmet skal ha medregna innanfor perioda.
+         * BelÃ¸pet som nye periode skal indikere at medlemmet skal ha medregna innanfor perioda.
          *
-         * @param beloep eit kronebeløp som skal medregnast medlemmet
+         * @param beloep eit kronebelÃ¸p som skal medregnast medlemmet
          * @return <code>this</code>
          */
         public Builder beloep(final Medregning beloep) {
-            this.beloep = requireNonNull(beloep, "beløp er påkrevd, men var null");
+            this.beloep = requireNonNull(beloep, "belÃ¸p er pÃ¥krevd, men var null");
             return this;
         }
 
         /**
-         * Beløpet som nye periode skal indikere at medlemmet skal ha medregna innanfor perioda.
+         * BelÃ¸pet som nye periode skal indikere at medlemmet skal ha medregna innanfor perioda.
          *
-         * @param beloep eit kronebeløp som skal medregnast medlemmet
+         * @param beloep eit kronebelÃ¸p som skal medregnast medlemmet
          * @return <code>this</code>
          */
         public Builder beloep(final Kroner beloep) {

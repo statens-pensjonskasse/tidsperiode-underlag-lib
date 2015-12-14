@@ -8,10 +8,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
 /**
- * {@link Avregningsavtaleperiode} representerer informasjon om en avtale som hører til et utkast til avregning. En Avregningsversjon kan omfatter flere
+ * {@link Avregningsavtaleperiode} representerer informasjon om en avtale som hÃ¸rer til et utkast til avregning. En Avregningsversjon kan omfatter flere
  * {@link AvtaleId}.
  * <br>
- * Avregningsavtaleperiode angir hvilket premieår som blir avregnet,en {@link AvtaleId} som gjelder i perioden, og {@link Avregningsversjon} som
+ * Avregningsavtaleperiode angir hvilket premieÃ¥r som blir avregnet,en {@link AvtaleId} som gjelder i perioden, og {@link Avregningsversjon} som
  * avtalen er knyttet til.
  *
  * @author Snorre E. Brekke
@@ -23,8 +23,8 @@ public class Avregningsavtaleperiode extends AbstractTidsperiode<Avregningsavtal
 
     private Avregningsavtaleperiode(final AvregningsavtaleperiodeBuilder builder) {
         super(builder.fraOgMed.atStartOfYear(), of(builder.tilOgMed.atEndOfYear()));
-        this.avregningsversjon = requireNonNull(builder.avregningsversjon, "avregningsversjon er påkrevd, men var null");
-        this.avtale = requireNonNull(builder.avtale, "avregningsversjon er påkrevd, men var null");
+        this.avregningsversjon = requireNonNull(builder.avregningsversjon, "avregningsversjon er pÃ¥krevd, men var null");
+        this.avtale = requireNonNull(builder.avtale, "avregningsversjon er pÃ¥krevd, men var null");
     }
 
     public static AvregningsavtaleperiodeBuilder avregningsavtaleperiode() {
@@ -46,12 +46,12 @@ public class Avregningsavtaleperiode extends AbstractTidsperiode<Avregningsavtal
         private AvtaleId avtale;
 
         public AvregningsavtaleperiodeBuilder fraOgMed(final Aarstall fraOgMed) {
-            this.fraOgMed = requireNonNull(fraOgMed, "fraOgMed er påkrevd, men var null");
+            this.fraOgMed = requireNonNull(fraOgMed, "fraOgMed er pÃ¥krevd, men var null");
             return this;
         }
 
         public AvregningsavtaleperiodeBuilder tilOgMed(final Aarstall tilOgMed) {
-            this.tilOgMed = requireNonNull(tilOgMed, "tilOgMed er påkrevd, men  var null");
+            this.tilOgMed = requireNonNull(tilOgMed, "tilOgMed er pÃ¥krevd, men  var null");
             return this;
         }
 

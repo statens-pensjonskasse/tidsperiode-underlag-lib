@@ -10,23 +10,23 @@ import java.util.stream.Stream;
 
 /**
  * {@link AarsunderlagFactory} representerer
- * algoritma for å splitte opp eit stillingsforholdunderlag i eit eller fleire underlag, med eit underlag pr år.
+ * algoritma for Ã¥ splitte opp eit stillingsforholdunderlag i eit eller fleire underlag, med eit underlag pr Ã¥r.
  * <p>
- * Årsunderlag er påkrevd for å kunne gjere beregningar av maskinelt grunnlag ettersom ein kun skal benytte perioder
- * innanfor eit og samme år ved å beregne dette.
+ * Ã…rsunderlag er pÃ¥krevd for Ã¥ kunne gjere beregningar av maskinelt grunnlag ettersom ein kun skal benytte perioder
+ * innanfor eit og samme Ã¥r ved Ã¥ beregne dette.
  *
  * @author Tarjei Skorgenes
  */
 public class AarsunderlagFactory {
     /**
-     * Genererer eit nytt årsunderlag for kvart årstall som underlagsperioder i <code>underlag</code> er annotert med
+     * Genererer eit nytt Ã¥rsunderlag for kvart Ã¥rstall som underlagsperioder i <code>underlag</code> er annotert med
      * <p>
      * Ei forutsetning for at genereringa skal fungere er at alle underlagsperioder har ein annotasjon av type
      * {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall}. Ei eller fleire perioder utan denne annotasjonen
-     * vil føre til at genereringa feilar.
+     * vil fÃ¸re til at genereringa feilar.
      *
      * @param underlag eit underlag med perioder tilknytta eit bestemt stillingsforhold
-     * @return ein straum av nye underlag der kvart underlag kun inneheld underlagsperioder for eit bestemt årstall
+     * @return ein straum av nye underlag der kvart underlag kun inneheld underlagsperioder for eit bestemt Ã¥rstall
      */
     public Stream<Underlag> genererUnderlagPrAar(final Underlag underlag) {
         final Function<Aarstall, Underlag> nyttUnderlagForAarstall = aar -> underlag
@@ -41,11 +41,11 @@ public class AarsunderlagFactory {
     }
 
     /**
-     * Opprettar eit nytt predikat som kan brukast for å sjekke om underlagsperioder
-     * er annotert med eit bestemt årstall.
+     * Opprettar eit nytt predikat som kan brukast for Ã¥ sjekke om underlagsperioder
+     * er annotert med eit bestemt Ã¥rstall.
      *
-     * @param aar årstallet som periodene må vere annotert med
-     * @return eit predikat som matchar alle perioder som er annotert med den angitte verdien for årstall
+     * @param aar Ã¥rstallet som periodene mÃ¥ vere annotert med
+     * @return eit predikat som matchar alle perioder som er annotert med den angitte verdien for Ã¥rstall
      * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)
      */
     private static Predicate<Underlagsperiode> annotertMedAarstall(final Aarstall aar) {

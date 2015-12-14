@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
 /**
- * {@link AarsverkTest} inneheld enheitstestane av årsverk.
+ * {@link AarsverkTest} inneheld enheitstestane av Ã¥rsverk.
  *
  * @author Tarjei Skorgenes
  */
@@ -20,7 +20,7 @@ public class AarsverkTest {
     @Test
     public void skalIkkjeTillateNullVerdiarVedKonstruksjon() {
         e.expect(NullPointerException.class);
-        e.expectMessage("verdi er påkrevd, men var null");
+        e.expectMessage("verdi er pÃ¥krevd, men var null");
         Aarsverk.aarsverk(null);
     }
 

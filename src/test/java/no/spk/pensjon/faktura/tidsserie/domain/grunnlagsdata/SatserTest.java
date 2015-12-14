@@ -16,8 +16,8 @@ public class SatserTest {
     @Test
     public void skalFeileVedKonstruksjonDersomSatserErAvForskjelligeTyper() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("Alle satser på et enkelt avtaleprodukt må være av samme type");
-        e.expectMessage("2 forskjellige typer satser vart forsøkt brukt");
+        e.expectMessage("Alle satser pÃ¥ et enkelt avtaleprodukt mÃ¥ vÃ¦re av samme type");
+        e.expectMessage("2 forskjellige typer satser vart forsÃ¸kt brukt");
         e.expectMessage("Kroner");
         e.expectMessage("Prosent");
 

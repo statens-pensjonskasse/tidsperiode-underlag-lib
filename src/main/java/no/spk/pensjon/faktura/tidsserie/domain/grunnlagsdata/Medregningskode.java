@@ -5,18 +5,18 @@ import java.util.Set;
 
 public class Medregningskode {
     /**
-     * Intern cache som tar vare på alle medregningskoder som er oppretta.
+     * Intern cache som tar vare pÃ¥ alle medregningskoder som er oppretta.
      * <p>
-     * Avgrensa oppover til maksimalt 100 element for å unngå minnelekkasjar i situasjonar der valueOf blir kalla med
-     * eit høgt antall forskjellige verdiar.
+     * Avgrensa oppover til maksimalt 100 element for Ã¥ unngÃ¥ minnelekkasjar i situasjonar der valueOf blir kalla med
+     * eit hÃ¸gt antall forskjellige verdiar.
      */
     private static final Set<Medregningskode> VALUES = new HashSet<>();
 
     /**
-     * Der hvor innehaver av en stilling forpliktes til å i tilllegg inneha en annen stilling, kalles denne en
+     * Der hvor innehaver av en stilling forpliktes til Ã¥ i tilllegg inneha en annen stilling, kalles denne en
      * bistilling.
      * <p>
-     * Feks. en lege ansatt i et sykehus kan forpliktes til å ha en opplæringsbistilling.
+     * Feks. en lege ansatt i et sykehus kan forpliktes til Ã¥ ha en opplÃ¦ringsbistilling.
      */
     public static final Medregningskode BISTILLING = new Medregningskode("12");
 
@@ -35,7 +35,7 @@ public class Medregningskode {
     }
 
     /**
-     * Slår opp eller opprettar ei ny medregningskode for den angitte verdien.
+     * SlÃ¥r opp eller opprettar ei ny medregningskode for den angitte verdien.
      *
      * @param kode kodeverdien som skal konverterast til ei medregningskode
      * @return den pre-eksisterande medregningskoda med samme verdi, eller ei ny medregningskode viss det ikkje
@@ -83,9 +83,9 @@ public class Medregningskode {
     /**
      * Sjekkar om medregningstypen er fakturerbar i henhold til fastsats regelverket?
      * <p>
-     * Det er kun bistillingar og lønn hos annan arbeidsgivar som kan fakturerast via fastsats.
+     * Det er kun bistillingar og lÃ¸nn hos annan arbeidsgivar som kan fakturerast via fastsats.
      *
-     * @return <code>true</code> viss medregningskoda er ei bistilling eller lønn hos annan arbeidagivar,
+     * @return <code>true</code> viss medregningskoda er ei bistilling eller lÃ¸nn hos annan arbeidagivar,
      * <code>false</code> ellers
      * @see #BISTILLING
      * @see #TILLEGG_ANNEN_ARBGIV

@@ -15,16 +15,16 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.an
  */
 public class AntallDagarRegel implements BeregningsRegel<AntallDagar> {
     /**
-     * Beregnar lengda på tidsperioda underlagsperioda strekker seg over.
+     * Beregnar lengda pÃ¥ tidsperioda underlagsperioda strekker seg over.
      * <br>
-     * Beregninga teller med både frå og med- og til og med-datoane i tellinga av antall dagar.
+     * Beregninga teller med bÃ¥de frÃ¥ og med- og til og med-datoane i tellinga av antall dagar.
      * <br>
      * Eksempel:
      * <br>
-     * Ei underlagsperioda frå og med 2007.01.01 til og med 2007.01.30 skal resultere i eit resultat på
+     * Ei underlagsperioda frÃ¥ og med 2007.01.01 til og med 2007.01.30 skal resultere i eit resultat pÃ¥
      * 30 antall dagar.
      *
-     * @param periode underlagsperioda som beregningsregelen skal beregne lengda på
+     * @param periode underlagsperioda som beregningsregelen skal beregne lengda pÃ¥
      * @return antall dagar underlagsperioda strekker seg over
      * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor
      * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel

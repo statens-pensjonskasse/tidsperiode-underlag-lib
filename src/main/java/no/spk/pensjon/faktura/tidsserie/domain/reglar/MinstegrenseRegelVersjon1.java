@@ -7,20 +7,20 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
 /**
- * {@link MinstegrenseRegelVersjon1} implementerer algoritma som bestemmer kva som er minste stillingsstørrelse som skal kunne
+ * {@link MinstegrenseRegelVersjon1} implementerer algoritma som bestemmer kva som er minste stillingsstÃ¸rrelse som skal kunne
  * fakturerast.
  * <p>
  * Minstegrenseregelsettet har vore gjennom mange revisjonar over tid og algoritma som blir implementert her er
- * resultatet av siste revisjon av regelsettet, utført våren 2014.
+ * resultatet av siste revisjon av regelsettet, utfÃ¸rt vÃ¥ren 2014.
  * <p>
- * Hovedintensjonen med dette siste forenkla regelsettet er å unngå å vere avhengig av stillingsendringanes
- * stillingstype for å bestemme kva som er gjeldande minstegrense pr stilling. Datakvaliteten på stillingstype har vist
- * seg over tid å vere så dårlig og upålitelig at ei forenkling som lar minstegrensa for SPK-ordninga vere basert på
- * premiestatus, er å foretrekke. Den blir foretrukken sjølv om denne også vil bomme på visse typer stillingar innanfor
- * premiestatusane som med den forenkla varianten får 35% eller 37.33% for alle ansatte innanfor avtalar med den angitte
+ * Hovedintensjonen med dette siste forenkla regelsettet er Ã¥ unngÃ¥ Ã¥ vere avhengig av stillingsendringanes
+ * stillingstype for Ã¥ bestemme kva som er gjeldande minstegrense pr stilling. Datakvaliteten pÃ¥ stillingstype har vist
+ * seg over tid Ã¥ vere sÃ¥ dÃ¥rlig og upÃ¥litelig at ei forenkling som lar minstegrensa for SPK-ordninga vere basert pÃ¥
+ * premiestatus, er Ã¥ foretrekke. Den blir foretrukken sjÃ¸lv om denne ogsÃ¥ vil bomme pÃ¥ visse typer stillingar innanfor
+ * premiestatusane som med den forenkla varianten fÃ¥r 35% eller 37.33% for alle ansatte innanfor avtalar med den angitte
  * premiestatusen.
  * <p>
- * For Apotekordninga og Opera-ordninga er det ikkje gjort nokon forenklingar, dei blir som før med Apotekordningas
+ * For Apotekordninga og Opera-ordninga er det ikkje gjort nokon forenklingar, dei blir som fÃ¸r med Apotekordningas
  * minstegrenser styrt av stillingskode og ei flat 50% minstegrense for alle ansatte tilknytta Opera-ordninga.
  *
  * @author Tarjei Skorgenes
@@ -35,17 +35,17 @@ public class MinstegrenseRegelVersjon1 implements MinstegrenseRegel {
     private static final Minstegrense MINSTEGRENSE_SPK_GENERELL = new Minstegrense(new Prosent("37.33%"));
 
     /**
-     * Beregnar gjeldande minstegrense basert på gjeldande minstegrenseregel for kvar av dei støtta ordningane.
+     * Beregnar gjeldande minstegrense basert pÃ¥ gjeldande minstegrenseregel for kvar av dei stÃ¸tta ordningane.
      * <p>
      * For opera-ordninga er minstegrensa lik 50% for alle stillingar.
      * <p>
-     * For apotekordninga er minstegrensa lik 38.46% for alle farmasøyt-stillingar, for alle andre stillingar er den
+     * For apotekordninga er minstegrensa lik 38.46% for alle farmasÃ¸yt-stillingar, for alle andre stillingar er den
      * 37.5%.
      * <p>
      * For SPK-ordninga er minstegrensa 35% for avtalar med premiestatus AAO-01 eller AAO-02, for alle andre
      * premiestatusar er minstegrensa 37.33%.
      *
-     * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
+     * @param periode underlagsperioda som inneheld alle verdiar eller pÃ¥krevde reglar som skal benyttast av beregningsregelen
      * @return gjeldande minstegrense for ordninga perioda er annotert med
      * @throws IllegalStateException dersom perioda er tilknytta ei anna ordning enn SPK-, Apotek- eller Opera-ordningane
      */

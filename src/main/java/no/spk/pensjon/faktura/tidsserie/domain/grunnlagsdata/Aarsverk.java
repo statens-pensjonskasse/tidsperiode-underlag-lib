@@ -3,34 +3,34 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link Aarsverk} representerer 1 års arbeidsinnsats for eit stillingsforhold som har 100% stillingsprosent
- * gjennom eit heilt år.
+ * {@link Aarsverk} representerer 1 Ã¥rs arbeidsinnsats for eit stillingsforhold som har 100% stillingsprosent
+ * gjennom eit heilt Ã¥r.
  *
  * @author Tarjei Skorgenes
  */
 public class Aarsverk {
     /**
-     * Konstant som representerer eit 0% eller tomt årsverk.
+     * Konstant som representerer eit 0% eller tomt Ã¥rsverk.
      */
     public static final Aarsverk ZERO = new Aarsverk(new Prosent(0d));
 
     private final Prosent verdi;
 
     /**
-     * Opprettar eit nytt årsverk, basert på ei måling angitt i prosent av 1 årsverk.
+     * Opprettar eit nytt Ã¥rsverk, basert pÃ¥ ei mÃ¥ling angitt i prosent av 1 Ã¥rsverk.
      *
-     * @param verdi antall årsverk angitt i prosent
+     * @param verdi antall Ã¥rsverk angitt i prosent
      * @throws NullPointerException if <code>verdi</code> er <code>null</code>
      */
     public Aarsverk(final Prosent verdi) {
-        requireNonNull(verdi, "verdi er påkrevd, men var null");
+        requireNonNull(verdi, "verdi er pÃ¥krevd, men var null");
         this.verdi = verdi;
     }
 
     /**
      * @see no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent#Prosent(String)
      * @see #Aarsverk(no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent)
-     * @param verdi antall årsverk angitt i prosent
+     * @param verdi antall Ã¥rsverk angitt i prosent
      * @return Aarsverk for verdi
      */
     public static Aarsverk aarsverk(final Prosent verdi) {
@@ -38,19 +38,19 @@ public class Aarsverk {
     }
 
     /**
-     * Hentar ut antall årsverk som ein prosentverdi sett i forhold til 1 årsverk.
+     * Hentar ut antall Ã¥rsverk som ein prosentverdi sett i forhold til 1 Ã¥rsverk.
      *
-     * @return antall årsverk i prosent
+     * @return antall Ã¥rsverk i prosent
      */
     public Prosent tilProsent() {
         return verdi;
     }
 
     /**
-     * Legger saman verdien av dei to årsverka.
+     * Legger saman verdien av dei to Ã¥rsverka.
      *
-     * @param other årsverket som vi skal legge saman verdien med
-     * @return eit nytt årsverk som inneheld summen av dei to årsverk som er lagt saman
+     * @param other Ã¥rsverket som vi skal legge saman verdien med
+     * @return eit nytt Ã¥rsverk som inneheld summen av dei to Ã¥rsverk som er lagt saman
      */
     public Aarsverk plus(final Aarsverk other) {
         return new Aarsverk(

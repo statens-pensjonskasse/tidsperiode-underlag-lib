@@ -20,7 +20,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
 /**
- * Ein dekorator som transformerer eit observasjonsunderlag til ein observasjon pr avtale stillingsforholdet har vore aktiv på
+ * Ein dekorator som transformerer eit observasjonsunderlag til ein observasjon pr avtale stillingsforholdet har vore aktiv pÃ¥
  * innanfor observasjonsunderlaget.
  *
  * @author Tarjei Skorgenes
@@ -35,13 +35,13 @@ class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublik
      * @throws NullPointerException viss <code>consumer</code> er <code>null</code>
      */
     GenererObservasjonPrStillingsforholdOgAvtale(final Consumer<TidsserieObservasjon> consumer) {
-        this.consumer = requireNonNull(consumer, "consumer er påkrevd, men var null");
+        this.consumer = requireNonNull(consumer, "consumer er pÃ¥krevd, men var null");
     }
 
     /**
      * Transformerer og aggregerer kvart observasjonsunderlag til ein observasjon pr avtale pr underlag.
      * <p>
-     * Dei aggregerte observasjonane blir publisert vidare til dekoratørens consumer for vidare prosessering/lagring.
+     * Dei aggregerte observasjonane blir publisert vidare til dekoratÃ¸rens consumer for vidare prosessering/lagring.
      *
      * @param observasjonsunderlag alle observasjonsunderlaga som blir generert for ein tidsserie
      */
@@ -53,21 +53,21 @@ class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublik
     }
 
     /**
-     * Genererer ein ny observasjon pr avtale som er stillingsforholdet er aktivt på i løpet av premieåret
+     * Genererer ein ny observasjon pr avtale som er stillingsforholdet er aktivt pÃ¥ i lÃ¸pet av premieÃ¥ret
      * som <code>observasjonsunderlag</code> inneheld underlagsperioder for.
      * <p>
      * For observasjonsunderlag der alle periodene er tilknytta ein go samme avtale, vil det kun bli returnert ein
      * observasjon.
      * <p>
-     * For observasjonsunderlag der stillingsforholdet har vore gjennom eit eller fleire avtalebytte i løpet
-     * av premieåret, vil det bli returnert ein observaasjon pr avtale som stillingsforholdet har vore
-     * tilknytta i løpet av premieåret som observasjonsunderlaget representerer.
+     * For observasjonsunderlag der stillingsforholdet har vore gjennom eit eller fleire avtalebytte i lÃ¸pet
+     * av premieÃ¥ret, vil det bli returnert ein observaasjon pr avtale som stillingsforholdet har vore
+     * tilknytta i lÃ¸pet av premieÃ¥ret som observasjonsunderlaget representerer.
      *
      * @param observasjonsunderlag eit observasjonsunderlag som det skal genererast ein eller fleire
      *                             observasjonar av for tidsserien
      * @return ein straum med ein observasjon for stillingsforhold som ikkje har vore gjennom eit avtalebytte i
-     * løpet av premieåret, eller ein straum med ein observasjon pr avtale stillingsforholdet har vore innom i
-     * løpet av premieåret for stillingsforhold som har vore gjennom eit eller fleire avtalebytte
+     * lÃ¸pet av premieÃ¥ret, eller ein straum med ein observasjon pr avtale stillingsforholdet har vore innom i
+     * lÃ¸pet av premieÃ¥ret for stillingsforhold som har vore gjennom eit eller fleire avtalebytte
      */
     private Stream<TidsserieObservasjon> genererObservasjonPrAvtale(final Underlag observasjonsunderlag) {
         return observasjonsunderlag
@@ -81,11 +81,11 @@ class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublik
     }
 
     /**
-     * Opprettar ein ny {@link Collector} som blir brukt for å gruppere og summere alle
-     * {@link TidsserieObservasjon observasjonar} på periodenivå basert på kvar periodeobservasjon sin avtale.
+     * Opprettar ein ny {@link Collector} som blir brukt for Ã¥ gruppere og summere alle
+     * {@link TidsserieObservasjon observasjonar} pÃ¥ periodenivÃ¥ basert pÃ¥ kvar periodeobservasjon sin avtale.
      *
-     * @return ein ny collector som grupperer periodeobservasjonane pr avtale og slår dei saman til ein observasjon som
-     * inneheld avtalens totalresultat for heile premieåret
+     * @return ein ny collector som grupperer periodeobservasjonane pr avtale og slÃ¥r dei saman til ein observasjon som
+     * inneheld avtalens totalresultat for heile premieÃ¥ret
      * @see java.util.stream.Collectors#groupingBy(Function, Collector)
      * @see TidsserieObservasjon#plus(TidsserieObservasjon)
      */
@@ -99,16 +99,16 @@ class GenererObservasjonPrStillingsforholdOgAvtale implements Observasjonspublik
     /**
      * Genererer ein ny funksjon som genererer ein ny tidsserie-observasjon for ei underlagsperiode.
      * <p>
-     * Observasjonane generert av denne metoda må seinare grupperast pr avtale og summerast saman
-     * for å sitte igjen med ein total observasjon av avtalen for heile premieåret.
+     * Observasjonane generert av denne metoda mÃ¥ seinare grupperast pr avtale og summerast saman
+     * for Ã¥ sitte igjen med ein total observasjon av avtalen for heile premieÃ¥ret.
      * <p>
      * For underlag tilknytta stillingsforhold som har vore gjennom eit eller fleire avtalebytte,
-     * vil grupperinga sikre at maskinelt grunnlag og dei andre målingane som inngår i tidsserien, blir summert
+     * vil grupperinga sikre at maskinelt grunnlag og dei andre mÃ¥lingane som inngÃ¥r i tidsserien, blir summert
      * pr avtale slik at det blir generert eit innslag i tidsserien for kvar avtale stillingsforholdet har vore
-     * aktivt på i løpet av kvart premieår.
+     * aktivt pÃ¥ i lÃ¸pet av kvart premieÃ¥r.
      *
-     * @param observasjonsunderlag observasjonsunderlaget som stillingsforhold og observasjonsdato blir henta frå
-     * @return ein ny funksjon som vil generere ein tidsserieobservasjon pr underlagsperiode den blir kalla på
+     * @param observasjonsunderlag observasjonsunderlaget som stillingsforhold og observasjonsdato blir henta frÃ¥
+     * @return ein ny funksjon som vil generere ein tidsserieobservasjon pr underlagsperiode den blir kalla pÃ¥
      */
     private static Function<Underlagsperiode, TidsserieObservasjon> observerPeriode(final Underlag observasjonsunderlag) {
         return p -> new TidsserieObservasjon(

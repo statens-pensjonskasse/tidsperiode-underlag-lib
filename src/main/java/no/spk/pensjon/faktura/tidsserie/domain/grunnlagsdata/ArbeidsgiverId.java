@@ -17,7 +17,7 @@ public class ArbeidsgiverId {
      * @throws NullPointerException viss <code>id</code> er <code>null</code>
      */
     public ArbeidsgiverId(final Long id) {
-        this.id = requireNonNull(id, () -> "arbeidsgiverid er pÂkrevd, men var null");
+        this.id = requireNonNull(id, () -> "arbeidsgiverid er p√•krevd, men var null");
     }
 
     @Override

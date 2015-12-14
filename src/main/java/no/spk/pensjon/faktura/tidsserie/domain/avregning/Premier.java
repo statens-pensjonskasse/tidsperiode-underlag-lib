@@ -6,7 +6,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premiebeloep.pre
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 
 /**
- * {@link Premier} representerer eit sett med premiebeløp for arbeidsgiver, medlem og administrasjonjsgebyr.
+ * {@link Premier} representerer eit sett med premiebelÃ¸p for arbeidsgiver, medlem og administrasjonjsgebyr.
  *
  * @author Tarjei Skorgenes
  */
@@ -22,7 +22,7 @@ public final class Premier {
     }
 
     /**
-     * Oppretter en ny builder som lar ein konstruere nye sett med premiebeløp.
+     * Oppretter en ny builder som lar ein konstruere nye sett med premiebelÃ¸p.
      *
      * @return en builder for konstruksjon av nye premier
      */
@@ -59,25 +59,25 @@ public final class Premier {
         private Premiebeloep administrasjonsgebyr = premiebeloep();
 
         public PremierBuilder arbeidsgiver(final Premiebeloep beloep) {
-            this.arbeidsgiver = requireNonNull(beloep, "arbeidsgiverpremie er påkrevd, men var null");
+            this.arbeidsgiver = requireNonNull(beloep, "arbeidsgiverpremie er pÃ¥krevd, men var null");
             return this;
         }
 
         public PremierBuilder medlem(final Premiebeloep beloep) {
-            this.medlem = requireNonNull(beloep, "medlemspremie er påkrevd, men var null");
+            this.medlem = requireNonNull(beloep, "medlemspremie er pÃ¥krevd, men var null");
             return this;
         }
 
         public PremierBuilder administrasjonsgebyr(final Premiebeloep beloep) {
-            this.administrasjonsgebyr = requireNonNull(beloep, "administrasjonsgebyr er påkrevd, men var null");
+            this.administrasjonsgebyr = requireNonNull(beloep, "administrasjonsgebyr er pÃ¥krevd, men var null");
             return this;
         }
 
         /**
-         * Bygger et nytt sett med premier basert på premiebeløpene builderen har blitt populert med.
+         * Bygger et nytt sett med premier basert pÃ¥ premiebelÃ¸pene builderen har blitt populert med.
          * <br>
          * Dersom et eller flere av {@link #arbeidsgiver()} , {@link #medlem()} og {@link #administrasjonsgebyr()}
-         * ikke har blitt satt, blir standardverdien kr 0 benyttet for det aktuelle premiebeløpet.
+         * ikke har blitt satt, blir standardverdien kr 0 benyttet for det aktuelle premiebelÃ¸pet.
          *
          * @return et nytt sett med premier
          */

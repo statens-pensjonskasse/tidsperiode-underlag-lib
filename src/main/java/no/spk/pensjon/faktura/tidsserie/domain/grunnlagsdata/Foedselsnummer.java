@@ -16,15 +16,15 @@ public final class Foedselsnummer {
     private final Personnummer personnummer;
 
     /**
-     * Konstruerer eit nytt fødselsnummer.
+     * Konstruerer eit nytt fÃ¸dselsnummer.
      *
-     * @param foedselsdato fødselsdatoen til medlemmet
-     * @param personnummer personnummeret som i kombinasjon med fødselsdatoen unikt identifiserer medlemmet
+     * @param foedselsdato fÃ¸dselsdatoen til medlemmet
+     * @param personnummer personnummeret som i kombinasjon med fÃ¸dselsdatoen unikt identifiserer medlemmet
      * @throws NullPointerException viss nokon av argumenta er <code>null</code>
      */
     public Foedselsnummer(final Foedselsdato foedselsdato, final Personnummer personnummer) {
-        this.foedselsdato = requireNonNull(foedselsdato, "fødselsdato er påkrevd, men var null");
-        this.personnummer = requireNonNull(personnummer, "personnummer er påkrevd, men var null");
+        this.foedselsdato = requireNonNull(foedselsdato, "fÃ¸dselsdato er pÃ¥krevd, men var null");
+        this.personnummer = requireNonNull(personnummer, "personnummer er pÃ¥krevd, men var null");
     }
 
     @Override

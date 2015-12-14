@@ -19,13 +19,13 @@ import org.junit.Test;
  */
 public class PremiebeloepTest {
     /**
-     * Verifiserer at prosentsatsane blir avrunda til 2 desimalar før dei blir multiplisert ut
-     * med premiebeløpet.
+     * Verifiserer at prosentsatsane blir avrunda til 2 desimalar fÃ¸r dei blir multiplisert ut
+     * med premiebelÃ¸pet.
      * <br>
-     * Intensjonen med denne oppførselen er å sikre konsistent oppførsel uavhengig av om premiebeløpet ein
-     * multipliserer med har ein stor eller lav verdi. Ved summering av multiplisering gjort mange gangar på eit
-     * lavt premiebeløp og multiplisering 1 gang med ein stort premiebeløp som er lik summen av premiebeløpa ein
-     * multipliserte manger gangar på, burde ein få likt resultat.
+     * Intensjonen med denne oppfÃ¸rselen er Ã¥ sikre konsistent oppfÃ¸rsel uavhengig av om premiebelÃ¸pet ein
+     * multipliserer med har ein stor eller lav verdi. Ved summering av multiplisering gjort mange gangar pÃ¥ eit
+     * lavt premiebelÃ¸p og multiplisering 1 gang med ein stort premiebelÃ¸p som er lik summen av premiebelÃ¸pa ein
+     * multipliserte manger gangar pÃ¥, burde ein fÃ¥ likt resultat.
      */
     @Test
     public void skal_avrunde_prosentsats_til_2_desimaler_foer_multiplikasjon_med_premiebeloep() {
@@ -58,8 +58,8 @@ public class PremiebeloepTest {
     }
 
     /**
-     * Verifiserer at {@link java.math.RoundingMode#HALF_UP} blir benytta ved avrunding av premiebeløpa
-     * sidan dette er den ordinære / normalt brukte avrundingsregelen for norske kroner.
+     * Verifiserer at {@link java.math.RoundingMode#HALF_UP} blir benytta ved avrunding av premiebelÃ¸pa
+     * sidan dette er den ordinÃ¦re / normalt brukte avrundingsregelen for norske kroner.
      */
     @Test
     public void skal_avrunde_med_half_up() {
@@ -77,12 +77,12 @@ public class PremiebeloepTest {
     }
 
     /**
-     * Verifiserer at premiebeløpa har presisjon 14, dvs at dei taklar opp til 12-sifra heiltall med 2 desimalar
-     * (maksimalverdien blir då kr 999 999 999 999.99, presisjonsgrada for desimaltalla og den minst signifikante
-     * heiltallsdelen synke for større tall enn dette).
+     * Verifiserer at premiebelÃ¸pa har presisjon 14, dvs at dei taklar opp til 12-sifra heiltall med 2 desimalar
+     * (maksimalverdien blir dÃ¥ kr 999 999 999 999.99, presisjonsgrada for desimaltalla og den minst signifikante
+     * heiltallsdelen synke for stÃ¸rre tall enn dette).
      */
     @Test
-    public void skal_klare_å_representere_opp_til_999_milliardar_med_to_desimalar() {
+    public void skal_klare_Ã¥_representere_opp_til_999_milliardar_med_to_desimalar() {
         assertThat(premiebeloep("kr   999 000 000 000.99").toString()).isEqualTo("999000000000.99");
         assertThat(premiebeloep("kr 1 000 000 000 000.99").toString()).isEqualTo("1000000000001.00");
         assertThat(premiebeloep("kr 1 000 000 000 000 009.99").toString()).isEqualTo("1000000000000000.00");

@@ -53,6 +53,6 @@ public class Assertions {
         final Avtale.AvtaleBuilder builder = avtale(produkt.avtale());
         final Optional<Premiesats> premiesats = produkt.populer(builder).bygg().premiesatsFor(produkt.produkt());
         return assertThat(premiesats.flatMap(Premiesats::beloepsatsar).map(mapper).map(Object::toString))
-                .as("premiebeløp for " + felt + " fra " + premiesats);
+                .as("premiebelÃ¸p for " + felt + " fra " + premiesats);
     }
 }

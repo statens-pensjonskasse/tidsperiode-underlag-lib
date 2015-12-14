@@ -16,7 +16,7 @@ public class DeltidsjustertLoennTest {
     @Test
     public void skalIkkjeKunneKonstruereMedNullBeloep() {
         e.expect(NullPointerException.class);
-        e.expectMessage("beløp er påkrevd, men var null");
+        e.expectMessage("belÃ¸p er pÃ¥krevd, men var null");
         new DeltidsjustertLoenn(null);
     }
 }

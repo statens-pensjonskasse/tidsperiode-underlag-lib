@@ -28,7 +28,7 @@ public class ObjectMother {
     /**
      * Opprettar ein kopi av ein pre-populert builder for medregningsperioder.
      * <br>
-     * Alle felt i builderen blir pre-populert slik at klienten kun skal trenge å overstyre/endre dei felta ein har spesifikke krav til verdien på.
+     * Alle felt i builderen blir pre-populert slik at klienten kun skal trenge Ã¥ overstyre/endre dei felta ein har spesifikke krav til verdien pÃ¥.
      *
      * @return ein ny medregningsperioderbuilder
      */

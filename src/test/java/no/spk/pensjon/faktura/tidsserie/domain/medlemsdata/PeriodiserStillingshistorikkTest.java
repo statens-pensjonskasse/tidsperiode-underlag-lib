@@ -70,11 +70,11 @@ public class PeriodiserStillingshistorikkTest {
     }
 
     /**
-     * Verifiserer at periodiseringa ikkje tar hensyn til aksjonskodene når den periodiserer alle andre perioder enn
-     * den siste (der den skal spesialhandtere 031 på siste aksjonsdato).
+     * Verifiserer at periodiseringa ikkje tar hensyn til aksjonskodene nÃ¥r den periodiserer alle andre perioder enn
+     * den siste (der den skal spesialhandtere 031 pÃ¥ siste aksjonsdato).
      * <p>
-     * Dette betyr at den ikkje tar hensyn til 031 i tidligare perioder, eller 011, 012, 023, 028, 029, alle desse blir behandla som 021 og første
-     * aksjonsdato vi har ei endring på, blir tolka som startdato for første periode.
+     * Dette betyr at den ikkje tar hensyn til 031 i tidligare perioder, eller 011, 012, 023, 028, 029, alle desse blir behandla som 021 og fÃ¸rste
+     * aksjonsdato vi har ei endring pÃ¥, blir tolka som startdato for fÃ¸rste periode.
      */
     @Test
     public void skalHandtereAlleAndreAksjonskoderSomEndring() {
@@ -94,7 +94,7 @@ public class PeriodiserStillingshistorikkTest {
     }
 
     /**
-     * Verifiserer at kvar periode blir kobla opp mot historikkendringene som skjer på periodens fra og med- eller
+     * Verifiserer at kvar periode blir kobla opp mot historikkendringene som skjer pÃ¥ periodens fra og med- eller
      * til og med-dato.
      */
     @Test

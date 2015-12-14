@@ -5,13 +5,13 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
 /**
- * Beregningsregel som indikerer korvidt medlemmet er ute i permisjon utan lønn frå stillinga i den aktuelle perioda.
+ * Beregningsregel som indikerer korvidt medlemmet er ute i permisjon utan lÃ¸nn frÃ¥ stillinga i den aktuelle perioda.
  * <br>
- * Medlemmet blir flagga som ute i permisjon utan lønn dersom periodas aksjonskode er lik
+ * Medlemmet blir flagga som ute i permisjon utan lÃ¸nn dersom periodas aksjonskode er lik
  * {@link Aksjonskode#PERMISJON_UTAN_LOENN}.
  * <br>
  * Dersom perioda har ei anna aksjonskode, eller dersom perioda manglar aksjonskode, blir ikkje perioda flagga som
- * ute i permisjon utan lønn.
+ * ute i permisjon utan lÃ¸nn.
  *
  * @author Tarjei Skorgenes
  * @since 1.2.0

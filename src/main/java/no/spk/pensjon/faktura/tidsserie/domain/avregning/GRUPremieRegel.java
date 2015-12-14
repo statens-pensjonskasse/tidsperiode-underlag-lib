@@ -9,7 +9,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 /**
  * Premieberegningsregel for {@link Produkt#GRU}.
  * <br>
- * Merk at det foreløpig er udefinert korleis gruppelivspremien skal avregnast. Premiebeløpa blir derfor
+ * Merk at det forelÃ¸pig er udefinert korleis gruppelivspremien skal avregnast. PremiebelÃ¸pa blir derfor
  * satt lik kr 0 for alle perioder inntil det er avklart.
  *
  * @author Tarjei Skorgenes

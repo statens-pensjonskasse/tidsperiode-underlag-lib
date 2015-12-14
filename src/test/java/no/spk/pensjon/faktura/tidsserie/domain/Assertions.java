@@ -11,14 +11,14 @@ import org.assertj.core.api.AbstractLocalDateAssert;
 import org.assertj.core.api.OptionalAssert;
 
 /**
- * Hjelpemetoder for å verifisere tilstanden til forskjellige typer domene- og verdiobjekt i domenemodellen til
+ * Hjelpemetoder for Ã¥ verifisere tilstanden til forskjellige typer domene- og verdiobjekt i domenemodellen til
  * tidsseriegenereringa.
  */
 public final class Assertions {
     /**
      * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode#tilOgMed()}.
      *
-     * @param periode underlagsperioda som til og med-dato skal hentast frå
+     * @param periode underlagsperioda som til og med-dato skal hentast frÃ¥
      * @return ein ny asserter for til og med-datoen til perioda
      */
     public static OptionalAssert<LocalDate> assertTilOgMed(final Tidsperiode<?> periode) {
@@ -28,7 +28,7 @@ public final class Assertions {
     /**
      * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode#fraOgMed()}.
      *
-     * @param periode underlagsperioda som fra og med-dato skal hentast frå
+     * @param periode underlagsperioda som fra og med-dato skal hentast frÃ¥
      * @return ein ny asserter for fra og med-datoen til perioda
      */
     public static AbstractLocalDateAssert<?> assertFraOgMed(final Tidsperiode<?> periode) {
@@ -38,11 +38,11 @@ public final class Assertions {
     /**
      * Assertion for fra og med-dato til underlagsperiode nr <code>index + 1</code>.
      * <br>
-     * NB: Sidan til og med-dato er valgfri assertar vi her på ein <code>Optional&lt;LocalDate&gt;</code>, ikkje
+     * NB: Sidan til og med-dato er valgfri assertar vi her pÃ¥ ein <code>Optional&lt;LocalDate&gt;</code>, ikkje
      * <code>LocalDate</code> direkte.
      *
-     * @param underlag underlaget peridoa skal hentast ut frå
-     * @param index    den 0-baserte indeksen som underlagsperioda som skal hentast ligg plassert på i underlaget
+     * @param underlag underlaget peridoa skal hentast ut frÃ¥
+     * @param index    den 0-baserte indeksen som underlagsperioda som skal hentast ligg plassert pÃ¥ i underlaget
      * @return ein ny asserter for fra og med-datoen til perioda
      */
     public static OptionalAssert<LocalDate> assertTilOgMed(Underlag underlag, int index) {
@@ -52,8 +52,8 @@ public final class Assertions {
     /**
      * Assertion for til og med-dato til underlagsperiode nr <code>index + 1</code>.
      *
-     * @param underlag underlaget peridoa skal hentast ut frå
-     * @param index    den 0-baserte indeksen som underlagsperioda som skal hentast ligg plassert på i underlaget
+     * @param underlag underlaget peridoa skal hentast ut frÃ¥
+     * @param index    den 0-baserte indeksen som underlagsperioda som skal hentast ligg plassert pÃ¥ i underlaget
      * @return ein ny asserter for til og med-datoen til perioda
      */
     public static AbstractLocalDateAssert<?> assertFraOgMed(Underlag underlag, int index) {

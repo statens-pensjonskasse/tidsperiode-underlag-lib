@@ -1,8 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 /**
- * Versjonsnummer representerer versjonsnummeret som blir brukt for å funksjonelt skille
- * ein avregningsversjon frå ein annan avregningsversjon.
+ * Versjonsnummer representerer versjonsnummeret som blir brukt for Ã¥ funksjonelt skille
+ * ein avregningsversjon frÃ¥ ein annan avregningsversjon.
  *
  * @author Tarjei Skorgenes
  * @since 1.2.0
@@ -13,7 +13,7 @@ public class Avregningsversjon implements Comparable<Avregningsversjon> {
     private Avregningsversjon(final int nummer) {
         if (nummer < 1) {
             throw new IllegalArgumentException(
-                    "versjonsnummer må være større enn eller lik 1, men var "
+                    "versjonsnummer mÃ¥ vÃ¦re stÃ¸rre enn eller lik 1, men var "
                             + nummer
             );
         }

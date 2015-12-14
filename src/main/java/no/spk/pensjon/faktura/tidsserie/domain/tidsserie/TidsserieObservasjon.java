@@ -14,38 +14,38 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 
 /**
- * {@link TidsserieObservasjon} representerer ein observasjon som inngår som eit innslag
- * i ein {@link TidsserieFacade} generert ut frå alle stillingsforhold
+ * {@link TidsserieObservasjon} representerer ein observasjon som inngÃ¥r som eit innslag
+ * i ein {@link TidsserieFacade} generert ut frÃ¥ alle stillingsforhold
  * tilknytta {@link no.spk.pensjon.faktura.tidsserie.domain.medlemsdata.Medlemsdata} for eit medlem.
  * <p>
- * Kvar observasjon blir generert basert på eit
+ * Kvar observasjon blir generert basert pÃ¥ eit
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag observasjonsunderlag}. Observasjonen
  * representerer eit totalresultat generert for alle underlagsperioder i observasjonsunderlaget som er tilknytta
- * samme stillingsforhold og avtale som observasjonen. Dette impliserer at obserasjonsunderlag for årstall der
- * eit stillingsforhold har bytta avtale, vil føre til at det blir generert to observasjonar tilknytta samme
+ * samme stillingsforhold og avtale som observasjonen. Dette impliserer at obserasjonsunderlag for Ã¥rstall der
+ * eit stillingsforhold har bytta avtale, vil fÃ¸re til at det blir generert to observasjonar tilknytta samme
  * stillingsforhold, men tilknytta forskjellige avtalar.
  * <p>
- * Kvar observasjon består av to delar, ein del som identifiserer eller grupperer observasjonen basert på
- * informasjon om observasjonsdato, stillinga eller avtalen, og ein annan del som består av ei eller fleire målingar
- * som er gjort basert på alle underlagsperioder som inngår i observasjonsdatoens observasjonsunderlag.
+ * Kvar observasjon bestÃ¥r av to delar, ein del som identifiserer eller grupperer observasjonen basert pÃ¥
+ * informasjon om observasjonsdato, stillinga eller avtalen, og ein annan del som bestÃ¥r av ei eller fleire mÃ¥lingar
+ * som er gjort basert pÃ¥ alle underlagsperioder som inngÃ¥r i observasjonsdatoens observasjonsunderlag.
  *
  * @author Tarjei Skorgenes
  */
 public class TidsserieObservasjon {
     /**
-     * Stillingsforholdet observasjonen er utført av og for.
+     * Stillingsforholdet observasjonen er utfÃ¸rt av og for.
      */
     public final StillingsforholdId stillingsforhold;
 
     private final AvtaleId avtale;
 
     /**
-     * Datoen observasjonen er simulert utført på.
+     * Datoen observasjonen er simulert utfÃ¸rt pÃ¥.
      */
     public final Observasjonsdato observasjonsdato;
 
     /**
-     * Totalt maskinelt grunnlag for stillingsforholdet på avtalen i det aktuelle året.
+     * Totalt maskinelt grunnlag for stillingsforholdet pÃ¥ avtalen i det aktuelle Ã¥ret.
      */
     public Kroner maskineltGrunnlag = Kroner.ZERO;
 
@@ -54,12 +54,12 @@ public class TidsserieObservasjon {
     private final Optional<Premiestatus> premiestatus;
 
     /**
-     * Konstruerer ein ny observasjon av totalt maskinelt grunnlag for eit stillingsforhold på ein bestemt avtale
-     * der observasjonen er utført på eit observasjonsunderlag for den angitte observasjonsdatoen.
+     * Konstruerer ein ny observasjon av totalt maskinelt grunnlag for eit stillingsforhold pÃ¥ ein bestemt avtale
+     * der observasjonen er utfÃ¸rt pÃ¥ eit observasjonsunderlag for den angitte observasjonsdatoen.
      *
-     * @param stillingsforhold stillingsforholdet obserasjonen er utført for
-     * @param avtale           avtalen som stillingsforholdet har vore eller er aktivt på
-     * @param observasjonsdato datoen observasjonen er simulert utført
+     * @param stillingsforhold stillingsforholdet obserasjonen er utfÃ¸rt for
+     * @param avtale           avtalen som stillingsforholdet har vore eller er aktivt pÃ¥
+     * @param observasjonsdato datoen observasjonen er simulert utfÃ¸rt
      * @param premiestatus     avtalens premiestatus
      * @throws NullPointerException dersom nokon av parameterverdiane er <code>null</code>
      */
@@ -73,7 +73,7 @@ public class TidsserieObservasjon {
     }
 
     /**
-     * Avtalen stillingsforholdet har vore tilknytta i alle perioder observasjonen er utført på.
+     * Avtalen stillingsforholdet har vore tilknytta i alle perioder observasjonen er utfÃ¸rt pÃ¥.
      *
      * @return stillingsforholdets avtale
      */
@@ -84,7 +84,7 @@ public class TidsserieObservasjon {
     /**
      * Avtalens premiestatus pr siste periode i observasjonsunderlaget.
      * <p>
-     * Merk at verdien er valgfri sidan avtalane ikkje er påkrevd å alltid ha ein premiestatus.
+     * Merk at verdien er valgfri sidan avtalane ikkje er pÃ¥krevd Ã¥ alltid ha ein premiestatus.
      * @return premiestatus for observasjonen dersom den finnes
      */
     public Optional<Premiestatus> premiestatus() {
@@ -95,7 +95,7 @@ public class TidsserieObservasjon {
      * Er observasjonen tilknytta det angitte stillingsforholdet?
      *
      * @param stillingsforhold stillingsforholdet observasjonen skal sjekkast mot
-     * @return <code>true</code> dersom observasjonen tilhøyrer stillingsforholdet, <code>false</code> ellers
+     * @return <code>true</code> dersom observasjonen tilhÃ¸yrer stillingsforholdet, <code>false</code> ellers
      */
     public boolean tilhoeyrer(final StillingsforholdId stillingsforhold) {
         return this.stillingsforhold.equals(stillingsforhold);
@@ -105,17 +105,17 @@ public class TidsserieObservasjon {
      * Er observasjonen tilknytta den angitte avtalen?
      *
      * @param avtale avtalen observasjonen skal sjekkast mot
-     * @return <code>true</code> dersom observasjonen tilhøyrer den angite avtalen, <code>false</code> ellers
+     * @return <code>true</code> dersom observasjonen tilhÃ¸yrer den angite avtalen, <code>false</code> ellers
      */
     public boolean tilhoeyrer(AvtaleId avtale) {
         return this.avtale.equals(avtale);
     }
 
     /**
-     * Ligg observasjondatoen innanfor det angitte året?
+     * Ligg observasjondatoen innanfor det angitte Ã¥ret?
      *
-     * @param aarstall årstallet som observasjondatoen skal sjekkast mot
-     * @return <code>true</code> dersom observasjonsdatoen sitt årstall er lik <code>aarstall</code>
+     * @param aarstall Ã¥rstallet som observasjondatoen skal sjekkast mot
+     * @return <code>true</code> dersom observasjonsdatoen sitt Ã¥rstall er lik <code>aarstall</code>
      * <code>false</code> ellers
      */
     public boolean tilhoeyrer(final Aarstall aarstall) {
@@ -124,24 +124,24 @@ public class TidsserieObservasjon {
 
 
     /**
-     * Ligg observasjonsdatoen innanfor den angitte månaden?
+     * Ligg observasjonsdatoen innanfor den angitte mÃ¥naden?
      *
-     * @param month månaden observasjonsdatoen skal sjekkast opp mot
-     * @return <code>true</code> dersom observasjonsdatoen ligg innanfor den aktuelle månaden, <code>false</code> ellers
+     * @param month mÃ¥naden observasjonsdatoen skal sjekkast opp mot
+     * @return <code>true</code> dersom observasjonsdatoen ligg innanfor den aktuelle mÃ¥naden, <code>false</code> ellers
      */
     public boolean tilhoeyrer(final Month month) {
         return observasjonsdato.tilhoeyrer(month);
     }
 
     /**
-     * Legger saman målingane frå gjeldande observasjon med målingane frå den andre observasjonen og dannar ein ny
-     * observasjon med summen av kvar måling.
+     * Legger saman mÃ¥lingane frÃ¥ gjeldande observasjon med mÃ¥lingane frÃ¥ den andre observasjonen og dannar ein ny
+     * observasjon med summen av kvar mÃ¥ling.
      * <p>
-     * Kontrakta for denne operasjonen forutsetter at begge observasjonane tilhøyrer samme stillingsforhold, avtale og
+     * Kontrakta for denne operasjonen forutsetter at begge observasjonane tilhÃ¸yrer samme stillingsforhold, avtale og
      * observasjonsdato.
      *
      * @param other den andre observasjonen som vi skal kombinerast saman med
-     * @return ein ny observasjon som inneheld summen av gjeldande og den andre observasjonens målingar
+     * @return ein ny observasjon som inneheld summen av gjeldande og den andre observasjonens mÃ¥lingar
      * @throws IllegalArgumentException dersom observasjonane ikkje har lik stillingsforhold, avtale og observasjonsdato
      */
     TidsserieObservasjon plus(final TidsserieObservasjon other) {
@@ -179,7 +179,7 @@ public class TidsserieObservasjon {
         return observasjonsdato
                 + " for stilling "
                 + stillingsforhold
-                + " på "
+                + " pÃ¥ "
                 + avtale
                 + " med maskinelt grunnlag  "
                 + maskineltGrunnlag

@@ -3,13 +3,13 @@ package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link Fastetillegg} representerer eit fast lønnstillegg som
- * inngår som ein del av den totale, utbetalte årslønna for stillinga den er innrapportert på.
+ * {@link Fastetillegg} representerer eit fast lÃ¸nnstillegg som
+ * inngÃ¥r som ein del av den totale, utbetalte Ã¥rslÃ¸nna for stillinga den er innrapportert pÃ¥.
  * <p>
- * I likheit med grunnlønna forventast faste tillegg å bli innrapportert deltidsjustert slik at ein ikkje treng
- * å foreta nokon vidare justering av dei faste tillegga basert på stillingsprosenten til stillingsendringa.
+ * I likheit med grunnlÃ¸nna forventast faste tillegg Ã¥ bli innrapportert deltidsjustert slik at ein ikkje treng
+ * Ã¥ foreta nokon vidare justering av dei faste tillegga basert pÃ¥ stillingsprosenten til stillingsendringa.
  * <p>
- * Faste tillegg blir innrapportert som ein årsverdi, på samme måte som deltidsjustert lønn.
+ * Faste tillegg blir innrapportert som ein Ã¥rsverdi, pÃ¥ samme mÃ¥te som deltidsjustert lÃ¸nn.
  *
  * @author Tarjei Skorgenes
  */
@@ -17,19 +17,19 @@ public class Fastetillegg {
     private final Kroner beloep;
 
     /**
-     * Konstruerer eit nytt fast tillegg i lønn.
+     * Konstruerer eit nytt fast tillegg i lÃ¸nn.
      *
-     * @param beloep kronebeløpet som kjem som eit fast tillegg i lønn
+     * @param beloep kronebelÃ¸pet som kjem som eit fast tillegg i lÃ¸nn
      * @throws NullPointerException dersom <code>beloep</code> er <code>null</code>
      */
     public Fastetillegg(final Kroner beloep) {
-        this.beloep = requireNonNull(beloep, () -> "beløp er påkrevd, men var null");
+        this.beloep = requireNonNull(beloep, () -> "belÃ¸p er pÃ¥krevd, men var null");
     }
 
     /**
-     * Returnerer det faste, årlige lønnstillegget.
+     * Returnerer det faste, Ã¥rlige lÃ¸nnstillegget.
      *
-     * @return devt faste, årlige lønnstillegget
+     * @return devt faste, Ã¥rlige lÃ¸nnstillegget
      */
     public Kroner beloep() {
         return beloep;

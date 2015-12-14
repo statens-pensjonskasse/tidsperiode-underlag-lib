@@ -14,17 +14,17 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
  */
 public class AarsfaktorRegel implements BeregningsRegel<Aarsfaktor> {
     /**
-     * Beregnar årsfaktoren ut frå lengda på tidsperioda underlagsperioda strekker seg over
-     * og lengda på året underlagsperioda ligg innanfor.
+     * Beregnar Ã¥rsfaktoren ut frÃ¥ lengda pÃ¥ tidsperioda underlagsperioda strekker seg over
+     * og lengda pÃ¥ Ã¥ret underlagsperioda ligg innanfor.
      * <br>
-     * Året lengde blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel}
-     * og lengda på perioda blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AntallDagarRegel}.
+     * Ã…ret lengde blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel}
+     * og lengda pÃ¥ perioda blir beregna vha. {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.AntallDagarRegel}.
      *
-     * @param periode underlagsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av
+     * @param periode underlagsperioda som inneheld alle verdiar eller pÃ¥krevde reglar som skal benyttast av
      *                beregningsregelen
-     * @return årsfaktoren for underlagsperioda
+     * @return Ã¥rsfaktoren for underlagsperioda
      * @throws PaakrevdAnnotasjonManglarException dersom nokon av reglane brukt ved beregning av antall dagar i perioda
-     *                                            eller året, ikkje er annotert på perioda
+     *                                            eller Ã¥ret, ikkje er annotert pÃ¥ perioda
      * @see Aarsfaktor
      * @see AarsLengdeRegel
      */
@@ -35,7 +35,7 @@ public class AarsfaktorRegel implements BeregningsRegel<Aarsfaktor> {
         final double verdi = dagarIPeriode.verdi() / (double) antallDagarIAaret.verdi();
         if (verdi > 1d) {
             throw new IllegalArgumentException(
-                    "årsfaktor kan kun beregnast for perioder på 1 år eller kortare, men perioda var "
+                    "Ã¥rsfaktor kan kun beregnast for perioder pÃ¥ 1 Ã¥r eller kortare, men perioda var "
                             + dagarIPeriode + " lang, perioda det gjaldt er " + periode
             );
         }

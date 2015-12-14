@@ -7,19 +7,19 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 
 /**
- * Beregningsregel som reknar ut lengda på året
+ * Beregningsregel som reknar ut lengda pÃ¥ Ã¥ret
  * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode underlagsperioda} er tilknytta.
  *
  * @author Tarjei Skorgenes
  */
 public class AarsLengdeRegel implements BeregningsRegel<AntallDagar> {
     /**
-     * Beregnar antall dagar i årstallet underlagsperioda er tilknytta.
+     * Beregnar antall dagar i Ã¥rstallet underlagsperioda er tilknytta.
      * <br>
-     * Underlagsperioda blir tilknytta eit år via ein påkrevd annotasjon av type {@link Aarstall}.
+     * Underlagsperioda blir tilknytta eit Ã¥r via ein pÃ¥krevd annotasjon av type {@link Aarstall}.
      *
-     * @param periode underlagsperioda som er annotert med årstallet lengda skal beregnast for
-     * @return antall dagar i året underlagsperioda er annotert med
+     * @param periode underlagsperioda som er annotert med Ã¥rstallet lengda skal beregnast for
+     * @return antall dagar i Ã¥ret underlagsperioda er annotert med
      * @throws PaakrevdAnnotasjonManglarException dersom perioda ikkje er annotert med {@link Aarstall}
      * @see Aarstall#atStartOfYear()
      * @see Aarstall#atEndOfYear()

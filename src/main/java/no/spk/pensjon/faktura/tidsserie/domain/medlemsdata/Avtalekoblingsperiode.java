@@ -16,8 +16,8 @@ import static java.util.Objects.requireNonNull;
  * {@link Avtalekoblingsperiode} representerer avtalen
  * eit stillingsforhold er tilknytta i ei bestemt tidsperiode.
  * <p>
- * Sj¯lv om det i PUMA i dag ikkje er vanlig Â finne fleire avtalekoblingsperioder for samme stillingsforhold
- * for samme avtale sÂ er det fysisk og logisk mulig, det er derfor fullt mulig Â ha fleire avtalekoblingsperioder
+ * Sj√∏lv om det i PUMA i dag ikkje er vanlig √• finne fleire avtalekoblingsperioder for samme stillingsforhold
+ * for samme avtale s√• er det fysisk og logisk mulig, det er derfor fullt mulig √• ha fleire avtalekoblingsperioder
  * for samme stillingsforhold og avtale under forutsetning av at tidsperiodene ikkje overlappar.
  *
  * @author Tarjei Skorgenes
@@ -30,20 +30,20 @@ public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsper
     /**
      * Konstruerer ei ny avtalekobling mellom eit stillingsforhold og ein avtale i ei bestemt tidsperiode.
      *
-     * @param fraOgMed         frÂ og med-dato for perioda
+     * @param fraOgMed         fr√• og med-dato for perioda
      * @param tilOgMed         til og med-dato for perioda
-     * @param stillingsforhold stillingsforholdet avtalekoblinga tilh¯yrer
+     * @param stillingsforhold stillingsforholdet avtalekoblinga tilh√∏yrer
      * @param avtale           avtalen stillingsforholdet er tilknytta innanfor perioda
      * @param ordning          pensjonsordninga avtalen er tilknytta
-     * @throws NullPointerException dersom verdien pÂ eit eller fleire parameter er <code>null</code>
+     * @throws NullPointerException dersom verdien p√• eit eller fleire parameter er <code>null</code>
      */
     public Avtalekoblingsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
                                  final StillingsforholdId stillingsforhold, final AvtaleId avtale,
                                  final Ordning ordning) {
         super(fraOgMed, tilOgMed);
-        this.stillingsforhold = requireNonNull(stillingsforhold, () -> "stillingsforhold er pÂkrevd, men var null");
-        this.avtale = requireNonNull(avtale, () -> "avtale er pÂkrevd, men var null");
-        this.ordning = requireNonNull(ordning, () -> "ordning er pÂkrevd, men var null");
+        this.stillingsforhold = requireNonNull(stillingsforhold, () -> "stillingsforhold er p√•krevd, men var null");
+        this.avtale = requireNonNull(avtale, () -> "avtale er p√•krevd, men var null");
+        this.ordning = requireNonNull(ordning, () -> "ordning er p√•krevd, men var null");
     }
 
     /**
@@ -68,9 +68,9 @@ public class Avtalekoblingsperiode extends AbstractTidsperiode<Avtalekoblingsper
     }
 
     /**
-     * Stillingsforholdet avtalekoblinga tilh¯yrer.
+     * Stillingsforholdet avtalekoblinga tilh√∏yrer.
      *
-     * @return stillingsforholdet avtalekoblinga tilh¯yrer
+     * @return stillingsforholdet avtalekoblinga tilh√∏yrer
      */
     public StillingsforholdId stillingsforhold() {
         return stillingsforhold;

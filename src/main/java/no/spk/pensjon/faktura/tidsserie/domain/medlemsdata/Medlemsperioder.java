@@ -12,11 +12,11 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 /**
- * {@link Medlemsperioder} representerer alle perioder og tilstandsovergangar på medlemsnivå
- * basert på alle stillingsforholda til medlemmet.
+ * {@link Medlemsperioder} representerer alle perioder og tilstandsovergangar pÃ¥ medlemsnivÃ¥
+ * basert pÃ¥ alle stillingsforholda til medlemmet.
  * <p>
  * I motsetning til {@link StillingsforholdPerioder} blir medlemsperiodene splitta kvar gang det skjer ein
- * tilstandovergang på eit av medlemmet sine stillingsforhold, uavhengig av kva for eit av stillingsforholda som
+ * tilstandovergang pÃ¥ eit av medlemmet sine stillingsforhold, uavhengig av kva for eit av stillingsforholda som
  * har endra tilstand.
  *
  * @author Tarjei Skorgenes
@@ -31,9 +31,9 @@ public class Medlemsperioder {
     /**
      * Returnerer medlemsperiodene som periodiseringa har generert.
      * <p>
-     * Innanfor kvar periode vil medlemmet si tilstand vere den samme frå dag til dag, ingen endringar i
+     * Innanfor kvar periode vil medlemmet si tilstand vere den samme frÃ¥ dag til dag, ingen endringar i
      * medregning eller historikk vil forekomme innanfor kvar periode. Alle endringar i tilstand for medlemmet
-     * vil medføre at ei ny periode blir danna for kvar ny tilstand.
+     * vil medfÃ¸re at ei ny periode blir danna for kvar ny tilstand.
      *
      * @return alle periodene medlemmet strekker seg over
      */
@@ -42,10 +42,10 @@ public class Medlemsperioder {
     }
 
     /**
-     * Spørring som hentar ut alle stillingsforholdperioder som tilhøyrer stillingsforholdnummeret <code>id</code>.
+     * SpÃ¸rring som hentar ut alle stillingsforholdperioder som tilhÃ¸yrer stillingsforholdnummeret <code>id</code>.
      *
-     * @param id stillingsforholdnummeret som returnerte perioder må tilhøyre
-     * @return alle stillingsforholdperioder som tilhøyrer <code>id</code>, eller
+     * @param id stillingsforholdnummeret som returnerte perioder mÃ¥ tilhÃ¸yre
+     * @return alle stillingsforholdperioder som tilhÃ¸yrer <code>id</code>, eller
      * {@link Optional#empty()} dersom det ikkje eksisterer nokon stillingsforholdperioder tilknytta <code>id</code>
      */
     public Optional<StillingsforholdPerioder> stillingsforhold(final StillingsforholdId id) {

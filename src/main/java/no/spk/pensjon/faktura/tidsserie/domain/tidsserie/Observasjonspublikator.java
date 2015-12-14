@@ -8,25 +8,25 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
  * {@link Observasjonspublikator} representerer ein ut-port eller -adapter
  * for observasjonsunderlag generert av {@link TidsserieFacade}.
  * <p>
- * Publikatoren blir forventa å ta seg av vidare prosessering og persistering av observasjonsunderlaget.
- * Det er _sterkt_ ønskelig at persistering eller tidkrevande prosessering av observasjonsunderlaga blir
- * utført asynkront på ein anna tråd enn tråden som kallar {@link #publiser(Stream)} slik at prosesseringa
- * av tidsserien kan fortsette til neste stillingsforhold utan å vente på I/O eller anna tidkrevande prosessering
- * utført som følge av publiseringa.
+ * Publikatoren blir forventa Ã¥ ta seg av vidare prosessering og persistering av observasjonsunderlaget.
+ * Det er _sterkt_ Ã¸nskelig at persistering eller tidkrevande prosessering av observasjonsunderlaga blir
+ * utfÃ¸rt asynkront pÃ¥ ein anna trÃ¥d enn trÃ¥den som kallar {@link #publiser(Stream)} slik at prosesseringa
+ * av tidsserien kan fortsette til neste stillingsforhold utan Ã¥ vente pÃ¥ I/O eller anna tidkrevande prosessering
+ * utfÃ¸rt som fÃ¸lge av publiseringa.
  * <p>
- * Publikatoren blir og forventa å kopiere ut tilstanden frå observasjonen slik at sjølve observasjonen og
+ * Publikatoren blir og forventa Ã¥ kopiere ut tilstanden frÃ¥ observasjonen slik at sjÃ¸lve observasjonen og
  * objekta den peikar til, kan garbage collectast umiddelbart etter at {@link #publiser(Stream)} returnerer.
  * <p>
- * Intensjonen med den siste delen av kontrakta er å hindre eller sterkt redusere omfanget av objekt som overlever
- * lenge nok til å bli overført til old generation. Dette fordi GC av old generation forventast å kunne få omfattande
- * ytelsemessige konsekvensar for sjølve prosesseringa.
+ * Intensjonen med den siste delen av kontrakta er Ã¥ hindre eller sterkt redusere omfanget av objekt som overlever
+ * lenge nok til Ã¥ bli overfÃ¸rt til old generation. Dette fordi GC av old generation forventast Ã¥ kunne fÃ¥ omfattande
+ * ytelsemessige konsekvensar for sjÃ¸lve prosesseringa.
  *
  * @author Tarjei Skorgenes
  */
 public interface Observasjonspublikator {
     /**
      * Publiserer ein straum av observasjonsunderlag generert basert
-     * på stillingsforholdunderlaget for eit bestemt stillingsforhold.
+     * pÃ¥ stillingsforholdunderlaget for eit bestemt stillingsforhold.
      *
      * @param observasjonsunderlag alle observasjonsunderlaga som blir generert for eit stillingsforhold
      */

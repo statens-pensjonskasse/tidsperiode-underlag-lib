@@ -1,8 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata;
 
 /**
- * Foreløpig marker interface som brukes for Kroner og Prosent.
- * På sikt kan den utvides med metoder slik at man kan generere et resultat ved å gjøre aritmetiske operasjoner på satsen,
+ * ForelÃ¸pig marker interface som brukes for Kroner og Prosent.
+ * PÃ¥ sikt kan den utvides med metoder slik at man kan generere et resultat ved Ã¥ gjÃ¸re aritmetiske operasjoner pÃ¥ satsen,
  * kanskje vha visitor pattern.
  * @author Snorre E. Brekke - Computas
  */

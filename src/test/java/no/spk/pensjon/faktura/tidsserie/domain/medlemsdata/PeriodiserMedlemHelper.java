@@ -29,7 +29,7 @@ class PeriodiserMedlemHelper {
         return new GenerellTidsperiode(dato(fraOgMed), of(dato(tilOgMed)));
     }
 
-    static Tidsperiode<?> periode(final String fraOgMed, final Optional<Void> løpende) {
+    static Tidsperiode<?> periode(final String fraOgMed, final Optional<Void> lÃ¸pende) {
         return new GenerellTidsperiode(dato(fraOgMed), empty());
     }
 

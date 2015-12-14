@@ -59,7 +59,7 @@ class Koblingar {
     /**
      * Populerer underlagsperioda med alle koblingane som er lagt inn tidligare via {@link #add}.
      *
-     * @param periode underlagsperioda som koblingane skal leggast til på
+     * @param periode underlagsperioda som koblingane skal leggast til pÃ¥
      */
     void kobleTil(final HarKoblingar periode) {
         koblingar

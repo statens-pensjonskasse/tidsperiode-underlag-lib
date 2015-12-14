@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * Premiesatser for et produkt.
  * <br>
- * På grunn av måten premiesatser er modellert i Kasper kan en premiesats indikere at avtalens forhold til produktet
+ * PÃ¥ grunn av mÃ¥ten premiesatser er modellert i Kasper kan en premiesats indikere at avtalens forhold til produktet
  * er i en av to mulige tilstander:
  * <ul>
  * <li>Avtalen har produktet skal kunne bli fakturert for produktet.</li>
@@ -36,14 +36,14 @@ public class Premiesats {
     public final Produktinfo produktinfo;
 
     /**
-     * Gjeldende premiesatser, angitt som {@link Prosent prosentsatser} eller {@link Kroner kronebeløp}.
+     * Gjeldende premiesatser, angitt som {@link Prosent prosentsatser} eller {@link Kroner kronebelÃ¸p}.
      */
     public final Satser<?> satser;
 
     private Premiesats(final Produkt produkt, final Produktinfo produktinfo, final Satser<?> satser) {
-        this.produkt = requireNonNull(produkt, "produkt er påkrevd, men var null");
-        this.produktinfo = requireNonNull(produktinfo, "produktinfo er påkrevd, men var null");
-        this.satser = requireNonNull(satser, "satsar er påkrevd, men var null");
+        this.produkt = requireNonNull(produkt, "produkt er pÃ¥krevd, men var null");
+        this.produktinfo = requireNonNull(produktinfo, "produktinfo er pÃ¥krevd, men var null");
+        this.satser = requireNonNull(satser, "satsar er pÃ¥krevd, men var null");
     }
 
     /**
@@ -89,7 +89,7 @@ public class Premiesats {
      * Hentar ut prosentverdiane for premiesatsane.
      *
      * @return premiesatsane sine satsar angitt i prosent,
-     * eller {@link Optional#empty()} dersom produktet benyttar kronebeløp og ikkje prosentsatsar.
+     * eller {@link Optional#empty()} dersom produktet benyttar kronebelÃ¸p og ikkje prosentsatsar.
      * @since 1.1.1
      */
     public Optional<Satser<Prosent>> prosentsatser() {
@@ -99,8 +99,8 @@ public class Premiesats {
     /**
      * Hentar ut kroneverdiane for premiesatsane.
      *
-     * @return premiesatsane sine satsar angitt som kronebeløp,
-     * eller {@link Optional#empty()} dersom produktet benyttar prosentsatsar og ikkje kronebeløp
+     * @return premiesatsane sine satsar angitt som kronebelÃ¸p,
+     * eller {@link Optional#empty()} dersom produktet benyttar prosentsatsar og ikkje kronebelÃ¸p
      * @since 1.1.1
      */
     public Optional<Satser<Kroner>> beloepsatsar() {
@@ -152,11 +152,11 @@ public class Premiesats {
         }
 
         private RuntimeException satserMangler() {
-            return new IllegalStateException("satser er påkrevd, men mangler verdi");
+            return new IllegalStateException("satser er pÃ¥krevd, men mangler verdi");
         }
 
         private RuntimeException produktinfoManglar() {
-            return new IllegalStateException("produktinfo er påkrevd, men mangler verdi");
+            return new IllegalStateException("produktinfo er pÃ¥krevd, men mangler verdi");
         }
     }
 }

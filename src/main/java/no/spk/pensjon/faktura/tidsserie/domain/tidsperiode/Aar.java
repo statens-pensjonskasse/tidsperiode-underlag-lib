@@ -12,8 +12,8 @@ import static java.util.Optional.of;
 
 /**
  * {@link Aar} representerer ei tidsperiode
- * som strekker seg frå 1. januar til 31. desember i eit bestemt årstall og som igjen er bygd
- * opp av 12 månedsperioder.
+ * som strekker seg frÃ¥ 1. januar til 31. desember i eit bestemt Ã¥rstall og som igjen er bygd
+ * opp av 12 mÃ¥nedsperioder.
  *
  * @author Tarjei Skorgenes
  */
@@ -25,14 +25,14 @@ public class Aar implements Tidsperiode<Aar> {
     private final LocalDate fraOgMed;
 
     /**
-     * Konstruerer eit nytt år.
+     * Konstruerer eit nytt Ã¥r.
      *
-     * @param aar årstallet som året er tilknytta
+     * @param aar Ã¥rstallet som Ã¥ret er tilknytta
      * @throws NullPointerException viss <code>aar</code> er <code>null</code>
      */
     public Aar(final Aarstall aar) {
         this.aar = aar;
-        requireNonNull(aar, () -> "årstall er påkrevd, men var null");
+        requireNonNull(aar, () -> "Ã¥rstall er pÃ¥krevd, men var null");
         asList(Month.values())
                 .stream()
                 .map(m -> new Maaned(aar, m))
@@ -42,16 +42,16 @@ public class Aar implements Tidsperiode<Aar> {
     }
 
     /**
-     * Årstallet som årsperioda representerer.
+     * Ã…rstallet som Ã¥rsperioda representerer.
      *
-     * @return årets årstall
+     * @return Ã¥rets Ã¥rstall
      */
     public Aarstall aarstall() {
         return aar;
     }
 
     /**
-     * Returnerer 1. januar i det aktuelle året.
+     * Returnerer 1. januar i det aktuelle Ã¥ret.
      *
      * @return 1. januar
      */
@@ -61,7 +61,7 @@ public class Aar implements Tidsperiode<Aar> {
     }
 
     /**
-     * Returnerer 31. desember i det aktuelle året.
+     * Returnerer 31. desember i det aktuelle Ã¥ret.
      *
      * @return 31. desember
      */
@@ -71,9 +71,9 @@ public class Aar implements Tidsperiode<Aar> {
     }
 
     /**
-     * Månadane som året periodisert og splittet opp i.
+     * MÃ¥nadane som Ã¥ret periodisert og splittet opp i.
      *
-     * @return ein straum med alle månedane i året
+     * @return ein straum med alle mÃ¥nedane i Ã¥ret
      */
     public Stream<Maaned> maaneder() {
         return perioder.stream();

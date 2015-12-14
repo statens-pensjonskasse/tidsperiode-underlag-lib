@@ -16,14 +16,14 @@ import java.util.stream.Stream;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 /**
- * {@link Underlag} representerer eit periodisert tidsperiode beståande av ei eller fleire
+ * {@link Underlag} representerer eit periodisert tidsperiode bestÃ¥ande av ei eller fleire
  * {@link Underlagsperiode underlagsperioder}.
  * <p>
- * Eit underlag, med tilhøyrande underlagsperioder, skal understøtte beregningar/spørringar som skal utførast basert
- * på verdiar henta frå 2 eller fleire periodiserte datatyper som kan individuelt variere over tid, frå dag til dag,
- * veke til veke, måned til måned eller andre semi-tilfeldige variasjonsmønster.
+ * Eit underlag, med tilhÃ¸yrande underlagsperioder, skal understÃ¸tte beregningar/spÃ¸rringar som skal utfÃ¸rast basert
+ * pÃ¥ verdiar henta frÃ¥ 2 eller fleire periodiserte datatyper som kan individuelt variere over tid, frÃ¥ dag til dag,
+ * veke til veke, mÃ¥ned til mÃ¥ned eller andre semi-tilfeldige variasjonsmÃ¸nster.
  * </p>
- * Denne typen variasjon frå periode til periode, med mange nivå av mulige overlappande perioder, er hovedmotivasjonen
+ * Denne typen variasjon frÃ¥ periode til periode, med mange nivÃ¥ av mulige overlappande perioder, er hovedmotivasjonen
  * for underlags- og underlagsperiode-konsepta.
  * <p>
  * Underlaget inneheld underlagsperioder og kvar underlagsperiode representerer den minste tidsperioda som ein kan
@@ -31,36 +31,36 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
  * </p>
  * <h2>Kontrakt</h2>
  * <p>
- * Den viktigaste kontrakta som klientar som brukar underlaget kan basere seg på er at at det ikkje skal kunne
- * eksistere tidsgap mellom ei eller fleire av underlagsperiodene som inngår i underlaget. Forsøk på å konstruere
+ * Den viktigaste kontrakta som klientar som brukar underlaget kan basere seg pÃ¥ er at at det ikkje skal kunne
+ * eksistere tidsgap mellom ei eller fleire av underlagsperiodene som inngÃ¥r i underlaget. ForsÃ¸k pÃ¥ Ã¥ konstruere
  * eit underlag med tidsgap skal feile umiddelbart.
  * </p>
  * <p>
- * Underlaget skal vere bygd opp av underlagsperioder sortert i kronologisk rekkefølge, med eldste periode første og
+ * Underlaget skal vere bygd opp av underlagsperioder sortert i kronologisk rekkefÃ¸lge, med eldste periode fÃ¸rste og
  * nyaste periode sist.
  * </p>
  * <h2>Koblingar</h2>
- * Sidan konstruksjon av underlag og underlagsperioder krever eit periodisert datasett som input, er det ønskelig å
- * kunne spore tilbake frå genererte underlagsperioder til input-periodene som førte til at dei vart oppretta.
+ * Sidan konstruksjon av underlag og underlagsperioder krever eit periodisert datasett som input, er det Ã¸nskelig Ã¥
+ * kunne spore tilbake frÃ¥ genererte underlagsperioder til input-periodene som fÃ¸rte til at dei vart oppretta.
  * <p>
- * For å støtte denne typen sporing, gir kvar underlagsperiode tilgang til alle input-perioder som den er kobla til.
+ * For Ã¥ stÃ¸tte denne typen sporing, gir kvar underlagsperiode tilgang til alle input-perioder som den er kobla til.
  * Dette er alle tidsperiodene som overlappar underlagsperiode, enten delvis eller fullstendig.
  * </p>
  * <h2>Eksempel</h2>
- * Tore startar i ny stilling 1. januar 2001, går opp frå lønnstrinn 10 til 20 3. juni 2001 og sluttar i stilling
+ * Tore startar i ny stilling 1. januar 2001, gÃ¥r opp frÃ¥ lÃ¸nnstrinn 10 til 20 3. juni 2001 og sluttar i stilling
  * 31. desember 2001, han jobbar heile tida i 100% stilling.
  * <p>
- * Lønnstrinn 10 endrar beløp 1. mai 2001, frå kr 100 000 til kr 105 000, 20 endrar beløp 1. mai 2001, frå kr 200 000
- * til kr 210 000. Ingen seinare endring av lønnstrinnbeløpa er registrert.
+ * LÃ¸nnstrinn 10 endrar belÃ¸p 1. mai 2001, frÃ¥ kr 100 000 til kr 105 000, 20 endrar belÃ¸p 1. mai 2001, frÃ¥ kr 200 000
+ * til kr 210 000. Ingen seinare endring av lÃ¸nnstrinnbelÃ¸pa er registrert.
  * </p>
  * <p>
- * Eit underlag generert ut frå desse 6 tidsperiodene (2 stillingsforholdperioder + 4 lønnstrinnperioder) består
- * av følgjande 3 underlagsperioder:
+ * Eit underlag generert ut frÃ¥ desse 6 tidsperiodene (2 stillingsforholdperioder + 4 lÃ¸nnstrinnperioder) bestÃ¥r
+ * av fÃ¸lgjande 3 underlagsperioder:
  * </p>
  * <table summary="">
  * <thead>
  * <tr>
- * <td>Frå og med-dato</td>
+ * <td>FrÃ¥ og med-dato</td>
  * <td>Til og med-dato</td>
  * <td>Tilknytta perioder</td>
  * </thead>
@@ -70,8 +70,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
  * <td>2001.04.30</td>
  * <td>
  * Stillingsforholdperiode 2001.01.01 -&gt; 2001.06.02
- * Lønnstrinnperiode ltr. 10, 2000.05.01 -&gt; 2001.04.30
- * Lønnstrinnperiode ltr. 20, 2000.05.01 -&gt; 2001.04.30
+ * LÃ¸nnstrinnperiode ltr. 10, 2000.05.01 -&gt; 2001.04.30
+ * LÃ¸nnstrinnperiode ltr. 20, 2000.05.01 -&gt; 2001.04.30
  * </td>
  * </tr>
  * <tr>
@@ -79,8 +79,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
  * <td>2001.06.02</td>
  * <td>
  * Stillingsforholdperiode 2001.01.01 -&gt; 2001.06.02
- * Lønnstrinnperiode ltr. 10, 2001.05.01 -&gt; løpande
- * Lønnstrinnperiode ltr. 20, 2001.05.01 -&gt; løpande
+ * LÃ¸nnstrinnperiode ltr. 10, 2001.05.01 -&gt; lÃ¸pande
+ * LÃ¸nnstrinnperiode ltr. 20, 2001.05.01 -&gt; lÃ¸pande
  * </td>
  * </tr>
  * <tr>
@@ -88,15 +88,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
  * <td>2001.12.31</td>
  * <td>
  * Stillingsforholdperiode 2001.06.03 -&gt; 2001.12.31
- * Lønnstrinnperiode ltr. 10, 2001.05.01 -&gt; løpande
- * Lønnstrinnperiode ltr. 20, 2001.05.01 -&gt; løpande
+ * LÃ¸nnstrinnperiode ltr. 10, 2001.05.01 -&gt; lÃ¸pande
+ * LÃ¸nnstrinnperiode ltr. 20, 2001.05.01 -&gt; lÃ¸pande
  * </td>
  * </tr>
  * </tbody>
  * </table>
  * <p>
- * Ut frå dette underlaget blir det no trivielt å beregne utbetalt lønn for Tore for 2001, ein kan iterere over kvar
- * underlagsperiode, og slå opp nødvendige verdiar for beregninga frå underlagsperiodas tilknytta perioder. Tilsvarande
+ * Ut frÃ¥ dette underlaget blir det no trivielt Ã¥ beregne utbetalt lÃ¸nn for Tore for 2001, ein kan iterere over kvar
+ * underlagsperiode, og slÃ¥ opp nÃ¸dvendige verdiar for beregninga frÃ¥ underlagsperiodas tilknytta perioder. Tilsvarande
  * kan ein no enkelt finne ut om ein har perioder med inkonsistente eller manglande data, f.eks. om det finnes
  * underlagsperioder utan kobling til ei stillingsforholdperiode, eller med kobling til meir enn ei
  * stillingsforholdperiode.
@@ -110,7 +110,7 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
     private final Annotasjonar annotasjonar = new Annotasjonar();
 
     /**
-     * Konstruerer eit nytt underlag ut frå ein straum med underlagsperioder sortert i kronologisk rekkefølge.
+     * Konstruerer eit nytt underlag ut frÃ¥ ein straum med underlagsperioder sortert i kronologisk rekkefÃ¸lge.
      * <p>
      * Dersom periodene ikkje er sortert eller dersom det eksisterer tidsgap mellom underlagsperiodene vil konstruksjon
      * av nytt underlag feile.
@@ -122,7 +122,7 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
         perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
         assert !detekterOverlappandePerioder() : overlappandePerioderFeilmelding();
         assert !detekterTidsgapMellomPerioder() : tidsgapMellomPerioderFeilmelding();
-        assert !detekterUsortertePerioder() : "underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge";
+        assert !detekterUsortertePerioder() : "underlaget krever at underlagsperiodene er sortert i kronologisk rekkefÃ¸lge";
     }
 
     /**
@@ -136,7 +136,7 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
     /**
      * Returnerer ein kronologisk straum som innehelde underlagets underlagsperioder.
      *
-     * @return ein kronologisk straum av underlagsperiodene som inngår i underlaget, frå eldste til yngste periode
+     * @return ein kronologisk straum av underlagsperiodene som inngÃ¥r i underlaget, frÃ¥ eldste til yngste periode
      */
     public Stream<Underlagsperiode> stream() {
         return perioder.stream();
@@ -145,10 +145,10 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
     /**
      * Returnerer ei ikkje-modifiserbar liste som inneheld underlagsperiodene som underlaget er bygd opp av.
      * <p>
-     * Metoda anbefalast kun brukt i situasjonar der ein må slå opp underlagsperiodene etter rekkefølge/index,
-     * den primære tilgangen til underlagets perioder bør skje via {@link #stream()}.
+     * Metoda anbefalast kun brukt i situasjonar der ein mÃ¥ slÃ¥ opp underlagsperiodene etter rekkefÃ¸lge/index,
+     * den primÃ¦re tilgangen til underlagets perioder bÃ¸r skje via {@link #stream()}.
      *
-     * @return underlagsperiodene i underlaget i kronologisk rekkefølge
+     * @return underlagsperiodene i underlaget i kronologisk rekkefÃ¸lge
      */
     public List<Underlagsperiode> toList() {
         return Collections.unmodifiableList(perioder);
@@ -157,8 +157,8 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
     /**
      * Returnerer eit avgrensa underlag der underlagsperioder som predikatet avviser, er filtrert bort.
      * <p>
-     * Ettersom det ikkje er tillatt for eit underlag å inneholde gap mellom underlagsperiodene kan ikkje resultatet
-     * av filtreringa medføre at det nye underlaget har tidsgap mellom ei eller fleire av underlagsperiodene. Viss så
+     * Ettersom det ikkje er tillatt for eit underlag Ã¥ inneholde gap mellom underlagsperiodene kan ikkje resultatet
+     * av filtreringa medfÃ¸re at det nye underlaget har tidsgap mellom ei eller fleire av underlagsperiodene. Viss sÃ¥
      * blir tilfellet indikerer det ein feil i predikatet som klienten har sendt inn.
      *
      * @param predikat eit predikat som filtrerer bort perioder som det nye underlaget ikkje skal inneholde
@@ -174,7 +174,7 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
      * Returnerer kronologisk siste periode fra underlaget, eller ein tom verdi dersom underlaget ikkje inneheld
      * nokon perioder.
      *
-     * @return kronologisk siste underlagsperiode frå underlaget, eller ein tom verdi om underlaget ikkje inneheld
+     * @return kronologisk siste underlagsperiode frÃ¥ underlaget, eller ein tom verdi om underlaget ikkje inneheld
      * nokon perioder
      */
     public Optional<Underlagsperiode> last() {

@@ -42,10 +42,10 @@ public enum Premiekategori {
     }
 
     /**
-     * Konverterer <code>kode</code> til kodens tilhørende premiekategori.
+     * Konverterer <code>kode</code> til kodens tilhÃ¸rende premiekategori.
      *
      * @param kode en <code>String</code> som inneholder en kodeverdi som skal konverteres til en premiekategori
-     * @return kodens tilhørende premiekategori, eller {@link java.util.Optional#empty()} viss det ikke eksisterer noen
+     * @return kodens tilhÃ¸rende premiekategori, eller {@link java.util.Optional#empty()} viss det ikke eksisterer noen
      * premiekategori som har den angitte kodeverdien
      */
     public static Optional<Premiekategori> parse(final String kode) {

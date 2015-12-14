@@ -29,8 +29,8 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at funksjonstillegg ikkje blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
-     * deltidsjusterte årslønna.
+     * Verifiserer at funksjonstillegg ikkje blir nedjustert i henhold til periodas Ã¥rsfaktor pÃ¥ samme mÃ¥te som for den
+     * deltidsjusterte Ã¥rslÃ¸nna.
      */
     @Test
     public void skalNedjustereFunksjonstilleggEtterAarsfaktor() {
@@ -41,11 +41,11 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at maskinelt grunnlag framleis kan beregnast når underlagsperioda ikkje er annotert med funksjonstillegg
-     * slik at ein slepp å ta annotere perioder med funksjonstillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
+     * Verifiserer at maskinelt grunnlag framleis kan beregnast nÃ¥r underlagsperioda ikkje er annotert med funksjonstillegg
+     * slik at ein slepp Ã¥ ta annotere perioder med funksjonstillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
      * <p>
-     * Intensjonen med å unngå å annotere når verdien er lik kr 0, er å oppføre oss konsistent med lønnstrinnhandteringa
-     * for lønnstrinn 0, der vi også hoppar over og ikkje annoterer perioda med eit tomt lønnstrinn.
+     * Intensjonen med Ã¥ unngÃ¥ Ã¥ annotere nÃ¥r verdien er lik kr 0, er Ã¥ oppfÃ¸re oss konsistent med lÃ¸nnstrinnhandteringa
+     * for lÃ¸nnstrinn 0, der vi ogsÃ¥ hoppar over og ikkje annoterer perioda med eit tomt lÃ¸nnstrinn.
      */
     @Test
     public void skalIkkjeFeileDersomPeriodeIkkjeErAnnotertMedFunksjonstillegg() {
@@ -57,7 +57,7 @@ public class LoennstilleggRegelTest {
 
     /**
      * Verifiserer at funksjonstillegg som er innrapportert blir brukt as is ved beregning av maskinelt grunnlag, uten
-     * å forsøke å deltidjustere dei basert på stillingsprosenten. Dette fordi funksjonstillegg er uavhengig av
+     * Ã¥ forsÃ¸ke Ã¥ deltidjustere dei basert pÃ¥ stillingsprosenten. Dette fordi funksjonstillegg er uavhengig av
      * stillingsprosent og derfor aldri skal deltidsjusterast.
      */
     @Test
@@ -81,8 +81,8 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at dei variable tillegga ikkje blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
-     * deltidsjusterte årslønna.
+     * Verifiserer at dei variable tillegga ikkje blir nedjustert i henhold til periodas Ã¥rsfaktor pÃ¥ samme mÃ¥te som for den
+     * deltidsjusterte Ã¥rslÃ¸nna.
      */
     @Test
     public void skalIkkjeNedjustereVariableTilleggEtterAarsfaktor() {
@@ -93,11 +93,11 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at maskinelt grunnlag framleis kan beregnast når underlagsperioda ikkje er annotert med variable tillegg
-     * slik at ein slepp å ta annotere perioder med variable tillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
+     * Verifiserer at maskinelt grunnlag framleis kan beregnast nÃ¥r underlagsperioda ikkje er annotert med variable tillegg
+     * slik at ein slepp Ã¥ ta annotere perioder med variable tillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
      * <p>
-     * Intensjonen med å unngå å annotere når verdien er lik kr 0, er å oppføre oss konsistent med lønnstrinnhandteringa
-     * for lønnstrinn 0, der vi også hoppar over og ikkje annoterer perioda med eit tomt lønnstrinn.
+     * Intensjonen med Ã¥ unngÃ¥ Ã¥ annotere nÃ¥r verdien er lik kr 0, er Ã¥ oppfÃ¸re oss konsistent med lÃ¸nnstrinnhandteringa
+     * for lÃ¸nnstrinn 0, der vi ogsÃ¥ hoppar over og ikkje annoterer perioda med eit tomt lÃ¸nnstrinn.
      */
     @Test
     public void skalIkkjeFeileDersomPeriodeIkkjeErAnnotertMedVariableTillegg() {
@@ -109,7 +109,7 @@ public class LoennstilleggRegelTest {
 
     /**
      * Verifiserer at dei variable tillegga som er innrapportert blir brukt as is ved beregning av maskinelt grunnlag, uten
-     * å forsøke å deltidjustere dei basert på stillingsprosenten. Dette fordi variable tillegg blir innrapportert ferdig
+     * Ã¥ forsÃ¸ke Ã¥ deltidjustere dei basert pÃ¥ stillingsprosenten. Dette fordi variable tillegg blir innrapportert ferdig
      * deltidsjustert.
      */
     @Test
@@ -133,8 +133,8 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at dei faste tillegga ikkje blir nedjustert i henhold til periodas årsfaktor på samme måte som for den
-     * deltidsjusterte årslønna.
+     * Verifiserer at dei faste tillegga ikkje blir nedjustert i henhold til periodas Ã¥rsfaktor pÃ¥ samme mÃ¥te som for den
+     * deltidsjusterte Ã¥rslÃ¸nna.
      */
     @Test
     public void skalIkkjeNedjustereFasteTilleggEtterAarsfaktor() {
@@ -145,11 +145,11 @@ public class LoennstilleggRegelTest {
     }
 
     /**
-     * Verifiserer at maskinelt grunnlag framleis kan beregnast når underlagsperioda ikkje er annotert med faste tillegg
-     * slik at ein slepp å ta annotere perioder med fast tillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
+     * Verifiserer at maskinelt grunnlag framleis kan beregnast nÃ¥r underlagsperioda ikkje er annotert med faste tillegg
+     * slik at ein slepp Ã¥ ta annotere perioder med fast tillegg lik 0 for alle stillingar som ikkje har nokon tillegg.
      * <p>
-     * Intensjonen med å unngå å annotere når verdien er lik kr 0, er å oppføre oss konsistent med lønnstrinnhandteringa
-     * for lønnstrinn 0, der vi også hoppar over og ikkje annoterer perioda med eit tomt lønnstrinn.
+     * Intensjonen med Ã¥ unngÃ¥ Ã¥ annotere nÃ¥r verdien er lik kr 0, er Ã¥ oppfÃ¸re oss konsistent med lÃ¸nnstrinnhandteringa
+     * for lÃ¸nnstrinn 0, der vi ogsÃ¥ hoppar over og ikkje annoterer perioda med eit tomt lÃ¸nnstrinn.
      */
     @Test
     public void skalIkkjeFeileDersomPeriodeIkkjeErAnnotertMedFasteTillegg() {
@@ -161,7 +161,7 @@ public class LoennstilleggRegelTest {
 
     /**
      * Verifiserer at dei faste tillegga som er innrapportert blir brukt as is ved beregning av maskinelt grunnlag, uten
-     * å forsøke å deltidjustere dei basert på stillingsprosenten. Dette fordi faste tillegg blir innrapportert ferdig
+     * Ã¥ forsÃ¸ke Ã¥ deltidjustere dei basert pÃ¥ stillingsprosenten. Dette fordi faste tillegg blir innrapportert ferdig
      * deltidsjustert.
      */
     @Test

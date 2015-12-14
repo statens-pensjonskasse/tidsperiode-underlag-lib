@@ -5,9 +5,9 @@ import java.util.Set;
 
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning} representerer ein identifikator
- * som skiller dei forskjellge pensjonsordningane som Statens Pensjonskasse administrerer, frå kvarandre.
+ * som skiller dei forskjellge pensjonsordningane som Statens Pensjonskasse administrerer, frÃ¥ kvarandre.
  * <p>
- * For fastsats er det kun 3 ordningar som er støtta, den statlige tjenestepensjonsordninga ({@link #SPK}),
+ * For fastsats er det kun 3 ordningar som er stÃ¸tta, den statlige tjenestepensjonsordninga ({@link #SPK}),
  * Apotekordninga ({@link #POA} og ordninga for Den Norske Opera ({@link #OPERA}).
  *
  * @author Tarjei Skorgenes
@@ -81,7 +81,7 @@ public class Ordning {
     }
 
     /**
-     * Slår opp ein av dei predefinerte ordningane som har det angitte ordningsnummeret eller opprettar ein ny instans
+     * SlÃ¥r opp ein av dei predefinerte ordningane som har det angitte ordningsnummeret eller opprettar ein ny instans
      * med den angitte verdien.
      *
      * @param id eit tall som representerere ordningas unike identifikator

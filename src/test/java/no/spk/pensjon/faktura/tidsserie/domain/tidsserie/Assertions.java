@@ -16,26 +16,26 @@ import org.assertj.core.api.OptionalAssert;
 
 public class Assertions {
     /**
-     * Opprettar ein ny assertion som opererer på samlinga av unike annotasjonsverdiar
-     * for den angitte typen frå underlaga i <code>underlagene</code>.
+     * Opprettar ein ny assertion som opererer pÃ¥ samlinga av unike annotasjonsverdiar
+     * for den angitte typen frÃ¥ underlaga i <code>underlagene</code>.
      *
      * @param <T>         annotasjonstypen som det skal hentast ut verdiar for
-     * @param underlagene ei samling med underlag som annotasjonsverdiane skal hentast frå
-     * @param type        typen til dei påkrevde annotasjonsverdiane som skal hentast ut frå kvart underlag
-     * @return ein ny asserter med verdiar henta frå underlagene underlaga
+     * @param underlagene ei samling med underlag som annotasjonsverdiane skal hentast frÃ¥
+     * @param type        typen til dei pÃ¥krevde annotasjonsverdiane som skal hentast ut frÃ¥ kvart underlag
+     * @return ein ny asserter med verdiar henta frÃ¥ underlagene underlaga
      */
     public static <T> AbstractIterableAssert<?, ? extends Iterable<? extends T>, T> assertUnikeUnderlagsAnnotasjonar(
             final Collection<Underlag> underlagene, final Class<T> type) {
         return assertThat(underlagene.stream().map(paakrevdAnnotasjon(type)).collect(toSet()))
-                .as(type.getSimpleName() + " annotert på underlaga " + underlagene);
+                .as(type.getSimpleName() + " annotert pÃ¥ underlaga " + underlagene);
     }
 
     /**
-     * Opprettar ein ny assertion som opererer på underlagsperiodas valgfrie annotasjon av den angitte typen.
+     * Opprettar ein ny assertion som opererer pÃ¥ underlagsperiodas valgfrie annotasjon av den angitte typen.
      *
      * @param <T>     annotasjonstypen som det skal hentast ut verdiar for
-     * @param periode underlagsperioda som annotasjonen skal hentast frå
-     * @param type    typen til dei påkrevde annotasjonsverdiane som skal hentast ut frå kvart underlag
+     * @param periode underlagsperioda som annotasjonen skal hentast frÃ¥
+     * @param type    typen til dei pÃ¥krevde annotasjonsverdiane som skal hentast ut frÃ¥ kvart underlag
      * @return ein ny assertion for periodas valgfrie annotasjon av den angitte typen
      */
     public static <T> OptionalAssert<T> assertAnnotasjon(
@@ -45,18 +45,18 @@ public class Assertions {
     }
 
     /**
-     * Opprettar ein ny assertion som opererer på ein utleda verdi frå underlagsperiodas valgfrie annotasjon av den angitte typen.
+     * Opprettar ein ny assertion som opererer pÃ¥ ein utleda verdi frÃ¥ underlagsperiodas valgfrie annotasjon av den angitte typen.
      *
      * @param <T>     annotasjonstypen som det skal hentast ut verdiar for
-     * @param periode underlagsperioda som annotasjonen skal hentast frå
-     * @param type    typen til dei påkrevde annotasjonsverdiane som skal hentast ut frå kvart underlag
+     * @param periode underlagsperioda som annotasjonen skal hentast frÃ¥
+     * @param type    typen til dei pÃ¥krevde annotasjonsverdiane som skal hentast ut frÃ¥ kvart underlag
      * @param mapper  funksjon som konverterer annotasjonsverdien til verdien som skal verifiserast
      * @return ein ny assertion for den valgfrie verdien som <code>mapper</code> utledar
-     * frå periodas valgfrie annotasjon av den angitte typen
+     * frÃ¥ periodas valgfrie annotasjon av den angitte typen
      */
     public static <T, R> OptionalAssert<R> assertAnnotasjon(
             final Underlagsperiode periode, final Class<T> type, final Function<T, Optional<R>> mapper) {
         return assertThat(periode.valgfriAnnotasjonFor(type).flatMap(mapper))
-                .as("utleda verdi frå " + type.getSimpleName() + "-annotasjon for periode " + periode);
+                .as("utleda verdi frÃ¥ " + type.getSimpleName() + "-annotasjon for periode " + periode);
     }
 }

@@ -26,7 +26,7 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
     }
 
     /**
-     * Konstruerer ein ny builder utan frå og med- og til og med-dato, som
+     * Konstruerer ein ny builder utan frÃ¥ og med- og til og med-dato, som
      * med ein kopi av dei angitte koblingane og annotasjonane.
      *
      * @param koblingar    koblingane som builderen skal populerast med
@@ -40,7 +40,7 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
     /**
      * Konstruerer ein ny builder med ein kopi av tilstanden til <code>source</code>.
      *
-     * @param source builderen som tilstanda skal kopierast frå
+     * @param source builderen som tilstanda skal kopierast frÃ¥
      */
     public UnderlagsperiodeBuilder(final UnderlagsperiodeBuilder source) {
         this(source.koblingar, source.annotasjonar);
@@ -48,10 +48,10 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
     }
 
     /**
-     * Konstruerer ei ny underlagsperiode og populerer den med frå og med- og til og med-dato
-     * frå builderen, perioda blir så annotert med alle annotasjonar som er lagt inn i builderen.
+     * Konstruerer ei ny underlagsperiode og populerer den med frÃ¥ og med- og til og med-dato
+     * frÃ¥ builderen, perioda blir sÃ¥ annotert med alle annotasjonar som er lagt inn i builderen.
      *
-     * @return ei ny underlagsperiode populert med tilstand frå builderen
+     * @return ei ny underlagsperiode populert med tilstand frÃ¥ builderen
      */
     public Underlagsperiode bygg() {
         final Underlagsperiode periode = new Underlagsperiode(fraOgMed, tilOgMed);
@@ -61,9 +61,9 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
     }
 
     /**
-     * Frå og med-datoen som underlagsperioder bygd av builderen skal benytte.
+     * FrÃ¥ og med-datoen som underlagsperioder bygd av builderen skal benytte.
      *
-     * @param dato den nye frå og med-datoen
+     * @param dato den nye frÃ¥ og med-datoen
      * @return <code>this</code>
      */
     public UnderlagsperiodeBuilder fraOgMed(final LocalDate dato) {
@@ -84,7 +84,7 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
 
     /**
      * Annoterer underlagsperioda med den angitte verdien. Annotasjonen blir registrert under
-     * {@link Object#getClass() typen} til verdien som ein snarvei for følgjande snutt:
+     * {@link Object#getClass() typen} til verdien som ein snarvei for fÃ¸lgjande snutt:
      * <code>
      * periode.annoter(verdi.getClass(), verdi);
      * </code>
@@ -115,7 +115,7 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
      * Fjernar annotasjonen for den angitte annotasjonstypen slik at perioder bygd seinare av builderen ikkje
      * blir annotert med denne typen.
      *
-     * @param type typen på annotasjonen som skal fjernast frå builderen
+     * @param type typen pÃ¥ annotasjonen som skal fjernast frÃ¥ builderen
      * @return <code>this</code>
      */
     public UnderlagsperiodeBuilder uten(final Class<?> type) {
@@ -156,9 +156,9 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
     }
 
     /**
-     * Lagar ein kopi av builderen som ein kan endre tilstand på utan å påvirke builderen kopien vart laga frå.
+     * Lagar ein kopi av builderen som ein kan endre tilstand pÃ¥ utan Ã¥ pÃ¥virke builderen kopien vart laga frÃ¥.
      *
-     * @return ein ny builder med som inneheld ein kopi av gjeldande tilstand på builderen
+     * @return ein ny builder med som inneheld ein kopi av gjeldande tilstand pÃ¥ builderen
      */
     public UnderlagsperiodeBuilder kopi() {
         return new UnderlagsperiodeBuilder(this);

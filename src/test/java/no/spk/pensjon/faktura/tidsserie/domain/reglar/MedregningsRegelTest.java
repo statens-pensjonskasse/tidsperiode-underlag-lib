@@ -54,7 +54,7 @@ public class MedregningsRegelTest {
                         .bygg()
                         .beregn(MedregningsRegel.class)
         )
-                .as("medregna beløp for medregningskode " + kode);
+                .as("medregna belÃ¸p for medregningskode " + kode);
     }
 
     private UnderlagsperiodeBuilder eiPeriodeOverEtAar() {

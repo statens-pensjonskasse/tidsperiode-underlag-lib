@@ -14,16 +14,16 @@ import java.util.stream.Stream;
  * @author Tarjei Skorgenes
  */
 class DetekterTidsgapMellomPerioder implements BinaryOperator<Underlagsperiode> {
-    // Vi allokerer ei liste med ein initiell kapasitet på 0 element for å redusere minnebruken
-    // for dei 99.9% av underlaga som det ikkje eksisterer nokon tidsgap på
+    // Vi allokerer ei liste med ein initiell kapasitet pÃ¥ 0 element for Ã¥ redusere minnebruken
+    // for dei 99.9% av underlaga som det ikkje eksisterer nokon tidsgap pÃ¥
     private final List<Underlagsperiode[]> tidsgap = new ArrayList<>(0);
 
     /**
-     * Verifiserer at det ikkje eksisterer eit tidsgap på meir enn 1 dag mellom <code>previous</code>
+     * Verifiserer at det ikkje eksisterer eit tidsgap pÃ¥ meir enn 1 dag mellom <code>previous</code>
      * sin til og med-dato og <code>current</code> sin fra og med-dato.
      * <p>
      * Dersom det er meir enn 1 dag mellom desse to datoane indikerer det at underlaget er inkonsistent og manglar
-     * ei eller fleire underlagsperioder for å vere konsistent.
+     * ei eller fleire underlagsperioder for Ã¥ vere konsistent.
      *
      * @param previous forrige underlagsperiode
      * @param current  gjeldande underlagsperiode

@@ -64,7 +64,7 @@ public class AvtaleFactoryTest {
     );
 
     /**
-     * Verifiserer at avtaleversjonar tilhøyrande andre avtalar ikkje populerer avtalen med nokon verdiar frå desse
+     * Verifiserer at avtaleversjonar tilhÃ¸yrande andre avtalar ikkje populerer avtalen med nokon verdiar frÃ¥ desse
      * avtaleversjonane.
      */
     @Test

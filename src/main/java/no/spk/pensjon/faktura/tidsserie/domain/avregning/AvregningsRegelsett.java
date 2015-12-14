@@ -31,19 +31,19 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 
 /**
- * Genererer regelsettet som blir benytta når det skal byggast opp ein tidsserie for avregningsformål.
+ * Genererer regelsettet som blir benytta nÃ¥r det skal byggast opp ein tidsserie for avregningsformÃ¥l.
  * <br>
- * Regelsettet blir generert på ein slik måte at ein skal kunne avregne premieår 2015 og framover basert på dei
- * reelle reglane som er eller var gjendalde på eit kvart tidspunkt frå 1. janua 2015 og fram til i dag.
+ * Regelsettet blir generert pÃ¥ ein slik mÃ¥te at ein skal kunne avregne premieÃ¥r 2015 og framover basert pÃ¥ dei
+ * reelle reglane som er eller var gjendalde pÃ¥ eit kvart tidspunkt frÃ¥ 1. janua 2015 og fram til i dag.
  * <br>
- * Årstallet 2015 er valgt fordi SPK har valgt å ikkje avregne lenger tilbake enn til premieåret 2015.
+ * Ã…rstallet 2015 er valgt fordi SPK har valgt Ã¥ ikkje avregne lenger tilbake enn til premieÃ¥ret 2015.
  */
 public class AvregningsRegelsett implements Regelsett {
     /**
      * Regelperiodene med alle beregningsreglane som skal brukast ved generering av tidsserie
-     * for avregningsformål.
+     * for avregningsformÃ¥l.
      *
-     * @return ein straum med alle regelperiodene og tilhøyrande beregningsreglar for ein avregnings-tidsserie
+     * @return ein straum med alle regelperiodene og tilhÃ¸yrande beregningsreglar for ein avregnings-tidsserie
      */
     @Override
     public Stream<Regelperiode<?>> reglar() {

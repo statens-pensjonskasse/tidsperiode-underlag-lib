@@ -18,8 +18,8 @@ public class FoedselsdatoTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at fødselsdatoar henta frå personnummeret til personar som har D-nummer, blir godtatt
-     * som gyldige fødselsdatoar.
+     * Verifiserer at fÃ¸dselsdatoar henta frÃ¥ personnummeret til personar som har D-nummer, blir godtatt
+     * som gyldige fÃ¸dselsdatoar.
      */
     @Test
     public void skalGodtaFiktiveDagsverdiarFraDNummer() {
@@ -38,8 +38,8 @@ public class FoedselsdatoTest {
     }
 
     /**
-     * Verifiserer at fødselsdatoar henta frå personnummeret til personar som har H-nummer, blir godtatt
-     * som gyldige fødselsdatoar.
+     * Verifiserer at fÃ¸dselsdatoar henta frÃ¥ personnummeret til personar som har H-nummer, blir godtatt
+     * som gyldige fÃ¸dselsdatoar.
      */
     @Test
     public void skalGodtaFiktiveMaanedsverdiarFraHNummer() {
@@ -66,8 +66,8 @@ public class FoedselsdatoTest {
     }
 
     /**
-     * Vi reknar med fødselsnummer har blitt utvida til meir enn dagens 13-siffer innen denne datoen, if not blir
-     * problemet ein får i den fjerne framtid at fødselsnummer blir 14-siffer på grunn av årstallet.
+     * Vi reknar med fÃ¸dselsnummer har blitt utvida til meir enn dagens 13-siffer innen denne datoen, if not blir
+     * problemet ein fÃ¥r i den fjerne framtid at fÃ¸dselsnummer blir 14-siffer pÃ¥ grunn av Ã¥rstallet.
      */
     @Test
     public void skalSkapeProblemForFoedselsnummerEtterAar10000() {
@@ -77,7 +77,7 @@ public class FoedselsdatoTest {
     @Test
     public void skalForkasteDatoarEldreEnn1875() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("fødselsdatoar eldre enn 18750101 er ikkje støtta");
+        e.expectMessage("fÃ¸dselsdatoar eldre enn 18750101 er ikkje stÃ¸tta");
         e.expectMessage("var 18741231");
         foedselsdato(18741231);
     }

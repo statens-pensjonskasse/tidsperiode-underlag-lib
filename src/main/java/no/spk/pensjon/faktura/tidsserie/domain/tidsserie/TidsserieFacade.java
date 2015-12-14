@@ -11,35 +11,35 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Observasjonsperiode;
 
 /**
  * {@link TidsserieFacade} representerer ei fasade som genererer ein ny tidsserie med observasjonar
- * basert på medlems-, avtale- og lønnsdata tilknytta eit medlem.
+ * basert pÃ¥ medlems-, avtale- og lÃ¸nnsdata tilknytta eit medlem.
  * <p>
- * Første steg i genereringa av tidsseriar for medlemmet er generering av stillingsforholdunderlag for kvart
- * av stillingsforholda som medlemmet har vore aktiv på i løpet av observasjonsperioda. Kvart
- * stillingsforholdunderlag blir periodisert basert på stillingsendringar / medregning og avtalekoblingar. I
- * tillegg blir tidsperiodiserte referansedata som årsperioder, månedsperioder, lønnstrinnperioder,
+ * FÃ¸rste steg i genereringa av tidsseriar for medlemmet er generering av stillingsforholdunderlag for kvart
+ * av stillingsforholda som medlemmet har vore aktiv pÃ¥ i lÃ¸pet av observasjonsperioda. Kvart
+ * stillingsforholdunderlag blir periodisert basert pÃ¥ stillingsendringar / medregning og avtalekoblingar. I
+ * tillegg blir tidsperiodiserte referansedata som Ã¥rsperioder, mÃ¥nedsperioder, lÃ¸nnstrinnperioder,
  * omregningsperioder, regelperioder og avtalerelaterte periodar for stillingas tilknytt avtalar inkludert og
  * bidrar til periodiseringa av underlaget.
  * <p>
- * Outputen frå første steg blir eit stillingsforholdunderlag pr stillingsforhold. Dette underlaget er splitta
- * opp i underlagsperioder som alle strekker seg over ei periode på minimum 1 dag og maksimum 1 måned.
+ * Outputen frÃ¥ fÃ¸rste steg blir eit stillingsforholdunderlag pr stillingsforhold. Dette underlaget er splitta
+ * opp i underlagsperioder som alle strekker seg over ei periode pÃ¥ minimum 1 dag og maksimum 1 mÃ¥ned.
  * <p>
- * Andre steg i tidsseriegenereginga er å bygge opp eit årsunderlag for kvart unike år som observasjonsperioda
- * strekker seg over. Intensjonen med dette underlaget er å tilrettelegge for beregningar som opererer på årsbasis
- * og der verdiane skal summerast saman / aggregerast til ein verdi pr år. Det typiske eksempelet for denne typen
- * beregningar er maskinelt grunnlag / årslønn.
+ * Andre steg i tidsseriegenereginga er Ã¥ bygge opp eit Ã¥rsunderlag for kvart unike Ã¥r som observasjonsperioda
+ * strekker seg over. Intensjonen med dette underlaget er Ã¥ tilrettelegge for beregningar som opererer pÃ¥ Ã¥rsbasis
+ * og der verdiane skal summerast saman / aggregerast til ein verdi pr Ã¥r. Det typiske eksempelet for denne typen
+ * beregningar er maskinelt grunnlag / Ã¥rslÃ¸nn.
  * <p>
- * Tredje steg tar årsunderlaget og genererer opp 1-12 observasjonsunderlag basert på dette. For kvar måned i året
- * som stillingsforholdet har vore aktivt eller for kvar måned resten av året etter stillingsforholdets siste
+ * Tredje steg tar Ã¥rsunderlaget og genererer opp 1-12 observasjonsunderlag basert pÃ¥ dette. For kvar mÃ¥ned i Ã¥ret
+ * som stillingsforholdet har vore aktivt eller for kvar mÃ¥ned resten av Ã¥ret etter stillingsforholdets siste
  * arbeidsdag, blir det generert eit nytt observasjonsunderlag som inneheld alle synlige endringar fram til og med
- * siste dag i måneden observasjonsunderlaget skal observerast. I tillegg inneheld underlaget ei ny fiktiv periode
- * som strekker seg ut året og som er annotert med samme verdiar som siste synlige periode. Den fiktive perioda
- * representerer ei prognose for korleis ein på observasjonsdatoen antar at stillingsforholdet kjem til å sjå ut
- * resten av året. Dei einaste situasjonen der ei slik fiktiv periode ikkje blir generert er for desember måned
- * eller for månedar der observasjonsdato ligg etter stillingsforholdet sluttdato viss stillinga blir avslutta
- * i løpet av året.
+ * siste dag i mÃ¥neden observasjonsunderlaget skal observerast. I tillegg inneheld underlaget ei ny fiktiv periode
+ * som strekker seg ut Ã¥ret og som er annotert med samme verdiar som siste synlige periode. Den fiktive perioda
+ * representerer ei prognose for korleis ein pÃ¥ observasjonsdatoen antar at stillingsforholdet kjem til Ã¥ sjÃ¥ ut
+ * resten av Ã¥ret. Dei einaste situasjonen der ei slik fiktiv periode ikkje blir generert er for desember mÃ¥ned
+ * eller for mÃ¥nedar der observasjonsdato ligg etter stillingsforholdet sluttdato viss stillinga blir avslutta
+ * i lÃ¸pet av Ã¥ret.
  * <p>
- * Siste steg i tidsseriegenereringa er å fortløpande publisere observasjonsunderlaga som blir generert, til ein
- * observasjonspublikator som er ansvarlig for å prosessere underlaga og periodene dei inneheld og generere dei
+ * Siste steg i tidsseriegenereringa er Ã¥ fortlÃ¸pande publisere observasjonsunderlaga som blir generert, til ein
+ * observasjonspublikator som er ansvarlig for Ã¥ prosessere underlaga og periodene dei inneheld og generere dei
  * endelige observasjonane av desse.
  *
  * @author Tarjei Skorgenes
@@ -60,20 +60,20 @@ public class TidsserieFacade {
     };
 
     /**
-     * Overstyrer repositoriet som tidsperiodisert avtaleinformasjon blir slått opp via.
+     * Overstyrer repositoriet som tidsperiodisert avtaleinformasjon blir slÃ¥tt opp via.
      *
-     * @param repository repositoriet som avtaleinformasjon blir slått opp via
+     * @param repository repositoriet som avtaleinformasjon blir slÃ¥tt opp via
      * @throws NullPointerException dersom <code>repository</code> er <code>null</code>
      */
     public void overstyr(final AvtaleinformasjonRepository repository) {
-        this.repository = requireNonNull(repository, () -> "avtaleinformasjonrepository er påkrevd, men var null");
+        this.repository = requireNonNull(repository, () -> "avtaleinformasjonrepository er pÃ¥krevd, men var null");
     }
 
     /**
      * Overstyrer feilhandteringsstrategien til tidsserien.
      * <p>
      * Alle {@link RuntimeException} eller subtyper av denne som blir kasta under generering av observasjonar
-     * for eit bestemt stillingsforhold, vil medføre at vidare prosessering av stillingsforholdet blir avbrutt
+     * for eit bestemt stillingsforhold, vil medfÃ¸re at vidare prosessering av stillingsforholdet blir avbrutt
      * umiddelbart.
      * <p>
      * Kva som skal skje med feilen som avbryt prosesseringa blir handtert av feilhandteringsstrategien som ein her
@@ -82,16 +82,16 @@ public class TidsserieFacade {
      * @param feilhandtering den nye feilhandteringsstrategien som skal benyttast
      */
     public void overstyr(final Feilhandtering feilhandtering) {
-        this.feilhandtering = requireNonNull(feilhandtering, () -> "Feilhandteringstrategien er påkrevd, men var null");
+        this.feilhandtering = requireNonNull(feilhandtering, () -> "Feilhandteringstrategien er pÃ¥krevd, men var null");
     }
 
     /**
      * Genererer observasjonsunderlag for kvart av medlemmets stillingsforhold.
      * <p>
-     * Algoritma genererer eit observasjonsunderlag pr stillingsforhold pr måned pr år stillingsforholdet er aktivt.
+     * Algoritma genererer eit observasjonsunderlag pr stillingsforhold pr mÃ¥ned pr Ã¥r stillingsforholdet er aktivt.
      * <p>
-     * Kvart observasjonsunderlag som genererast blir sendt vidare til <code>publikator</code>. For å unngå at den
-     * påvirkar/senkar ytelsen til prosesseringa anbefalast det sterkt at den utfører vidare tung behandling eller
+     * Kvart observasjonsunderlag som genererast blir sendt vidare til <code>publikator</code>. For Ã¥ unngÃ¥ at den
+     * pÃ¥virkar/senkar ytelsen til prosesseringa anbefalast det sterkt at den utfÃ¸rer vidare tung behandling eller
      * persistering av observasjonane asynkront.
      *
      * @param medlemsdata all informasjon tilknyttet et medlem det skal generers tidsserie for
@@ -113,8 +113,8 @@ public class TidsserieFacade {
      * <code>callback</code> for vidare behandling.
      *
      * @param medlemsdata medlemsdata for medlemmet som skal prosesserast
-     * @param periode observasjonsperioda som det skal genererast observasjonar pr siste dag i månaden for
-     * @param callback callbacken som forløpande tar i mot og behandlar vidare kvart stillingsforholdunderlag
+     * @param periode observasjonsperioda som det skal genererast observasjonar pr siste dag i mÃ¥naden for
+     * @param callback callbacken som forlÃ¸pande tar i mot og behandlar vidare kvart stillingsforholdunderlag
      * som blir generert for medlemmet
      * @param referanseperioder tidsperiodiserte referanseperioder som skal inkluderast i periodiseringa
      * av stillingsforholdunderlaget
@@ -131,7 +131,7 @@ public class TidsserieFacade {
 
     /**
      * Genererer ein ny callback som behandlar stillingsforholdunderlag og genererer
-     * månedlige observasjonsunderlag utleda frå dette.
+     * mÃ¥nedlige observasjonsunderlag utleda frÃ¥ dette.
      * <p>
      * Kvart observasjonsunderlag som blir generert blir publisert via <code>publikator</code>en.
      *
@@ -154,10 +154,10 @@ public class TidsserieFacade {
     }
 
     /**
-     * Genererer ein ny callback som behandlar observasjonsunderlag og genererer månedlige observasjonar for kvar avtale
-     * underlagets stillingsforhold har vore aktivt på i løpet av premieåret.
+     * Genererer ein ny callback som behandlar observasjonsunderlag og genererer mÃ¥nedlige observasjonar for kvar avtale
+     * underlagets stillingsforhold har vore aktivt pÃ¥ i lÃ¸pet av premieÃ¥ret.
      * <p>
-     * Dei aggregerte obserasjonane blir så sendt vidare til <code>consumer</code> for vidare behandling og/eller persistering.
+     * Dei aggregerte obserasjonane blir sÃ¥ sendt vidare til <code>consumer</code> for vidare behandling og/eller persistering.
      *
      * @param consumer mottakar av alle observasjonane som blir generert av aggregatoren for kvart observasjonsunderlag den prosesserer
      * @return ein ny publikator som observerer, aggregerer og videresender dei aggregerte observasjonane til <code>consumer</code>

@@ -50,9 +50,9 @@ public class UnderlagTest {
      * Verifiserer at underlaget generert av {@link Underlag#restrict(java.util.function.Predicate)}
      * er annotert med samme annotasjonar som det opprinnelige underlaget.
      * <p>
-     * Merk at denne oppførselen impliserer at klienten er ansvarlig for å sikre eventuelle konsistensproblem
-     * viss nokon av annotasjonane til underlaget baserer seg på tilstand henta frå ei underlagsperiode som ikkje
-     * lenger inngår i underlaget.
+     * Merk at denne oppfÃ¸rselen impliserer at klienten er ansvarlig for Ã¥ sikre eventuelle konsistensproblem
+     * viss nokon av annotasjonane til underlaget baserer seg pÃ¥ tilstand henta frÃ¥ ei underlagsperiode som ikkje
+     * lenger inngÃ¥r i underlaget.
      */
     @Test
     public void skalInkludereAnnotasjonarVedAvgrensingAvunderlag() {
@@ -97,12 +97,12 @@ public class UnderlagTest {
     @Test
     public void skalFeileVissAnnotasjonstypeErOptional() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("Annotasjonar av type Optional er ikkje støtta, viss du vil legge til ein valgfri annotasjon må den registrerast under verdiens egen type");
+        e.expectMessage("Annotasjonar av type Optional er ikkje stÃ¸tta, viss du vil legge til ein valgfri annotasjon mÃ¥ den registrerast under verdiens egen type");
         eitTomtUnderlag().annoter(Optional.class, empty());
     }
 
     /**
-     * Verifiserer at oppslag av valgfri annotasjon fungerer når underlaget har ein verdi for annotasjonen.
+     * Verifiserer at oppslag av valgfri annotasjon fungerer nÃ¥r underlaget har ein verdi for annotasjonen.
      */
     @Test
     public void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
@@ -115,14 +115,14 @@ public class UnderlagTest {
     }
 
     /**
-     * Verifiserer at oppslag av påkrevde annotasjonar via
+     * Verifiserer at oppslag av pÃ¥krevde annotasjonar via
      * {@link Underlag#annotasjonFor(Class)} feilar med
-     * ein exception dersom underlaget ikkje er annotert med den ønska typen annotasjon.
+     * ein exception dersom underlaget ikkje er annotert med den Ã¸nska typen annotasjon.
      */
     @Test
     public void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
         e.expect(PaakrevdAnnotasjonManglarException.class);
-        e.expectMessage("U[] manglar ein påkrevd annotasjon av type");
+        e.expectMessage("U[] manglar ein pÃ¥krevd annotasjon av type");
         e.expectMessage(Integer.class.getSimpleName());
 
         eitTomtUnderlag().annotasjonFor(Integer.class);
@@ -131,7 +131,7 @@ public class UnderlagTest {
     /**
      * Verifiserer at oppslag av valgfrie annotasjonar via
      * {@link Underlag#valgfriAnnotasjonFor(Class)} ikkje
-     * feilar og returnerer ein tom verdi dersom perioda ikkje er annotert med den ønska typen annotasjon.
+     * feilar og returnerer ein tom verdi dersom perioda ikkje er annotert med den Ã¸nska typen annotasjon.
      */
     @Test
     public void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
@@ -158,12 +158,12 @@ public class UnderlagTest {
     }
 
     /**
-     * Verifiserer at underlaget validerer at underlagsperiodene blir sendt inn i kronologisk rekkefølge.
+     * Verifiserer at underlaget validerer at underlagsperiodene blir sendt inn i kronologisk rekkefÃ¸lge.
      */
     @Test
     public void skalInneholdeUnderlagsperioderIKronologiskRekkefoelge() {
         e.expect(AssertionError.class);
-        e.expectMessage("underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge");
+        e.expectMessage("underlaget krever at underlagsperiodene er sortert i kronologisk rekkefÃ¸lge");
         final Underlagsperiode b = periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.08.14")).bygg();
         final Underlagsperiode c = periode().fraOgMed(dato("2000.08.15")).tilOgMed(dato("2000.12.31")).bygg();
         final Underlagsperiode a = periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.02.29")).bygg();
@@ -191,7 +191,7 @@ public class UnderlagTest {
     /**
      * Verifiserer at {@link Underlag#restrict(java.util.function.Predicate) avgrensing} av nye underlag feilar dersom
      * det eksisterer tidsgap mellom ei eller fleire av underlagsperiodene etter at predikatet har filtrert bort
-     * uønska underlagsperioder.
+     * uÃ¸nska underlagsperioder.
      */
     @Test
     public void skalIkkjeKunneAvgrenseUnderlagSlikAtDetOppstaarTidsgapMellomUnderlagsperiodene() {
@@ -206,7 +206,7 @@ public class UnderlagTest {
     }
 
     /**
-     * Verifiserer at {@link Underlag#restrict(java.util.function.Predicate)} fjernar alle uønska underlagsperioder frå
+     * Verifiserer at {@link Underlag#restrict(java.util.function.Predicate)} fjernar alle uÃ¸nska underlagsperioder frÃ¥
      * det nye underlaget
      */
     @Test

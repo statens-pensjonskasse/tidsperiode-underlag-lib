@@ -65,8 +65,8 @@ public class AvtaleproduktTest {
     @Test
     public void skalIkkjeGodtaRisikoklasseForAndreProduktEnnYsk() {
         e.expect(IllegalArgumentException.class);
-        e.expectMessage("risikoklasse er ikkje støtta for " + GRU);
-        e.expectMessage("risikoklasse er kun støtta for avtaleprodukt tilknytta " + YSK);
+        e.expectMessage("risikoklasse er ikkje stÃ¸tta for " + GRU);
+        e.expectMessage("risikoklasse er kun stÃ¸tta for avtaleprodukt tilknytta " + YSK);
         lagProdukt(avtaleId(123456L), GRU, 35).risikoklasse(of(new Risikoklasse("1")));
     }
 

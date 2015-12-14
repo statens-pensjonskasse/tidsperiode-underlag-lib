@@ -13,12 +13,12 @@ import static java.util.Objects.requireNonNull;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning.POA;
 
 /**
- * {@link ApotekLoennstrinnperiode} representerer kva som er gjeldande lønn for ei 100% stilling tilknytta
- * Apotekordninga og som har eit bestemt lønnstrinn innanfor ei bestemt tidsperiode.
+ * {@link ApotekLoennstrinnperiode} representerer kva som er gjeldande lÃ¸nn for ei 100% stilling tilknytta
+ * Apotekordninga og som har eit bestemt lÃ¸nnstrinn innanfor ei bestemt tidsperiode.
  * <p>
- * Apotekordninga har forskjellige definisjonar av lønn i 100% stilling basert på kva stillingskode-gruppering
- * stillingas stillingskode tilhøyrer. Det eksisterer derfor som regel 2 eller 3 lønnstrinnperioder for samme lønnstrinn
- * på samme tid, men med forskjellig stillingskode og lønnstrinnbeløp.
+ * Apotekordninga har forskjellige definisjonar av lÃ¸nn i 100% stilling basert pÃ¥ kva stillingskode-gruppering
+ * stillingas stillingskode tilhÃ¸yrer. Det eksisterer derfor som regel 2 eller 3 lÃ¸nnstrinnperioder for samme lÃ¸nnstrinn
+ * pÃ¥ samme tid, men med forskjellig stillingskode og lÃ¸nnstrinnbelÃ¸p.
  *
  * @author Tarjei Skorgenes
  */
@@ -29,24 +29,24 @@ public class ApotekLoennstrinnperiode extends AbstractTidsperiode<ApotekLoennstr
     private final LoennstrinnBeloep beloep;
 
     /**
-     * Konstruerer ei ny lønnstrinnperiode som styrer kva som er gjeldande lønn i ei 100% stilling for eit aktuelt
-     * lønnstrinn, for alle stillingskoder som er lik eller som deler samme gruppering som den angitte stillingskoda.
+     * Konstruerer ei ny lÃ¸nnstrinnperiode som styrer kva som er gjeldande lÃ¸nn i ei 100% stilling for eit aktuelt
+     * lÃ¸nnstrinn, for alle stillingskoder som er lik eller som deler samme gruppering som den angitte stillingskoda.
      *
-     * @param fraOgMed      første dag i tidsperioda
-     * @param tilOgMed      ein valgfri til og med-dato som er siste dag lønnsnivået for lønnstrinnet og stillingskoda
+     * @param fraOgMed      fÃ¸rste dag i tidsperioda
+     * @param tilOgMed      ein valgfri til og med-dato som er siste dag lÃ¸nnsnivÃ¥et for lÃ¸nnstrinnet og stillingskoda
      *                      er som angitt
-     * @param loennstrinn   lønnstrinnet som lønnstrinnbeløpet gjeld for
-     * @param stillingskode den grupperte stillingskoda som lønnstrinnbeløpet gjeld for
-     * @param beloep        lønn i 100% stilling for det aktuelle lønnstrinnet og stillingskoda innanfor tidsperiode
+     * @param loennstrinn   lÃ¸nnstrinnet som lÃ¸nnstrinnbelÃ¸pet gjeld for
+     * @param stillingskode den grupperte stillingskoda som lÃ¸nnstrinnbelÃ¸pet gjeld for
+     * @param beloep        lÃ¸nn i 100% stilling for det aktuelle lÃ¸nnstrinnet og stillingskoda innanfor tidsperiode
      * @throws NullPointerException viss nokon av parameterverdiane er <code>null</code>
      */
     public ApotekLoennstrinnperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed,
                                     final Loennstrinn loennstrinn, final Stillingskode stillingskode,
                                     final LoennstrinnBeloep beloep) {
         super(fraOgMed, tilOgMed);
-        this.loennstrinn = requireNonNull(loennstrinn, () -> "lønnstrinn er påkrevd, men var null");
-        this.stillingskode = requireNonNull(stillingskode, () -> "stillingskode er påkrevd, men var null");
-        this.beloep = requireNonNull(beloep, () -> "beløp for " + loennstrinn + " og " + stillingskode + " er påkrevd, men manglar");
+        this.loennstrinn = requireNonNull(loennstrinn, () -> "lÃ¸nnstrinn er pÃ¥krevd, men var null");
+        this.stillingskode = requireNonNull(stillingskode, () -> "stillingskode er pÃ¥krevd, men var null");
+        this.beloep = requireNonNull(beloep, () -> "belÃ¸p for " + loennstrinn + " og " + stillingskode + " er pÃ¥krevd, men manglar");
     }
 
     /**
@@ -63,12 +63,12 @@ public class ApotekLoennstrinnperiode extends AbstractTidsperiode<ApotekLoennstr
      * {@inheritDoc}
      *
      * @throws IllegalArgumentException dersom <code>stillingskode</code> er {@link java.util.Optional#empty()},
-     *                                  stillingskode er påkrevd ved oppslag av lønn for apotekordninga
+     *                                  stillingskode er pÃ¥krevd ved oppslag av lÃ¸nn for apotekordninga
      */
     @Override
     public boolean harLoennFor(final Loennstrinn loennstrinn, final Optional<Stillingskode> stillingskode) {
         final Stillingskode kode = stillingskode.orElseThrow(() -> new IllegalArgumentException(
-                        "stillingskode er påkrevd ved oppslag av lønn for Apotekordningas " + loennstrinn)
+                        "stillingskode er pÃ¥krevd ved oppslag av lÃ¸nn for Apotekordningas " + loennstrinn)
         );
         return this.loennstrinn.equals(loennstrinn) && this.stillingskode.equals(kode.getGruppertStillingskode());
     }
