@@ -37,6 +37,9 @@ public class PrognoseRegelsett implements Regelsett {
                 prognoseperiode(new MedregningsRegel()),
                 new Regelperiode<>(dato("2000.01.01"), empty(), MinstegrenseRegel.class, new MinstegrenseRegelVersjon2()),
                 prognoseperiode(new AarsverkRegel()),
+                prognoseperiode(new GruppelivsfaktureringRegel()),
+                prognoseperiode(new YrkesskadefaktureringRegel()),
+                prognoseperiode(new TermintypeRegel()),
                 prognoseperiode(new ErUnderMinstegrensaRegel()),
                 prognoseperiode(new ErPermisjonUtanLoennRegel()),
                 prognoseperiode(new ErMedregningRegel())
