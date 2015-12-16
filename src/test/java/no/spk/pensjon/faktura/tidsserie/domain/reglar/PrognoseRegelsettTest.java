@@ -4,13 +4,21 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.stream.Stream;
+
+import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Termintype;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -18,6 +26,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractComparableAssert;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -109,6 +118,48 @@ public class PrognoseRegelsettTest {
 
     }
 
+    @Test
+    public void skalKunneBeregneGruppelivsandel() {
+        final StillingsforholdId stillingsforhold = StillingsforholdId.stillingsforhold(1);
+        assertGruppelivsfakturering(
+                builder
+                        .fraOgMed(dato("2020.01.01"))
+                        .tilOgMed(dato("2020.12.31"))
+                        .med(new Aarstall(2020))
+                        .med(stillingsforhold)
+                        .med(AktiveStillingar.class, Stream::empty)
+                        .med(Medlemsavtalar.class, dummyMedlemsavtaler())
+                        .med(Stillingsprosent.fulltid())
+        ).isEqualTo("0%");
+    }
+
+    @Test
+    public void skalKunneBeregneYrkesskadeandel() {
+        final StillingsforholdId stillingsforhold = StillingsforholdId.stillingsforhold(1);
+        assertYrkesskadefakturering(
+                builder
+                        .fraOgMed(dato("2020.01.01"))
+                        .tilOgMed(dato("2020.12.31"))
+                        .med(new Aarstall(2020))
+                        .med(stillingsforhold)
+                        .med(AktiveStillingar.class, Stream::empty)
+                        .med(Medlemsavtalar.class, dummyMedlemsavtaler())
+                        .med(Stillingsprosent.fulltid())
+        ).isEqualTo("0%");
+    }
+
+
+    @Test
+    public void skalKunneBeregneTermintype() {
+        assertTermintype(
+                builder
+                        .fraOgMed(dato("2020.01.01"))
+                        .tilOgMed(dato("2020.12.31"))
+                        .med(new Aarstall(2020))
+        ).isEqualTo(Termintype.UKJENT);
+    }
+
+
     private static AbstractComparableAssert<?, Kroner> assertPensjonsgivendeAarsloenn(final UnderlagsperiodeBuilder builder) {
         final Underlagsperiode p = bygg(builder);
         return assertThat(p.beregn(MaskineltGrunnlagRegel.class))
@@ -125,10 +176,49 @@ public class PrognoseRegelsettTest {
         ).as("årsverk for periode " + p);
     }
 
+    private static AbstractCharSequenceAssert<?, String> assertGruppelivsfakturering(final UnderlagsperiodeBuilder builder) {
+        final Underlagsperiode p = bygg(builder);
+        return assertThat(
+                p.beregn(GruppelivsfaktureringRegel.class)
+                        .andel()
+                        .toString()
+        ).as("gruppelivsfakturering for periode " + p);
+    }
+
+    private static AbstractCharSequenceAssert<?, String> assertYrkesskadefakturering(final UnderlagsperiodeBuilder builder) {
+        final Underlagsperiode p = bygg(builder);
+        return assertThat(
+                p.beregn(YrkesskadefaktureringRegel.class)
+                        .andel()
+                        .toString()
+        ).as("Yrkesskadefakturering for periode " + p);
+    }
+
+    private static AbstractObjectAssert<?, Termintype> assertTermintype(final UnderlagsperiodeBuilder builder) {
+        final Underlagsperiode p = bygg(builder);
+        return assertThat(
+                p.beregn(TermintypeRegel.class)
+        ).as("termintype for periode " + p);
+    }
+
     private static Underlagsperiode bygg(UnderlagsperiodeBuilder builder) {
         final Underlagsperiode underlagsperiode = builder.bygg();
         final PrognoseRegelsett reglar = new PrognoseRegelsett();
         reglar.reglar().filter(p -> p.overlapper(underlagsperiode)).forEach(periode -> periode.annoter(underlagsperiode));
         return underlagsperiode;
+    }
+
+    private Medlemsavtalar dummyMedlemsavtaler() {
+        return new Medlemsavtalar() {
+            @Override
+            public boolean betalarTilSPKFor(final StillingsforholdId stilling, final Produkt produkt) {
+                return false;
+            }
+
+            @Override
+            public Avtale avtaleFor(final StillingsforholdId stilling) {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 }
