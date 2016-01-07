@@ -157,8 +157,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     private void avregningsreglar() {
         final AvregningsRegelsett regler = new AvregningsRegelsett();
-        final Underlagsperiode underlagsperiode = periode.bygg();
-        regler.reglar().filter(r -> r.overlapper(underlagsperiode)).forEach(r -> r.annoter(periode));
+        regler.reglar().filter(r -> r.overlapper(periode)).forEach(r -> r.annoter(periode));
     }
 
     private static class Datatype<T> {

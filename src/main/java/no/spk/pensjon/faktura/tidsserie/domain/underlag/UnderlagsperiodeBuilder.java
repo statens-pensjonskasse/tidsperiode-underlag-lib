@@ -1,6 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
+import static java.util.Optional.of;
+
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
@@ -10,7 +13,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
  *
  * @author Tarjei Skorgenes
  */
-public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuilder> {
+public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuilder>, Tidsperiode<UnderlagsperiodeBuilder> {
     private final Annotasjonar annotasjonar = new Annotasjonar();
 
     private final Koblingar koblingar = new Koblingar();
@@ -173,5 +176,15 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
     public UnderlagsperiodeBuilder annoterFra(final UnderlagsperiodeBuilder kilde) {
         this.annotasjonar.addAll(kilde.annotasjonar);
         return this;
+    }
+
+    @Override
+    public LocalDate fraOgMed() {
+        return fraOgMed;
+    }
+
+    @Override
+    public Optional<LocalDate> tilOgMed() {
+        return of(tilOgMed);
     }
 }
