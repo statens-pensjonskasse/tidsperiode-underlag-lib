@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 import static java.time.LocalDate.now;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
@@ -9,14 +8,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
@@ -63,6 +60,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Pensjonsgivende lønn", MaskineltGrunnlagRegel.class, KonverterFraTekst::pensjonsgivendeLoenn);
         Supports("Premiestatus", Premiestatus.class, Premiestatus::valueOf);
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
+        Supports("Stillingskode", Stillingskode.class, Stillingskode::parse);
         Supports("Årsverk", AarsverkRegel.class, KonverterFraTekst::aarsverkRegel);
         Supports("Årsfaktor", AarsfaktorRegel.class, KonverterFraTekst::aarsfaktorRegel);
         Supports("Stillingsprosent", Stillingsprosent.class, KonverterFraTekst::stillingsprosent);
@@ -159,7 +157,8 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     private void avregningsreglar() {
         final AvregningsRegelsett regler = new AvregningsRegelsett();
-        regler.reglar().forEach(r -> r.annoter(periode));
+        final Underlagsperiode underlagsperiode = periode.bygg();
+        regler.reglar().filter(r -> r.overlapper(underlagsperiode)).forEach(r -> r.annoter(periode));
     }
 
     private static class Datatype<T> {

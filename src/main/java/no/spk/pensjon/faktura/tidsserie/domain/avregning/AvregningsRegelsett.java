@@ -4,6 +4,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -70,11 +71,11 @@ public class AvregningsRegelsett implements Regelsett {
                         new MinstegrenseRegelVersjon1(),
                         MinstegrenseRegel.class,
                         fraOgMed(),
-                        of(startAar().atEndOfYear())),
+                        of(minstegrenseVersjon2FraOgMed().minusDays(1))),
                 avregningsperiode(
                         new MinstegrenseRegelVersjon2(),
                         MinstegrenseRegel.class,
-                        startAar().neste().atStartOfYear(),
+                        minstegrenseVersjon2FraOgMed(),
                         empty()
                 ),
                 avregningsperiode(new ErUnderMinstegrensaRegel()),
@@ -98,5 +99,9 @@ public class AvregningsRegelsett implements Regelsett {
 
     private Aarstall startAar() {
         return new Aarstall(2015);
+    }
+
+    private LocalDate minstegrenseVersjon2FraOgMed() {
+        return LocalDate.of(2016, Month.APRIL, 1);
     }
 }
