@@ -19,6 +19,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErUnderMinstegrensaRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.PrognoseRegelsett;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -60,7 +62,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Pensjonsgivende lønn", MaskineltGrunnlagRegel.class, KonverterFraTekst::pensjonsgivendeLoenn);
         Supports("Premiestatus", Premiestatus.class, Premiestatus::valueOf);
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
-        Supports("Stillingskode", Stillingskode.class, Stillingskode::parse);
+        Supports("Stillingskode", Stillingskode.class, this::stillingskode);
         Supports("Årsverk", AarsverkRegel.class, KonverterFraTekst::aarsverkRegel);
         Supports("Årsfaktor", AarsfaktorRegel.class, KonverterFraTekst::aarsfaktorRegel);
         Supports("Stillingsprosent", Stillingsprosent.class, KonverterFraTekst::stillingsprosent);
@@ -76,6 +78,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Gitt("^underlagsperioden sin fra og med-dato er ([0-9\\.]{10})$", this::fraOgMed);
         Gitt("^underlagsperioden sin til og med-dato er ([0-9\\.]{10})$", this::tilOgMed);
         Gitt("^underlagsperioden benytter regler for avregning$", this::avregningsreglar);
+        Gitt("^underlagsperioden benytter regler for prognose$", this::prognoseregler);
         Så("^er stillingen (.+) minstegrensen.?$", this::assertErOverEllerUnderMinstegrensen);
     }
 
@@ -104,6 +107,21 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     private void populerFraKolonne(final String tittel, final String verdi) {
         finnTypeForTittel(tittel).annoter(periode, verdi);
+    }
+
+    private Stillingskode stillingskode(final String stillingskode) {
+        switch (stillingskode.toLowerCase()) {
+        case "farmasøyt":
+            return Stillingskode.K_STIL_APO_APOTEKER;
+        case "annen":
+            return  Stillingskode.K_STIL_APO_BUD;
+        default:
+            try {
+                return Stillingskode.parse(stillingskode);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(stillingskode + " er ikkje ei gyldig verdi  lovlige verdiar er: farmasøyt, annen eller et tall.");
+            }
+        }
     }
 
     private Datatype<?> finnTypeForTittel(final String tittel) {
@@ -157,6 +175,15 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     private void avregningsreglar() {
         final AvregningsRegelsett regler = new AvregningsRegelsett();
+        annoterRegler(regler);
+    }
+
+    private void prognoseregler() {
+        final PrognoseRegelsett regler = new PrognoseRegelsett();
+        annoterRegler(regler);
+    }
+
+    private void annoterRegler(Regelsett regler) {
         regler.reglar().filter(r -> r.overlapper(periode)).forEach(r -> r.annoter(periode));
     }
 

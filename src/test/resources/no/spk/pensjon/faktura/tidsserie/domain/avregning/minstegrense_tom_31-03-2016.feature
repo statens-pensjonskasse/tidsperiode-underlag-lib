@@ -69,30 +69,8 @@ Egenskap: Minstegrense ved beregning av pensjonsgivende lønn til og med 31. mar
 
     Eksempler:
       | Stillingsprosent | Stillingskode | Over eller under? |
-      | 38,45%           | 1             | Under             |
-      | 38,46%           | 1             | Over              |
-      | 38,45%           | 2             | Under             |
-      | 38,46%           | 2             | Over              |
-      | 38,45%           | 3             | Under             |
-      | 38,46%           | 3             | Over              |
-      | 38,45%           | 10            | Under             |
-      | 38,46%           | 10            | Over              |
-      | 38,45%           | 11            | Under             |
-      | 38,46%           | 11            | Over              |
-      | 37,49%           | 5             | Under             |
-      | 38,5             | 5             | Over              |
-      | 37,49%           | 60            | Under             |
-      | 38,5             | 60            | Over              |
-      | 37,49%           | 61            | Under             |
-      | 38,5             | 61            | Over              |
-      | 37,49%           | 8             | Under             |
-      | 38,5             | 8             | Over              |
-      | 37,49%           | 9             | Under             |
-      | 38,5             | 9             | Over              |
-      | 37,49%           | 12            | Under             |
-      | 38,5             | 12            | Over              |
-      | 37,49%           | 13            | Under             |
-      | 38,5             | 13            | Over              |
-      | 37,49%           | 14            | Under             |
-      | 38,5             | 14            | Over              |
+      | 38,45%           | Farmasøyt     | Under             |
+      | 38,46%           | Farmasøyt     | Over              |
+      | 38,5             | Annen         | Over              |
+      | 37,49%           | Annen         | Under             |
 
