@@ -1,12 +1,15 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avtaledata;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 
 /**
@@ -16,13 +19,17 @@ import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 public class Avtaleperiode extends AbstractTidsperiode<Avtaleperiode> implements Avtalerelatertperiode<Avtaleperiode>  {
     private final AvtaleId avtaleId;
     private final ArbeidsgiverId arbeidsgiverId;
+    private final Optional<Ordning> ordning;
 
     public Avtaleperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, AvtaleId avtaleId, ArbeidsgiverId arbeidsgiverId) {
+        this(fraOgMed, tilOgMed, avtaleId, arbeidsgiverId, empty());
+    }
+
+    public Avtaleperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, AvtaleId avtaleId, ArbeidsgiverId arbeidsgiverId, Optional<Ordning> ordning) {
         super(fraOgMed, tilOgMed);
-        requireNonNull(avtaleId, "Avtaleperiode må ha avtaleid, men avtaleid var null");
-        requireNonNull(avtaleId, "Avtaleperiode må ha arbeidsgiverId, men arbeidsgiverId var null");
-        this.avtaleId = avtaleId;
-        this.arbeidsgiverId = arbeidsgiverId;
+        this.avtaleId = requireNonNull(avtaleId, "Avtaleperiode må ha avtaleid, men avtaleid var null");
+        this.arbeidsgiverId = requireNonNull(arbeidsgiverId, "Avtaleperiode må ha arbeidsgiverId, men arbeidsgiverId var null");
+        this.ordning = requireNonNull(ordning, "Avtaleperiode må ha valgfri ordning, men ordning var null");
     }
 
     @Override
@@ -42,6 +49,19 @@ public class Avtaleperiode extends AbstractTidsperiode<Avtaleperiode> implements
 
     public ArbeidsgiverId arbeidsgiverId() {
         return arbeidsgiverId;
+    }
+
+    public Optional<Ordning> ordning() {
+        return ordning;
+    }
+
+    /**
+     * Oppdaterer avtalebyggarens tilstand til å reflektere kva som er gjeldande ordning for avtalen.
+     *
+     * @param avtale avtalebyggaren som inneheld avtaletilstanda som skal oppdaterast
+     */
+    public void populer(final Avtale.AvtaleBuilder avtale) {
+        avtale.ordning(ordning);
     }
 
     @Override
