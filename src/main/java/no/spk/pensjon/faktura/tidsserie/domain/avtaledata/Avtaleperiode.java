@@ -21,10 +21,28 @@ public class Avtaleperiode extends AbstractTidsperiode<Avtaleperiode> implements
     private final ArbeidsgiverId arbeidsgiverId;
     private final Optional<Ordning> ordning;
 
+    /**
+     * Lager en ny Avtaleperiode
+     * @param fraOgMed periodens startdato
+     * @param tilOgMed periodens valgfrie sluttdato
+     * @param avtaleId avtaleperiodens avtaleid
+     * @param arbeidsgiverId avtaleperiodens arbeidsgiverid
+     * @deprecated benytt Avtaleperiode#Avtaleperiode(LocalDate, Optional, AvtaleId, ArbeidsgiverId, Optional)
+     * @see Avtaleperiode#Avtaleperiode(LocalDate, Optional, AvtaleId, ArbeidsgiverId, Optional)
+     */
+    @Deprecated
     public Avtaleperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, AvtaleId avtaleId, ArbeidsgiverId arbeidsgiverId) {
         this(fraOgMed, tilOgMed, avtaleId, arbeidsgiverId, empty());
     }
 
+    /**
+     * Lager en ny Avtaleperiode
+     * @param fraOgMed periodens startdato
+     * @param tilOgMed periodens valgfrie sluttdato
+     * @param avtaleId avtaleperiodens avtaleid
+     * @param arbeidsgiverId avtaleperiodens arbeidsgiverid
+     * @param ordning avtaleperiodens valgfrie ordning
+     */
     public Avtaleperiode(LocalDate fraOgMed, Optional<LocalDate> tilOgMed, AvtaleId avtaleId, ArbeidsgiverId arbeidsgiverId, Optional<Ordning> ordning) {
         super(fraOgMed, tilOgMed);
         this.avtaleId = requireNonNull(avtaleId, "Avtaleperiode må ha avtaleid, men avtaleid var null");

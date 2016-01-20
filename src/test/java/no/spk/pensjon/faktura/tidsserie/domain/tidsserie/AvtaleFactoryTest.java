@@ -108,6 +108,15 @@ public class AvtaleFactoryTest {
     }
 
     @Test
+    public void skalIkkePopulereOrdningFraUnderlagsperiodeFraAnnenAvtale() {
+        assertThat(
+                lagAvtale(
+                        new Avtaleperiode(tidenesMorgen(), empty(), AvtaleId.avtaleId(avtaleId.id() + 1) , ArbeidsgiverId.valueOf(1), of(Ordning.SPK))
+                ).ordning()
+        ).isEmpty();
+    }
+
+    @Test
     public void skalPopulereOrdningFraUnderlagsperiodasAvtaleperiode() {
         assertThat(
                 lagAvtale(
