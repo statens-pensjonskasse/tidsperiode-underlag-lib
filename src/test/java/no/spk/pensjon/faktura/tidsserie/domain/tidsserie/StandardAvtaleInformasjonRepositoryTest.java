@@ -47,7 +47,7 @@ public class StandardAvtaleInformasjonRepositoryTest {
         Optional<LocalDate> tildato = empty();
 
         Avtaleversjon avtaleversjon = enAvtaleversjon(avtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId, empty());
         Arbeidsgiverperiode arbeidsgiverperiode = new Arbeidsgiverperiode(fraDato, tildato, arbeidsgiverId);
         Arbeidsgiverdataperiode arbeidsgiverdataperiode = new Arbeidsgiverdataperiode(fraDato, tildato, orgnummer, arbeidsgiverId);
 
@@ -67,7 +67,7 @@ public class StandardAvtaleInformasjonRepositoryTest {
         Optional<LocalDate> tildato = empty();
 
         Avtaleversjon avtaleversjon = enAvtaleversjon(avtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId, empty());
         Arbeidsgiverperiode arbeidsgiverperiode = new Arbeidsgiverperiode(fraDato, empty(), new ArbeidsgiverId(11L));
 
         put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode);
@@ -104,13 +104,13 @@ public class StandardAvtaleInformasjonRepositoryTest {
         Optional<LocalDate> tildato = empty();
 
         Avtaleversjon avtaleversjon = enAvtaleversjon(avtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId, empty());
         Arbeidsgiverperiode arbeidsgiverperiode = new Arbeidsgiverperiode(fraDato, tildato, arbeidsgiverId);
 
         AvtaleId utelattAvtaleId = new AvtaleId(2L);
         ArbeidsgiverId utelattArbeidsgiverId = new ArbeidsgiverId(20L);
         Avtaleversjon avtaleversjonUtelatt = enAvtaleversjon(utelattAvtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiodeUtelatt = new Avtaleperiode(fraDato, tildato, utelattAvtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiodeUtelatt = new Avtaleperiode(fraDato, tildato, utelattAvtaleId, arbeidsgiverId, empty());
         Arbeidsgiverperiode arbeidsgiverperiodeUtelatt = new Arbeidsgiverperiode(fraDato, tildato, utelattArbeidsgiverId);
 
         put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode,

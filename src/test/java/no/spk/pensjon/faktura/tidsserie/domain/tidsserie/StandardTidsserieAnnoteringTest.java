@@ -528,7 +528,7 @@ public class StandardTidsserieAnnoteringTest {
                                 )
                         )
                         .medKobling(
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId, arbeidsgiverId)
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId, arbeidsgiverId, empty())
                         )
                         .medKobling(
                                 new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
@@ -565,7 +565,7 @@ public class StandardTidsserieAnnoteringTest {
                                 )
                         )
                         .medKobling(
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId, arbeidsgiverId)
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId, arbeidsgiverId, empty())
                         )
                         .medKobling(
                                 new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
@@ -609,8 +609,8 @@ public class StandardTidsserieAnnoteringTest {
                                 )
                         )
                         .medKoblingar(
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId1, arbeidsgiverId1),
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId2, arbeidsgiverId2)
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId1, arbeidsgiverId1, empty()),
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtaleId2, arbeidsgiverId2, empty())
                         )
                         .medKoblingar(
                                 new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId1),
@@ -773,8 +773,8 @@ public class StandardTidsserieAnnoteringTest {
                                         SPK
                                 ))
                         .medKoblingar(
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, new ArbeidsgiverId(1L)),
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, new ArbeidsgiverId(2L))
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, new ArbeidsgiverId(1L), empty()),
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, new ArbeidsgiverId(2L), empty())
                         )
         );
         assertAnnotasjon(underlag.toList().get(0), AvtaleId.class).isEqualTo(of(avtale));
@@ -803,7 +803,7 @@ public class StandardTidsserieAnnoteringTest {
                                         SPK
                                 ))
                         .medKoblingar(
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, arbeidsgiverId)
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, arbeidsgiverId, empty())
                         )
                         .medKoblingar(
                                 new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId),
@@ -838,7 +838,7 @@ public class StandardTidsserieAnnoteringTest {
                                         SPK
                                 ))
                         .medKoblingar(
-                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, arbeidsgiverId)
+                                new Avtaleperiode(dato("1990.01.01"), empty(), avtale, arbeidsgiverId, empty())
                         )
                         .medKoblingar(
                                 new Arbeidsgiverperiode(dato("1990.01.01"), empty(), arbeidsgiverId)
