@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode.avtaleperiode;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus.AAO_01;
@@ -19,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
-import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
@@ -111,7 +111,12 @@ public class AvtaleFactoryTest {
     public void skalIkkePopulereOrdningFraUnderlagsperiodeFraAnnenAvtale() {
         assertThat(
                 lagAvtale(
-                        new Avtaleperiode(tidenesMorgen(), empty(), AvtaleId.avtaleId(avtaleId.id() + 1) , ArbeidsgiverId.valueOf(1), of(Ordning.SPK))
+                        avtaleperiode(AvtaleId.avtaleId(avtaleId.id() + 1))
+                                .fraOgMed(tidenesMorgen())
+                                .tilOgMed(empty())
+                                .arbeidsgiverId(ArbeidsgiverId.valueOf(1))
+                                .ordning(of(Ordning.SPK))
+                                .bygg()
                 ).ordning()
         ).isEmpty();
     }
@@ -120,7 +125,12 @@ public class AvtaleFactoryTest {
     public void skalPopulereOrdningFraUnderlagsperiodasAvtaleperiode() {
         assertThat(
                 lagAvtale(
-                        new Avtaleperiode(tidenesMorgen(), empty(), avtaleId, ArbeidsgiverId.valueOf(1), of(Ordning.SPK))
+                        avtaleperiode(avtaleId)
+                                .fraOgMed(tidenesMorgen())
+                                .tilOgMed(empty())
+                                .arbeidsgiverId(ArbeidsgiverId.valueOf(1))
+                                .ordning(of(Ordning.SPK))
+                                .bygg()
                 ).ordning()
         ).contains(Ordning.SPK);
     }
