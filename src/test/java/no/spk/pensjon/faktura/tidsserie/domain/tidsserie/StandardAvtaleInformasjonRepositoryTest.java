@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode.avtaleperiode;
 import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.enAvtaleversjon;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,7 +48,11 @@ public class StandardAvtaleInformasjonRepositoryTest {
         Optional<LocalDate> tildato = empty();
 
         Avtaleversjon avtaleversjon = enAvtaleversjon(avtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiode = avtaleperiode(avtaleId)
+                .fraOgMed(fraDato)
+                .tilOgMed(tildato)
+                .arbeidsgiverId(arbeidsgiverId)
+                .bygg();
         Arbeidsgiverperiode arbeidsgiverperiode = new Arbeidsgiverperiode(fraDato, tildato, arbeidsgiverId);
         Arbeidsgiverdataperiode arbeidsgiverdataperiode = new Arbeidsgiverdataperiode(fraDato, tildato, orgnummer, arbeidsgiverId);
 
@@ -67,7 +72,11 @@ public class StandardAvtaleInformasjonRepositoryTest {
         Optional<LocalDate> tildato = empty();
 
         Avtaleversjon avtaleversjon = enAvtaleversjon(avtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiode = avtaleperiode(avtaleId)
+                .fraOgMed(fraDato)
+                .tilOgMed(tildato)
+                .arbeidsgiverId(arbeidsgiverId)
+                .bygg();
         Arbeidsgiverperiode arbeidsgiverperiode = new Arbeidsgiverperiode(fraDato, empty(), new ArbeidsgiverId(11L));
 
         put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode);
@@ -104,13 +113,21 @@ public class StandardAvtaleInformasjonRepositoryTest {
         Optional<LocalDate> tildato = empty();
 
         Avtaleversjon avtaleversjon = enAvtaleversjon(avtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiode = new Avtaleperiode(fraDato, tildato, avtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiode = avtaleperiode(avtaleId)
+                .fraOgMed(fraDato)
+                .tilOgMed(tildato)
+                .arbeidsgiverId(arbeidsgiverId)
+                .bygg();
         Arbeidsgiverperiode arbeidsgiverperiode = new Arbeidsgiverperiode(fraDato, tildato, arbeidsgiverId);
 
         AvtaleId utelattAvtaleId = new AvtaleId(2L);
         ArbeidsgiverId utelattArbeidsgiverId = new ArbeidsgiverId(20L);
         Avtaleversjon avtaleversjonUtelatt = enAvtaleversjon(utelattAvtaleId).fraOgMed(fraDato).tilOgMed(tildato).bygg();
-        Avtaleperiode avtaleperiodeUtelatt = new Avtaleperiode(fraDato, tildato, utelattAvtaleId, arbeidsgiverId);
+        Avtaleperiode avtaleperiodeUtelatt = avtaleperiode(utelattAvtaleId)
+                .fraOgMed(fraDato)
+                .tilOgMed(tildato)
+                .arbeidsgiverId(arbeidsgiverId)
+                .bygg();
         Arbeidsgiverperiode arbeidsgiverperiodeUtelatt = new Arbeidsgiverperiode(fraDato, tildato, utelattArbeidsgiverId);
 
         put(perioder, avtaleversjon, avtaleperiode, arbeidsgiverperiode,

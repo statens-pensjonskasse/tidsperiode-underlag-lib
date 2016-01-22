@@ -3,6 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.tidsserie;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleperiode.avtaleperiode;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus.AAO_01;
@@ -14,15 +15,18 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.TIP;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.enAvtaleversjon;
+import static no.spk.pensjon.faktura.tidsserie.domain.testdata.ObjectMother.tidenesMorgen;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleprodukt;
 import no.spk.pensjon.faktura.tidsserie.domain.avtaledata.Avtaleversjon;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.ArbeidsgiverId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
@@ -101,6 +105,34 @@ public class AvtaleFactoryTest {
                                 .bygg()
                 )
         ).isEqualTo(AAO_01);
+    }
+
+    @Test
+    public void skalIkkePopulereOrdningFraUnderlagsperiodeFraAnnenAvtale() {
+        assertThat(
+                lagAvtale(
+                        avtaleperiode(AvtaleId.avtaleId(avtaleId.id() + 1))
+                                .fraOgMed(tidenesMorgen())
+                                .tilOgMed(empty())
+                                .arbeidsgiverId(ArbeidsgiverId.valueOf(1))
+                                .ordning(of(Ordning.SPK))
+                                .bygg()
+                ).ordning()
+        ).isEmpty();
+    }
+
+    @Test
+    public void skalPopulereOrdningFraUnderlagsperiodasAvtaleperiode() {
+        assertThat(
+                lagAvtale(
+                        avtaleperiode(avtaleId)
+                                .fraOgMed(tidenesMorgen())
+                                .tilOgMed(empty())
+                                .arbeidsgiverId(ArbeidsgiverId.valueOf(1))
+                                .ordning(of(Ordning.SPK))
+                                .bygg()
+                ).ordning()
+        ).contains(Ordning.SPK);
     }
 
     @Test

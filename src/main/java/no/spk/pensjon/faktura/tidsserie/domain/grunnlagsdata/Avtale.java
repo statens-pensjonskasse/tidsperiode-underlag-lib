@@ -39,24 +39,28 @@ public class Avtale {
 
     private final Optional<Risikoklasse> risikoklasse;
 
+    private final Optional<Ordning> ordning;
+
     /**
      * Konstruerer ein ny avtale utan nokon produkt innlagt.
      *
-     * @param id           avtalenummeret som unikt identifiserer avtalen
-     * @param status       avtalen sin premiestatus
-     * @param kategori     avtalen sin premiekategori, eller ingenting dersom premiekategori er ukjent
-     * @param produkt      produkta avtalen betalar premie til SPK for
-     * @param satser       premiesatsane som er tilknytta avtalen, kan inkludere produkt som avtalen
+     * @param id avtalenummeret som unikt identifiserer avtalen
+     * @param status avtalen sin premiestatus
+     * @param kategori avtalen sin premiekategori, eller ingenting dersom premiekategori er ukjent
+     * @param produkt produkta avtalen betalar premie til SPK for
+     * @param satser premiesatsane som er tilknytta avtalen, kan inkludere produkt som avtalen
      * @param risikoklasse risikoklassa avtalen tilhøyrer viss den har eit YSK-produkt hos SPK
      */
     private Avtale(final AvtaleId id, final Premiestatus status, final Optional<Premiekategori> kategori,
-                   final Stream<Produkt> produkt, final Map<Produkt, Premiesats> satser,
-                   final Optional<Risikoklasse> risikoklasse) {
+            final Stream<Produkt> produkt, final Map<Produkt, Premiesats> satser,
+            final Optional<Risikoklasse> risikoklasse,
+            final Optional<Ordning> ordning) {
         this.id = id;
         this.status = status;
         this.kategori = kategori;
         this.risikoklasse = risikoklasse;
         this.premiesatser.putAll(satser);
+        this.ordning = ordning;
         produkt.forEach(this.avtaleprodukt::add);
     }
 
@@ -123,6 +127,16 @@ public class Avtale {
         return risikoklasse;
     }
 
+    /**
+     * Gjeldande ordning for avtalen.
+     * <br>
+     * @return gjeldande ordning for avtalen.
+     * @since 2.1.0
+     */
+    public Optional<Ordning> ordning() {
+        return ordning;
+    }
+
     @Override
     public String toString() {
         return id
@@ -169,6 +183,8 @@ public class Avtale {
 
         private Optional<Risikoklasse> risikoklasse = empty();
 
+        private Optional<Ordning> ordning = empty();
+
         private AvtaleBuilder(final AvtaleId id) {
             this.id = id;
         }
@@ -210,11 +226,23 @@ public class Avtale {
         }
 
         /**
+         * Oppdaterer ordningen som avtalen skal settast opp med.
+         *
+         * @param ordning ordningen som avtalen skal benytte
+         * @return <code>this</code>
+         * @since 1.1.1
+         */
+        public AvtaleBuilder ordning(final Optional<Ordning> ordning) {
+            this.ordning = requireNonNull(ordning, "ordning er påkrevd, men var null");
+            return this;
+        }
+
+        /**
          * Legger til en premiesats som er tilknyttet avtalen.
          *
          * @param premiesats premiesatsar som er tilknytta avtalen
          * @return <code>this</code>
-         * @throws NullPointerException  viss <code>premiesats</code> er <code>null</code>
+         * @throws NullPointerException viss <code>premiesats</code> er <code>null</code>
          * @throws IllegalStateException viss avtalen allereie har ein premiesats med samme produkt som <code>premiesats</code>
          * @since 1.1.1
          */
@@ -251,7 +279,8 @@ public class Avtale {
                     kategori,
                     avtaleprodukt.stream(),
                     premiesatser,
-                    risikoklasse
+                    risikoklasse,
+                    ordning
             );
         }
     }
