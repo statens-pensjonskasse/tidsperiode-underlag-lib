@@ -1,6 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Assertions.assertDesimaler;
+import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForGRU.grunnlagForGRU;
+import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForPensjonsprodukt.grunnlagForPensjonsprodukt;
+import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForYSK.grunnlagForYSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premiebeloep.premiebeloep;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
@@ -28,32 +31,32 @@ public class PremiebeloepTest {
      * multipliserte manger gangar på, burde ein få likt resultat.
      */
     @Test
-    public void skal_avrunde_prosentsats_til_2_desimaler_foer_multiplikasjon_med_premiebeloep() {
-        final Premiebeloep grunnlag = premiebeloep(new Kroner(100_000_000_000d));
-        assertThat(grunnlag).isEqualTo(premiebeloep("kr 100 000 000 000.00"));
-        assertThat(grunnlag.multiply(new Prosent("0.001%"))).isEqualTo(premiebeloep("kr 0"));
-        assertThat(grunnlag.multiply(new Prosent("0.0049%"))).isEqualTo(premiebeloep("kr 0"));
-        assertThat(grunnlag.multiply(new Prosent("0.005%"))).isEqualTo(premiebeloep("kr 10 000 000"));
-        assertThat(grunnlag.multiply(new Prosent("0.01%"))).isEqualTo(premiebeloep("kr 10 000 000"));
+    public void skal_avrunde_prosentsats_til_2_desimaler_foer_multiplikasjon_med_grunnlag_for_pensjonsprodukt() {
+        final GrunnlagForPensjonsprodukt grunnlag = new GrunnlagForPensjonsprodukt(new Kroner(100_000_000_000d));
+        assertThat(premiebeloep(grunnlag, new Prosent("0.001%"))).isEqualTo(premiebeloep("kr 0"));
+        assertThat(premiebeloep(grunnlag, new Prosent("0.0049%"))).isEqualTo(premiebeloep("kr 0"));
+        assertThat(premiebeloep(grunnlag, new Prosent("0.005%"))).isEqualTo(premiebeloep("kr 10 000 000"));
+        assertThat(premiebeloep(grunnlag, new Prosent("0.01%"))).isEqualTo(premiebeloep("kr 10 000 000"));
     }
 
     @Test
-    public void skal_avrunde_premiebeloepet_etter_multiplisering_med_premiesats() {
-        assertPremiebeloep(premiebeloep("kr 10 000").multiply(prosent("0.35%")))
+    public void skal_avrunde_premiebeloepet_etter_grunnlag_for_pensjonsprodukt_er_multiplisert_med_premiesats() {
+        assertPremiebeloep(premiebeloep(grunnlagForPensjonsprodukt(10_000), prosent("0.35%")))
                 .isEqualTo(premiebeloep("kr 35.00"));
-        assertPremiebeloep(premiebeloep("kr 1000").multiply(prosent("0.35%")))
+        assertPremiebeloep(premiebeloep(grunnlagForPensjonsprodukt(1_000), prosent("0.35%")))
                 .isEqualTo(premiebeloep("kr 3.50"));
-        assertPremiebeloep(premiebeloep("kr 100").multiply(prosent("0.35%")))
+        assertPremiebeloep(premiebeloep(grunnlagForPensjonsprodukt(100), prosent("0.35%")))
                 .isEqualTo(premiebeloep("kr 0.35"));
 
-        assertPremiebeloep(premiebeloep("kr 10").multiply(prosent("0.35%")))
+        assertPremiebeloep(premiebeloep(grunnlagForPensjonsprodukt(10), prosent("0.35%")))
                 .isEqualTo(premiebeloep("kr 0.04"));
 
-        assertPremiebeloep(premiebeloep("kr 1").multiply(prosent("0.5051%")))
+        final GrunnlagForPensjonsprodukt grunnlag = grunnlagForPensjonsprodukt(1);
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5051%")))
                 .isEqualTo(premiebeloep("kr 0.01"));
-        assertPremiebeloep(premiebeloep("kr 1").multiply(prosent("0.49%")))
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.49%")))
                 .isEqualTo(premiebeloep("kr 0.00"));
-        assertPremiebeloep(premiebeloep("kr 1").multiply(prosent("0.35%")))
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.35%")))
                 .isEqualTo(premiebeloep("kr 0.00"));
     }
 
@@ -63,17 +66,17 @@ public class PremiebeloepTest {
      */
     @Test
     public void skal_avrunde_med_half_up() {
-        final Premiebeloep b = premiebeloep("kr 100");
-        assertPremiebeloep(b.multiply(prosent("0.5050%"))).isEqualTo(premiebeloep("kr 0.51"));
-        assertPremiebeloep(b.multiply(prosent("0.5150%"))).isEqualTo(premiebeloep("kr 0.52"));
-        assertPremiebeloep(b.multiply(prosent("0.5250%"))).isEqualTo(premiebeloep("kr 0.53"));
-        assertPremiebeloep(b.multiply(prosent("0.5350%"))).isEqualTo(premiebeloep("kr 0.54"));
-        assertPremiebeloep(b.multiply(prosent("0.5450%"))).isEqualTo(premiebeloep("kr 0.55"));
-        assertPremiebeloep(b.multiply(prosent("0.5550%"))).isEqualTo(premiebeloep("kr 0.56"));
-        assertPremiebeloep(b.multiply(prosent("0.5650%"))).isEqualTo(premiebeloep("kr 0.57"));
-        assertPremiebeloep(b.multiply(prosent("0.5750%"))).isEqualTo(premiebeloep("kr 0.58"));
-        assertPremiebeloep(b.multiply(prosent("0.5850%"))).isEqualTo(premiebeloep("kr 0.59"));
-        assertPremiebeloep(b.multiply(prosent("0.5950%"))).isEqualTo(premiebeloep("kr 0.60"));
+        final GrunnlagForPensjonsprodukt grunnlag = new GrunnlagForPensjonsprodukt(kroner(100));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5050%"))).isEqualTo(premiebeloep("kr 0.51"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5150%"))).isEqualTo(premiebeloep("kr 0.52"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5250%"))).isEqualTo(premiebeloep("kr 0.53"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5350%"))).isEqualTo(premiebeloep("kr 0.54"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5450%"))).isEqualTo(premiebeloep("kr 0.55"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5550%"))).isEqualTo(premiebeloep("kr 0.56"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5650%"))).isEqualTo(premiebeloep("kr 0.57"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5750%"))).isEqualTo(premiebeloep("kr 0.58"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5850%"))).isEqualTo(premiebeloep("kr 0.59"));
+        assertPremiebeloep(premiebeloep(grunnlag, prosent("0.5950%"))).isEqualTo(premiebeloep("kr 0.60"));
     }
 
     /**
@@ -108,6 +111,19 @@ public class PremiebeloepTest {
     public void skal_avrunde_angitt_beloep_til_2_desimaler_ved_konstruksjon() {
         assertPremiebeloep(premiebeloep("kr 100.999")).isEqualTo(premiebeloep("101.00"));
     }
+
+    @Test
+    public void skal_avrunde_premiebeloepet_til_2_desimaler_etter_grunnlag_for_GRU_er_multiplisert_med_premiesats() {
+        assertPremiebeloep(premiebeloep(grunnlagForGRU("50.004%"), kroner(1000)))
+                .isEqualTo(premiebeloep("kr 500.04"));
+    }
+
+    @Test
+    public void skal_avrunde_premiebeloepet_til_2_desimaler_etter_grunnlag_for_YSK_er_multiplisert_med_premiesats() {
+        assertPremiebeloep(premiebeloep(grunnlagForYSK("50.004%"), kroner(1000)))
+                .isEqualTo(premiebeloep("kr 500.04"));
+    }
+
 
     private static AbstractObjectAssert<?, Premiebeloep> assertPremiebeloep(final Premiebeloep beloep) {
         return Assertions.assertPremiebeloep(beloep, 2);

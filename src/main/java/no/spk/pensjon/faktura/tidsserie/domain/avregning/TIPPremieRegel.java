@@ -14,12 +14,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
  * avtalen skulle ha betalt for perioda om ein hadde valgt å avregne avtalar med fiktiv fond.
  *
  * @author Tarjei Skorgenes
- * @see Pensjonspremier#beregn(Beregningsperiode, Produkt)
+ * @see PensjonsproduktPensjonspremier#beregn(Beregningsperiode, Produkt)
  * @since 1.2.0
  */
 public class TIPPremieRegel implements BeregningsRegel<Premier> {
     @Override
     public Premier beregn(final Beregningsperiode<?> periode) {
-        return new Pensjonspremier().beregn(periode, TIP);
+        return new PensjonsproduktPensjonspremier().beregn(periode, TIP);
     }
 }

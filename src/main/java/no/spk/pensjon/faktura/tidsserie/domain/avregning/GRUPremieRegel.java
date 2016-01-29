@@ -1,8 +1,10 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
-import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premier.premier;
-
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
@@ -18,6 +20,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 public class GRUPremieRegel implements BeregningsRegel<Premier> {
     @Override
     public Premier beregn(final Beregningsperiode<?> periode) {
-        return premier().bygg();
+        final Prosent fakturerbarStillingsandel = periode.beregn(GruppelivsfaktureringRegel.class).andel();
+        final Aarsfaktor aarsfaktor = periode.beregn(AarsfaktorRegel.class);
+        final GrunnlagForGRU grunnlag = new GrunnlagForGRU(aarsfaktor.tilProsent().multiply(fakturerbarStillingsandel));
+
+        return new GRUPensjonspremier().beregn(periode, grunnlag);
     }
 }
