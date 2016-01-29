@@ -138,8 +138,13 @@ public class YSKPensjonspremierTest {
                         .administrasjonsgebyr(),
                 2
         )
+                .as("premiebeløp avrundet til to desimaler etter premiesats er multiplisert med grunnlag")
                 .isEqualTo(
                         premiebeloep("42.47")
+                )
+                .as("premiesats skal ikke avrundes til to desimaler før multiplisering med grunnlag")
+                .isNotEqualTo(
+                        premiebeloep("42.45")
                 );
     }
 
