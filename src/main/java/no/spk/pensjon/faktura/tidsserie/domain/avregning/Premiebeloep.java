@@ -212,7 +212,10 @@ public final class Premiebeloep {
      * @param other prosentsatsen som vi skal legges sammen med, maksimalt 4 desimaler støttes
      * @return et nytt premiebeløp med resultatet av multiplikasjonen
      * @see Premiebeloep#premiebeloep(GrunnlagForPensjonsprodukt, Prosent)
-     * @deprecated since 2.1.1
+     * @see Premiebeloep#premiebeloep(GrunnlagForGRU, Kroner)
+     * @see Premiebeloep#premiebeloep(GrunnlagForYSK, Kroner)
+     * @deprecated since 2.1.1 - Premiebeloep skal representere et ferdig beregnet premiebeloep, og skal ikke multiploseres med noe
+     * etter konstruksjon
      */
     @Deprecated
     public Premiebeloep multiply(final Prosent other) {

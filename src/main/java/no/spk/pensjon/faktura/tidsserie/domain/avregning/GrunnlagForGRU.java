@@ -1,10 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
+import static java.util.Objects.requireNonNull;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 /**
  * Premie for produktet GRY beregnes ved å multiplisere grunnlaget for GRU med premiesatsen for produktet.
  * Grunnlaget for GRU er antall dager av året et medlem er aktivt, representert som en prosentandel av året.
+ * Detaljer for hvordan prosentandelen beregnes bestemmes av {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel}.
  * Grunnlaget på periodenivå blir skalert med årsfaktoren til perioden.
  *
  * {@link GrunnlagForGRU}  multipliseres med premiesats for GRU for å gi premie for GRU for en periode.
@@ -22,7 +25,7 @@ public class GrunnlagForGRU {
      * @param verdi antall dager av året et medlem er aktivt, representert som en prosentandel av året.
      */
     public GrunnlagForGRU(Prosent verdi) {
-        this.verdi = verdi;
+        this.verdi = requireNonNull(verdi, "verdi for grunnlag for GRU kan ikke være null");
     }
 
     /**

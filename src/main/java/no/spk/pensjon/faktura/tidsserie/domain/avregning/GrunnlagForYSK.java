@@ -1,10 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
+import static java.util.Objects.requireNonNull;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 /**
  * Premie for YSK beregnes ved å multiplisere grunnlaget for YSK med premiesatser for YSK.
- * Grunnlaget for YSK er på antall årsverk medlemmet er aktivt i løpet av et år, avkortet til maksimalt ett årsverk.
+ * Grunnlaget for YSK er på antall årsverk medlemmet er aktivt i løpet av et år, avkortet til maksimalt ett årsverk per medlem.
+ * Detaljer for hvordan årsverkandelen beregnes bestemmes av {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel}.
  * Grunnlaget på periodenivå blir skalert med årsfaktoren til perioden.
  *
  * {@link GrunnlagForYSK} multipliseres med premiesats for YSK for å gi premie for YSK for en periode.
@@ -22,7 +25,7 @@ public class GrunnlagForYSK {
      * @param verdi antall årsverk et medlem er aktivt, representert som en prosentandel av året.
      */
     public GrunnlagForYSK(Prosent verdi) {
-        this.verdi = verdi;
+        this.verdi = requireNonNull(verdi, "verdi for grunnlag for YSK kan ikke være null");
     }
 
     /**

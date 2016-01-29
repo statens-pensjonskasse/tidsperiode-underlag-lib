@@ -1,5 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
+import static java.util.Objects.requireNonNull;
+
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 
 /**
@@ -18,7 +20,7 @@ public class GrunnlagForPensjonsprodukt {
      * @param beloep pensjonsgivende årslønn som er grunnlaget for et pensjonsprodukt
      */
     public GrunnlagForPensjonsprodukt(Kroner beloep) {
-        this.verdi = beloep;
+        this.verdi = requireNonNull(beloep, "beloep for grunnlag for et pensjonsprodukt kan ikke være null");
     }
 
     /**
