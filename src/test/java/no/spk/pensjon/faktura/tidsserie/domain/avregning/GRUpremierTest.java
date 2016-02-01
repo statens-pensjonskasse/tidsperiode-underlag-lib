@@ -24,13 +24,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class GRUPensjonspremierTest {
+public class GRUpremierTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
     private UnderlagsperiodeBuilder builder;
 
-    private GRUPensjonspremier regel;
+    private GRUpremier regel;
 
     @Before
     public void before() {
@@ -39,7 +39,7 @@ public class GRUPensjonspremierTest {
                 .fraOgMed(premieaar.atStartOfYear())
                 .tilOgMed(premieaar.atEndOfYear())
         ;
-        regel = new GRUPensjonspremier();
+        regel = new GRUpremier();
     }
 
     @Test

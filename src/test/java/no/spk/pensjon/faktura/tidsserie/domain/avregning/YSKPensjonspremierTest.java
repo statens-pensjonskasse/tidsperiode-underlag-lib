@@ -30,7 +30,7 @@ public class YSKPensjonspremierTest {
 
     private UnderlagsperiodeBuilder builder;
 
-    private YSKPensjonspremier regel;
+    private YSKpremier regel;
 
     @Before
     public void before() {
@@ -39,7 +39,7 @@ public class YSKPensjonspremierTest {
                 .fraOgMed(premieaar.atStartOfYear())
                 .tilOgMed(premieaar.atEndOfYear())
         ;
-        regel = new YSKPensjonspremier();
+        regel = new YSKpremier();
     }
 
     @Test

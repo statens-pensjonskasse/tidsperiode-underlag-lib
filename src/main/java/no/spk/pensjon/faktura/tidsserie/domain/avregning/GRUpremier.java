@@ -8,7 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
-class GRUPensjonspremier {
+class GRUpremier {
 
     /**
      * Beregner premier for GRU basert på premiesatser for perioden multiplisert med angitt grunnlag.

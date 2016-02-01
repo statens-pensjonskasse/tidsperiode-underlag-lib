@@ -24,6 +24,6 @@ public class GRUPremieRegel implements BeregningsRegel<Premier> {
         final Aarsfaktor aarsfaktor = periode.beregn(AarsfaktorRegel.class);
         final GrunnlagForGRU grunnlag = new GrunnlagForGRU(aarsfaktor.tilProsent().multiply(fakturerbarStillingsandel));
 
-        return new GRUPensjonspremier().beregn(periode, grunnlag);
+        return new GRUpremier().beregn(periode, grunnlag);
     }
 }

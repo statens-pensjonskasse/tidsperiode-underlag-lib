@@ -8,7 +8,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiesats;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
-class YSKPensjonspremier {
+class YSKpremier {
 
     /**
      * Beregner premier for angitt produkt basert på premiesatser for perioden multiplisert med angitt premiefaktor.

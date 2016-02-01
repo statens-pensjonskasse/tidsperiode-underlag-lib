@@ -24,6 +24,6 @@ public class YSKPremieRegel implements BeregningsRegel<Premier> {
         final Aarsfaktor aarsfaktor = periode.beregn(AarsfaktorRegel.class);
         final GrunnlagForYSK grunnlag = new GrunnlagForYSK(aarsfaktor.tilProsent().multiply(fakturerbarStillingsandel));
 
-        return new YSKPensjonspremier().beregn(periode, grunnlag);
+        return new YSKpremier().beregn(periode, grunnlag);
     }
 }
