@@ -10,7 +10,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
-class PensjonsproduktPensjonspremier {
+class Pensjonspremier {
     /**
      * Beregner premier for angitt produkt basert på grunnlag multiplisert med premiesatser for perioden.
      * Beregningsmetoden benyttes for produktene PEN, AFK og TIP.

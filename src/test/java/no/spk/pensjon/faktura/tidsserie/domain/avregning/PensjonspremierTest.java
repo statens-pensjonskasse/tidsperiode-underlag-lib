@@ -28,17 +28,17 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Enhetstester for {@link PensjonsproduktPensjonspremier}.
+ * Enhetstester for {@link Pensjonspremier}.
  *
  * @author Tarjei Skorgenes
  */
-public class PensjonsproduktPensjonspremierTest {
+public class PensjonspremierTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
     private UnderlagsperiodeBuilder builder;
 
-    private PensjonsproduktPensjonspremier regel;
+    private Pensjonspremier regel;
 
     @Before
     public void before() {
@@ -48,7 +48,7 @@ public class PensjonsproduktPensjonspremierTest {
                 .tilOgMed(premieaar.atEndOfYear())
                 .med(MaskineltGrunnlagRegel.class, pensjonsgivendeLoenn("kr 600 000"))
         ;
-        regel = new PensjonsproduktPensjonspremier();
+        regel = new Pensjonspremier();
     }
 
     @Test

@@ -10,12 +10,12 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
  * Premieberegningsregel for {@link Produkt#AFP}.
  *
  * @author Tarjei Skorgenes
- * @see PensjonsproduktPensjonspremier#beregn(Beregningsperiode, Produkt)
+ * @see Pensjonspremier#beregn(Beregningsperiode, Produkt)
  * @since 1.2.0
  */
 public class AFPPremieRegel implements BeregningsRegel<Premier> {
     @Override
     public Premier beregn(final Beregningsperiode<?> periode) {
-        return new PensjonsproduktPensjonspremier().beregn(periode, AFP);
+        return new Pensjonspremier().beregn(periode, AFP);
     }
 }
