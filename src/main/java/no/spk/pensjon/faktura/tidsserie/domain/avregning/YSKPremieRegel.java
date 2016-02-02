@@ -1,9 +1,9 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
@@ -20,9 +20,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 public class YSKPremieRegel implements BeregningsRegel<Premier> {
     @Override
     public Premier beregn(final Beregningsperiode<?> periode) {
-        final Prosent fakturerbarStillingsandel = periode.beregn(YrkesskadefaktureringRegel.class).andel();
+        final FaktureringsandelStatus faktureringsandel = periode.beregn(YrkesskadefaktureringRegel.class);
         final Aarsfaktor aarsfaktor = periode.beregn(AarsfaktorRegel.class);
-        final GrunnlagForYSK grunnlag = new GrunnlagForYSK(aarsfaktor.tilProsent().multiply(fakturerbarStillingsandel));
+        final GrunnlagForYSK grunnlag = new GrunnlagForYSK(aarsfaktor, faktureringsandel);
 
         return new YSKpremier().beregn(periode, grunnlag);
     }

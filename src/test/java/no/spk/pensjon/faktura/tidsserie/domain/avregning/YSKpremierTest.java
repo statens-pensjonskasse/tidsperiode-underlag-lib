@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Assertions.assertPremiebeloep;
-import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForYSK.grunnlagForYSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premiebeloep.premiebeloep;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
@@ -14,7 +13,11 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.pros
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -24,7 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class YSKPensjonspremierTest {
+public class YSKpremierTest {
     @Rule
     public final ExpectedException e = ExpectedException.none();
 
@@ -153,7 +156,7 @@ public class YSKPensjonspremierTest {
         e.expect(PaakrevdAnnotasjonManglarException.class);
         e.expectMessage("Avtale");
 
-        beregn(grunnlagForYSK("0%"), builder);
+        beregn(grunnlagForYSK("100%"), builder);
     }
 
     @Test
@@ -213,4 +216,14 @@ public class YSKPensjonspremierTest {
                                 .bygg()
                 );
     }
+    private GrunnlagForYSK grunnlagForYSK(String grunnlag) {
+        return GrunnlagForYSK.grunnlagForYSK(
+                new Aarsfaktor(Prosent.prosent(grunnlag).toDouble()),
+                new FaktureringsandelStatus(
+                        StillingsforholdId.valueOf(1L),
+                        Prosent.prosent("100%")
+                )
+        );
+    }
+
 }

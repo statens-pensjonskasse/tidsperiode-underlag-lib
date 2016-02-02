@@ -1,7 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Assertions.assertPremiebeloep;
-import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForGRU.grunnlagForGRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premiebeloep.premiebeloep;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;
@@ -14,7 +13,11 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.pros
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonManglarException;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
@@ -148,7 +151,7 @@ public class GRUpremierTest {
         e.expect(PaakrevdAnnotasjonManglarException.class);
         e.expectMessage("Avtale");
 
-        beregn(grunnlagForGRU("0%"), builder);
+        beregn(grunnlagForGRU("100%"), builder);
     }
 
     @Test
@@ -207,5 +210,15 @@ public class GRUpremierTest {
                                 )
                                 .bygg()
                 );
+    }
+
+    private GrunnlagForGRU grunnlagForGRU(String grunnlag) {
+        return GrunnlagForGRU.grunnlagForGRU(
+                new Aarsfaktor(Prosent.prosent(grunnlag).toDouble()),
+                new FaktureringsandelStatus(
+                        StillingsforholdId.valueOf(1L),
+                        Prosent.prosent("100%")
+                )
+        );
     }
 }
