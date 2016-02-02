@@ -17,11 +17,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 
 /**
@@ -30,6 +34,28 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
 class KonverterFraTekst {
     static Kroner beloep(final String verdi) {
         return kroner(parseInt(verdi.replaceAll("kr", "").replaceAll(" ", "")));
+    }
+
+    static YrkesskadefaktureringRegel yrkesskadeandel(final String verdi) {
+        return new YrkesskadefaktureringRegel() {
+            @Override
+            public FaktureringsandelStatus beregn(final Beregningsperiode<?> periode) {
+                return new FaktureringsandelStatus(StillingsforholdId.valueOf(1), desimalTilProsent(verdi));
+            }
+        };
+    }
+
+    static GruppelivsfaktureringRegel gruppelivsandel(final String verdi) {
+        return new GruppelivsfaktureringRegel() {
+            @Override
+            public FaktureringsandelStatus beregn(final Beregningsperiode<?> periode) {
+                return new FaktureringsandelStatus(StillingsforholdId.valueOf(1), desimalTilProsent(verdi));
+            }
+        };
+    }
+
+    private static Prosent desimalTilProsent(String verdi) {
+        return new Prosent(Double.parseDouble(verdi));
     }
 
     static AarsfaktorRegel aarsfaktorRegel(final String verdi) {

@@ -1,13 +1,13 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 /**
  * Premiebeløp representerer ein årspremieandel for eit produkt
@@ -55,6 +55,94 @@ public final class Premiebeloep {
                         new BigDecimal(
                                 verdi.verdi()
                         )
+                )
+        );
+    }
+
+    /**
+     * Multipliserer grunnlag for pensjonsproduk med den angitte premiesatsen og avrunder til
+     * 2 desimaler.
+     * <br>
+     * Prosentsatsen avrundes til 2 desimaler før den multipliseres med grunnlaget. Dette fordi
+     * prosentsatsen forventes å representere en premiesats og premiesatsene skal maksimalt inneholde 2 desimaler.
+     * <br>
+     * Som en følge av dette vil multiplisering med premiesatser mindre enn eller lik 0.005%, gi et premiebeløp lik
+     * kr 0.
+     * <br>
+     * Grunnlaget behandles som kroner med 0 desimaler.
+     *
+     * @param grunnlag grunnlaget for premiebeløpet
+     * @param premiesats premiesats som grunnlaget skal multipliseres med
+     * @return et nytt premiebeløp
+     */
+    public static Premiebeloep premiebeloep(final GrunnlagForPensjonsprodukt grunnlag, final Prosent premiesats) {
+        return new Premiebeloep(
+                tilToDesimaler(
+                        new BigDecimal(
+                                grunnlag.kroneverdi().verdi(),
+                                CONTEXT
+                        )
+                                .multiply(
+                                        tilDesimaler(
+                                                new BigDecimal(
+                                                        premiesats.toDouble(),
+                                                        CONTEXT
+                                                ),
+                                                4 // 100.00% blir representert som 1.0000, ergo 4-desimaler
+                                        )
+                                )
+                )
+        );
+    }
+
+    /**
+     * Multipliserer grunnlaget for produktet GRU med den angitte premiesatsen og avrunder til
+     * 2 desimaler.
+     * <br>
+     * Grunnlaget multipliseres direkte med premiesatsen, og lager et nytt premiebeløp avrundet til 2 desimaler.
+     *
+     * @param grunnlag grunnlaget for premiebeløpet
+     * @param premiesats premiesats som grunnlaget skal multipliseres med
+     * @return et nytt premiebeløp med to desimaler
+     */
+    public static Premiebeloep premiebeloep(final GrunnlagForYSK grunnlag, final Kroner premiesats) {
+        return new Premiebeloep(
+                tilToDesimaler(
+                        new BigDecimal(
+                                grunnlag.verdi().toDouble(),
+                                CONTEXT
+                        )
+                                .multiply(new BigDecimal(
+                                                premiesats.verdi(),
+                                                CONTEXT
+                                        )
+                                )
+                )
+        );
+    }
+
+    /**
+     * Multipliserer grunnlaget for produktet GRU med den angitte premiesatsen og avrunder til
+     * 2 desimaler.
+     * <br>
+     * Grunnlaget multipliseres direkte med premiesatsen, og lager et nytt premiebeløp avrundet til 2 desimaler.
+     *
+     * @param grunnlag grunnlaget for premiebeløpet
+     * @param premiesats premiesats som grunnlaget skal multipliseres med
+     * @return et nytt premiebeløp med to desimaler
+     */
+    public static Premiebeloep premiebeloep(final GrunnlagForGRU grunnlag, final Kroner premiesats) {
+        return new Premiebeloep(
+                tilToDesimaler(
+                        new BigDecimal(
+                                grunnlag.verdi().toDouble(),
+                                CONTEXT
+                        )
+                                .multiply(new BigDecimal(
+                                                premiesats.verdi(),
+                                                CONTEXT
+                                        )
+                                )
                 )
         );
     }
@@ -123,7 +211,13 @@ public final class Premiebeloep {
      *
      * @param other prosentsatsen som vi skal legges sammen med, maksimalt 4 desimaler støttes
      * @return et nytt premiebeløp med resultatet av multiplikasjonen
+     * @see Premiebeloep#premiebeloep(GrunnlagForPensjonsprodukt, Prosent)
+     * @see Premiebeloep#premiebeloep(GrunnlagForGRU, Kroner)
+     * @see Premiebeloep#premiebeloep(GrunnlagForYSK, Kroner)
+     * @deprecated since 2.1.1 - Premiebeloep skal representere et ferdig beregnet premiebeloep, og skal ikke multiploseres med noe
+     * etter konstruksjon
      */
+    @Deprecated
     public Premiebeloep multiply(final Prosent other) {
         return new Premiebeloep(
                 tilToDesimaler(

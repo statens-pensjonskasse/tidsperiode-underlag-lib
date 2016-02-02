@@ -18,9 +18,11 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErUnderMinstegrensaRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.PrognoseRegelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
@@ -67,6 +69,8 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Årsfaktor", AarsfaktorRegel.class, KonverterFraTekst::aarsfaktorRegel);
         Supports("Stillingsprosent", Stillingsprosent.class, KonverterFraTekst::stillingsprosent);
         Supports("Ordning", Ordning.class, KonverterFraTekst::ordning);
+        Supports("Yrkesskadeandel", YrkesskadefaktureringRegel.class, KonverterFraTekst::yrkesskadeandel);
+        Supports("Gruppelivandel", GruppelivsfaktureringRegel.class, KonverterFraTekst::gruppelivsandel);
 
         // Språkdefinisjon for annotering av underlagsperioder
         Gitt("^en underlagsperiode med følgende innhold:$", (DataTable underlagsperioder) -> {
