@@ -60,6 +60,7 @@ public class GrunnlagForYSK {
      * @param aarsfaktor {@link Aarsfaktor} for perioden grunnlaget skal beregnes for
      * @param faktureringsandel stillingsandel som skal faktureres for YSK i perioden, beregnet av {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel}.
      * {@link FaktureringsandelStatus#andel()} må være i intervallet [0%, 100%].
+     * @return et nytt grunnlag for YSK
      * @throws IllegalArgumentException dersom {@link FaktureringsandelStatus#andel()} er mindre enn 0% eller større enn 100%.
      */
     public static GrunnlagForYSK grunnlagForYSK(Aarsfaktor aarsfaktor, FaktureringsandelStatus faktureringsandel) {

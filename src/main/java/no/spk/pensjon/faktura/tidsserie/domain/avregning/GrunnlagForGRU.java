@@ -60,6 +60,7 @@ public class GrunnlagForGRU {
      * @param aarsfaktor {@link Aarsfaktor} for perioden grunnlaget skal beregnes for
      * @param faktureringsandel stillingsandel som skal faktureres for GRU i perioden, beregnet av  {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel}.
      * {@link FaktureringsandelStatus#andel()} må være 0% eller 100%.
+     * @return et nytt grunnlag for GRU
      * @throws IllegalArgumentException dersom {@link FaktureringsandelStatus#andel()} ikke er 0% eller 100%.
      */
     public static GrunnlagForGRU grunnlagForGRU(Aarsfaktor aarsfaktor, FaktureringsandelStatus faktureringsandel) {
