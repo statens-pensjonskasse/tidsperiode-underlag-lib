@@ -64,13 +64,13 @@ public class PrognoseRegelsettTest {
                         .tilOgMed(dato("2015.12.31"))
                         .med(Aksjonskode.ENDRINGSMELDING)
                         .med(new DeltidsjustertLoenn(kroner(300_000)))
-                        .med(new Stillingsprosent(new Prosent("35%")))
+                        .med(new Stillingsprosent(new Prosent("20%")))
                         .med(new Grunnbeloep(kroner(88_300)))
                         .med(Ordning.SPK)
                         .med(Premiestatus.AAO_01)
                         .med(new Aarstall(2015))
         )
-                .isEqualTo(kroner(300_000));
+                .isEqualTo(kroner(211_920));
     }
 
     @Test
@@ -81,8 +81,7 @@ public class PrognoseRegelsettTest {
                         .tilOgMed(dato("2016.12.31"))
                         .med(Aksjonskode.ENDRINGSMELDING)
                         .med(new DeltidsjustertLoenn(kroner(250_000)))
-                        .med(new Stillingsprosent(new Prosent("34,9%")))
-                        .med(new Grunnbeloep(kroner(88_300)))
+                        .med(new Stillingsprosent(new Prosent("19,9%")))
                         .med(Ordning.SPK)
                         .med(Premiestatus.AAO_01)
                         .med(new Aarstall(2016))
@@ -98,13 +97,13 @@ public class PrognoseRegelsettTest {
                         .tilOgMed(dato("2016.12.31"))
                         .med(Aksjonskode.ENDRINGSMELDING)
                         .med(new DeltidsjustertLoenn(kroner(300_000)))
-                        .med(new Stillingsprosent(new Prosent("35%")))
+                        .med(new Stillingsprosent(new Prosent("20%")))
                         .med(new Grunnbeloep(kroner(88_300)))
                         .med(Ordning.SPK)
                         .med(Premiestatus.AAO_01)
                         .med(new Aarstall(2016))
         )
-                .isEqualTo(kroner(300_000));
+                .isEqualTo(kroner(211_920));
     }
 
     @Test

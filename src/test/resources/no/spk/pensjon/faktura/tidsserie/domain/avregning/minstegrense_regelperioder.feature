@@ -5,9 +5,8 @@ Egenskap: Minstegrenseregler ble endret 1. april 2016
   Gjeldende minstegrense for fakturering har endret seg over tid. I årene 2013 til og med 31. mars 2016 har fastasts-metodikken
   operert med ett regelsett, og fom. 1. april 2016 benyttes et annet.
 
-  Ved prognoseberegning ønsker man ikke variasjon i minstegrensereglene -
-  prognoseberegning for 2016 benytter minstegrensene som som gjelder før 1. april.
-  Prognoseberegningen for 2017 skal benytte nye minstegrenseregler - regelsettet må da endres til å benytte disse.
+  Ved prognoseberegning ønsker man ikke variasjon i minstegrensereglene - og skal benytte samme minstegrenseregel for alle underlagsperioder.
+  Prognoseberegningen fom. 2016 skal benytte nye minstegrenseregler.
 
   Scenario: Periode for minstegrense før 1.april med avregningsregler
     Gitt underlagsperioden sin fra og med-dato er 2015.01.01
@@ -34,6 +33,6 @@ Egenskap: Minstegrenseregler ble endret 1. april 2016
     Og en underlagsperiode med følgende innhold:
       | Ordning | Stillingsprosent | Premiestatus |
       | SPK     | 20,0%            | AAO-01       |
-    Så er stillingen under minstegrensen
+    Så er stillingen over minstegrensen
 
 
