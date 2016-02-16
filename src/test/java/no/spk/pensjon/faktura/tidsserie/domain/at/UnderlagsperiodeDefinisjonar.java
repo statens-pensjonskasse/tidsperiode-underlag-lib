@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.avregning;
+package no.spk.pensjon.faktura.tidsserie.domain.at;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
@@ -10,6 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.AvregningsRegelsett;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -17,9 +24,15 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErMedregningRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErPermisjonUtanLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErUnderMinstegrensaRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.MedregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.PrognoseRegelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
@@ -61,7 +74,6 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     public UnderlagsperiodeDefinisjonar() {
         // Alle datatyper som underlagsperioder må kunne annoteres med for å støtte beregningsregler for avregning
-        Supports("Pensjonsgivende lønn", MaskineltGrunnlagRegel.class, KonverterFraTekst::pensjonsgivendeLoenn);
         Supports("Premiestatus", Premiestatus.class, Premiestatus::valueOf);
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
         Supports("Stillingskode", Stillingskode.class, this::stillingskode);
@@ -71,6 +83,20 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Ordning", Ordning.class, KonverterFraTekst::ordning);
         Supports("Yrkesskadeandel", YrkesskadefaktureringRegel.class, KonverterFraTekst::yrkesskadeandel);
         Supports("Gruppelivandel", GruppelivsfaktureringRegel.class, KonverterFraTekst::gruppelivsandel);
+        Supports("Deltidsjustert lønn", DeltidsjustertLoenn.class, KonverterFraTekst::deltidsjustertLoenn);
+        Supports("Lønnstrinn beløp", LoennstrinnBeloep.class, KonverterFraTekst::loennstrinnBeloep);
+        Supports("Lønnstrinn", Loennstrinn.class, Loennstrinn::new);
+        Supports("Grunnbeløp", Grunnbeloep.class, KonverterFraTekst::grunnbeloep);
+
+        SupportsBoolean("Er under minstegrensen", ErUnderMinstegrensaRegel.class);
+        SupportsBoolean("Er medregning", ErMedregningRegel.class);
+        SupportsBoolean("Er permisjon uten lønn", ErPermisjonUtanLoennRegel.class);
+
+        SupportsBeloep("Pensjonsgivende lønn", MaskineltGrunnlagRegel.class);
+        SupportsBeloep("Regel deltidsjustert lønn", DeltidsjustertLoennRegel.class);
+        SupportsBeloep("Lønnstillegg", LoennstilleggRegel.class);
+        SupportsBeloep("Medregning", MedregningsRegel.class);
+        SupportsBeloep("Øvre lønnsgrense", OevreLoennsgrenseRegel.class);
 
         // Språkdefinisjon for annotering av underlagsperioder
         Gitt("^en underlagsperiode med følgende innhold:$", (DataTable underlagsperioder) -> {
@@ -94,12 +120,20 @@ public class UnderlagsperiodeDefinisjonar implements No {
                 .tilOgMed(premieAar.atEndOfYear());
     }
 
-    UnderlagsperiodeBuilder builder() {
+    public UnderlagsperiodeBuilder builder() {
         return periode;
     }
 
     private <T> void Supports(final String tittel, final Class<? extends T> annotasjonsType, final Function<String, T> mapper) {
         mappers.put(tittel.toLowerCase(), new Datatype<>(annotasjonsType, mapper));
+    }
+
+    private <T extends BeregningsRegel<Boolean>> void SupportsBoolean(final String tittel, final Class<T> annotasjonsType) {
+        Supports(tittel, annotasjonsType, KonverterFraTekst.booleanRegel(annotasjonsType));
+    }
+
+    private <T extends BeregningsRegel<Kroner>> void SupportsBeloep(final String tittel, final Class<T> annotasjonsType) {
+        Supports(tittel, annotasjonsType, KonverterFraTekst.beloepRegel(annotasjonsType));
     }
 
     private void populerFra(final DataTable underlagsperioder) {

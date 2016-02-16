@@ -1,7 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
+import static no.spk.pensjon.faktura.tidsserie.domain.at.KonverterFraTekst.pensjonsgivendeLoenn;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Assertions.assertPremiebeloep;
-import static no.spk.pensjon.faktura.tidsserie.domain.avregning.KonverterFraTekst.pensjonsgivendeLoenn;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premiebeloep.premiebeloep;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.avtale;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId.avtaleId;

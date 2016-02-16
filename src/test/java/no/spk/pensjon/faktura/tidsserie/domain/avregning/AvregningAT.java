@@ -9,6 +9,9 @@ import org.junit.runner.RunWith;
  * så lenge dei ligg i samme pakke som suita.
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(glue = {"no.spk.pensjon.faktura.tidsserie.domain.avregning"})
+@CucumberOptions(glue = {
+        "no.spk.pensjon.faktura.tidsserie.domain.avregning",
+        "no.spk.pensjon.faktura.tidsserie.domain.at"
+})
 public class AvregningAT {
 }
