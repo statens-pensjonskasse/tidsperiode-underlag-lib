@@ -24,6 +24,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
@@ -99,6 +100,10 @@ public class KonverterFraTekst {
 
     public static Grunnbeloep grunnbeloep(final String verdi) {
         return new Grunnbeloep(beloep(verdi));
+    }
+
+    public static Produktinfo produktinfo(final String verdi) {
+        return new Produktinfo(Integer.parseInt(verdi));
     }
 
     public static MaskineltGrunnlagRegel pensjonsgivendeLoenn(final String verdi) {

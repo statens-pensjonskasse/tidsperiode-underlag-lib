@@ -9,17 +9,13 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 
 import cucumber.api.java8.No;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
  * @author Snorre E. Brekke - Computas
  */
-@ContextConfiguration(classes = RegelDefinisjonar.SpringConfiguration.class)
+@ContextConfiguration(classes = RegelConfiguration.class)
 public class RegelDefinisjonar implements No {
-    @Configuration
-    public static class SpringConfiguration {
-    }
 
     @Autowired
     private UnderlagsperiodeDefinisjonar underlag;

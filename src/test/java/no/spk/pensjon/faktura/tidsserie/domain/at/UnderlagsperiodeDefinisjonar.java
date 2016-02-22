@@ -11,12 +11,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 import no.spk.pensjon.faktura.tidsserie.domain.avregning.AvregningsRegelsett;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medregning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
@@ -87,6 +87,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Lønnstrinn beløp", LoennstrinnBeloep.class, KonverterFraTekst::loennstrinnBeloep);
         Supports("Lønnstrinn", Loennstrinn.class, Loennstrinn::new);
         Supports("Grunnbeløp", Grunnbeloep.class, KonverterFraTekst::grunnbeloep);
+        Supports("Avtaleid", AvtaleId.class, AvtaleId::valueOf);
 
         SupportsBoolean("Er under minstegrensen", ErUnderMinstegrensaRegel.class);
         SupportsBoolean("Er medregning", ErMedregningRegel.class);
