@@ -4,7 +4,7 @@ Egenskap: Underlagsperiode merket som fakturerbar for produkt
 
   I FFF anses en underlagsperiode som fakturerbar for et produkt dersom avtalen
   som er koblet til underlagsperioden har produktet, og produktinfo tilsier at
-  produktet er fakturerbart.
+  produktet er fakturerbart. I tilegg må produktet ha minst én premiesats forskjellig fra 0.
 
   Det kun produktene YSK og GRU som bruker produktinfo for å avgjøre om produktet er fakturerbart.
   For PEN, AFP og TIP regnes produktet som fakturerbart dersom avtalen har produktet,
@@ -21,7 +21,7 @@ Egenskap: Underlagsperiode merket som fakturerbar for produkt
   13 - Ikke omfattet
 
   AFP
-  41 - Omfattes fra 62-67, betaler itet
+  41 - Omfattes fra 62-67, betaler intet
   42 - Omfattes fra 62-67, betaler premie
   44 - Omfattes fra 64-67, betaler premie
   45 - Omfattes fra 65-67, betaler premie
@@ -48,11 +48,28 @@ Egenskap: Underlagsperiode merket som fakturerbar for produkt
 
   FFF støtter ikke produktene VAR, VEN og FTP.
 
-  Scenario: Underlagsperiode med avtale uten produkter er ikke fakturerbar for noen produkter
+  Scenario: En underlagsperiode med avtale uten produkter er ikke fakturerbar for noen produkter
     Gitt en underlagsperiode med følgende innhold:
       | Avtaleid |
       | 1        |
     Og at avtalen for underlagsperioden ikke har noen produkter
+    Så er underlagsperioden merket som ikke fakturerbar for YSK
+    Og ikke fakturerbar for GRU
+    Og ikke fakturerbar for PEN
+    Og ikke fakturerbar for AFP
+    Og ikke fakturerbar for TIP
+
+  Scenario: En underlagsperiode med avtale hvor alle produkter har 0 i premiesats er ikke fakturerbar for noen produkter
+    Gitt en underlagsperiode med følgende innhold:
+      | Avtaleid |
+      | 1        |
+    Og at avtalen for underlagsperioden har følgende produkt:
+      | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
+      | YSK     | 71          | kr  0              | kr 0          | kr 0                 |
+      | GRU     | 35          | kr  0              | kr 0          | kr 0                 |
+      | PEN     | 10          | 0%                 | 0%            | 0%                   |
+      | AFP     | 42          | 0%                 | 0%            | 0%                   |
+      | TIP     | 94          | 0%                 | 0%            | 0%                   |
     Så er underlagsperioden merket som ikke fakturerbar for YSK
     Og ikke fakturerbar for GRU
     Og ikke fakturerbar for PEN
