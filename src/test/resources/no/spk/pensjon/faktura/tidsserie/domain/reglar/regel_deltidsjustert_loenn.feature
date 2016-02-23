@@ -1,19 +1,41 @@
 # encoding: utf-8
 # language: no
-Egenskap: Beregne regel deltidsjustert lønn for en underlagsperiode
+Egenskap: Lønnsbegrep som benyttes for en underlagsperiode
 
-  Arbeidsgivere innrapporterer lønnsnivå for sine medlemmer enten i kroner eller lønnstrinn.
+  I FFF-metodikken er det flere forskjellige begrepe knyttet til lønn.
 
-  Deltidsjuster lønn gis direkte fra en stillingsendring som er innrapportert i kroner.
-  Verdien er da allerede justert for stillingsandelen til medlemmet.
+  Arbeidsgivere innrapporterer stillingsendringer med lønnsnivå for sine medlemmer enten i kroner eller lønnstrinn.
 
-  Stillingsendringer som er innrapportert i lønnstrinn må regnes om til lønnstrinnbeløp i kroner.
+  *Deltidsjustert lønn*
+  Deltidsjustert lønn beskriver nivået på årslønn for en stilling, justert med stillingsprosenten som gjelder for stillingen.
+  Stillingsendringer som innrapporteres i kroner, angir deltidsjustert lønn rapporteres direkte.
 
-  Regel deltidsjustert lønn for en underlagsperiode sammenstiller deltidsjustert lønn og lønnstrinnbeløp til et felles
-  kronebeløp.
+  Dersom en stillingsendring innrapporteres i lønnstrinn, er deltidsjustert lønn kr 0,- for stillingen.
+
+  *Lønnstrinnbeløp*
+  Lønnstrinnbeløp beskriver nivået på årslønn for en 100% stilling i kroner.
+  Utifra lønnstrinn og ordning for en underlagsperiode, er lønnstrinnbeløpet gitt av ordningens lønnstrinntabellen i perioden.
+
+  Dersom en stillingsendring innrapporteres i deltidsjustert lønn, er lønnstrinn 0 og lønnstrinnbeløp 0 for stillingen.
+
+  *Regel deltidsjustert lønn*
+  Regel deltidsjustert lønn sammenstiller deltidsjustert lønn og lønnstrinnbeløp for en underlagsperiode, slik at
+  begge kan behandles likt.
 
   For underlagsperioder med lønnstrinn er regel deltidsjustert lønn lik lønnstrinnbeløp * stillingsprosent.
   For underlagsperioder uten lønnstrinn er regel deltidsjuster lønn lik deltidsjustert lønn for perioden.
+
+  Unntak: Dersom stillingen er ute i permisjon uten lønn i perioden, eller stillingen er en medregning,
+  er regel deltidsjustert lønn kr 0,-
+
+  *Regel lønnstillegg*
+  Regel lønnstillegg er lik faste tillegg + variable tillegg + funksjonstillegg.
+  Lønnstillegg påvirker pensjonsgivende lønn, men inkluderes ikke i regel deltidsjustert lønn.
+
+  Unntak: Dersom stillingen er ute i permisjon uten lønn i perioden, er regel lønnstillegg kr 0,-
+
+  *Pensjonsgivende lønn*
+  Se egen spesifikasjon for pensjonsgivende lønn.
 
   Bakgrunn: Verdier for underlagsperioden dersom ikke annet er oppgitt
     Gitt en underlagsperiode med følgende innhold:
@@ -48,6 +70,12 @@ Egenskap: Beregne regel deltidsjustert lønn for en underlagsperiode
       | Er permisjon uten lønn |
       | Ja                     |
     Så skal regel deltidsjustert lønn for perioden være kr 0
+
+  Scenario: Regel lønnstillegg er summen av faste tillegg, variable tillegg og funksjonstillegg
+    Gitt en underlagsperiode med følgende innhold:
+      | Faste tillegg | Variable tillegg | Funksjonstillegg |
+      | 1000          | 2000             | 3500             |
+    Så skal regel lønnstilegg for perioden være kr 6500
 
 
 

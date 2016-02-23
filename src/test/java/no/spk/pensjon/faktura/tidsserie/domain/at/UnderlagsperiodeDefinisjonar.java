@@ -19,6 +19,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
@@ -30,6 +32,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel;
@@ -103,6 +106,9 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Grunnbeløp", Grunnbeloep.class, KonverterFraTekst::grunnbeloep);
         Supports("Avtaleid", AvtaleId.class, AvtaleId::valueOf);
         Supports("Stillingsforhold", StillingsforholdId.class, StillingsforholdId::valueOf);
+        Supports("Faste tillegg", Fastetillegg.class, KonverterFraTekst::fasteTillegg);
+        Supports("Variable tillegg", Variabletillegg.class, KonverterFraTekst::variableTillegg);
+        Supports("Funksjonstillegg", Funksjonstillegg.class, KonverterFraTekst::funksjonsTillegg);
 
         SupportsBoolean("Er under minstegrensen", ErUnderMinstegrensaRegel.class);
         SupportsBoolean("Er medregning", ErMedregningRegel.class);

@@ -19,6 +19,8 @@ import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aarsverk;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
@@ -28,6 +30,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produktinfo;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
@@ -100,6 +103,18 @@ public class KonverterFraTekst {
 
     public static Grunnbeloep grunnbeloep(final String verdi) {
         return new Grunnbeloep(beloep(verdi));
+    }
+
+    public static Fastetillegg fasteTillegg(final String verdi) {
+        return new Fastetillegg(beloep(verdi));
+    }
+
+    public static Variabletillegg variableTillegg(final String verdi) {
+        return new Variabletillegg(beloep(verdi));
+    }
+
+    public static Funksjonstillegg funksjonsTillegg(final String verdi) {
+        return new Funksjonstillegg(beloep(verdi));
     }
 
     public static Produktinfo produktinfo(final String verdi) {
