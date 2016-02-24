@@ -2,7 +2,11 @@
 # language: no
 Egenskap: Øvre lønnsgrense for underlagsperioder
 
-  Øvre lønnsgrense for en underlagsperiode setter et tak for hvor høy pensjonsgivende lønn kan være.
+  I FFF-metodikken er øvre lønnsgrense for en underlagsperiode et tak for hvor høy pensjonsgivende lønn kan være for
+  en stilling.
+
+  Øvre lønnsgrense benyttes kun på stillingsnivå, og tar ikke hensyn til medlemmets totale
+  lønn ved paralelle stillingsforhold.
 
   Øvre lønnsgrense er gitt for hver ordning støttet av forenklet fastsats-metodikken som:
   * 12G * stillingsprosent for 3010 (SPK)

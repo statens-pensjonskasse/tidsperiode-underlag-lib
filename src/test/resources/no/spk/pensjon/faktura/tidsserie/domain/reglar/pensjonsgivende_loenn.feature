@@ -4,10 +4,11 @@ Egenskap: Beregne pensjonsgivende lønn for en underlagsperiode
 
   Pensjonsgivende lønn for en underlagsperiode er definert som:
 
-  Grunnlag for pensjonsgivende lønn * årsfaktor
+  Grunnlag for pensjonsgivende lønn * årsfaktor.
 
-  Grunnlag for pensjonsgivende lønn er lik regel deltidsjustert lønn + lønnstilegg + medregning
+  Grunnlag for pensjonsgivende lønn er lik regel deltidsjustert lønn + lønnstilegg + medregning.
   Grunnlag for pensjonsgivende lønn kan ikke være høyere enn øvre lønnsgrense i perioden.
+  Årsfaktor er antall dager underlagsperioden strekker seg over, delt på antall dager i året.
 
   En underlagsperiode med stillingsprosent som er under minstegrensen har pensjonsgivende lønn lik  kr 0.
 

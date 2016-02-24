@@ -15,8 +15,8 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
 
   Stillinger som oppfyller ett eller flere av følgende regler, skal ikke betale yrkesskadepremie.
   * Stillinger tilknyttet avtaler som ikke er fakturerbare for YSK, skal ikke betale yrkesskadepremie.
-  * Stillingar tilknyttet medregning skal ikke betale yrkesskadepremie.
-  * Stillingar some er ute i permisjon uten lønn skal ikke ha yrkesskadepremie for perioden permisjonen gjelder.
+  * Stillinger tilknyttet medregning skal ikke betale yrkesskadepremie.
+  * Stillinger some er ute i permisjon uten lønn skal ikke ha yrkesskadepremie for perioden permisjonen gjelder.
 
   Dersom en stilling kan faktureres for yrkesskadepremie fordeles premien på følgende måte:
   * Plukk stillingen med størst stillingsprosent. Avtalen skal betale tilsvarende andel av yrkesskadepremie.
@@ -29,13 +29,12 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
 
   Scenario: Faktureringsandel for YSK er 0% når avtalen for stillingen ikke er fakturerbar for YSK
     Gitt en underlagsperiode med følgende innhold:
-      | Stillingsforhold | AvtaleId |
-      | 1                | 1        |
-    Og avtalen for underlagsperioden ikke har noen produkter
+      | Stillingsforhold | Avtale |
+      | 1                | 1      |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 50%              | 011         |
-    Og stillingsforhold 1 tilhører avtale 1
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 50%              | 011         | 1      |
+    Og avtalen for underlagsperioden ikke har noen produkter
     Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
 
   Scenario: Faktureringsandel for YSK er 0% når stillingen er ute i permisjon uten lønn (aksjonskode 28) i perioden
@@ -43,12 +42,11 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 50%              | 028         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 50%              | 028         | 1      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
     Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
 
 
@@ -57,12 +55,11 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Er medregning |
-      | 1                | Ja            |
+      | Stillingsforhold | Er medregning | Avtale |
+      | 1                | Ja            | 1      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
     Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
 
 
@@ -71,12 +68,11 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 50%              | 011         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 50%              | 011         | 1      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
     Så har stillingsforhold 1 faktureringsandel for YSK lik 50% i perioden
 
 
@@ -86,37 +82,33 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 40%              | 021         |
-      | 2                | 90%              | 021         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 40%              | 021         | 1      |
+      | 2                | 90%              | 021         | 2      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
     Og avtale 2 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
-    Og stillingsforhold 2 tilhører avtale 2
     Så har stillingsforhold 1 faktureringsandel for YSK lik 10% i perioden
 
 
   Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, avkortes faktureringsandelen for YSK
-  for stillingen med høyest stillingsforholid først, dersom samlet stillingsprosent overstiger 100%.
+  for stillingen med høyest stillingsforholdnummer først, dersom samlet stillingsprosent overstiger 100%.
     Gitt en underlagsperiode med følgende innhold:
       | Stillingsforhold |
       | 2                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 60%              | 021         |
-      | 2                | 60%              | 021         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 60%              | 021         | 1      |
+      | 2                | 60%              | 021         | 2      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
     Og avtale 2 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
-    Og stillingsforhold 2 tilhører avtale 2
     Så har stillingsforhold 2 faktureringsandel for YSK lik 40% i perioden
 
 

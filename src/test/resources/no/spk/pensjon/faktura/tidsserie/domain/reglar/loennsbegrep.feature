@@ -2,19 +2,19 @@
 # language: no
 Egenskap: Lønnsbegrep som benyttes for en underlagsperiode
 
-  I FFF-metodikken er det flere forskjellige begrepe knyttet til lønn.
+  I FFF-metodikken er det flere forskjellige begrep knyttet til lønn.
 
   Arbeidsgivere innrapporterer stillingsendringer med lønnsnivå for sine medlemmer enten i kroner eller lønnstrinn.
 
   *Deltidsjustert lønn*
   Deltidsjustert lønn beskriver nivået på årslønn for en stilling, justert med stillingsprosenten som gjelder for stillingen.
-  Stillingsendringer som innrapporteres i kroner, angir deltidsjustert lønn rapporteres direkte.
+  Stillingsendringer som innrapporteres i kroner, angir deltidsjustert lønn direkte.
 
   Dersom en stillingsendring innrapporteres i lønnstrinn, er deltidsjustert lønn kr 0,- for stillingen.
 
   *Lønnstrinnbeløp*
   Lønnstrinnbeløp beskriver nivået på årslønn for en 100% stilling i kroner.
-  Utifra lønnstrinn og ordning for en underlagsperiode, er lønnstrinnbeløpet gitt av ordningens lønnstrinntabellen i perioden.
+  Utifra lønnstrinn, ordning og stillingskode for en underlagsperiode, er lønnstrinnbeløpet gitt av ordningens lønnstrinntabellen i perioden.
 
   Dersom en stillingsendring innrapporteres i deltidsjustert lønn, er lønnstrinn 0 og lønnstrinnbeløp 0 for stillingen.
 
@@ -33,6 +33,10 @@ Egenskap: Lønnsbegrep som benyttes for en underlagsperiode
   Lønnstillegg påvirker pensjonsgivende lønn, men inkluderes ikke i regel deltidsjustert lønn.
 
   Unntak: Dersom stillingen er ute i permisjon uten lønn i perioden, er regel lønnstillegg kr 0,-
+
+  *Medregning*
+  Medregning er et beløp som medlemmet har tjent opp hos en arbeidsgiver tilknyttet en annen
+  ordning enn SPK-ordningen som er del av overføringsavtalen. Medregning inkluderes i pensjonsgivende lønn.
 
   *Pensjonsgivende lønn*
   Se egen spesifikasjon for pensjonsgivende lønn.

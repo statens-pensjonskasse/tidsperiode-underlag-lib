@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -91,7 +92,6 @@ public class UnderlagsperiodeDefinisjonar implements No {
     public UnderlagsperiodeDefinisjonar() {
 
         Supports("Premiestatus", Premiestatus.class, Premiestatus::valueOf);
-        // Alle datatyper som underlagsperioder må kunne annoteres med for å støtte beregningsregler for avregning
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
         Supports("Stillingskode", Stillingskode.class, this::stillingskode);
         Supports("Årsverk", AarsverkRegel.class, KonverterFraTekst::aarsverkRegel);
@@ -104,7 +104,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Lønnstrinn beløp", LoennstrinnBeloep.class, KonverterFraTekst::loennstrinnBeloep);
         Supports("Lønnstrinn", Loennstrinn.class, Loennstrinn::new);
         Supports("Grunnbeløp", Grunnbeloep.class, KonverterFraTekst::grunnbeloep);
-        Supports("Avtaleid", AvtaleId.class, AvtaleId::valueOf);
+        Supports("Avtale", AvtaleId.class, AvtaleId::valueOf);
         Supports("Stillingsforhold", StillingsforholdId.class, StillingsforholdId::valueOf);
         Supports("Faste tillegg", Fastetillegg.class, KonverterFraTekst::fasteTillegg);
         Supports("Variable tillegg", Variabletillegg.class, KonverterFraTekst::variableTillegg);
@@ -276,26 +276,35 @@ public class UnderlagsperiodeDefinisjonar implements No {
         periode.tilOgMed(dato(tilOgMed));
     }
 
-    private void aktiveStillinger(DataTable aktiveStillinger) {
-        List<AktiveStillingar.AktivStilling> stillinger = aktiveStillinger
+    private void aktiveStillinger(DataTable stillingsdefinisjoner) {
+        List<AktiveStillingar.AktivStilling> aktiveStillinger = mapAktiveStillinger(
+                stillingsdefinisjoner,
+                (stillingsid, stilling) -> new AktiveStillingar.AktivStilling(
+                        StillingsforholdId.valueOf(stillingsid),
+                        verdi("Stillingsprosent", stilling).map(Prosent::new).findAny(),
+                        verdi("Aksjonskode", stilling).map(Aksjonskode::valueOf).findAny()
+                ))
+                .collect(toList());
+
+        List<StillingAvtale> stillingAvtaler = mapAktiveStillinger(
+                stillingsdefinisjoner,
+                (stillingsid, stilling) -> new StillingAvtale(
+                        StillingsforholdId.valueOf(stillingsid),
+                        verdi("Avtale", stilling).map(AvtaleId::valueOf).findAny().get()
+                ))
+                .collect(toList());
+
+        periode.annoter(AktiveStillingar.class, aktiveStillinger::stream);
+        periode.annoter(StillingAvtaler.class, stillingAvtaler::stream);
+    }
+
+    private <T> Stream<T> mapAktiveStillinger(DataTable aktiveStillinger, BiFunction<String, Map<String, String>, T> mapStilling) {
+        return aktiveStillinger
                 .asMaps(String.class, String.class)
                 .stream()
                 .flatMap(stilling -> verdi("Stillingsforhold", stilling)
-                        .map(stillingsid -> new AktiveStillingar.AktivStilling(
-                                        StillingsforholdId.valueOf(stillingsid),
-                                        verdi("Stillingsprosent", stilling).map(Prosent::new).findAny(),
-                                        verdi("Aksjonskode", stilling).map(Aksjonskode::valueOf).findAny()
-                                )
-                        )
-                )
-                .collect(toList());
-
-        periode.annoter(AktiveStillingar.class, new AktiveStillingar() {
-            @Override
-            public Stream<AktivStilling> stillingar() {
-                return stillinger.stream();
-            }
-        });
+                        .map(stillingsid -> mapStilling.apply(stillingsid, stilling))
+                );
     }
 
     private void avregningsreglar() {

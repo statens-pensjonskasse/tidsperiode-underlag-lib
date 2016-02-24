@@ -26,18 +26,7 @@ public class RegelDefinisjonar implements No {
     @Autowired
     private UnderlagsperiodeDefinisjonar underlag;
 
-    final ErrorDetector detector = new ErrorDetector();
-
     public RegelDefinisjonar() {
-
-        Når("^beregning av regel 'er under minstegrense' er utført$", () -> {
-            detector.utfoer(() -> beregn(ErUnderMinstegrensaRegel.class));
-        });
-
-
-        Når("^verdi for ordning hentes for perioden$", () -> {
-            detector.utfoer(() -> underlag.builder().bygg().valgfriAnnotasjonFor(Ordning.class));
-        });
 
         Så("^skal pensjonsgivende lønn for perioden være (.+)$", (String verdi) -> {
             final Kroner pensjonsgivendeLoenn = KonverterFraTekst.beloep(verdi);
@@ -71,9 +60,6 @@ public class RegelDefinisjonar implements No {
                     .isEqualTo(grense);
         });
 
-        Så("^skal antall feil for perioden være (\\d+)$", (Integer antallFeil) -> {
-            assertThat(detector.antallFeil).isEqualTo(antallFeil);
-        });
 
     }
 
@@ -91,18 +77,4 @@ public class RegelDefinisjonar implements No {
             throw new RuntimeException(e);
         }
     }
-
-    class ErrorDetector {
-        int antallFeil;
-
-        ErrorDetector utfoer(final Runnable runnable) {
-            try {
-                runnable.run();
-            } catch (final Exception e) {
-                antallFeil++;
-            }
-            return this;
-        }
-    }
-
 }

@@ -3,7 +3,7 @@
 Egenskap: Faktureringsandel for gruppelivsforsikring
 
   Gruppeliv er et forsikringsprodukt der beregning av premie må skje pr medlem, ikke per stillingsforhold.
-  Gruppelivspremien blir betalt basert på antall dagar medlemmet er aktivt i løpet av eit år.
+  Gruppelivspremien blir betalt basert på antall dagar medlemmet er aktivt i løpet av et år.
 
   Ettersom premien er på medlemsnivå, må man ha en strategi for perioder hvor medlemmet har flere paralelle
   stillinger, for å avgjøre hvilke stillingsforhold og avtaler som skal betale premie i en periode.
@@ -14,25 +14,34 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
 
   Stillinger som oppfyller ett eller flere av følgende regler, skal ikke betale yrkesskadepremie.
   * Stillinger tilknyttet avtaler som ikke er fakturerbare for GRU, skal ikke betale gruppelivspremie.
-  * Stillingar tilknyttet medregning skal ikke betale gruppelivspremie.
-  * Stillingar some er ute i permisjon uten lønn skal ikke ha gruppelivspremie for perioden permisjonen gjelder.
+  * Stillinger tilknyttet medregning skal ikke betale gruppelivspremie.
+  * Stillinger some er ute i permisjon uten lønn skal ikke ha gruppelivspremie for perioden permisjonen gjelder.
 
   Dersom en stilling kan faktureres for yrkesskadepremie fordeles premien på følgende måte:
   * Stillingen med størst stillingsprosent er ansvarlig for periodens gruppelivspremie
   * Dersom flere stillinger har samme stillingsprosent i perioden, plukkes stillingen med lavest stillingsforholdid først.
 
 
+  Scenario: Faktureringsandel for GRU er 0% når avtalen for stillingen ikke er fakturerbar for GRU
+    Gitt en underlagsperiode med følgende innhold:
+      | Stillingsforhold | Avtale |
+      | 1                | 1      |
+    Og underlagsperioden er koblet til følgende aktive stillinger:
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 50%              | 011         | 1      |
+    Og avtalen for underlagsperioden ikke har noen produkter
+    Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
+
   Scenario: Faktureringsandel for GRU er 0% når stillingen er ute i permisjon uten lønn (aksjonskode 28) i perioden
     Gitt en underlagsperiode med følgende innhold:
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 50%              | 028         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 50%              | 028         | 1      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
 
 
@@ -41,12 +50,11 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Er medregning |
-      | 1                | Ja            |
+      | Stillingsforhold | Er medregning | Avtale |
+      | 1                | Ja            | 1      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
 
 
@@ -55,12 +63,11 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 50%              | 011         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 50%              | 011         | 1      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
     Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
 
 
@@ -69,17 +76,15 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 40%              | 021         |
-      | 2                | 30%              | 021         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 40%              | 021         | 1      |
+      | 2                | 30%              | 021         | 2      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Og avtale 2 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
-    Og stillingsforhold 2 tilhører avtale 2
     Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
 
   Scenario: En stilling som ikke har høyest stillingsprosent skal ha 0% faktureringsandel for GRU
@@ -87,68 +92,50 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 30%              | 021         |
-      | 2                | 40%              | 021         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 30%              | 021         | 1      |
+      | 2                | 40%              | 021         | 2      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Og avtale 2 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
-    Og stillingsforhold 2 tilhører avtale 2
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
 
 
-  Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, skal skal stillingen med lavest
-    stillingsforholdid ha 100% faktureringsandel for GRU
+  Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, skal stillingen med lavest
+  stillingsforholdnummer ha 100% faktureringsandel for GRU
 
     Gitt en underlagsperiode med følgende innhold:
       | Stillingsforhold |
       | 1                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 60%              | 021         |
-      | 2                | 60%              | 021         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 60%              | 021         | 1      |
+      | 2                | 60%              | 021         | 2      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Og avtale 2 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
-    Og stillingsforhold 2 tilhører avtale 2
     Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
 
-  Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, skal skal stillingen med lavest
-  stillingsforholdid ha 100% faktureringsandel for GRU
+  Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, skal stillingen med lavest
+  stillingsforholdnummer ha 100% faktureringsandel for GRU
 
     Gitt en underlagsperiode med følgende innhold:
       | Stillingsforhold |
       | 2                |
     Og underlagsperioden er koblet til følgende aktive stillinger:
-      | Stillingsforhold | Stillingsprosent | Aksjonskode |
-      | 1                | 60%              | 021         |
-      | 2                | 60%              | 021         |
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 60%              | 021         | 1      |
+      | 2                | 60%              | 021         | 2      |
     Og avtale 1 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Og avtale 2 har følgende produkt:
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
-    Og stillingsforhold 1 tilhører avtale 1
-    Og stillingsforhold 2 tilhører avtale 2
     Så har stillingsforhold 2 faktureringsandel for GRU lik 0% i perioden
-
-
-
-
-
-
-
-
-
-
-
-

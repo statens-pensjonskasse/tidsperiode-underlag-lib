@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.valueOf;
+import static no.spk.pensjon.faktura.tidsserie.domain.at.KonverterFraTekst.sannhetsverdi;
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode.medlemsavtalar;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.at.KonverterFraTekst;
+import no.spk.pensjon.faktura.tidsserie.domain.at.StillingAvtaler;
 import no.spk.pensjon.faktura.tidsserie.domain.at.UnderlagsperiodeDefinisjonar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale.AvtaleBuilder;
@@ -27,7 +28,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Sats;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsserie.MedlemsavtalarPeriode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode;
 
@@ -45,85 +45,78 @@ public class AvtaleDefinisjonar implements No {
     @Autowired
     private UnderlagsperiodeDefinisjonar periode;
 
-    private Map<StillingsforholdId, AvtaleId> medlemsavtaler = new HashMap<>();
-
     private Map<AvtaleId, Avtale> avtaler = new HashMap<>();
 
     public AvtaleDefinisjonar() {
         Gitt("^(?:at )?avtalen for underlagsperioden ikke har noen produkter", () -> {
             annoterAvtale(tomDatatable());
         });
-
         Gitt("^(?:at )?avtalen for underlagsperioden har følgende produkt:", this::annoterAvtale);
+        Gitt("^(?:at )?avtale (.+) har følgende produkt:", this::definerAvtale);
+        Så("^er underlagsperioden fakturerbar for følgende produkt:$", this::assertErFakturerbar);
+    }
 
-        Gitt("^(?:at )?avtale (.+) har følgende produkt:", this::registrerAvtale);
+    private void assertErFakturerbar(DataTable fakturerbareProdukt) {
+        fakturerbareProdukt.asMaps(String.class, String.class)
+                .stream()
+                .forEach(m -> {
+                    boolean erFakturerbar = sannhetsverdi(m.get("Er produktet fakturerbart?"));
+                    Produkt produkt = Produkt.fraKode(m.get("Produkt"));
 
-        Gitt("^(?:at )?stillingsforhold (.+) tilhører avtale (.+)", this::leggTilMedlemsavtale);
-
-        Så("^(?:er underlagsperioden merket som )?([Ii]kke fakturerbar|[Ff]akturerbar) for (.+)$", (String kanskjeFakturerbar, String produktkode) -> {
-            boolean erFakturerbar = kanskjeFakturerbar.matches("^[Ff]akturerbar$");
-            Produkt produkt = Produkt.fraKode(produktkode);
-
-            assertThat(
-                    underlagsperiode().valgfriAnnotasjonFor(Avtale.class)
-                            .orElseThrow(() -> new IllegalStateException("Underlagsperioden har ingen avtale - er avtalen definert for perioden?"))
-                            .premiesatsFor(produkt)
-                            .map(Premiesats::erFakturerbar)
-                            .orElse(false)
-            )
-                    .as("Er fakturerbar for " + produktkode)
-                    .isEqualTo(erFakturerbar);
-
-        });
-
+                    assertThat(
+                            underlagsperiode().valgfriAnnotasjonFor(Avtale.class)
+                                    .orElseThrow(() -> new IllegalStateException("Underlagsperioden har ingen avtale - er avtalen definert for perioden?"))
+                                    .premiesatsFor(produkt)
+                                    .map(Premiesats::erFakturerbar)
+                                    .orElse(false)
+                    )
+                            .as("Er fakturerbar for " + produkt)
+                            .isEqualTo(erFakturerbar);
+                });
     }
 
     private DataTable tomDatatable() {
         return DataTable.create(singletonList(""), Locale.forLanguageTag("no"), "Ingen avtaler");
     }
 
-    private void registrerAvtale(String avtaleId, DataTable avtaledata) {
-        definerAvtale(AvtaleId.valueOf(avtaleId), avtaledata);
-    }
-
-    private Avtale definerAvtale(AvtaleId avtaleId, DataTable avtaledata) {
+    private Avtale definerAvtale(String avtalenummer, DataTable avtaledata) {
+        final AvtaleId avtaleId = AvtaleId.valueOf(avtalenummer);
         Avtale avtale = lagAvtale(avtaleId, avtaledata).bygg();
         avtaler.computeIfPresent(avtale.id(), this::duplikatAvtale);
         avtaler.put(avtaleId, avtale);
+        oppdaterMedlemsavtaler();
         return avtale;
     }
 
-    private AvtaleId avtaleid(String avtaleId) {
-        return AvtaleId.valueOf(avtaleId);
-    }
-
-
-    private void leggTilMedlemsavtale(String stillingsforhold, String avtaleId) {
-        final Avtale avtale = ofNullable(avtaler.get(avtaleid(avtaleId)))
-                .orElseThrow(avtalenErIkkeDefinert(avtaleId));
-
-        StillingsforholdId stillingsforholdId = valueOf(stillingsforhold);
-        medlemsavtaler.computeIfPresent(stillingsforholdId, this::duplikatStillingsforhold);
-        medlemsavtaler.put(stillingsforholdId, avtale.id());
-
+    private void oppdaterMedlemsavtaler() {
         final Underlagsperiode underlagsperiode = underlagsperiode();
 
         final MedlemsavtalarPeriode.Builder medlemsavtalebuilder = medlemsavtalar()
                 .fraOgMed(underlagsperiode.fraOgMed())
                 .tilOgMed(underlagsperiode.tilOgMed());
 
-        medlemsavtaler
-                .entrySet()
-                .forEach(entry -> medlemsavtalebuilder.addAvtale(
-                        entry.getKey(),
-                        avtaler.get(entry.getValue())
+        periode.builder()
+                .bygg()
+                .valgfriAnnotasjonFor(StillingAvtaler.class)
+                .map(StillingAvtaler::stillinger)
+                .orElse(Stream.empty())
+                .filter(sa -> avtaler.containsKey(sa.avtaleId()))
+                .forEach(stillingsavtale ->
+                        medlemsavtalebuilder.addAvtale(
+                                stillingsavtale.stillingsforholdId(),
+                                avtale(stillingsavtale.avtaleId())
                         )
                 );
 
         periode.builder().annoter(Medlemsavtalar.class, medlemsavtalebuilder.bygg());
     }
 
-    private Supplier<IllegalStateException> avtalenErIkkeDefinert(String avtaleId) {
+    private Avtale avtale(AvtaleId avtaleId) {
+        return ofNullable(avtaler.get(avtaleId))
+                .orElseThrow(avtalenErIkkeDefinert(avtaleId));
+    }
+
+    private Supplier<IllegalStateException> avtalenErIkkeDefinert(AvtaleId avtaleId) {
         return () -> new IllegalStateException(
                 "Ingen avtale med avtaleId " +
                         avtaleId + " er definert. " +
@@ -153,7 +146,7 @@ public class AvtaleDefinisjonar implements No {
         final AvtaleId avtaleId = underlagsperiode().valgfriAnnotasjonFor(AvtaleId.class)
                 .orElseThrow(harIkkeAvtaleid());
 
-        Avtale avtale = definerAvtale(avtaleId, avtaledata);
+        Avtale avtale = definerAvtale(String.valueOf(avtaleId.id()), avtaledata);
         periode.builder().annoter(Avtale.class, avtale);
     }
 
@@ -235,19 +228,5 @@ public class AvtaleDefinisjonar implements No {
         )
                 .findFirst()
                 .orElse(IngenSats.sats());
-    }
-
-    private AvtaleId duplikatStillingsforhold(StillingsforholdId id, AvtaleId avtaleId) {
-        throw new IllegalStateException(
-                "Forsøkte å koble stillingsforhold med id " + id +
-                        " til avtaleid " + avtaleId +
-                        ", stillingsforholdet er allerede koblet til avtale en avtale." +
-                        "Allerede registrerte medlemsavtaler: " +
-                        medlemsavtaler
-                                .values()
-                                .stream()
-                                .map(Object::toString)
-                                .collect(joining("\n"))
-        );
     }
 }
