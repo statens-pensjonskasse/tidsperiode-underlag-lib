@@ -55,7 +55,7 @@ Egenskap: Underlagsperiode merket som fakturerbar for produkt
 
 
   Scenario: En underlagsperiode med avtale uten produkter er ikke fakturerbar for noen produkter
-    Og at avtalen for underlagsperioden ikke har noen produkter
+    Gitt at avtalen for underlagsperioden ikke har noen produkter
     Så er underlagsperioden fakturerbar for følgende produkt:
       | Produkt | Er produktet fakturerbart? |
       | YSK     | Nei                        |
