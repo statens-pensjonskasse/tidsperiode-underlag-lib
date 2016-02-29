@@ -1,25 +1,51 @@
-package no.spk.pensjon.faktura.tidsserie.domain.avregning;
+package no.spk.pensjon.faktura.tidsserie.domain.at;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
+import no.spk.pensjon.faktura.tidsserie.domain.avregning.AvregningsRegelsett;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AvtaleId;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.DeltidsjustertLoenn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Fastetillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Funksjonstillegg;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Grunnbeloep;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Loennstrinn;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.LoennstrinnBeloep;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Ordning;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiekategori;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Premiestatus;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingskode;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Stillingsprosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Variabletillegg;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsverkRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErMedregningRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErPermisjonUtanLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErUnderMinstegrensaRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.MedregningsRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.PrognoseRegelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
@@ -59,9 +85,12 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     private UnderlagsperiodeBuilder periode;
 
+    private Stream<String> verdi(String kolonnenavn, Map<String, String> map) {
+        return ofNullable(map.get(kolonnenavn)).map(Stream::of).orElse(Stream.empty());
+    }
+
     public UnderlagsperiodeDefinisjonar() {
-        // Alle datatyper som underlagsperioder må kunne annoteres med for å støtte beregningsregler for avregning
-        Supports("Pensjonsgivende lønn", MaskineltGrunnlagRegel.class, KonverterFraTekst::pensjonsgivendeLoenn);
+
         Supports("Premiestatus", Premiestatus.class, Premiestatus::valueOf);
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
         Supports("Stillingskode", Stillingskode.class, this::stillingskode);
@@ -71,6 +100,25 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Supports("Ordning", Ordning.class, KonverterFraTekst::ordning);
         Supports("Yrkesskadeandel", YrkesskadefaktureringRegel.class, KonverterFraTekst::yrkesskadeandel);
         Supports("Gruppelivandel", GruppelivsfaktureringRegel.class, KonverterFraTekst::gruppelivsandel);
+        Supports("Deltidsjustert lønn", DeltidsjustertLoenn.class, KonverterFraTekst::deltidsjustertLoenn);
+        Supports("Lønnstrinn beløp", LoennstrinnBeloep.class, KonverterFraTekst::loennstrinnBeloep);
+        Supports("Lønnstrinn", Loennstrinn.class, Loennstrinn::new);
+        Supports("Grunnbeløp", Grunnbeloep.class, KonverterFraTekst::grunnbeloep);
+        Supports("Avtale", AvtaleId.class, AvtaleId::valueOf);
+        Supports("Stillingsforhold", StillingsforholdId.class, StillingsforholdId::valueOf);
+        Supports("Faste tillegg", Fastetillegg.class, KonverterFraTekst::fasteTillegg);
+        Supports("Variable tillegg", Variabletillegg.class, KonverterFraTekst::variableTillegg);
+        Supports("Funksjonstillegg", Funksjonstillegg.class, KonverterFraTekst::funksjonsTillegg);
+
+        SupportsBoolean("Er under minstegrensen", ErUnderMinstegrensaRegel.class);
+        SupportsBoolean("Er medregning", ErMedregningRegel.class);
+        SupportsBoolean("Er permisjon uten lønn", ErPermisjonUtanLoennRegel.class);
+
+        SupportsBeloep("Pensjonsgivende lønn", MaskineltGrunnlagRegel.class);
+        SupportsBeloep("Regel deltidsjustert lønn", DeltidsjustertLoennRegel.class);
+        SupportsBeloep("Lønnstillegg", LoennstilleggRegel.class);
+        SupportsBeloep("Medregning", MedregningsRegel.class);
+        SupportsBeloep("Øvre lønnsgrense", OevreLoennsgrenseRegel.class);
 
         // Språkdefinisjon for annotering av underlagsperioder
         Gitt("^en underlagsperiode med følgende innhold:$", (DataTable underlagsperioder) -> {
@@ -83,7 +131,10 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Gitt("^underlagsperioden sin til og med-dato er ([0-9\\.]{10})$", this::tilOgMed);
         Gitt("^underlagsperioden benytter regler for avregning$", this::avregningsreglar);
         Gitt("^underlagsperioden benytter regler for prognose$", this::prognoseregler);
+        Gitt("^underlagsperioden er koblet til følgende aktive stillinger:$", this::aktiveStillinger);
         Så("^er stillingen (.+) minstegrensen.?$", this::assertErOverEllerUnderMinstegrensen);
+        Så("^har stillingsforhold (.+) faktureringsandel for YSK lik (.+) i perioden$", this::assertFaktureringsandelForYSK);
+        Så("^har stillingsforhold (.+) faktureringsandel for GRU lik (.+) i perioden$", this::assertFaktureringsandelForGRU);
     }
 
     @Before
@@ -94,12 +145,20 @@ public class UnderlagsperiodeDefinisjonar implements No {
                 .tilOgMed(premieAar.atEndOfYear());
     }
 
-    UnderlagsperiodeBuilder builder() {
+    public UnderlagsperiodeBuilder builder() {
         return periode;
     }
 
     private <T> void Supports(final String tittel, final Class<? extends T> annotasjonsType, final Function<String, T> mapper) {
         mappers.put(tittel.toLowerCase(), new Datatype<>(annotasjonsType, mapper));
+    }
+
+    private <T extends BeregningsRegel<Boolean>> void SupportsBoolean(final String tittel, final Class<T> annotasjonsType) {
+        Supports(tittel, annotasjonsType, KonverterFraTekst.booleanRegel(annotasjonsType));
+    }
+
+    private <T extends BeregningsRegel<Kroner>> void SupportsBeloep(final String tittel, final Class<T> annotasjonsType) {
+        Supports(tittel, annotasjonsType, KonverterFraTekst.beloepRegel(annotasjonsType));
     }
 
     private void populerFra(final DataTable underlagsperioder) {
@@ -118,7 +177,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
         case "farmasøyt":
             return Stillingskode.K_STIL_APO_APOTEKER;
         case "annen":
-            return  Stillingskode.K_STIL_APO_BUD;
+            return Stillingskode.K_STIL_APO_BUD;
         default:
             try {
                 return Stillingskode.parse(stillingskode);
@@ -145,7 +204,6 @@ public class UnderlagsperiodeDefinisjonar implements No {
         );
     }
 
-
     private void assertErOverEllerUnderMinstegrensen(final String resultat) {
         final Underlagsperiode periode = this.periode.bygg();
         assertThat(periode.beregn(ErUnderMinstegrensaRegel.class) ? "under" : "over")
@@ -159,13 +217,54 @@ public class UnderlagsperiodeDefinisjonar implements No {
                 .isEqualTo(overEllerUnder(resultat));
     }
 
+    private void assertFaktureringsandelForYSK(final String stillingsforhold, final String andel) {
+        assertFaktureringsandel(YrkesskadefaktureringRegel.class, "YSK", stillingsforhold, andel);
+    }
+
+    private void assertFaktureringsandelForGRU(final String stillingsforhold, final String andel) {
+        assertFaktureringsandel(GruppelivsfaktureringRegel.class, "GRU", stillingsforhold, andel);
+    }
+
+    private void assertFaktureringsandel(
+            Class<? extends BeregningsRegel<FaktureringsandelStatus>> regel,
+            final String produkt,
+            final String stillingsforhold,
+            final String andel) {
+        final Underlagsperiode periode;
+        try {
+            periode = this.periode
+                    .annoter(regel, regel.newInstance())
+                    .bygg();
+            final FaktureringsandelStatus fordeling = periode.beregn(regel);
+
+            assertThat(fordeling.stillingsforhold())
+                    .as(
+                            "forventet stillingsforhold for grunnlag for YSK"
+                    )
+                    .isEqualTo(StillingsforholdId.valueOf(stillingsforhold));
+
+            final Prosent forventetAndel = prosent(andel);
+            assertThat(fordeling.andel().equals(forventetAndel, 3))
+                    .as(
+                            "grunnlag for %s for underlagsperioden er forventet å være %s men var %s",
+                            produkt,
+                            forventetAndel.toString(),
+                            fordeling.andel().toString()
+                    )
+                    .isTrue();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     private String overEllerUnder(final String resultat) {
         switch (resultat.toLowerCase()) {
-            case "over":
-            case "under":
-                return resultat.toLowerCase();
-            default:
-                throw new IllegalArgumentException(resultat + " er ikkje ei gyldig verdi når du skal sjekke om ein er over eller under minstegrensa, lovlige verdiar er: over, under");
+        case "over":
+        case "under":
+            return resultat.toLowerCase();
+        default:
+            throw new IllegalArgumentException(resultat + " er ikkje ei gyldig verdi når du skal sjekke om ein er over eller under minstegrensa, lovlige verdiar er: over, under");
         }
     }
 
@@ -175,6 +274,37 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     private void tilOgMed(final String tilOgMed) {
         periode.tilOgMed(dato(tilOgMed));
+    }
+
+    private void aktiveStillinger(DataTable stillingsdefinisjoner) {
+        List<AktiveStillingar.AktivStilling> aktiveStillinger = mapAktiveStillinger(
+                stillingsdefinisjoner,
+                (stillingsid, stilling) -> new AktiveStillingar.AktivStilling(
+                        StillingsforholdId.valueOf(stillingsid),
+                        verdi("Stillingsprosent", stilling).map(Prosent::new).findAny(),
+                        verdi("Aksjonskode", stilling).map(Aksjonskode::valueOf).findAny()
+                ))
+                .collect(toList());
+
+        List<StillingAvtale> stillingAvtaler = mapAktiveStillinger(
+                stillingsdefinisjoner,
+                (stillingsid, stilling) -> new StillingAvtale(
+                        StillingsforholdId.valueOf(stillingsid),
+                        verdi("Avtale", stilling).map(AvtaleId::valueOf).findAny().get()
+                ))
+                .collect(toList());
+
+        periode.annoter(AktiveStillingar.class, aktiveStillinger::stream);
+        periode.annoter(StillingAvtaler.class, stillingAvtaler::stream);
+    }
+
+    private <T> Stream<T> mapAktiveStillinger(DataTable aktiveStillinger, BiFunction<String, Map<String, String>, T> mapStilling) {
+        return aktiveStillinger
+                .asMaps(String.class, String.class)
+                .stream()
+                .flatMap(stilling -> verdi("Stillingsforhold", stilling)
+                        .map(stillingsid -> mapStilling.apply(stillingsid, stilling))
+                );
     }
 
     private void avregningsreglar() {
