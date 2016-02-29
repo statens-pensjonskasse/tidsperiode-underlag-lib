@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -181,19 +180,20 @@ public class AvtaleDefinisjonar implements No {
                 sats("Administrasjonsgebyr", produktlinje)
         );
 
-        final Stream<Satser<?>> satserStream = Stream.of(
-                satser.somKroner()
-                        .filter(v -> sumKronesats(v) > 0),
-                satser.somProsent()
-                        .filter(v -> sumProsentsats(v) > 0)
-        )
-                .filter(Optional::isPresent)
-                .map(Optional::get);
-        final Satser<?> nullSumSatserSomIngenSatser = satserStream
-                .findAny()
-                .orElse(Satser.ingenSatser());
 
-        builder.satser(nullSumSatserSomIngenSatser);
+        //Jalla 1.8.0_11 type inferrence bug = if-else helvete.
+        final boolean erKroner = satser.somKroner()
+                .filter(v -> sumKronesats(v) > 0).isPresent();
+        final boolean erProsent = satser.somProsent()
+                .filter(v -> sumProsentsats(v) > 0).isPresent();
+
+        if (erKroner) {
+            builder.satser(satser.somKroner().get());
+        } else if (erProsent) {
+            builder.satser(satser.somProsent().get());
+        } else {
+            builder.satser(Satser.ingenSatser());
+        }
 
         verdi("Produktinfo", produktlinje)
                 .map(KonverterFraTekst::produktinfo)
