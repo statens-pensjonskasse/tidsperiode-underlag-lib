@@ -181,7 +181,7 @@ public class AvtaleDefinisjonar implements No {
                 sats("Administrasjonsgebyr", produktlinje)
         );
 
-        final Stream<Satser<? extends Sats>> satserStream = Stream.of(
+        final Stream<Satser<?>> satserStream = Stream.of(
                 satser.somKroner()
                         .filter(v -> sumKronesats(v) > 0),
                 satser.somProsent()
