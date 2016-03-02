@@ -15,36 +15,36 @@ Egenskap: Underlagsperiode merket som fakturerbar for produkt
 
   Forklarende tekst for produktinfo hentet fra PUMA:
 
-  PEN
-  10 - Omfattet, betaler premie
-  11 - Omfattet, betaler ikke premie
-  13 - Ikke omfattet
+  **PEN**
+  * 10 - Omfattet, betaler premie
+  * 11 - Omfattet, betaler ikke premie
+  * 13 - Ikke omfattet
 
-  AFP
-  41 - Omfattes fra 62-67, betaler intet
-  42 - Omfattes fra 62-67, betaler premie
-  44 - Omfattes fra 64-67, betaler premie
-  45 - Omfattes fra 65-67, betaler premie
-  48 - Ikke avklart
-  49 - Omfattes ikke
+  **AFP**
+   * 41 - Omfattes fra 62-67, betaler intet
+   * 42 - Omfattes fra 62-67, betaler premie
+   * 44 - Omfattes fra 64-67, betaler premie
+   * 45 - Omfattes fra 65-67, betaler premie
+   * 48 - Ikke avklart
+   * 49 - Omfattes ikke
 
-  TIP
-  94 - Omfattet
+  **TIP**
+   * 94 - Omfattet
 
-  YSK
-  71 - Lov + hovedtariffavtale
-  72 - Lov
-  73 - Egen avtale, utvidet dekning
-  74 - Deler av ansatte omfattet (ikke HTA)
-  76 - Deler av ansatte omfattet (ikke HTA)
-  76 - Ikke omfattet
+  **YSK**
+   * 71 - Lov + hovedtariffavtale
+   * 72 - Lov
+   * 73 - Egen avtale, utvidet dekning
+   * 74 - Deler av ansatte omfattet (ikke HTA)
+   * 76 - Deler av ansatte omfattet (ikke HTA)
+   * 76 - Ikke omfattet
 
-  GRU
-  31 - Omfattes, betaler ikke premie
-  36 - Omfattes, betaler premie
-  36 - Valgt, betaler premie
-  37 - Ikke avklart forhold
-  39 - Omfattes ikke
+  **GRU**
+   * 31 - Omfattes, betaler ikke premie
+   * 36 - Omfattes, betaler premie
+   * 36 - Valgt, betaler premie
+   * 37 - Ikke avklart forhold
+   * 39 - Omfattes ikke
 
   FFF støtter ikke produktene VAR, VEN og FTP.
 
