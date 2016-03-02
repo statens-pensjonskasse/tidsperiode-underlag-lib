@@ -30,7 +30,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
       | 1                | 50%              | 011         | 1      |
     Og avtalen for underlagsperioden ikke har noen produkter
-    Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
+    Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
 
   Scenario: Faktureringsandel for GRU er 0% når stillingen er ute i permisjon uten lønn (aksjonskode 28) i perioden
     Gitt en underlagsperiode med følgende innhold:
