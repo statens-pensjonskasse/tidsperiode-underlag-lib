@@ -17,7 +17,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
   * Stillinger tilknyttet medregning skal ikke betale gruppelivspremie.
   * Stillinger some er ute i permisjon uten lønn skal ikke ha gruppelivspremie for perioden permisjonen gjelder.
 
-  Dersom en stilling kan faktureres for yrkesskadepremie fordeles premien på følgende måte:
+  Dersom en stilling kan faktureres for gruppelivspremie fordeles premien på følgende måte:
   * Stillingen med størst stillingsprosent er ansvarlig for periodens gruppelivspremie
   * Dersom flere stillinger har samme stillingsprosent i perioden, plukkes stillingen med lavest stillingsforholdid først.
 
@@ -104,7 +104,8 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
 
 
-  Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, skal stillingen med lavest
+  Scenario: Parallelle stillinger med samme stillingsprosent: Stillingsforhold 1
+  Dersom flere stillinger har samme stillingsprosent i perioden, skal stillingen med lavest
   stillingsforholdnummer ha 100% faktureringsandel for GRU
 
     Gitt en underlagsperiode med følgende innhold:
@@ -122,7 +123,8 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
 
-  Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, skal stillingen med lavest
+  Scenario: Parallelle stillinger med samme stillingsprosent: Stillingsforhold 2
+  Dersom flere stillinger har samme stillingsprosent i perioden, skal stillingen med lavest
   stillingsforholdnummer ha 100% faktureringsandel for GRU
 
     Gitt en underlagsperiode med følgende innhold:

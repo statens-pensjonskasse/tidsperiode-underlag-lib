@@ -76,7 +76,8 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
     Så har stillingsforhold 1 faktureringsandel for YSK lik 50% i perioden
 
 
-  Scenario: Faktureringsandel for YSK skal avkortes for stillingen med minst stillingsprosent dersom
+  Scenario: Faktureringsandel for YSK for parallelle stillinger
+  Faktureringsandel for YSK skal avkortes for stillingen med minst stillingsprosent dersom
   samlet stillingsprosent overstiger 100%.
     Gitt en underlagsperiode med følgende innhold:
       | Stillingsforhold |
@@ -94,7 +95,8 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
     Så har stillingsforhold 1 faktureringsandel for YSK lik 10% i perioden
 
 
-  Scenario: Dersom flere stillinger har samme stillingsprosent i perioden, avkortes faktureringsandelen for YSK
+  Scenario: Parallelle stillinger med samme stillingsprosent: Stillingsforhold 2
+  Dersom flere stillinger har samme stillingsprosent i perioden, avkortes faktureringsandelen for YSK
   for stillingen med høyest stillingsforholdnummer først, dersom samlet stillingsprosent overstiger 100%.
     Gitt en underlagsperiode med følgende innhold:
       | Stillingsforhold |
