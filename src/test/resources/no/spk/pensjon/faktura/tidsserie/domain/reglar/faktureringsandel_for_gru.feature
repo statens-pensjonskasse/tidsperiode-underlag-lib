@@ -31,6 +31,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | 1                | 50%              | 011         | 1      |
     Og avtalen for underlagsperioden ikke har noen produkter
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
+    Og fordelingsårsak for GRU lik "avtale ikke fakturerbar for produkt"
 
   Scenario: Faktureringsandel for GRU er 0% når stillingen er ute i permisjon uten lønn (aksjonskode 28) i perioden
     Gitt en underlagsperiode med følgende innhold:
@@ -43,6 +44,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
+    Og fordelingsårsak for GRU lik "er permisjon uten lønn"
 
 
   Scenario: Faktureringsandel for GRU er 0% når stillingen er en medregning
@@ -56,6 +58,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
+    Og fordelingsårsak for GRU lik "er medregning"
 
 
   Scenario: Faktureringsandel for GRU er 100% når det ikke er paralelle stillingsforhold
@@ -69,6 +72,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
+    Og fordelingsårsak for GRU lik "ordinær"
 
 
   Scenario: En stilling med høyest stillingsprosent skal ha 100% faktureringsandel for GRU
@@ -86,6 +90,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
+    Og fordelingsårsak for GRU lik "ordinær"
 
   Scenario: En stilling som ikke har høyest stillingsprosent skal ha 0% faktureringsandel for GRU
     Gitt en underlagsperiode med følgende innhold:
@@ -102,6 +107,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for GRU lik 0% i perioden
+    Og fordelingsårsak for GRU lik "avkortet"
 
 
   Scenario: Parallelle stillinger med samme stillingsprosent: Stillingsforhold 1
@@ -122,6 +128,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
+    Og fordelingsårsak for GRU lik "ordinær"
 
   Scenario: Parallelle stillinger med samme stillingsprosent: Stillingsforhold 2
   Dersom flere stillinger har samme stillingsprosent i perioden, skal stillingen med lavest
@@ -141,3 +148,4 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 2 faktureringsandel for GRU lik 0% i perioden
+    Og fordelingsårsak for GRU lik "avkortet"

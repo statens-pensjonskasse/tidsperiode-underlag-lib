@@ -11,6 +11,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 /**
  * {@link FakturerbareDagsverk} er antall dagsverk som skal faktureres for en periode,
  * for YSK eller GRU produktene. Fakturerbare dagsverk er angitt i dager med 5 desimaler.
+ * Dagsverkene krever 5 desimaler som følge av at stillingsprosenten kan inneholde opp til 3 desimaler,
+ * og er angitt som 100.000.
  * @author Snorre E. Brekke - Computas
  */
 public class FakturerbareDagsverk {
@@ -19,27 +21,43 @@ public class FakturerbareDagsverk {
 
     private final BigDecimal verdi;
 
+    /**
+     * Oppretter {@link FakturerbareDagsverk} med angitt verdi, avrundet til 5 desimaler.
+     * @param verdi antall dagsverk - blir avrundet til 5 desimaler.
+     */
     public FakturerbareDagsverk(final double verdi) {
         this.verdi = tilFemDesimaler(new BigDecimal(verdi));
     }
 
+    /**
+     * Oppretter {@link FakturerbareDagsverk} med angitt verdi
+     * @param verdi antall dagsverk
+     */
     public FakturerbareDagsverk(final int verdi) {
         this.verdi = tilFemDesimaler(new BigDecimal(verdi));
     }
 
+    /**
+     * Oppretter {@link FakturerbareDagsverk} med angitt verdi, avrundet til 5 desimaler.
+     * @param verdi antall dagsverk - blir avrundet til 5 desimaler.
+     */
     public FakturerbareDagsverk(final BigDecimal verdi) {
         this.verdi = tilFemDesimaler(verdi);
     }
 
+    /**
+     *
+     * @return Tallverdien av fakturerbare dagsverk (antall dager), med 5 desimalers presisjon.
+     */
     public BigDecimal verdi() {
         return verdi;
     }
 
     /**
-     * Legger saman verdien av dei to årsverka.
+     * Legger saman verdien av dei to dagsverk-verdiene.
      *
-     * @param other årsverket som vi skal legge saman verdien med
-     * @return eit nytt årsverk som inneheld summen av dei to årsverk som er lagt saman
+     * @param other dagsverk som vi skal legge saman verdien med
+     * @return eit nytt dagsverk som inneheld summen av dei to dagsverk som er lagt saman
      */
     public FakturerbareDagsverk plus(final FakturerbareDagsverk other) {
         return new FakturerbareDagsverk(
@@ -47,6 +65,14 @@ public class FakturerbareDagsverk {
         );
     }
 
+    /**
+     * Multipliserer dette dagsverket med angitt faktor, og returnerer et nytt
+     * fakturerbaredagsverk.
+     *
+     * @param factor faktoren dette fakturerbare dagsverkobjektet skal skaleres med
+     * @return eit nytt dagsverk som er produktet av {@link Prosent#toDouble()} / 100 avrundet til 5 desimaler og dette
+     * fakturerbare dagsverkobjektet.
+     */
     public FakturerbareDagsverk multiply(final Prosent factor) {
         return new FakturerbareDagsverk(
                 verdi.multiply(

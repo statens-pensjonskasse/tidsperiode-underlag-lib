@@ -1,5 +1,6 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import static java.util.Optional.empty;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,8 +40,8 @@ public class AvregningsRegelsettTest {
                 .tilOgMed(dato("2020.12.31"))
                 .med(new Aarstall(2020))
                 .med(stillingsforhold)
-                .med(AktiveStillingar.class, Stream::empty)
-                .med(Medlemsavtalar.class, dummyMedlemsavtaler())
+                .med(AktiveStillingar.class, () -> Stream.of(enMedregning(stillingsforhold)))
+                .med(Medlemsavtalar.class, ingenFakturerbareAvtaler())
                 .med(Stillingsprosent.fulltid());
 
         assertGruppelivsdagsverk(periode).isEqualTo("0.00000");
@@ -54,11 +55,15 @@ public class AvregningsRegelsettTest {
                 .tilOgMed(dato("2020.12.31"))
                 .med(new Aarstall(2020))
                 .med(stillingsforhold)
-                .med(AktiveStillingar.class, Stream::empty)
-                .med(Medlemsavtalar.class, dummyMedlemsavtaler())
+                .med(AktiveStillingar.class, () -> Stream.of(enMedregning(stillingsforhold)))
+                .med(Medlemsavtalar.class, ingenFakturerbareAvtaler())
                 .med(Stillingsprosent.fulltid());
 
         assertYrkesskadedagsverk(periode).isEqualTo("0.00000");
+    }
+
+    private AktiveStillingar.AktivStilling enMedregning(StillingsforholdId stillingsforhold) {
+        return new AktiveStillingar.AktivStilling(stillingsforhold, empty(), empty());
     }
 
     private static AbstractCharSequenceAssert<?, String> assertGruppelivsdagsverk(final UnderlagsperiodeBuilder builder) {
@@ -86,7 +91,7 @@ public class AvregningsRegelsettTest {
         return underlagsperiode;
     }
 
-    private Medlemsavtalar dummyMedlemsavtaler() {
+    private Medlemsavtalar ingenFakturerbareAvtaler() {
         return new Medlemsavtalar() {
             @Override
             public boolean betalarTilSPKFor(final StillingsforholdId stilling, final Produkt produkt) {

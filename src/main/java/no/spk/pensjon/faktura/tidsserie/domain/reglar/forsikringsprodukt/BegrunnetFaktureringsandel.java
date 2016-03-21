@@ -51,6 +51,7 @@ public class BegrunnetFaktureringsandel extends FaktureringsandelStatus {
     @Override
     public String toString() {
         return stillingsforhold()
-                + " med faktureringsandelkode " + fordelingsaarsak;
+                + " med faktureringsandelkode " + fordelingsaarsak  +
+                " og andel " + andel();
     }
 }

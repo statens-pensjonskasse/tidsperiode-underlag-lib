@@ -5,12 +5,15 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
+import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -42,15 +45,13 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErMedregningRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErPermisjonUtanLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErUnderMinstegrensaRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MedregningsRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.PrognoseRegelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetFaktureringsandel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetGruppelivsfaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetYrkesskadefaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.FakturerbareDagsverk;
@@ -98,6 +99,8 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     public UnderlagsperiodeDefinisjonar() {
 
+        Supports("Fra og med", (b, s) -> fraOgMed(s));
+        Supports("Til og med", (b, s) -> tilOgMed(s));
         Supports("Premiestatus", Premiestatus.class, Premiestatus::valueOf);
         Supports("Premiekategori", Premiekategori.class, Premiekategori::parse);
         Supports("Stillingskode", Stillingskode.class, this::stillingskode);
@@ -142,8 +145,10 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Så("^er stillingen (.+) minstegrensen.?$", this::assertErOverEllerUnderMinstegrensen);
         Så("^har stillingsforhold (.+) faktureringsandel for YSK lik (.+) i perioden$", this::assertFaktureringsandelForYSK);
         Så("^har stillingsforhold (.+) faktureringsandel for GRU lik (.+) i perioden$", this::assertFaktureringsandelForGRU);
-        Så("^er fakturerbare dagsverk for YSK (.+) i perioden$", this::assertFakturerbareDagsverkYSK);
-        Så("^er fakturerbare dagsverk for GRU (.+) i perioden$", this::assertFakturerbareDagsverkGRU);
+        Så("^(?:har )?fordelingsårsak for YSK lik \"(.+)\"(?: i perioden)?$", this::assertFordelingsaarsakYSK);
+        Så("^(?:har )?fordelingsårsak for GRU lik \"(.+)\"(?: i perioden)?$", this::assertFordelingsaarsakGRU);
+        Så("^er fakturerbare dagsverk for YSK ([^ ]+)(?: i perioden)?$", this::assertFakturerbareDagsverkYSK);
+        Så("^er fakturerbare dagsverk for GRU ([^ ]+)(?: i perioden)?$", this::assertFakturerbareDagsverkGRU);
     }
 
     @Before
@@ -157,6 +162,16 @@ public class UnderlagsperiodeDefinisjonar implements No {
 
     public UnderlagsperiodeBuilder builder() {
         return periode;
+    }
+
+    private void Supports(String tittel, BiConsumer<UnderlagsperiodeBuilder, String> periodeDekorator) {
+        mappers.put(tittel.toLowerCase(), new Datatype<Object>(Object.class, null) {
+            @Override
+            public UnderlagsperiodeBuilder annoter(UnderlagsperiodeBuilder builder, String value) {
+                periodeDekorator.accept(builder, value);
+                return builder;
+            }
+        });
     }
 
     private <T> void Supports(final String tittel, final Class<? extends T> annotasjonsType, final Function<String, T> mapper) {
@@ -228,24 +243,32 @@ public class UnderlagsperiodeDefinisjonar implements No {
     }
 
     private void assertFaktureringsandelForYSK(final String stillingsforhold, final String andel) {
-        assertFaktureringsandel(YrkesskadefaktureringRegel.class, "YSK", stillingsforhold, andel);
+        assertFaktureringsandel(BegrunnetYrkesskadefaktureringRegel.class, YSK, stillingsforhold, andel);
     }
 
     private void assertFaktureringsandelForGRU(final String stillingsforhold, final String andel) {
-        assertFaktureringsandel(GruppelivsfaktureringRegel.class, "GRU", stillingsforhold, andel);
+        assertFaktureringsandel(BegrunnetGruppelivsfaktureringRegel.class, GRU, stillingsforhold, andel);
+    }
+
+    private void assertFordelingsaarsakYSK(final String fordelingsaarsak) {
+        assertFordelingsaarsak(BegrunnetYrkesskadefaktureringRegel.class, YSK, fordelingsaarsak);
+    }
+
+    private void assertFordelingsaarsakGRU(final String fordelingsaarsak) {
+        assertFordelingsaarsak(BegrunnetGruppelivsfaktureringRegel.class, GRU, fordelingsaarsak);
     }
 
     private void assertFakturerbareDagsverkYSK(final String antallDagsverk) {
-        assertFakturerbareDagsverk(FakturerbareDagsverkYSKRegel.class, Produkt.YSK, antallDagsverk);
+        assertFakturerbareDagsverk(FakturerbareDagsverkYSKRegel.class, YSK, antallDagsverk);
     }
 
     private void assertFakturerbareDagsverkGRU(final String antallDagsverk) {
-        assertFakturerbareDagsverk(FakturerbareDagsverkGRURegel.class, Produkt.GRU, antallDagsverk);
+        assertFakturerbareDagsverk(FakturerbareDagsverkGRURegel.class, GRU, antallDagsverk);
     }
 
     private void assertFaktureringsandel(
-            Class<? extends BeregningsRegel<FaktureringsandelStatus>> regel,
-            final String produkt,
+            Class<? extends BeregningsRegel<BegrunnetFaktureringsandel>> regel,
+            final Produkt produkt,
             final String stillingsforhold,
             final String andel) {
         final Underlagsperiode periode;
@@ -253,11 +276,11 @@ public class UnderlagsperiodeDefinisjonar implements No {
             periode = this.periode
                     .annoter(regel, regel.newInstance())
                     .bygg();
-            final FaktureringsandelStatus fordeling = periode.beregn(regel);
+            final BegrunnetFaktureringsandel fordeling = periode.beregn(regel);
 
             assertThat(fordeling.stillingsforhold())
                     .as(
-                            "forventet stillingsforhold for grunnlag for YSK"
+                            "forventet stillingsforhold for faktureringsandel for " + produkt
                     )
                     .isEqualTo(StillingsforholdId.valueOf(stillingsforhold));
 
@@ -275,6 +298,32 @@ public class UnderlagsperiodeDefinisjonar implements No {
         }
     }
 
+    private void assertFordelingsaarsak(
+            Class<? extends BeregningsRegel<BegrunnetFaktureringsandel>> regel,
+            final Produkt produkt,
+            final String fordelingsaarsak) {
+        final Underlagsperiode periode;
+        try {
+            periode = this.periode
+                    .annoter(regel, regel.newInstance())
+                    .bygg();
+            final BegrunnetFaktureringsandel fordeling = periode.beregn(regel);
+
+            assertThat(fordeling.fordelingsaarsk().toString().toLowerCase()
+                    .replaceAll("ae", "æ")
+                    .replaceAll("oe", "ø")
+                    .replaceAll("aa", "å")
+                    .replaceAll("_", " ")
+            )
+                    .as(
+                            "forventet fordelingsaarsak for faktureringsandel for " + produkt
+                    )
+                    .isEqualTo(fordelingsaarsak);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void assertFakturerbareDagsverk(
             Class<? extends BeregningsRegel<FakturerbareDagsverk>> regel,
             final Produkt produkt,
@@ -286,14 +335,14 @@ public class UnderlagsperiodeDefinisjonar implements No {
                     .bygg();
             final FakturerbareDagsverk fordeling = periode.beregn(regel);
             final String faktiskVerdi = fordeling.verdi().toString();
-            assertThat(faktiskVerdi.equals(antallDagsverk))
+            assertThat(faktiskVerdi)
                     .as(
                             "antall dagsverk for %s for underlagsperioden er forventet å være %s men var %s",
                             produkt,
                             antallDagsverk,
                             faktiskVerdi
                     )
-                    .isTrue();
+                    .isEqualTo(antallDagsverk);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

@@ -1,7 +1,11 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
+import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.AVKORTET;
+import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.ORDINAER;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +13,9 @@ import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetFaktureringsandel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.FordelingsStrategi;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak;
 
 /**
  * <p>Strategi for å begrense total stillingsprosent til maksimalt 100% for parallelle stillingsforhold.</p>
@@ -20,7 +27,16 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 public class Stillingsfordeling {
     private static final Prosent LIMIT = new Prosent("100%");
 
-    private Map<StillingsforholdId, Prosent> andelar = new HashMap<>();
+    private Map<StillingsforholdId, BegrunnetFaktureringsandel> andelar = new HashMap<>();
+    private final FordelingsStrategi strategi;
+
+    public Stillingsfordeling() {
+        strategi = stilling -> ORDINAER;
+    }
+
+    public Stillingsfordeling(FordelingsStrategi strategi) {
+        this.strategi = requireNonNull(strategi, "strategi kan ikke være null");
+    }
 
     /**
      * Gir andelen i prosent et stillingforhold utgjør i stillingsfordelingen.
@@ -28,7 +44,17 @@ public class Stillingsfordeling {
      * @return Valgfi prosent-verdi som representerer stillingsfoholdets andel i stillingsfordelingen.
      */
     public Optional<Prosent> andelFor(final StillingsforholdId stilling) {
-        return Optional.ofNullable(andelar.get(stilling));
+        return ofNullable(andelar.get(stilling)).map(FaktureringsandelStatus::andel);
+    }
+
+    /**
+     * Gir en {@link BegrunnetFaktureringsandel} for et stillingsforhold.
+     * @param stilling som stillingsfordelingen skal finne andelen for
+     * @return Valgfi begrunnet faktureringandel-verdi som representerer stillingsfoholdets andel i stillingsfordelingen,
+     * og årsaken til at andelen er blitt som den er.
+     */
+    public Optional<BegrunnetFaktureringsandel> begrunnetAndelFor(final StillingsforholdId stilling) {
+        return ofNullable(andelar.get(stilling));
     }
 
     /**
@@ -50,15 +76,26 @@ public class Stillingsfordeling {
         return this;
     }
 
-    private Prosent beregnNyAndel(final AktivStilling stilling) {
+    private BegrunnetFaktureringsandel beregnNyAndel(final AktivStilling stilling) {
+        Fordelingsaarsak aarsak = strategi.klassifiser(stilling);
+        boolean fakturerbar = aarsak.fakturerbar();
+
         Prosent nyAndel = stilling
                 .stillingsprosent()
+                .filter(s -> fakturerbar)
                 .orElse(Prosent.ZERO);
         final Prosent nyTotal = total().plus(nyAndel);
+
         if (nyTotal.isGreaterThan(LIMIT)) {
+            aarsak = AVKORTET;
             nyAndel = LIMIT.minus(total());
         }
-        return nyAndel;
+
+        return new BegrunnetFaktureringsandel(
+                stilling.stillingsforhold(),
+                nyAndel,
+                aarsak
+        );
     }
 
     /**
@@ -92,6 +129,7 @@ public class Stillingsfordeling {
         return andelar
                 .values()
                 .stream()
+                .map(FaktureringsandelStatus::andel)
                 .reduce(
                         Prosent.ZERO,
                         Prosent::plus

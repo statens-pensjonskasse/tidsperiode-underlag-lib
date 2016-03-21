@@ -61,10 +61,8 @@ Egenskap: Beregne premiebeløp pr produkt og underlagsperiode
       | TIP     | 0%          | 50%              | 0%                       | kr 300 000  |
 
   Scenario: Premie for YSK er 0 på periodenivå
-  Premie for YSK beregnes som <antall dagsverk fakturerbare for YSK> * premiesats / <antall dager i året>
-
-  For å unngå avrundingsfeil, beregnes kun premie for YSK på avtalenivå.
-  På periodenivå blir premiebeløpet satt til 0.
+    Premie for YSK skal kun beregnes på avtalenivå for å unngå avrundingsfeil.
+    Derfor settes premie til kr 0,- på periodenivå.
 
     Gitt en underlagsperiode med følgende innhold:
       | Årsfaktor | Yrkesskadeandel |
@@ -72,12 +70,9 @@ Egenskap: Beregne premiebeløp pr produkt og underlagsperiode
     Og premiesats er lik kr 0, kr 100 og kr 50 for produkt YSK
     Så skal totalt premiebeløp for produkt YSK være lik kr 0
 
-  Scenario: Premie for GRU er 0 på periodenivå
-
-  Premie for GRU beregnes som <antall dagsverk fakturerbare for GRU> * premiesats / <antall dager i året>
-
-  For å unngå avrundingsfeil, beregnes kun premie for GRU på avtalenivå.
-  På periodenivå blir premiebeløpet satt til 0.
+  Scenario: Premie for GRU er kr 0 på periodenivå
+    Premie for GRU skal kun beregnes på avtalenivå for å unngå avrundingsfeil.
+    Derfor settes premie til kr 0,- på periodenivå.
 
     Gitt en underlagsperiode med følgende innhold:
       | Årsfaktor | Gruppelivandel |

@@ -2,22 +2,19 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt;
 
 import static java.time.LocalDate.now;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode.ENDRINGSMELDING;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
-import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Faktureringsbegrunner.LOVLIGE_PRODUKT;
 import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.AVTALE_IKKE_FAKTURERBAR_FOR_PRODUKT;
 import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.ER_MEDREGNING;
 import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.ER_PERMISJON_UTEN_LOENN;
+import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.StandardFordelingsStrategi.LOVLIGE_PRODUKT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Avtale;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
@@ -27,25 +24,23 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.UnderlagsperiodeBuilder;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author Snorre E. Brekke - Computas
  */
-public class FaktureringsbegrunnerTest {
+public class StandardFordelingsStrategiTest {
 
     private static final StillingsforholdId STILLINGSFORHOLD = stillingsforhold(1);
-    private Faktureringsbegrunner begrunner;
-
-    @Before
-    public void setUp() throws Exception {
-        begrunner = new Faktureringsbegrunner(YSK);
-    }
 
     @Test
     public void skal_ikke_feile_for_ysk_og_gru() throws Exception {
-        LOVLIGE_PRODUKT.stream().forEach(Faktureringsbegrunner::new);
+        LOVLIGE_PRODUKT.stream().forEach(produkt ->
+                new StandardFordelingsStrategi(
+                        produkt,
+                        periode().med(Medlemsavtalar.class, betalerForAlleProdukt(true)).bygg()
+                )
+        );
     }
 
     @Test
@@ -54,20 +49,27 @@ public class FaktureringsbegrunnerTest {
                 .filter(p -> !LOVLIGE_PRODUKT.contains(p))
                 .forEach(produkt -> {
                     try {
-                        new Faktureringsbegrunner(produkt);
+                        new StandardFordelingsStrategi(
+                                produkt,
+                                periode().bygg()
+                        );
                         fail("Skulle ha kastet exception.");
                     } catch (IllegalArgumentException e) {
-                        assertThat(e.getMessage()).contains("Kan ikke lage faktureringsaarsak for produkt:");
+                        assertThat(e.getMessage()).contains("Kan ikke lage faktureringsaarsak for produkt: " + produkt)
+                                .contains("Lovlige verdier er:")
+                                .contains("YSK")
+                                .contains("GRU");
                     }
                 });
     }
 
     @Test
     public void medregning_er_ikke_fakturerbar() throws Exception {
-        final Fordelingsaarsak fordelingsaarsak = begrunner.fordelingsaarsakFor(
-                medregningstilling(),
+        final Fordelingsaarsak fordelingsaarsak = new StandardFordelingsStrategi(
+                YSK,
                 periode().med(Medlemsavtalar.class, betalerForAlleProdukt(true)).bygg()
-        );
+        )
+                .klassifiser(medregningstilling());
         assertThat(fordelingsaarsak).isEqualTo(ER_MEDREGNING);
         assertThat(fordelingsaarsak.fakturerbar()).isFalse();
     }
@@ -75,38 +77,25 @@ public class FaktureringsbegrunnerTest {
 
     @Test
     public void permisjon_uten_loenn_er_ikke_fakturerbar() throws Exception {
-        final Fordelingsaarsak fordelingsaarsak = begrunner.fordelingsaarsakFor(
-                permisjonUtenLoenn(),
+        final Fordelingsaarsak fordelingsaarsak = new StandardFordelingsStrategi(
+                YSK,
                 periode().med(Medlemsavtalar.class, betalerForAlleProdukt(true)).bygg()
-        );
+        )
+                .klassifiser(permisjonUtenLoenn());
         assertThat(fordelingsaarsak).isEqualTo(ER_PERMISJON_UTEN_LOENN);
         assertThat(fordelingsaarsak.fakturerbar()).isFalse();
     }
 
     @Test
     public void avtale_som_ikke_har_produkt_skal_ikke_faktureres() throws Exception {
-        final Fordelingsaarsak fordelingsaarsak = begrunner.fordelingsaarsakFor(
-                enAktivStilling("100%", ENDRINGSMELDING),
+        final Fordelingsaarsak fordelingsaarsak = new StandardFordelingsStrategi(
+                YSK,
                 periode().med(Medlemsavtalar.class, betalerForAlleProdukt(false)).bygg()
-        );
+        )
+                .klassifiser(enAktivStilling("100%", ENDRINGSMELDING));
+
         assertThat(fordelingsaarsak).isEqualTo(AVTALE_IKKE_FAKTURERBAR_FOR_PRODUKT);
         assertThat(fordelingsaarsak.fakturerbar()).isFalse();
-    }
-
-    @Test
-    public void fakturerbareStillingerForPeriodeFactory_skal_sette_fordelingsaarsak_paa_stilling() throws Exception {
-        final AktivStilling stilling = medregningstilling();
-        final FakturerbareStillingerForPeriodeFactory factory = new FakturerbareStillingerForPeriodeFactory(
-                YSK,
-                periode().med(Medlemsavtalar.class, betalerForAlleProdukt(true))
-                        .annoter(AktiveStillingar.class, () -> Stream.of(stilling))
-                        .bygg()
-        );
-
-        final List<FakturerbarStilling> stillinger = factory.stillinger().collect(toList());
-        assertThat(stillinger).hasSize(1);
-        assertThat(stillinger.get(0).aktivStilling()).isSameAs(stilling);
-        assertThat(stillinger.get(0).status()).isEqualTo(ER_MEDREGNING);
     }
 
     private UnderlagsperiodeBuilder periode() {

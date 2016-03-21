@@ -3,14 +3,8 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling.SAMMENLIGN_STILLINGSFORHOLDID;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling.SAMMENLIGN_STILLINGSPROSENT;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
-import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.ZERO;
-import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.AVKORTET;
-import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.ORDINAER;
-import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.UKJENT;
 
-import java.util.Optional;
-
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Stillingsfordeling;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
@@ -30,41 +24,19 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonMangla
 public class BegrunnetYrkesskadefaktureringRegel implements BeregningsRegel<BegrunnetFaktureringsandel> {
     @Override
     public BegrunnetFaktureringsandel beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
-        final FakturerbareStillingerForPeriodeFactory fakturebareStillinger = new FakturerbareStillingerForPeriodeFactory(YSK, periode);
-
         final StillingsforholdId stillingsid = periode.annotasjonFor(StillingsforholdId.class);
-        final Optional<FakturerbarStilling> stilling = fakturebareStillinger.stilling(stillingsid);
+        final StandardFordelingsStrategi fordelingsstrategi = new StandardFordelingsStrategi(YSK, periode);
 
-        final Prosent faktureringsandel = fakturebareStillinger
-                .stillinger()
-                .filter(s -> s.status().fakturerbar())
-                .map(FakturerbarStilling::aktivStilling)
+        return periode.annotasjonFor(AktiveStillingar.class)
+                .stillingar()
                 .sorted(SAMMENLIGN_STILLINGSPROSENT.reversed().thenComparing(SAMMENLIGN_STILLINGSFORHOLDID))
                 .reduce(
-                        new Stillingsfordeling(),
+                        new Stillingsfordeling(fordelingsstrategi),
                         Stillingsfordeling::leggTil,
                         Stillingsfordeling::kombinerIkkeStoettet
                 )
-                .andelFor(stillingsid)
-                .orElse(ZERO);
+                .begrunnetAndelFor(stillingsid)
+                .orElseThrow(() -> new IllegalStateException("Ingen begrunnet YSK-faktureringsandel finnes for stilling: " + stillingsid));
 
-        final Fordelingsaarsak forelingsgrunn = stilling
-                .map(s -> forelingsgrunn(s, faktureringsandel))
-                .orElse(UKJENT);
-
-        return new BegrunnetFaktureringsandel(
-                stillingsid,
-                faktureringsandel,
-                forelingsgrunn
-        );
     }
-
-    private Fordelingsaarsak forelingsgrunn(FakturerbarStilling stilling, Prosent faktureringsandel) {
-        if (stilling.status() == ORDINAER) {
-            final Prosent stillingsprosent = stilling.aktivStilling().stillingsprosent().orElse(Prosent.ZERO);
-            return stillingsprosent.equals(faktureringsandel, 3) ? ORDINAER : AVKORTET;
-        }
-        return stilling.status();
-    }
-
 }

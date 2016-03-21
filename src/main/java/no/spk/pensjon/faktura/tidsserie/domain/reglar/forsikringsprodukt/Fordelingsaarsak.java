@@ -17,10 +17,6 @@ public enum Fordelingsaarsak {
      * Angir at avtalen stillingen tilhører ikke har angitt produkt (YSK eller GRU), og skal ikke faktureres.
      */
     AVTALE_IKKE_FAKTURERBAR_FOR_PRODUKT("PRD", false),
-    /**
-     * Angir beregning av fordelingsandel feilet, og årsaken ikke kunne bestemmes. Perioden skal ikke faktureres.
-     */
-    UKJENT("UKJ", false),
 
     /**
      * Angir at stillingen skal faktureres fullt. For GRU betyr det 100%, for YSK betyr det andel lik stillingsprosent.
