@@ -60,40 +60,30 @@ Egenskap: Beregne premiebeløp pr produkt og underlagsperiode
       | AFP     | 0%          | 5%               | 0%                       | kr 30 000   |
       | TIP     | 0%          | 50%              | 0%                       | kr 300 000  |
 
-  Scenariomal: Beregning av årspremieandel for YSK
+  Scenario: Premie for YSK er 0 på periodenivå
+  Premie for YSK beregnes som <antall dagsverk fakturerbare for YSK> * premiesats / <antall dager i året>
 
-    Grunnlag for YSK er lik årsfaktor * yrkesskadeandel. Yrkesskadeandel er mellom 0.00 og 1.00.
-    Årspremie for YSK er lik grunnlag for YSK * premiesats.
-
-    Gitt en underlagsperiode med følgende innhold:
-      | Årsfaktor   | Yrkesskadeandel   |
-      | <Årsfaktor> | <Yrkesskadeandel> |
-    Og premiesats er lik <medlemssats>, <arbeidsgiversats> og <administrasjonsgebyrsats> for produkt YSK
-    Så skal totalt premiebeløp for produkt YSK være lik <premiebeløp>
-
-    Eksempler:
-      | Årsfaktor | Yrkesskadeandel | medlemssats | arbeidsgiversats | administrasjonsgebyrsats | premiebeløp |
-      | 1         | 1               | kr 0        | kr 100           | kr 50                    | kr 150      |
-      | 0.5       | 1               | kr 0        | kr 100           | kr 50                    | kr 75       |
-      | 1.0       | 0.5             | kr 0        | kr 100           | kr 50                    | kr 75       |
-      | 0.5       | 0.5             | kr 0        | kr 100           | kr 50                    | kr 37.5     |
-
-  Scenariomal: Beregning av årspremieandel for GRU
-
-    Grunnlag for GRU er lik årsfaktor * gruppelivandel. Gruppelivsandel er enten 0.00 eller 1.00.
-    Årspremie for GRU er lik grunnlag for GRU * premiesats.
+  For å unngå avrundingsfeil, beregnes kun premie for YSK på avtalenivå.
+  På periodenivå blir premiebeløpet satt til 0.
 
     Gitt en underlagsperiode med følgende innhold:
-      | Årsfaktor   | Gruppelivandel   |
-      | <Årsfaktor> | <Gruppelivandel> |
-    Og premiesats er lik <medlemssats>, <arbeidsgiversats> og <administrasjonsgebyrsats> for produkt GRU
-    Så skal totalt premiebeløp for produkt GRU være lik <premiebeløp>
+      | Årsfaktor | Yrkesskadeandel |
+      | 1         | 1               |
+    Og premiesats er lik kr 0, kr 100 og kr 50 for produkt YSK
+    Så skal totalt premiebeløp for produkt YSK være lik kr 0
 
-    Eksempler:
-      | Årsfaktor | Gruppelivandel | medlemssats | arbeidsgiversats | administrasjonsgebyrsats | premiebeløp |
-      | 1         | 1              | kr 0        | kr 100           | kr 50                    | kr 150      |
-      | 0.5       | 1              | kr 0        | kr 100           | kr 50                    | kr 75       |
+  Scenario: Premie for GRU er 0 på periodenivå
 
+  Premie for GRU beregnes som <antall dagsverk fakturerbare for GRU> * premiesats / <antall dager i året>
+
+  For å unngå avrundingsfeil, beregnes kun premie for GRU på avtalenivå.
+  På periodenivå blir premiebeløpet satt til 0.
+
+    Gitt en underlagsperiode med følgende innhold:
+      | Årsfaktor | Gruppelivandel |
+      | 1         | 1               |
+    Og premiesats er lik kr 100, kr 100 og kr 50 for produkt GRU
+    Så skal totalt premiebeløp for produkt GRU være lik kr 0
 
   Scenariomal: Premiebeløp avrundes til 2 desimaler, i henhold til ordinære avrundingsregler
     Gitt en underlagsperiode med følgende innhold:
@@ -140,37 +130,3 @@ Egenskap: Beregne premiebeløp pr produkt og underlagsperiode
       | kr 100 000 | 0.001%           | kr  0.00    |
       | kr 100 000 | 0.0049%          | kr  0.00    |
       | kr 100 000 | 0.0050%          | kr 10.00    |
-
-  Scenariomal: Premiebeløp avrundes til 2 desimaler etter at premiesats ganges med grunnlag for YSK
-
-  Grunnlag for YSK er lik årsfaktor * gruppelivandel.
-
-    Gitt en underlagsperiode med følgende innhold:
-      | Årsfaktor   | Yrkesskadeandel   |
-      | <Årsfaktor> | <Yrkesskadeandel> |
-    Og premiesats er lik kr 0, <Arbeidsgiversats> og kr 0 for produkt YSK
-    Så skal totalt premiebeløp for produkt YSK være lik <Premiebeløp>
-
-    Eksempler:
-      | Årsfaktor | Yrkesskadeandel | Arbeidsgiversats | Premiebeløp |
-      | 0.00273   | 1.00            | kr 1000          | kr  2.73    |
-      | 0.00273   | 0.50            | kr 1000          | kr  1.37    |
-      | 0.00273   | 0.50            | kr 500           | kr  0.68    |
-      | 0.00273   | 0.00            | kr 500           | kr  0.00    |
-
-  Scenariomal: Premiebeløp avrundes til 2 desimaler etter at premiesats ganges med grunnlag for GRU
-
-    Grunnlag for GRU er lik årsfaktor * gruppelivandel.
-
-    Gitt en underlagsperiode med følgende innhold:
-      | Årsfaktor   | Gruppelivandel   |
-      | <Årsfaktor> | <Gruppelivandel> |
-    Og premiesats er lik kr 0, <Arbeidsgiversats> og kr 0 for produkt GRU
-    Så skal totalt premiebeløp for produkt GRU være lik <Premiebeløp>
-
-    Eksempler:
-      | Årsfaktor | Gruppelivandel | Arbeidsgiversats | Premiebeløp |
-      | 0.00273   | 1.00           | kr 1000          | kr  2.73    |
-      | 0.00273   | 1.00           | kr 500           | kr  1.37    |
-      | 0.00273   | 1.00           | kr 250           | kr  0.68    |
-      | 0.00273   | 0.00           | kr 500           | kr  0.00    |

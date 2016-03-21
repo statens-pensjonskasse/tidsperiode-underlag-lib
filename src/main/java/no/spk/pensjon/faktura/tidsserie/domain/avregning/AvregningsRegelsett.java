@@ -16,7 +16,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.DeltidsjustertLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErMedregningRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErPermisjonUtanLoennRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.ErUnderMinstegrensaRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.LoennstilleggRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MaskineltGrunnlagRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.MedregningsRegel;
@@ -27,7 +26,10 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.OevreLoennsgrenseRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.TermintypeRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetGruppelivsfaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetYrkesskadefaktureringRegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.FakturerbareDagsverkGRURegel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.FakturerbareDagsverkYSKRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 
@@ -58,14 +60,16 @@ public class AvregningsRegelsett implements Regelsett {
                 avregningsperiode(new OevreLoennsgrenseRegel()),
                 avregningsperiode(new MedregningsRegel()),
                 avregningsperiode(new AarsverkRegel()),
-                avregningsperiode(new YrkesskadefaktureringRegel()),
-                avregningsperiode(new GruppelivsfaktureringRegel()),
+                avregningsperiode(new BegrunnetGruppelivsfaktureringRegel()),
+                avregningsperiode(new BegrunnetYrkesskadefaktureringRegel()),
                 avregningsperiode(new TermintypeRegel()),
                 avregningsperiode(new PENPremieRegel()),
                 avregningsperiode(new AFPPremieRegel()),
                 avregningsperiode(new TIPPremieRegel()),
                 avregningsperiode(new GRUPremieRegel()),
                 avregningsperiode(new YSKPremieRegel()),
+                avregningsperiode(new FakturerbareDagsverkGRURegel()),
+                avregningsperiode(new FakturerbareDagsverkYSKRegel()),
 
                 avregningsperiode(
                         new MinstegrenseRegelVersjon1(),

@@ -19,7 +19,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
  * @author Snorre E. Brekke - Computas
  * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.YrkesskadefaktureringRegel
  * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor
+ * @deprecated
  */
+@Deprecated
 public class GrunnlagForYSK {
     private static final Prosent MIN_ANDEL = Prosent.ZERO;
     private static final Prosent MAKS_ANDEL = prosent("100%");

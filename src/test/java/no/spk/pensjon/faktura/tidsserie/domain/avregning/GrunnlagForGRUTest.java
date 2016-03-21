@@ -38,6 +38,7 @@ public class GrunnlagForGRUTest {
             .toArray(Prosent[]::new);
 
     @Test
+    @SuppressWarnings("deprecation")
     public void skal_kreve_non_null_aarsfaktor() throws Exception {
         exception.expect(NullPointerException.class);
         exception.expectMessage("aarsfaktor for grunnlag for GRU kan ikke være null");
@@ -45,6 +46,7 @@ public class GrunnlagForGRUTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void skal_kreve_non_null_faktureringsandel() throws Exception {
         exception.expect(NullPointerException.class);
         exception.expectMessage("faktureringsandel for grunnlag for GRU kan ikke være null");
@@ -53,6 +55,7 @@ public class GrunnlagForGRUTest {
 
     @Test
     @Theory
+    @SuppressWarnings("deprecation")
     public void skal_feile_for_faktureringsandel_forskjellig_fra_0_og_100_prosent(Prosent faktureringsandel) throws Exception {
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("FaktureringsandelStatus#andel() må være 0% eller 100%, men var ");
@@ -60,11 +63,13 @@ public class GrunnlagForGRUTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void skal_lage_grunnlag_med_0_prosent_faktureringsandel() throws Exception {
         new GrunnlagForGRU(new Aarsfaktor(1), faktureringsandel(ZERO));
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void skal_lage_grunnlag_med_100_prosent_faktureringsandel() throws Exception {
         new GrunnlagForGRU(new Aarsfaktor(1), faktureringsandel(PROSENT_100));
     }

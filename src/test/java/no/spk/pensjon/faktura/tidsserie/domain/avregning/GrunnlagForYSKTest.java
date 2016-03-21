@@ -39,6 +39,7 @@ public class GrunnlagForYSKTest {
             .toArray(Prosent[]::new);
 
     @Test
+    @SuppressWarnings("deprecation")
     public void skal_kreve_non_null_aarsfaktor() throws Exception {
         exception.expect(NullPointerException.class);
         exception.expectMessage("aarsfaktor for grunnlag for GRU kan ikke være null");
@@ -46,6 +47,7 @@ public class GrunnlagForYSKTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void skal_kreve_non_null_faktureringsandel() throws Exception {
         exception.expect(NullPointerException.class);
         exception.expectMessage("faktureringsandel for grunnlag for GRU kan ikke være null");
@@ -54,6 +56,7 @@ public class GrunnlagForYSKTest {
 
     @Test
     @Theory
+    @SuppressWarnings("deprecation")
     public void skal_feile_for_faktureringsandel_mindre_enn_0_prosent() {
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("FaktureringsandelStatus#andel() kan ikke være mindre enn 0% eller større enn 100%, men var");
@@ -62,6 +65,7 @@ public class GrunnlagForYSKTest {
 
     @Test
     @Theory
+    @SuppressWarnings("deprecation")
     public void skal_feile_for_faktureringsandel_stoerre_enn_100_prosent() {
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("FaktureringsandelStatus#andel() kan ikke være mindre enn 0% eller større enn 100%, men var");
@@ -70,6 +74,7 @@ public class GrunnlagForYSKTest {
 
     @Test
     @Theory
+    @SuppressWarnings("deprecation")
     public void skal_lage_grunnlag_for_ysk_med_faktureringsandel_mellom_0_og_100_prosent(Prosent faktureringsandel) throws Exception {
         new GrunnlagForYSK(new Aarsfaktor(1), faktureringsandel(faktureringsandel));
     }
