@@ -33,7 +33,7 @@ public class AvregningsRegelsettTest {
     }
 
     @Test
-    public void skal_kunne_beregne_gruppelivsdagsverk() {
+    public void skal_kunne_beregne_fakturerbare_dagsverk_for_gruppeliv() {
         final StillingsforholdId stillingsforhold = StillingsforholdId.stillingsforhold(1);
         final UnderlagsperiodeBuilder periode = builder
                 .fraOgMed(dato("2020.01.01"))
@@ -44,11 +44,11 @@ public class AvregningsRegelsettTest {
                 .med(Medlemsavtalar.class, ingenFakturerbareAvtaler())
                 .med(Stillingsprosent.fulltid());
 
-        assertGruppelivsdagsverk(periode).isEqualTo("0.00000");
+        assertDagsverkGruppeliv(periode).isEqualTo("0.00000");
     }
 
     @Test
-    public void skal_kunne_beregne_yrkesskadedagsverk() {
+    public void skal_kunne_beregne_fakturerbare_dagsverk_for_yrkesskade() {
         final StillingsforholdId stillingsforhold = StillingsforholdId.stillingsforhold(1);
         final UnderlagsperiodeBuilder periode = builder
                 .fraOgMed(dato("2020.01.01"))
@@ -59,14 +59,14 @@ public class AvregningsRegelsettTest {
                 .med(Medlemsavtalar.class, ingenFakturerbareAvtaler())
                 .med(Stillingsprosent.fulltid());
 
-        assertYrkesskadedagsverk(periode).isEqualTo("0.00000");
+        assertDagsverkYkesskade(periode).isEqualTo("0.00000");
     }
 
     private AktiveStillingar.AktivStilling enMedregning(StillingsforholdId stillingsforhold) {
         return new AktiveStillingar.AktivStilling(stillingsforhold, empty(), empty());
     }
 
-    private static AbstractCharSequenceAssert<?, String> assertGruppelivsdagsverk(final UnderlagsperiodeBuilder builder) {
+    private static AbstractCharSequenceAssert<?, String> assertDagsverkGruppeliv(final UnderlagsperiodeBuilder builder) {
         final Underlagsperiode p = bygg(builder);
         return assertThat(
                 p.beregn(FakturerbareDagsverkGRURegel.class)
@@ -75,7 +75,7 @@ public class AvregningsRegelsettTest {
         ).as("fakturerbare dagsverk for gruppeliv for periode " + p);
     }
 
-    private static AbstractCharSequenceAssert<?, String> assertYrkesskadedagsverk(final UnderlagsperiodeBuilder builder) {
+    private static AbstractCharSequenceAssert<?, String> assertDagsverkYkesskade(final UnderlagsperiodeBuilder builder) {
         final Underlagsperiode p = bygg(builder);
         return assertThat(
                 p.beregn(FakturerbareDagsverkYSKRegel.class)
