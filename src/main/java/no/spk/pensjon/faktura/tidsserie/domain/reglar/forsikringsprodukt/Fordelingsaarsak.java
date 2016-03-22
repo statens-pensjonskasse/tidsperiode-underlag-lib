@@ -16,7 +16,7 @@ public enum Fordelingsaarsak {
     /**
      * Angir at avtalen stillingen tilhører ikke har angitt produkt (YSK eller GRU), og skal ikke faktureres.
      */
-    AVTALE_IKKE_FAKTURERBAR_FOR_PRODUKT("PRD", false),
+    AVTALE_IKKE_FAKTURERBAR_FOR_PRODUKT("IFP", false),
 
     /**
      * Angir at stillingen skal faktureres fullt. For GRU betyr det 100%, for YSK betyr det andel lik stillingsprosent.
