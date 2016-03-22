@@ -36,6 +36,7 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | 1                | 50%              | 011         | 1      |
     Og avtalen for underlagsperioden ikke har noen produkter
     Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
+    Og fordelingsårsak for YSK lik "avtale ikke fakturerbar for produkt"
 
   Scenario: Faktureringsandel for YSK er 0% når stillingen er ute i permisjon uten lønn (aksjonskode 28) i perioden
     Gitt en underlagsperiode med følgende innhold:
@@ -48,6 +49,7 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
+    Og fordelingsårsak for YSK lik "er permisjon uten lønn"
 
 
   Scenario: Faktureringsandel for YSK er 0% når stillingen er en medregning
@@ -61,6 +63,7 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for YSK lik 0% i perioden
+    Og fordelingsårsak for YSK lik "er medregning"
 
 
   Scenario: Faktureringsandel for YSK er lik stillingsprosent når det ikke er paralelle stillingsforhold
@@ -74,6 +77,7 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for YSK lik 50% i perioden
+    Og fordelingsårsak for YSK lik "ordinær"
 
 
   Scenario: Faktureringsandel for YSK for parallelle stillinger
@@ -93,6 +97,7 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 1 faktureringsandel for YSK lik 10% i perioden
+    Og fordelingsårsak for YSK lik "avkortet"
 
 
   Scenario: Parallelle stillinger med samme stillingsprosent: Stillingsforhold 2
@@ -112,6 +117,8 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
       | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
       | YSK     | 71          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 2 faktureringsandel for YSK lik 40% i perioden
+    Og fordelingsårsak for YSK lik "avkortet"
+
 
 
 
