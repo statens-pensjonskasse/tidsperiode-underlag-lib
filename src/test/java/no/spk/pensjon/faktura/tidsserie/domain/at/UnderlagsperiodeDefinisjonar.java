@@ -309,7 +309,7 @@ public class UnderlagsperiodeDefinisjonar implements No {
                     .bygg();
             final BegrunnetFaktureringsandel fordeling = periode.beregn(regel);
 
-            assertThat(fordeling.fordelingsaarsk().toString().toLowerCase()
+            assertThat(fordeling.fordelingsaarsak().toString().toLowerCase()
                     .replaceAll("ae", "æ")
                     .replaceAll("oe", "ø")
                     .replaceAll("aa", "å")

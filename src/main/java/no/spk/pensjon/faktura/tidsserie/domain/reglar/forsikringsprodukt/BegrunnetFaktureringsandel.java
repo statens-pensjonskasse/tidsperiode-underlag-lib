@@ -37,14 +37,14 @@ public class BegrunnetFaktureringsandel extends FaktureringsandelStatus {
      */
     @Override
     public boolean erFakturerbar() {
-        return this.fordelingsaarsk().fakturerbar() && super.erFakturerbar();
+        return this.fordelingsaarsak().fakturerbar() && super.erFakturerbar();
     }
 
     /**
      * Angir årsaken til at stillingen har fått den faktureringsandelen den har.
      * @return fordelingsårsak
      */
-    public Fordelingsaarsak fordelingsaarsk() {
+    public Fordelingsaarsak fordelingsaarsak() {
         return fordelingsaarsak;
     }
 

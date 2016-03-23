@@ -52,6 +52,9 @@ public class AvregningsRegelsett implements Regelsett {
      */
     @Override
     public Stream<Regelperiode<?>> reglar() {
+        final BegrunnetGruppelivsfaktureringRegel gruppelivRegel = new BegrunnetGruppelivsfaktureringRegel();
+        final BegrunnetYrkesskadefaktureringRegel yrkessakdeRegel = new BegrunnetYrkesskadefaktureringRegel();
+
         return Stream.of(
                 avregningsperiode(new MaskineltGrunnlagRegel()),
                 avregningsperiode(new AarsfaktorRegel()),
@@ -62,9 +65,10 @@ public class AvregningsRegelsett implements Regelsett {
                 avregningsperiode(new OevreLoennsgrenseRegel()),
                 avregningsperiode(new MedregningsRegel()),
                 avregningsperiode(new AarsverkRegel()),
-                avregningsperiode(new BegrunnetGruppelivsfaktureringRegel()),
-                avregningsperiode(new BegrunnetYrkesskadefaktureringRegel()),
-                avregningsperiode(new GruppelivsfaktureringRegel()),
+                avregningsperiode(gruppelivRegel),
+                avregningsperiode(yrkessakdeRegel),
+                avregningsperiode(GruppelivsfaktureringRegel.class, gruppelivRegel),
+                avregningsperiode(GruppelivsfaktureringRegel.class, yrkessakdeRegel),
                 avregningsperiode(new YrkesskadefaktureringRegel()),
                 avregningsperiode(new TermintypeRegel()),
                 avregningsperiode(new PENPremieRegel()),
@@ -94,6 +98,10 @@ public class AvregningsRegelsett implements Regelsett {
 
     private Regelperiode<?> avregningsperiode(final BeregningsRegel<?> regel) {
         return new Regelperiode<>(fraOgMed(), empty(), regel);
+    }
+
+    private <T> Regelperiode<?> avregningsperiode(final Class<? extends BeregningsRegel<? extends T>> regelType, final BeregningsRegel<? extends T> regel) {
+        return new Regelperiode<>(fraOgMed(), empty(), regelType, regel);
     }
 
     @SuppressWarnings("rawtypes")
