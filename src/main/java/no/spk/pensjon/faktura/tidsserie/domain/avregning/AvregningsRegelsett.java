@@ -53,7 +53,7 @@ public class AvregningsRegelsett implements Regelsett {
     @Override
     public Stream<Regelperiode<?>> reglar() {
         final BegrunnetGruppelivsfaktureringRegel gruppelivRegel = new BegrunnetGruppelivsfaktureringRegel();
-        final BegrunnetYrkesskadefaktureringRegel yrkessakdeRegel = new BegrunnetYrkesskadefaktureringRegel();
+        final BegrunnetYrkesskadefaktureringRegel yrkesskadeRegel = new BegrunnetYrkesskadefaktureringRegel();
 
         return Stream.of(
                 avregningsperiode(new MaskineltGrunnlagRegel()),
@@ -66,10 +66,9 @@ public class AvregningsRegelsett implements Regelsett {
                 avregningsperiode(new MedregningsRegel()),
                 avregningsperiode(new AarsverkRegel()),
                 avregningsperiode(gruppelivRegel),
-                avregningsperiode(yrkessakdeRegel),
+                avregningsperiode(yrkesskadeRegel),
                 avregningsperiode(GruppelivsfaktureringRegel.class, gruppelivRegel),
-                avregningsperiode(GruppelivsfaktureringRegel.class, yrkessakdeRegel),
-                avregningsperiode(new YrkesskadefaktureringRegel()),
+                avregningsperiode(YrkesskadefaktureringRegel.class, yrkesskadeRegel),
                 avregningsperiode(new TermintypeRegel()),
                 avregningsperiode(new PENPremieRegel()),
                 avregningsperiode(new AFPPremieRegel()),

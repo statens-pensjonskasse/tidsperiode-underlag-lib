@@ -6,6 +6,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.GRU;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Stillingsfordeling;
@@ -28,8 +29,8 @@ public class BegrunnetGruppelivsfaktureringRegel implements BeregningsRegel<Begr
 
     @Override
     public BegrunnetFaktureringsandel beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
-        final StillingsforholdId stillingsid = periode.annotasjonFor(StillingsforholdId.class);
-        final StandardFordelingsStrategi fordelingsstrategi = new StandardFordelingsStrategi(GRU, periode);
+        final StillingsforholdId stillingsforhold = periode.annotasjonFor(StillingsforholdId.class);
+        final ProduktavhengigFordelingsStrategi fordelingsstrategi = new ProduktavhengigFordelingsStrategi(GRU, periode.annotasjonFor(Medlemsavtalar.class));
 
         return periode.annotasjonFor(AktiveStillingar.class)
                 .stillingar()
@@ -40,8 +41,8 @@ public class BegrunnetGruppelivsfaktureringRegel implements BeregningsRegel<Begr
                         Stillingsfordeling::leggTil,
                         Stillingsfordeling::kombinerIkkeStoettet
                 )
-                .begrunnetAndelFor(stillingsid)
-                .orElseThrow(() -> new IllegalStateException("Ingen begrunnet GRU-faktureringsandel finnes for stilling: " + stillingsid));
+                .begrunnetAndelFor(stillingsforhold)
+                .orElseThrow(() -> new IllegalStateException("Ingen begrunnet GRU-faktureringsandel finnes for stilling: " + stillingsforhold));
 
     }
 

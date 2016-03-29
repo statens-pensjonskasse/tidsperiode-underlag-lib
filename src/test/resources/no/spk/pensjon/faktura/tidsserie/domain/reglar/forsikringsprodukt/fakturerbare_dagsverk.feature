@@ -23,8 +23,6 @@ Egenskap: Fakturerbare dagsverk for forsikringsproduktene
     Gitt en underlagsperiode med følgende innhold:
       | Fra og med   | Til og med   | Gruppelivandel   |
       | <Fra og med> | <Til og med> | <Gruppelivandel> |
-    Og underlagsperioden sin fra og med-dato er <Fra og med>
-    Og underlagsperioden sin til og med-dato er <Til og med>
     Så er fakturerbare dagsverk for GRU <Fakturerbare dagsverk> i perioden
     Eksempler:
       | Fra og med | Til og med | Gruppelivandel | Fakturerbare dagsverk |

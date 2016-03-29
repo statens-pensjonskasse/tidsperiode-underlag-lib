@@ -18,10 +18,10 @@ public class BegrunnetFaktureringsandel extends FaktureringsandelStatus {
     private final Fordelingsaarsak fordelingsaarsak;
 
     /**
-     * Konstruerer ein ny status som skal indikere korvidt stillingsforholdet kan fakturerast for gruppeliv-/yrkesskadeproduktet.
+     * Konstruerer ein ny status som skal indikere korvidt stillingsforholdet kan fakturerast for et produkt.
      *
      * @param stillingsforhold stillingsforholdet statusen gjeld for
-     * @param andel            prosentandelen av gruppelivspremien som stillingsforholdet sin avtale skal betale
+     * @param andel            prosentandelen av premien som stillingsforholdet sin avtale skal betale
      * @param fordelingsaarsak årsaken til at stillingen har fått den faktureringsandelen den har
      */
     public BegrunnetFaktureringsandel(final StillingsforholdId stillingsforhold, final Prosent andel,
@@ -31,9 +31,9 @@ public class BegrunnetFaktureringsandel extends FaktureringsandelStatus {
     }
 
     /**
-     * Indikerer korvidt stillingsforholdet skal bli fakturert for gruppelivsproduktet.
+     * Indikerer korvidt stillingsforholdet skal bli fakturert for produktet og andel er større enn 0%.
      *
-     * @return <code>true</code> viss stillingsforholdet skal bli fakturert for gruppeliv, <code>false</code> ellers
+     * @return <code>true</code> viss stillingsforholdet skal bli fakturert for produktet og andel er større enn 0%, <code>false</code> ellers
      */
     @Override
     public boolean erFakturerbar() {

@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.joining;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
-import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.AVKORTET;
 import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.ORDINAER;
 
 import java.util.HashMap;
@@ -16,6 +15,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetFaktureringsandel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.FordelingsStrategi;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.StandardFordelingsStrategi;
 
 /**
  * <p>Strategi for å begrense total stillingsprosent til maksimalt 100% for parallelle stillingsforhold.</p>
@@ -30,8 +30,12 @@ public class Stillingsfordeling {
     private Map<StillingsforholdId, BegrunnetFaktureringsandel> andelar = new HashMap<>();
     private final FordelingsStrategi strategi;
 
+    /**
+     * Lager en ny stillingsfordeling som ikke benytter noen reell {@link FordelingsStrategi}, men gir alle stillinger {@link Fordelingsaarsak}
+     * {@link Fordelingsaarsak#ORDINAER}.
+     */
     public Stillingsfordeling() {
-        strategi = stilling -> ORDINAER;
+        strategi = new StandardFordelingsStrategi();
     }
 
     public Stillingsfordeling(FordelingsStrategi strategi) {
@@ -77,25 +81,13 @@ public class Stillingsfordeling {
     }
 
     private BegrunnetFaktureringsandel beregnNyAndel(final AktivStilling stilling) {
-        Fordelingsaarsak aarsak = strategi.klassifiser(stilling);
-        boolean fakturerbar = aarsak.fakturerbar();
-
-        Prosent nyAndel = stilling
-                .stillingsprosent()
-                .filter(s -> fakturerbar)
-                .orElse(Prosent.ZERO);
-        final Prosent nyTotal = total().plus(nyAndel);
-
-        if (nyTotal.isGreaterThan(LIMIT)) {
-            aarsak = AVKORTET;
-            nyAndel = LIMIT.minus(total());
-        }
-
-        return new BegrunnetFaktureringsandel(
-                stilling.stillingsforhold(),
-                nyAndel,
-                aarsak
+        BegrunnetFaktureringsandel faktureringsandel = strategi.begrunnetAndelFor(
+                stilling,
+                LIMIT.minus(total())
         );
+
+        verifiserTotalInnenforLimit(faktureringsandel);
+        return faktureringsandel;
     }
 
     /**
@@ -134,5 +126,16 @@ public class Stillingsfordeling {
                         Prosent.ZERO,
                         Prosent::plus
                 );
+    }
+
+    private void verifiserTotalInnenforLimit(BegrunnetFaktureringsandel faktureringsandel) {
+        final Prosent nyTotal = total().plus(faktureringsandel.andel());
+        if (nyTotal.isGreaterThan(LIMIT)) {
+            throw new IllegalStateException(
+                    "Faktureringsandel returnert fra " +
+                            strategi.getClass() +
+                            " førte til at total faktureringsandel ble større enn maksimal tillat verdi ("
+                            +nyTotal + " > " + LIMIT + ")");
+        }
     }
 }

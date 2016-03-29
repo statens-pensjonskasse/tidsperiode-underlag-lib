@@ -145,8 +145,8 @@ public class UnderlagsperiodeDefinisjonar implements No {
         Så("^er stillingen (.+) minstegrensen.?$", this::assertErOverEllerUnderMinstegrensen);
         Så("^har stillingsforhold (.+) faktureringsandel for YSK lik (.+) i perioden$", this::assertFaktureringsandelForYSK);
         Så("^har stillingsforhold (.+) faktureringsandel for GRU lik (.+) i perioden$", this::assertFaktureringsandelForGRU);
-        Så("^(?:har )?fordelingsårsak for YSK lik \"(.+)\"(?: i perioden)?$", this::assertFordelingsaarsakYSK);
-        Så("^(?:har )?fordelingsårsak for GRU lik \"(.+)\"(?: i perioden)?$", this::assertFordelingsaarsakGRU);
+        Så("^(?:har )?fordelingsårsak for YSK (?:er )?lik \"(.+)\"(?: i perioden)?$", this::assertFordelingsaarsakYSK);
+        Så("^(?:har )?fordelingsårsak for GRU (?:er )?lik \"(.+)\"(?: i perioden)?$", this::assertFordelingsaarsakGRU);
         Så("^er fakturerbare dagsverk for YSK ([^ ]+)(?: i perioden)?$", this::assertFakturerbareDagsverkYSK);
         Så("^er fakturerbare dagsverk for GRU ([^ ]+)(?: i perioden)?$", this::assertFakturerbareDagsverkGRU);
     }

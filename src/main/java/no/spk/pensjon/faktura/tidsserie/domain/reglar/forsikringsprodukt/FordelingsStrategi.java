@@ -1,18 +1,21 @@
 package no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 
 /**
  * Strategi som benyttes av {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.Stillingsfordeling} for
- * å angi {@link Fordelingsaarsak} for en {@link AktivStilling}.
+ * å lage {@link BegrunnetFaktureringsandel} for en {@link AktivStilling}.
  * @author Snorre E. Brekke - Computas
  */
 @FunctionalInterface
 public interface FordelingsStrategi {
     /**
-     * Angir {@link Fordelingsaarsak} for en {@link AktivStilling}.
-     * @param stilling som skal klassifiseres
+     * Lager {@link BegrunnetFaktureringsandel} for en {@link AktivStilling}. {@link BegrunnetFaktureringsandel#andel()}
+     * skal ikke kunne overstige <code>maksimalAndel</code>.
+     * @param stilling som skal får begrunnet faktureringsandel
+     * @param maksimalAndel maksimal andel fordelingen skal tillate for stillingen.
      * @return fordelingsårsak for stillingen
      */
-    Fordelingsaarsak klassifiser(AktivStilling stilling);
+    BegrunnetFaktureringsandel begrunnetAndelFor(AktivStilling stilling, Prosent maksimalAndel);
 }

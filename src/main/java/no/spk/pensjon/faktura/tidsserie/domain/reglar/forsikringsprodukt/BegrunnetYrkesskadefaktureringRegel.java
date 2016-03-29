@@ -5,6 +5,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStilli
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Produkt.YSK;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Medlemsavtalar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.Stillingsfordeling;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
@@ -24,8 +25,8 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.PaakrevdAnnotasjonMangla
 public class BegrunnetYrkesskadefaktureringRegel implements BeregningsRegel<BegrunnetFaktureringsandel> {
     @Override
     public BegrunnetFaktureringsandel beregn(final Beregningsperiode<?> periode) throws PaakrevdAnnotasjonManglarException {
-        final StillingsforholdId stillingsid = periode.annotasjonFor(StillingsforholdId.class);
-        final StandardFordelingsStrategi fordelingsstrategi = new StandardFordelingsStrategi(YSK, periode);
+        final StillingsforholdId stillingsforhold = periode.annotasjonFor(StillingsforholdId.class);
+        final ProduktavhengigFordelingsStrategi fordelingsstrategi = new ProduktavhengigFordelingsStrategi(YSK, periode.annotasjonFor(Medlemsavtalar.class));
 
         return periode.annotasjonFor(AktiveStillingar.class)
                 .stillingar()
@@ -35,8 +36,8 @@ public class BegrunnetYrkesskadefaktureringRegel implements BeregningsRegel<Begr
                         Stillingsfordeling::leggTil,
                         Stillingsfordeling::kombinerIkkeStoettet
                 )
-                .begrunnetAndelFor(stillingsid)
-                .orElseThrow(() -> new IllegalStateException("Ingen begrunnet YSK-faktureringsandel finnes for stilling: " + stillingsid));
+                .begrunnetAndelFor(stillingsforhold)
+                .orElseThrow(() -> new IllegalStateException("Ingen begrunnet YSK-faktureringsandel finnes for stilling: " + stillingsforhold));
 
     }
 }
