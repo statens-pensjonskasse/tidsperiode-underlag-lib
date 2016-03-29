@@ -13,7 +13,7 @@ import no.spk.pensjon.faktura.tidsserie.domain.underlag.Beregningsperiode;
  * @see AntallDagarRegel
  * @see FaktureringsandelStatus
  */
-public class FakturerbareDagsverkRegel<T extends FaktureringsandelStatus> implements BeregningsRegel<FakturerbareDagsverk> {
+class FakturerbareDagsverkRegel<T extends FaktureringsandelStatus> implements BeregningsRegel<FakturerbareDagsverk> {
     private final Class<? extends BeregningsRegel<T>> faktureringsandelRegel;
 
     public FakturerbareDagsverkRegel(Class<? extends BeregningsRegel<T>> faktureringsandelRegel) {
