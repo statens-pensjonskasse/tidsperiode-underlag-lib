@@ -16,11 +16,6 @@ Egenskap: Beregne premiebeløp pr produkt og underlagsperiode
   desimaler. Dersom det ved en feil ligger inne premiesatser med mer enn 2 desimaler, blir premiesatsene rundet
   av til 2 desimaler før de multipliseres med pensjonsgivende årslønn (som alltid er avrundet til nærmeste hele krone).
 
-  Unntaksregler:
-
-  For produktene YSK og GRU skal premieandelen foreløpig settes lik kr 0 i påvente av at FAN og KDF bestemmer hvordan
-  forsikringsproduktene skal avregnes.
-
   Scenariomal: Hovedregel, ordinær beregning av premiebeløp for pensjonsproduktene for ordinære avtaler
     Gitt en underlagsperiode med følgende innhold:
       | Pensjonsgivende lønn |
