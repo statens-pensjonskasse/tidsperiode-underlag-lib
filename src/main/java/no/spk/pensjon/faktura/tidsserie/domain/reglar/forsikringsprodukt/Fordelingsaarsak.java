@@ -14,7 +14,7 @@ public enum Fordelingsaarsak {
      */
     ER_PERMISJON_UTEN_LOENN("PER", false),
     /**
-     * Angir at avtalen stillingen tilhører ikke har angitt produkt (YSK eller GRU), og skal ikke faktureres.
+     * Angir at avtalen stillingen tilhører ikke betaler preme til SPK for angitt produkt (YSK eller GRU), og skal ikke faktureres.
      */
     AVTALE_IKKE_FAKTURERBAR_FOR_PRODUKT("IFP", false),
 
