@@ -31,8 +31,7 @@ public class Stillingsfordeling {
     private final FordelingsStrategi strategi;
 
     /**
-     * Lager en ny stillingsfordeling som ikke benytter noen reell {@link FordelingsStrategi}, men gir alle stillinger {@link Fordelingsaarsak}
-     * {@link Fordelingsaarsak#ORDINAER}.
+     * Lager en ny stillingsfordeling som benytter {@link StandardFordelingsStrategi}
      */
     public Stillingsfordeling() {
         strategi = new StandardFordelingsStrategi();
