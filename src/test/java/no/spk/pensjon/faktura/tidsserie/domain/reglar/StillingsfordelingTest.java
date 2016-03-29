@@ -4,19 +4,30 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId.stillingsforhold;
+import static no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak.ORDINAER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Aksjonskode;
+import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.AktiveStillingar.AktivStilling;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.BegrunnetFaktureringsandel;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.FordelingsStrategi;
+import no.spk.pensjon.faktura.tidsserie.domain.reglar.forsikringsprodukt.Fordelingsaarsak;
 
 import org.assertj.core.api.OptionalAssert;
 import org.assertj.core.data.Offset;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class StillingsfordelingTest {
     private Stillingsfordeling fordeling;
+
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void _before() {
@@ -90,8 +101,26 @@ public class StillingsfordelingTest {
         assertAndelForStilling(3L).isEqualTo(of("0%"));
     }
 
+    @Test
+    public void skal_feile_dersom_strategi_returnerer_andel_som_overstiger_maksimal_verdi() throws Exception {
+        exception.expect(IllegalStateException.class);
+        exception.expectMessage("Faktureringsandel returnert fra");
+        exception.expectMessage("førte til at total faktureringsandel ble større enn maksimal tillat verdi (101% > 100%)");
+        Stillingsfordeling fordeling = new Stillingsfordeling((stilling, maksimalAndel) -> new BegrunnetFaktureringsandel(
+                stilling.stillingsforhold(),
+                prosent("101%"),
+                ORDINAER
+        ));
+
+        fordeling.leggTil(medregning(2L));
+    }
+
     private void leggTilMedregning(final long stillingsforhold) {
-        fordeling.leggTil(new AktivStilling(stillingsforhold(stillingsforhold), empty(), empty()));
+        fordeling.leggTil(medregning(stillingsforhold));
+    }
+
+    private AktivStilling medregning(long stillingsforhold) {
+        return new AktivStilling(stillingsforhold(stillingsforhold), empty(), empty());
     }
 
     private void leggTil(final long stillingsforhold, final String stillingsprosent) {

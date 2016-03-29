@@ -21,7 +21,9 @@ import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
  * @author Snorre E. Brekke - Computas
  * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.GruppelivsfaktureringRegel
  * @see no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor
+ * @deprecated
  */
+@Deprecated
 public class GrunnlagForGRU {
     private static final List<Prosent> LOVLIG_FAKTURERINGSANDEL = asList(Prosent.ZERO, prosent("100%"));
     private static final int SAMMENLIGN_DESIMALER = 4;

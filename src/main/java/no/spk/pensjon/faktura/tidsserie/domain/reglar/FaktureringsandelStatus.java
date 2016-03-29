@@ -16,10 +16,10 @@ public class FaktureringsandelStatus {
     private final Prosent andel;
 
     /**
-     * Konstruerer ein ny status som skal indikere korvidt stillingsforholdet kan fakturerast for gruppelivsproduktet.
+     * Konstruerer ein ny status som skal indikere korvidt stillingsforholdet kan fakturerast for et produkt.
      *
      * @param stillingsforhold stillingsforholdet statusen gjeld for
-     * @param andel            prosentandelen av gruppelivspremien som stillingsforholdet sin avtale skal betale
+     * @param andel            prosentandelen av premien som stillingsforholdet sin avtale skal betale
      */
     public FaktureringsandelStatus(final StillingsforholdId stillingsforhold, final Prosent andel) {
         this.id = requireNonNull(stillingsforhold, "stillingsforhold var null, men er påkrevd");
@@ -27,9 +27,9 @@ public class FaktureringsandelStatus {
     }
 
     /**
-     * Indikerer korvidt stillingsforholdet skal bli fakturert for gruppelivsproduktet.
+     * Indikerer korvidt stillingsforholdet skal bli fakturert for produktet.
      *
-     * @return <code>true</code> viss stillingsforholdet skal bli fakturert for gruppeliv, <code>false</code> ellers
+     * @return <code>true</code> viss stillingsforholdet skal bli fakturert for produktet, <code>false</code> ellers
      */
     public boolean erFakturerbar() {
         return andel.isGreaterThan(Prosent.ZERO);

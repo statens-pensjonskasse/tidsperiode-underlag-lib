@@ -17,7 +17,6 @@ import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Satser;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsLengdeRegel;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AarsfaktorRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.AntallDagarRegel;
 import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
@@ -51,7 +50,7 @@ public class YSKPremieRegelTest {
     }
 
     @Test
-    public void skal_benytte_yrkesskadefaktureringRegel_for_aa_beregne_premie() throws Exception {
+    public void skal_ha_0_kr_i_premie_paa_periodenivaa() throws Exception {
         assertPremiebeloep(
                 beregn(builder
                         .med(
@@ -67,41 +66,11 @@ public class YSKPremieRegelTest {
                         .med(YrkesskadefaktureringRegel.class, yrkesskadeandel(prosent("50%")))
                 ).total(),
                 2
-        ).isEqualTo(premiebeloep("kr 150"));
-    }
-
-    @Test
-    public void skal_benytte_aarsfaktor_for_aa_beregne_premie() throws Exception {
-        assertPremiebeloep(
-                beregn(builder
-                        .med(
-                                Avtale.class,
-                                enAvtaleMedYSK(
-                                        new Satser<>(
-                                                kroner(100),
-                                                kroner(0),
-                                                kroner(0)
-                                        )
-                                ).bygg()
-                        )
-                        .med(AarsfaktorRegel.class, aarsfaktor(0.5))
-                        .med(YrkesskadefaktureringRegel.class, yrkesskadeandel(prosent("100%")))
-                ).total(),
-                2
-        ).isEqualTo(premiebeloep("kr 50"));
+        ).isEqualTo(premiebeloep("kr 0"));
     }
 
     private Premier beregn(final UnderlagsperiodeBuilder builder) {
-        return regel.beregn(builder.bygg());
-    }
-
-    private AarsfaktorRegel aarsfaktor(final double aarsfaktor) {
-        return new AarsfaktorRegel(){
-            @Override
-            public Aarsfaktor beregn(Beregningsperiode<?> periode) {
-                return new Aarsfaktor(aarsfaktor);
-            }
-        };
+       return regel.beregn(builder.bygg());
     }
 
     private YrkesskadefaktureringRegel yrkesskadeandel(final Prosent faktureringsandel) {
