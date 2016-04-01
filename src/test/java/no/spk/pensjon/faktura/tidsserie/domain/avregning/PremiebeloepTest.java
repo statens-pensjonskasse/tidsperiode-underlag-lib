@@ -1,9 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.avregning;
 
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Assertions.assertDesimaler;
-import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForGRU.grunnlagForGRU;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForPensjonsprodukt.grunnlagForPensjonsprodukt;
-import static no.spk.pensjon.faktura.tidsserie.domain.avregning.GrunnlagForYSK.grunnlagForYSK;
 import static no.spk.pensjon.faktura.tidsserie.domain.avregning.Premiebeloep.premiebeloep;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner.kroner;
 import static no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent.prosent;
@@ -11,9 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Kroner;
 import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.Prosent;
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.Aarsfaktor;
-import no.spk.pensjon.faktura.tidsserie.domain.reglar.FaktureringsandelStatus;
 
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Test;
@@ -115,28 +110,8 @@ public class PremiebeloepTest {
         assertPremiebeloep(premiebeloep("kr 100.999")).isEqualTo(premiebeloep("101.00"));
     }
 
-    @Test
-    public void skal_avrunde_premiebeloepet_til_2_desimaler_etter_grunnlag_for_GRU_er_multiplisert_med_premiesats() {
-        assertPremiebeloep(premiebeloep(grunnlagForGRU(aarsfaktor("50.004%"), faktureringsandel("100%")), kroner(1000)))
-                .isEqualTo(premiebeloep("kr 500.04"));
-    }
-
-    @Test
-    public void skal_avrunde_premiebeloepet_til_2_desimaler_etter_grunnlag_for_YSK_er_multiplisert_med_premiesats() {
-        assertPremiebeloep(premiebeloep(grunnlagForYSK(aarsfaktor("50.004%"), faktureringsandel("100%")), kroner(1000)))
-                .isEqualTo(premiebeloep("kr 500.04"));
-    }
-
     private static AbstractObjectAssert<?, Premiebeloep> assertPremiebeloep(final Premiebeloep beloep) {
         return Assertions.assertPremiebeloep(beloep, 2);
     }
 
-
-    private FaktureringsandelStatus faktureringsandel(String stillingsandel) {
-        return new FaktureringsandelStatus(StillingsforholdId.valueOf(1L), Prosent.prosent(stillingsandel));
-    }
-
-    private Aarsfaktor aarsfaktor(String aarsfaktor) {
-        return new Aarsfaktor(Prosent.prosent(aarsfaktor).toDouble());
-    }
 }

@@ -96,55 +96,35 @@ public final class Premiebeloep {
     }
 
     /**
-     * Multipliserer grunnlaget for produktet GRU med den angitte premiesatsen og avrunder til
-     * 2 desimaler.
+     * Premiebeløp for YSK på underlagsperioder skal alltid være 0,-.
      * <br>
-     * Grunnlaget multipliseres direkte med premiesatsen, og lager et nytt premiebeløp avrundet til 2 desimaler.
+     * Premie for YSK beregnes kun på avtalenivå utifra grunnlag for GRU.
      *
      * @param grunnlag grunnlaget for premiebeløpet
      * @param premiesats premiesats som grunnlaget skal multipliseres med
-     * @return et nytt premiebeløp med to desimaler
+     * @return et nytt premiebeløp på 0,- kr.
+     * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public static Premiebeloep premiebeloep(final GrunnlagForYSK grunnlag, final Kroner premiesats) {
-        return new Premiebeloep(
-                tilToDesimaler(
-                        new BigDecimal(
-                                grunnlag.verdi().toDouble(),
-                                CONTEXT
-                        )
-                                .multiply(new BigDecimal(
-                                                premiesats.verdi(),
-                                                CONTEXT
-                                        )
-                                )
-                )
-        );
+        return new Premiebeloep(new BigDecimal(0));
     }
 
     /**
-     * Multipliserer grunnlaget for produktet GRU med den angitte premiesatsen og avrunder til
-     * 2 desimaler.
+     * Premiebeløp for GRU på underlagsperioder skal alltid være 0,-.
      * <br>
-     * Grunnlaget multipliseres direkte med premiesatsen, og lager et nytt premiebeløp avrundet til 2 desimaler.
+     * Premie for GRU beregnes kun på avtalenivå utifra grunnlag for GRU.
      *
      * @param grunnlag grunnlaget for premiebeløpet
      * @param premiesats premiesats som grunnlaget skal multipliseres med
-     * @return et nytt premiebeløp med to desimaler
+     * @return et nytt premiebeløp på 0,- kr.
+     * @deprecated
      */
+    @SuppressWarnings("deprecation")
+    @Deprecated
     public static Premiebeloep premiebeloep(final GrunnlagForGRU grunnlag, final Kroner premiesats) {
-        return new Premiebeloep(
-                tilToDesimaler(
-                        new BigDecimal(
-                                grunnlag.verdi().toDouble(),
-                                CONTEXT
-                        )
-                                .multiply(new BigDecimal(
-                                                premiesats.verdi(),
-                                                CONTEXT
-                                        )
-                                )
-                )
-        );
+        return new Premiebeloep(new BigDecimal(0));
     }
 
     /**
