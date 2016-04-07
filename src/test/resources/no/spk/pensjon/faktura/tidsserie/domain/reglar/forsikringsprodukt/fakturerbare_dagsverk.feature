@@ -14,10 +14,10 @@ Egenskap: Fakturerbare dagsverk for forsikringsproduktene
     Så er fakturerbare dagsverk for YSK <Fakturerbare dagsverk> i perioden
     Eksempler:
       | Fra og med | Til og med | Yrkesskadeandel | Fakturerbare dagsverk |
-      | 2015.01.01 | 2015.01.10 | 1.00            | 10.00000              |
-      | 2015.01.01 | 2015.01.10 | 0.50            | 5.00000               |
-      | 2015.01.01 | 2016.01.01 | 0.00            | 0.00000               |
-      | 2015.01.01 | 2015.01.31 | 0.37456         | 11.61136              |
+      | 2015.01.01 | 2015.01.10 | 100%            | 10.00000              |
+      | 2015.01.01 | 2015.01.10 | 50%             | 5.00000               |
+      | 2015.01.01 | 2016.01.01 | 0%              | 0.00000               |
+      | 2015.01.01 | 2015.01.31 | 37.456%         | 11.61136              |
 
   Scenariomal: Fakturerbare dagsverk for GRU
     Gitt en underlagsperiode med følgende innhold:
@@ -26,5 +26,5 @@ Egenskap: Fakturerbare dagsverk for forsikringsproduktene
     Så er fakturerbare dagsverk for GRU <Fakturerbare dagsverk> i perioden
     Eksempler:
       | Fra og med | Til og med | Gruppelivandel | Fakturerbare dagsverk |
-      | 2015.01.01 | 2015.01.10 | 1.00           | 10.00000              |
-      | 2015.01.01 | 2016.01.01 | 0              | 0.00000               |
+      | 2015.01.01 | 2015.01.10 | 100%           | 10.00000              |
+      | 2015.01.01 | 2016.01.01 | 0%             | 0.00000               |
