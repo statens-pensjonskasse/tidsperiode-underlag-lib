@@ -59,7 +59,12 @@ public class GrunnlagForGRUTest {
     public void skal_feile_for_faktureringsandel_forskjellig_fra_0_og_100_prosent(Prosent faktureringsandel) throws Exception {
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("FaktureringsandelStatus#andel() må være 0% eller 100%, men var ");
-        new GrunnlagForGRU(new Aarsfaktor(1), faktureringsandel(faktureringsandel));
+        new GrunnlagForGRU(new Aarsfaktor(1), new FaktureringsandelStatus(StillingsforholdId.valueOf(1L), prosent("0%")){
+            @Override
+            public Prosent andel() {
+                return faktureringsandel;
+            }
+        });
     }
 
     @Test

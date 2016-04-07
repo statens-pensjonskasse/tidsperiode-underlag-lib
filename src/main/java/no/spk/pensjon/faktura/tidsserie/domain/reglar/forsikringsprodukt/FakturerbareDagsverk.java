@@ -77,7 +77,7 @@ public class FakturerbareDagsverk {
         return new FakturerbareDagsverk(
                 verdi.multiply(
                         tilFemDesimaler(
-                                new BigDecimal(factor.toDouble() / 100d, CONTEXT)
+                                new BigDecimal(factor.toDouble(), CONTEXT)
                         )
                 )
         );

@@ -55,21 +55,29 @@ public class GrunnlagForYSKTest {
     }
 
     @Test
-    @Theory
     @SuppressWarnings("deprecation")
     public void skal_feile_for_faktureringsandel_mindre_enn_0_prosent() {
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("FaktureringsandelStatus#andel() kan ikke være mindre enn 0% eller større enn 100%, men var");
-        new GrunnlagForYSK(new Aarsfaktor(1), faktureringsandel(prosent("-0.01%")));
+        new GrunnlagForYSK(new Aarsfaktor(1), new FaktureringsandelStatus(StillingsforholdId.valueOf(1L), prosent("0%")){
+            @Override
+            public Prosent andel() {
+                return prosent("-0.01%");
+            }
+        });
     }
 
     @Test
-    @Theory
     @SuppressWarnings("deprecation")
     public void skal_feile_for_faktureringsandel_stoerre_enn_100_prosent() {
         exception.expect(IllegalArgumentException.class);
         exception.expectMessage("FaktureringsandelStatus#andel() kan ikke være mindre enn 0% eller større enn 100%, men var");
-        new GrunnlagForYSK(new Aarsfaktor(1), faktureringsandel(prosent("100.01%")));
+        new GrunnlagForYSK(new Aarsfaktor(1), new FaktureringsandelStatus(StillingsforholdId.valueOf(1L), prosent("0%")){
+            @Override
+            public Prosent andel() {
+                return prosent("100.01%");
+            }
+        });
     }
 
     @Test

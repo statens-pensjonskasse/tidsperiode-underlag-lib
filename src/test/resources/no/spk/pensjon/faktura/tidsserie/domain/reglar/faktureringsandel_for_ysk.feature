@@ -27,6 +27,8 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
   * implisitt gitt av regelen over).
   * Dersom flere stillinger har samme stillingsprosent i perioden, plukkes stillingen med lavest stillingsforholdid først.
 
+  Faktureringsandel for YSK kan aldri være mindre enn 0% eller større enn 100%.
+
   Scenario: Faktureringsandel for YSK er 0% når avtalen for stillingen ikke er fakturerbar for YSK
     Gitt en underlagsperiode med følgende innhold:
       | Stillingsforhold | Avtale |
@@ -119,8 +121,20 @@ Egenskap: Faktureringsandel for yrksesskadeforsikring
     Så har stillingsforhold 2 faktureringsandel for YSK lik 40% i perioden
     Og fordelingsårsak for YSK er lik "avkortet"
 
-
-
+  Scenario: Faktureringsandel for YSK blir aldri større enn 100%
+  Dersom en stilling mot formodning skulle ha stillingsprosent > 100%, så skal allikevel ikke
+  faktureringsandel for YSK bli større enn 100%.
+    Gitt en underlagsperiode med følgende innhold:
+      | Stillingsforhold |
+      | 1                |
+    Og underlagsperioden er koblet til følgende aktive stillinger:
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 101%              | 021         | 1      |
+    Og avtale 1 har følgende produkt:
+      | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
+      | YSK     | 71          | kr  500            | kr 0          | kr 100               |
+    Så har stillingsforhold 1 faktureringsandel for YSK lik 100% i perioden
+    Og fordelingsårsak for YSK er lik "avkortet"
 
 
 
