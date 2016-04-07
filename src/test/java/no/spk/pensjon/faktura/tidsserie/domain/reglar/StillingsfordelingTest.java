@@ -106,13 +106,21 @@ public class StillingsfordelingTest {
         exception.expect(IllegalStateException.class);
         exception.expectMessage("Faktureringsandel returnert fra");
         exception.expectMessage("førte til at total faktureringsandel ble større enn maksimal tillat verdi (101% > 100%)");
-        Stillingsfordeling fordeling = new Stillingsfordeling((stilling, maksimalAndel) -> new BegrunnetFaktureringsandel(
-                stilling.stillingsforhold(),
-                prosent("101%"),
-                ORDINAER
-        ));
-
+        Stillingsfordeling fordeling = new Stillingsfordeling((stilling, maksimalAndel) -> faktureringsandelOver100Prosent(stilling));
         fordeling.leggTil(medregning(2L));
+    }
+
+    private BegrunnetFaktureringsandel faktureringsandelOver100Prosent(final AktivStilling stilling) {
+        return new BegrunnetFaktureringsandel(
+                    stilling.stillingsforhold(),
+            prosent("0%"),
+            ORDINAER
+            ){
+                @Override
+                public Prosent andel() {
+                    return prosent("101%");
+                }
+            };
     }
 
     private void leggTilMedregning(final long stillingsforhold) {

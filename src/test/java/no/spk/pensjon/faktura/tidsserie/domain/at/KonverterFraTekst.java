@@ -53,7 +53,7 @@ public class KonverterFraTekst {
         return new YrkesskadefaktureringRegel() {
             @Override
             public FaktureringsandelStatus beregn(final Beregningsperiode<?> periode) {
-                return new FaktureringsandelStatus(StillingsforholdId.valueOf(1), desimalTilProsent(verdi));
+                return new FaktureringsandelStatus(StillingsforholdId.valueOf(1), prosent(verdi));
             }
         };
     }
@@ -62,7 +62,7 @@ public class KonverterFraTekst {
         return new GruppelivsfaktureringRegel() {
             @Override
             public FaktureringsandelStatus beregn(final Beregningsperiode<?> periode) {
-                return new FaktureringsandelStatus(StillingsforholdId.valueOf(1), desimalTilProsent(verdi));
+                return new FaktureringsandelStatus(StillingsforholdId.valueOf(1), prosent(verdi));
             }
         };
     }
