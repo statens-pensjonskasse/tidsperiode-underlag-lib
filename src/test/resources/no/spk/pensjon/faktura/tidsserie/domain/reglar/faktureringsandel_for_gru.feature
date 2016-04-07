@@ -21,6 +21,7 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
   * Stillingen med størst stillingsprosent er ansvarlig for periodens gruppelivspremie
   * Dersom flere stillinger har samme stillingsprosent i perioden, plukkes stillingen med lavest stillingsforholdid først.
 
+  Faktureringsandel for GRU kan aldri være mindre enn 0% eller større enn 100%.
 
   Scenario: Faktureringsandel for GRU er 0% når avtalen for stillingen ikke er fakturerbar for GRU
     Gitt en underlagsperiode med følgende innhold:
@@ -149,3 +150,19 @@ Egenskap: Faktureringsandel for gruppelivsforsikring
       | GRU     | 35          | kr  500            | kr 0          | kr 100               |
     Så har stillingsforhold 2 faktureringsandel for GRU lik 0% i perioden
     Og fordelingsårsak for GRU er lik "avkortet"
+
+  Scenario: Faktureringsandel for GRU blir aldri større enn 100%
+    Dersom en stilling mot formodning skulle ha stillingsprosent > 100%, så skal allikevel ikke
+    faktureringsandel for GRU bli større enn 100%.
+
+    Gitt en underlagsperiode med følgende innhold:
+      | Stillingsforhold |
+      | 1                |
+    Og underlagsperioden er koblet til følgende aktive stillinger:
+      | Stillingsforhold | Stillingsprosent | Aksjonskode | Avtale |
+      | 1                | 101%              | 021         | 1      |
+    Og avtale 1 har følgende produkt:
+      | Produkt | Produktinfo | Arbeidsgiverpremie | Medlemspremie | Administrasjonsgebyr |
+      | GRU     | 35          | kr  500            | kr 0          | kr 100               |
+    Så har stillingsforhold 1 faktureringsandel for GRU lik 100% i perioden
+    Og fordelingsårsak for GRU er lik "ordinær"
