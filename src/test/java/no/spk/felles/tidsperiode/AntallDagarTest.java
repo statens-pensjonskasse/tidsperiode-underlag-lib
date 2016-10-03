@@ -1,12 +1,9 @@
 package no.spk.felles.tidsperiode;
 
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.felles.tidsperiode.Datoar.dato;
 import static no.spk.felles.tidsperiode.AntallDagar.antallDagar;
 import static no.spk.felles.tidsperiode.AntallDagar.antallDagarMellom;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import no.spk.felles.tidsperiode.AntallDagar;
-import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.junit.Rule;
 import org.junit.Test;

@@ -4,13 +4,13 @@ import static java.time.LocalDate.now;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.felles.tidsperiode.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import no.spk.pensjon.faktura.tidsserie.Datoar;
+import no.spk.felles.tidsperiode.Datoar;
 import no.spk.felles.tidsperiode.Aarstall;
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;

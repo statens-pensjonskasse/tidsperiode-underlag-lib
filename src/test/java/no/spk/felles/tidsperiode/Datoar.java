@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie;
+package no.spk.felles.tidsperiode;
 
 import static java.time.temporal.TemporalQueries.localDate;
 import static java.util.Objects.requireNonNull;

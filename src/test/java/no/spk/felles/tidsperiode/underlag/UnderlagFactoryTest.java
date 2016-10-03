@@ -5,7 +5,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.felles.tidsperiode.Datoar.dato;
 import static no.spk.felles.tidsperiode.Assertions.assertFraOgMed;
 import static no.spk.felles.tidsperiode.Assertions.assertTilOgMed;
 import static org.assertj.core.api.Assertions.assertThat;

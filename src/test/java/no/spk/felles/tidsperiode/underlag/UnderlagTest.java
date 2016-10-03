@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
+import static no.spk.felles.tidsperiode.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
