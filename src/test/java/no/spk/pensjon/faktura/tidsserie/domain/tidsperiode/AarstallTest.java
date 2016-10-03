@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.Year;
 import java.util.stream.IntStream;
 
+import no.spk.felles.tidsperiode.AntallDagar;
+
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;

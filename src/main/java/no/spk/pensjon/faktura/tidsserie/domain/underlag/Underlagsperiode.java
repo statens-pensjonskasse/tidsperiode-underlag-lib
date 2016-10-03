@@ -11,8 +11,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
+import no.spk.felles.tidsperiode.AbstractTidsperiode;
+import no.spk.felles.tidsperiode.AntallDagar;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**

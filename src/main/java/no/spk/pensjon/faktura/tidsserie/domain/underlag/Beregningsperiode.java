@@ -2,7 +2,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import java.time.LocalDate;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
+import no.spk.felles.tidsperiode.AntallDagar;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**

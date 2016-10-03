@@ -1,9 +1,8 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
+import no.spk.felles.tidsperiode.AntallDagar;
 
 import java.time.LocalDate;
-import java.util.Set;
 import java.util.stream.Stream;
 
 class Feilmeldingar {

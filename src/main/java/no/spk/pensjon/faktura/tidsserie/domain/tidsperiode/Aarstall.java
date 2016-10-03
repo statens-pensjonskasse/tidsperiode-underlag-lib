@@ -5,7 +5,9 @@ import java.time.Year;
 
 import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
-import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
+import static no.spk.felles.tidsperiode.AntallDagar.antallDagarMellom;
+
+import no.spk.felles.tidsperiode.AntallDagar;
 
 /**
  * {@link Aarstall} representerer eit årstall.

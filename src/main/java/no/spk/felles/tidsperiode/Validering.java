@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.tidsperiode;
+package no.spk.felles.tidsperiode;
 
 import java.time.LocalDate;
 

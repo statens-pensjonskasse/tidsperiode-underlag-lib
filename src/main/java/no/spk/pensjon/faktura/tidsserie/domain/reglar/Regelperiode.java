@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
+import no.spk.felles.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 

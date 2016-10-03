@@ -8,6 +8,8 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 
+import no.spk.felles.tidsperiode.AbstractTidsperiode;
+
 /**
  * {@link Maaned} representerer ein bestemt måned
  * som ligg innanfor eit {@link Aar}.

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+import no.spk.felles.tidsperiode.AbstractTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
@@ -68,11 +69,11 @@ public class GenerellTidsperiode extends AbstractTidsperiode<GenerellTidsperiode
             return false;
         }
         final GenerellTidsperiode other = (GenerellTidsperiode) obj;
-        return fraOgMed.equals(other.fraOgMed) && tilOgMed.equals(other.tilOgMed);
+        return fraOgMed().equals(other.fraOgMed()) && tilOgMed().equals(other.tilOgMed());
     }
 
     @Override
     public String toString() {
-        return String.format("%s[%s->%s]", "", fraOgMed(), tilOgMed().map(d -> d.toString()).orElse(""));
+        return String.format("%s[%s->%s]", "", fraOgMed(), tilOgMed().map(LocalDate::toString).orElse(""));
     }
 }
