@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 
-import no.spk.felles.tidsperiode.Tidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
+import no.spk.felles.tidsperiode.underlag.Underlag;
 
 import org.assertj.core.api.AbstractLocalDateAssert;
 import org.assertj.core.api.OptionalAssert;

@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.underlag;
+package no.spk.felles.tidsperiode.underlag;
 
 import static java.util.Collections.emptySet;
 import static java.util.Optional.ofNullable;
@@ -13,7 +13,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
-import no.spk.felles.tidsperiode.underlag.HarKoblingar;
 
 @SuppressWarnings("unchecked")
 class Koblingar {

@@ -22,7 +22,7 @@ import no.spk.felles.tidsperiode.Tidsperiode;
 /**
  * {@link Observasjonsperiode} representerer
  * nedre grense for frå og med-datoen og øvre grense for til og med-datoen til eit
- * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag}.
+ * {@link Underlag}.
  * <p>
  * Hovedintensjonen ved dette konseptet er å kunne avgrense størrelsen fram i tid på underlaget i situasjonar der
  * ei eller fleire av input-periodene til underlaget er løpande og dermed er varig evig langt inn i framtida.

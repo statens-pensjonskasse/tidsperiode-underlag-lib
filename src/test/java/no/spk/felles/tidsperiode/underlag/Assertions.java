@@ -1,4 +1,4 @@
-package no.spk.pensjon.faktura.tidsserie.domain.underlag;
+package no.spk.felles.tidsperiode.underlag;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,7 +10,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
-import no.spk.felles.tidsperiode.underlag.HarAnnotasjonar;
 
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractListAssert;
@@ -92,7 +91,7 @@ public class Assertions {
      * @param underlag        underlaget som periodene blir henta frå
      * @param annotasjonstype annotasjonstypen som verdiar skal hentast ut for
      * @return ein assertion som opererer på alle unike annotasjonar av angitt type frå underlagsets perioder
-     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode#annotasjonFor(Class)
+     * @see Underlagsperiode#annotasjonFor(Class)
      */
     public static <T> AbstractListAssert<?, ? extends List<? extends T>, T> assertUnikeAnnotasjonsverdiar(
             final Underlag underlag, final Class<T> annotasjonstype) {

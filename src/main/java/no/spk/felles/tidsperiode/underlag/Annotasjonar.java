@@ -1,12 +1,10 @@
-package no.spk.pensjon.faktura.tidsserie.domain.underlag;
+package no.spk.felles.tidsperiode.underlag;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-
-import no.spk.felles.tidsperiode.underlag.Annoterbar;
 
 @SuppressWarnings("unchecked")
 class Annotasjonar {
