@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.AbstractBooleanAssert;

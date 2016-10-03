@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
+import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.junit.Rule;
