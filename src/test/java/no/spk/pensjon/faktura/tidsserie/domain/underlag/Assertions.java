@@ -1,19 +1,14 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.grunnlagsdata.StillingsforholdId;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.AbstractComparableAssert;
@@ -41,17 +36,6 @@ public class Assertions {
     @SuppressWarnings("rawtypes")
     public static AbstractListAssert assertKoblingarAvType(final Underlagsperiode periode, Class<? extends Tidsperiode<?>> type) {
         return (AbstractListAssert) assertThat(periode.koblingarAvType(type).<Tidsperiode<?>>map(k -> k).collect(toList()));
-    }
-
-    /**
-     * @see #assertUnderlagsperioder(java.util.Collection, java.util.function.Predicate)
-     * @see #harKobling(Class)
-     * @see java.util.function.Predicate#negate()
-     */
-    public static AbstractListAssert<?, ? extends List<Underlagsperiode>, Underlagsperiode> assertUnderlagsperioderUtanKoblingTil(
-            final Map<StillingsforholdId, Underlag> underlagene, final Class<? extends Tidsperiode<?>> type) {
-        return assertUnderlagsperioder(underlagene.values(), harKobling(type).negate())
-                .as("underlagsperioder utan kobling til " + type.getSimpleName());
     }
 
     /**
