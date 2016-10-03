@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.Annoterbar;
 
 /**
  * Builder for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode}.

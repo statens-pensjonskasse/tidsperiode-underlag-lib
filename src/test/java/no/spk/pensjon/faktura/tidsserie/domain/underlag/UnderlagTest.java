@@ -15,6 +15,8 @@ import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
+import no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException;
+
 /**
  * Enheitstestar for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag}.
  *

@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.Observasjonsperiode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

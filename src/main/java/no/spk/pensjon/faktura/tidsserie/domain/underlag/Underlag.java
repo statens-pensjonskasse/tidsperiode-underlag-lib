@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.Annoterbar;
+import no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException;
 
 /**
  * {@link Underlag} representerer eit periodisert tidsperiode beståande av ei eller fleire

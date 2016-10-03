@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException;
 
 import org.junit.Rule;
 import org.junit.Test;

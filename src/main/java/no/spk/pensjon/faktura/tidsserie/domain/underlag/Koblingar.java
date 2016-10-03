@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.HarKoblingar;
 
 @SuppressWarnings("unchecked")
 class Koblingar {

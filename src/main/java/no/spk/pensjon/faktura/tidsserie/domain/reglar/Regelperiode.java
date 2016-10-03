@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import no.spk.felles.tidsperiode.AbstractTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.Annoterbar;
+import no.spk.felles.tidsperiode.underlag.Annoterbar;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
 
 /**

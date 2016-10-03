@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.Observasjonsperiode;
 
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;

@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
+import no.spk.felles.tidsperiode.underlag.Annoterbar;
+
 @SuppressWarnings("unchecked")
 class Annotasjonar {
     private final Map<Class<?>, Object> annotasjonar = new HashMap<>();

@@ -14,6 +14,9 @@ import java.util.stream.Stream;
 import no.spk.felles.tidsperiode.AbstractTidsperiode;
 import no.spk.felles.tidsperiode.AntallDagar;
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.Annoterbar;
+import no.spk.felles.tidsperiode.underlag.HarKoblingar;
+import no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException;
 
 /**
  * Ei tidsperiode som inngår som ein del av eit underlag.

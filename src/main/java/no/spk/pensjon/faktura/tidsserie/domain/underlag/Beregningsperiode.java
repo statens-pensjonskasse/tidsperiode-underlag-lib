@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import no.spk.felles.tidsperiode.AntallDagar;
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException;
 
 /**
  * Rolle-interface for tidsperioder som er tilrettelagt for å kunne bli køyrt premieberegning på.
