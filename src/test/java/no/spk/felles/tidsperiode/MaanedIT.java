@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Tarjei Skorgenes
  */
 @RunWith(Theories.class)
-public class MaanedTest {
+public class MaanedIT {
     @DataPoints
     public static Month[] months = Month.values();
 

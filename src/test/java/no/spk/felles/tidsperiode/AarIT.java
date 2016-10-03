@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Theories.class)
 @SuppressWarnings("rawtypes")
-public class AarTest {
+public class AarIT {
     @DataPoints
     public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(y -> new Aarstall(y)).collect(toList()).toArray(new Aarstall[0]);
 
