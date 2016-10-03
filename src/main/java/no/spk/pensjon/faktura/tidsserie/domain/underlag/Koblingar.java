@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 @SuppressWarnings("unchecked")
 class Koblingar {

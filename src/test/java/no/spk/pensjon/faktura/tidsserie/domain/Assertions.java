@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlag;
 
 import org.assertj.core.api.AbstractLocalDateAssert;
@@ -16,7 +16,7 @@ import org.assertj.core.api.OptionalAssert;
  */
 public final class Assertions {
     /**
-     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode#tilOgMed()}.
+     * Assertion for {@link Tidsperiode#tilOgMed()}.
      *
      * @param periode underlagsperioda som til og med-dato skal hentast frå
      * @return ein ny asserter for til og med-datoen til perioda
@@ -26,7 +26,7 @@ public final class Assertions {
     }
 
     /**
-     * Assertion for {@link no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode#fraOgMed()}.
+     * Assertion for {@link Tidsperiode#fraOgMed()}.
      *
      * @param periode underlagsperioda som fra og med-dato skal hentast frå
      * @return ein ny asserter for fra og med-datoen til perioda

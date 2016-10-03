@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
  * Builder for {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.Underlagsperiode}.

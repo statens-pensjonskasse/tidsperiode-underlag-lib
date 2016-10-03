@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AbstractTidsperiode;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
  * Ei tidsperiode som inngår som ein del av eit underlag.

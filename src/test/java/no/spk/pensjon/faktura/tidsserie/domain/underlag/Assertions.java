@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractListAssert;

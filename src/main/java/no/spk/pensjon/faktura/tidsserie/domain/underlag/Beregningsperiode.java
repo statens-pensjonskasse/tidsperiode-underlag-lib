@@ -3,7 +3,7 @@ package no.spk.pensjon.faktura.tidsserie.domain.underlag;
 import java.time.LocalDate;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
  * Rolle-interface for tidsperioder som er tilrettelagt for å kunne bli køyrt premieberegning på.

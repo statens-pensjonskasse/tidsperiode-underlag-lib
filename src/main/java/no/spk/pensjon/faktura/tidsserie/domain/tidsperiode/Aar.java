@@ -10,6 +10,8 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 
+import no.spk.felles.tidsperiode.Tidsperiode;
+
 /**
  * {@link Aar} representerer ei tidsperiode
  * som strekker seg frå 1. januar til 31. desember i eit bestemt årstall og som igjen er bygd

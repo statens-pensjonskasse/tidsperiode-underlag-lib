@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
  * Rolle-interface for tidsperiodekoblingane som ei underlagsperiode har til tidsperioidene den overlappar.

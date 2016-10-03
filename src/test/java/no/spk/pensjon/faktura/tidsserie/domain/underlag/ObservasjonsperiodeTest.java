@@ -13,7 +13,7 @@ import java.util.Optional;
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.OptionalAssert;
 import org.junit.Rule;

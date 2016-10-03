@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.util.Optional;
 
+import no.spk.felles.tidsperiode.Tidsperiode;
+
 public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements Tidsperiode<T> {
     protected final LocalDate fraOgMed;
     protected final Optional<LocalDate> tilOgMed;

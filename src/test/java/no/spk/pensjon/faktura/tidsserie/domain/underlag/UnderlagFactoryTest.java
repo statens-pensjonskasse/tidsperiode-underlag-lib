@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.AbstractListAssert;
 import org.junit.Before;

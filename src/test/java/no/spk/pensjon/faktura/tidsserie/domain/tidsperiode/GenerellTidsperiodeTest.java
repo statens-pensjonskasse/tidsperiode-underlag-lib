@@ -21,6 +21,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import no.spk.felles.tidsperiode.Tidsperiode;
 import no.spk.pensjon.faktura.tidsserie.Datoar;
 
 /**

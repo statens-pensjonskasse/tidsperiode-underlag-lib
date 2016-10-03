@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+import no.spk.felles.tidsperiode.Tidsperiode;
+
 /**
  * {@link GenerellTidsperiode} representerer ei vanlig
  * tidsperiode som ikkje er av nokon bestemt type.

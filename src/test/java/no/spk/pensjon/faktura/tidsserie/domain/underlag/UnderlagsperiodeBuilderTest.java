@@ -6,7 +6,7 @@ import static no.spk.pensjon.faktura.tidsserie.domain.underlag.Assertions.assert
 import static org.assertj.core.api.Assertions.assertThat;
 
 import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.GenerellTidsperiode;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.junit.Rule;
 import org.junit.Test;

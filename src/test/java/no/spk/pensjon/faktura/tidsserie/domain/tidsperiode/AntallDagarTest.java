@@ -5,6 +5,8 @@ import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.an
 import static no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.AntallDagar.antallDagarMellom;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import no.spk.felles.tidsperiode.Tidsperiode;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
