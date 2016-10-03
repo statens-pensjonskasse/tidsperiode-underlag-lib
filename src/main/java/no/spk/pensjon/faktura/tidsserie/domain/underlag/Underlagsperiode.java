@@ -15,6 +15,8 @@ import no.spk.felles.tidsperiode.AbstractTidsperiode;
 import no.spk.felles.tidsperiode.AntallDagar;
 import no.spk.felles.tidsperiode.Tidsperiode;
 import no.spk.felles.tidsperiode.underlag.Annoterbar;
+import no.spk.felles.tidsperiode.underlag.BeregningsRegel;
+import no.spk.felles.tidsperiode.underlag.Beregningsperiode;
 import no.spk.felles.tidsperiode.underlag.HarKoblingar;
 import no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException;
 

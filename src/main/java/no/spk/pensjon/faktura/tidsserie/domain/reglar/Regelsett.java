@@ -2,9 +2,11 @@ package no.spk.pensjon.faktura.tidsserie.domain.reglar;
 
 import java.util.stream.Stream;
 
+import no.spk.felles.tidsperiode.underlag.BeregningsRegel;
+
 /**
  * {@link no.spk.pensjon.faktura.tidsserie.domain.reglar.Regelsett} representerer eit sett med
- * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel reglar} og tidsperioda dei gjeld for.
+ * {@link BeregningsRegel reglar} og tidsperioda dei gjeld for.
  *
  * @author Tarjei Skorgenes
  */

@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import no.spk.felles.tidsperiode.AbstractTidsperiode;
 import no.spk.felles.tidsperiode.underlag.Annoterbar;
-import no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel;
+import no.spk.felles.tidsperiode.underlag.BeregningsRegel;
 
 /**
  * {@link Regelperiode} representerer perioda ein
- * {@link no.spk.pensjon.faktura.tidsserie.domain.underlag.BeregningsRegel} er gjeldande i.
+ * {@link BeregningsRegel} er gjeldande i.
  * <p>
  * Ettersom beregningsreglane kan endre seg over tid, enten fordi SPK endrar metodikk eller på grunn av endringar
  * i regelverk som SPK må forholde seg til, ønskjer vi å kunne handtere dette på generelt vis via underlagets

@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.HarAnnotasjonar;
 
 import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractListAssert;
@@ -163,7 +164,7 @@ public class Assertions {
      * @param <T>  verditypen til annotasjonen som skal hentast ut
      * @param type annotasjonstypen som verdien skal hentast ut for
      * @return ein funksjon som hentar ut verdien som det annoterbare objektet er annotert med for den angitte typen
-     * @see no.spk.pensjon.faktura.tidsserie.domain.underlag.HarAnnotasjonar#annotasjonFor(Class)
+     * @see HarAnnotasjonar#annotasjonFor(Class)
      */
     public static <T, S extends HarAnnotasjonar> Function<S, T> paakrevdAnnotasjon(final Class<T> type) {
         return objekt -> objekt.annotasjonFor(type);
