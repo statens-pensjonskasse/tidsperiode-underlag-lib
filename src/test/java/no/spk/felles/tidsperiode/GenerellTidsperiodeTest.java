@@ -17,8 +17,8 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static no.spk.pensjon.faktura.tidsserie.Datoar.dato;
-import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
-import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
+import static no.spk.felles.tidsperiode.Assertions.assertFraOgMed;
+import static no.spk.felles.tidsperiode.Assertions.assertTilOgMed;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
