@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import no.spk.pensjon.faktura.tidsserie.Datoar;
-import no.spk.pensjon.faktura.tidsserie.domain.tidsperiode.Aarstall;
+import no.spk.felles.tidsperiode.Aarstall;
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
