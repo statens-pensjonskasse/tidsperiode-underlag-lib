@@ -21,6 +21,8 @@ import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertFraOgMed;
 import static no.spk.pensjon.faktura.tidsserie.domain.Assertions.assertTilOgMed;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import no.spk.pensjon.faktura.tidsserie.Datoar;
+
 /**
  * Enheitstestar for {@link GenerellTidsperiode}.
  *
@@ -36,7 +38,7 @@ public class GenerellTidsperiodeTest {
     private final Comparator<Tidsperiode<?>> sortering = Tidsperiode::compare;
 
     public GenerellTidsperiodeTest() {
-        this.factory = (fraOgMed, tilOgMed) -> new GenerellTidsperiode(fraOgMed, tilOgMed);
+        this.factory = GenerellTidsperiode::new;
     }
 
     @Test
@@ -233,7 +235,7 @@ public class GenerellTidsperiodeTest {
     }
 
     protected Tidsperiode create(final String fraOgMed, final String tilOgMed) {
-        return factory.apply(dato(fraOgMed), ofNullable(dato(tilOgMed)));
+        return factory.apply(dato(fraOgMed), ofNullable(tilOgMed).map(Datoar::dato));
     }
 
     protected Tidsperiode create(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {

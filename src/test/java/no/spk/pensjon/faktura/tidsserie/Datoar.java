@@ -1,6 +1,7 @@
 package no.spk.pensjon.faktura.tidsserie;
 
 import static java.time.temporal.TemporalQueries.localDate;
+import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,18 +21,12 @@ public class Datoar {
      * Konverterer datoar på formatet yyyy.MM.dd / yyyyMMdd frå tekst til {@link java.time.LocalDate}.
      *
      * @param text tekstlig representasjon av datoen som skal konverterast
-     * @return den konverterte datoen, eller null viss <code>text</code> er <code>null</code> eller kun
-     * består av whitespace
+     * @return den konverterte datoen
+     * @throws NullPointerException dersom <code>text</code> er <code>null</code>
+     * @throws IllegalArgumentException dersom <code>text</code> ikkje inneheld ein dato på eit av dei to støtta formata
      */
     public static LocalDate dato(final String text) {
-        if (text == null) {
-            return null;
-        }
-        final String trimmed = text.trim();
-        if (trimmed.isEmpty()) {
-            return null;
-        }
-
+        final String trimmed = requireNonNull(text).trim();
         switch (trimmed.length()) {
             case 8:
                 return yyyyMMddFormatUtenPunktum.parse(trimmed).query(localDate());

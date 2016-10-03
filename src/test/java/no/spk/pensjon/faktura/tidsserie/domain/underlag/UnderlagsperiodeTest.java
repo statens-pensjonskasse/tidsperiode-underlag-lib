@@ -235,7 +235,8 @@ public class UnderlagsperiodeTest {
         e.expect(NullPointerException.class);
         e.expectMessage("fra og med-dato er påkrevd");
         e.expectMessage("var null");
-        create(null, "2007.12.31");
+        new Underlagsperiode(null, dato("2007.12.31"));
+        new Underlagsperiode(null, dato("2007.12.31"));
     }
 
     /**
@@ -248,7 +249,7 @@ public class UnderlagsperiodeTest {
         e.expect(NullPointerException.class);
         e.expectMessage("til og med-dato er påkrevd");
         e.expectMessage("var null");
-        create("2007.12.31", null);
+        new Underlagsperiode(dato("2007.12.31"), null);
     }
 
     private Underlagsperiode create(final String fra, final String til) {
