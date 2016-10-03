@@ -179,6 +179,44 @@
                     <ignoreNonCompile>true</ignoreNonCompile>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>no.spk</groupId>
+                        <artifactId>maven-enforcer-rule-utf8</artifactId>
+                        <version>1.0.1</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>enforce-utf8</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <myCustomRule implementation="no.spk.rule.Utf8EncodingRule">
+                            <failBuild>true</failBuild>
+                            <ignoredFiles>Eksempel_1_underlagsperioder_og_koblingar.jpeg,Eksempel_2_underlagsperioder_og_beregningsreglar.jpeg,tidsperiode.jpeg,underlag.jpeg,underlag_og_reglar.jpeg,felles-tidsperiode-underlag-lib.png</ignoredFiles>
+                            <ignoredDirs>.git,.idea,target</ignoredDirs>
+                        </myCustomRule>
+
+                        <bannedDependencies>
+                            <message>Vi ønskjer ikkje at denne modulen skal ha nokon eksterne avhengigheiter som ikkje er test-scopa, mkay?</message>
+                            <excludes>
+                                <exclude>*:*:*:*:compile</exclude>
+                                <exclude>*:*:*:*:runtime</exclude>
+                                <exclude>*:*:*:*:provided</exclude>
+                            </excludes>
+                        </bannedDependencies>
+                    </rules>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
