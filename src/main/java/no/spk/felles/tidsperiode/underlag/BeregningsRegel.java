@@ -1,9 +1,8 @@
 package no.spk.felles.tidsperiode.underlag;
 
 /**
- * {@link BeregningsRegel} representerer ein regel for beregning
- * av resultat som baserer seg på grunnlagsdata som kan variere over tid og som normalt er tilgjengelig via
- * tidsperiodserte datatyper.
+ * {@link BeregningsRegel} representerer ein regel for beregning av resultat som baserer seg på grunnlagsdata
+ * som kan variere over tid og som normalt er tilgjengelig via tidsperiodserte datatyper.
  * <p>
  * Beregningsregelens oppgåve er å anta at beregningsperiodas tilstand inneheld alle verdiar som er påkrevd
  * for å utføre ei bestemt type beregning og at den garanterer at desse vil vere konstante innanfor heile periodas
@@ -15,7 +14,8 @@ package no.spk.felles.tidsperiode.underlag;
  */
 public interface BeregningsRegel<T> {
     /**
-     * Beregnar ein verdi som ut frå tidsperiodiserte data annotert eller utregna basert på underlagsperiodas tilstand.
+     * Reknar ut ein verdi som ut frå tidsperiodiserte annotasjonar eller delresultat frå andre beregningsreglar
+     * tilknytta perioda.
      *
      * @param periode beregningsperioda som inneheld alle verdiar eller påkrevde reglar som skal benyttast av beregningsregelen
      * @return resultatet som beregningsregelen har rekna ut basert på underlagsperiodas tilstand

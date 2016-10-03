@@ -55,7 +55,6 @@ public class Aarstall {
      * Returnerer antall dagar i det aktuelle året.
      *
      * @return antall dagar i det aktuelle året
-     * @since 1.1.2
      */
     public AntallDagar lengde() {
         return lengde;

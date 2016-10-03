@@ -16,8 +16,7 @@ import java.util.stream.Stream;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
- * {@link Underlag} representerer eit periodisert tidsperiode beståande av ei eller fleire
- * {@link Underlagsperiode underlagsperioder}.
+ * {@link Underlag} er ei samling ikkje-overlappande underlagsperioder utan tidsgap mellom periodene.
  * <p>
  * Eit underlag, med tilhøyrande underlagsperioder, skal understøtte beregningar/spørringar som skal utførast basert
  * på verdiar henta frå 2 eller fleire periodiserte datatyper som kan individuelt variere over tid, frå dag til dag,
@@ -38,6 +37,10 @@ import no.spk.felles.tidsperiode.Tidsperiode;
  * <p>
  * Underlaget skal vere bygd opp av underlagsperioder sortert i kronologisk rekkefølge, med eldste periode første og
  * nyaste periode sist.
+ * </p>
+ * <p>
+ * Underlaget kan inneholde 0 underlagsperioder for situasjonar der {@link Observasjonsperiode} ikkje overlappar nokon
+ * av input-periodene som blir brukt for å bygge opp underlaget.
  * </p>
  * <h2>Koblingar</h2>
  * Sidan konstruksjon av underlag og underlagsperioder krever eit periodisert datasett som input, er det ønskelig å
@@ -119,7 +122,7 @@ public class Underlag implements Iterable<Underlagsperiode>, Annoterbar<Underlag
      * @throws IllegalArgumentException dersom det blir oppdaga eit tidsgap mellom ei eller fleire av underlagsperiodene
      */
     public Underlag(final Stream<Underlagsperiode> perioder) {
-        perioder.collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
+        perioder.forEach(this.perioder::add);
         assert !detekterOverlappandePerioder() : overlappandePerioderFeilmelding();
         assert !detekterTidsgapMellomPerioder() : tidsgapMellomPerioderFeilmelding();
         assert !detekterUsortertePerioder() : "underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge";

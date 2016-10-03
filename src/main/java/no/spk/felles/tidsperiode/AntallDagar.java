@@ -1,6 +1,7 @@
 package no.spk.felles.tidsperiode;
 
 import static java.util.Objects.requireNonNull;
+import static no.spk.felles.tidsperiode.Validering.feilVissFraOgMedErEtterTilOgMedDato;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -61,7 +62,7 @@ public class AntallDagar {
     public static AntallDagar antallDagarMellom(final LocalDate fraOgMed, final LocalDate tilOgMed) {
         requireNonNull(fraOgMed, "frå og med-dato må vere ulik null");
         requireNonNull(tilOgMed, "til og med-dato må vere ulik null, løpande perioder er ikkje støtta");
-        Validering.feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilOgMed);
+        feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilOgMed);
         return antallDagar((int) ChronoUnit.DAYS.between(fraOgMed, tilOgMed) + 1);
     }
 

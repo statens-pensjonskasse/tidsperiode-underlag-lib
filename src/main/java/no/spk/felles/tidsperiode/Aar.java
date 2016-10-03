@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
 
@@ -32,11 +32,10 @@ public class Aar implements Tidsperiode<Aar> {
      */
     public Aar(final Aarstall aar) {
         this.aar = aar;
-        requireNonNull(aar, () -> "årstall er påkrevd, men var null");
-        asList(Month.values())
-                .stream()
+        requireNonNull(aar, "årstall er påkrevd, men var null");
+        stream(Month.values())
                 .map(m -> new Maaned(aar, m))
-                .collect(() -> perioder, ArrayList::add, ArrayList::addAll);
+                .forEach(this.perioder::add);
         this.tilOgMed = of(aar.atEndOfYear());
         this.fraOgMed = aar.atStartOfYear();
     }

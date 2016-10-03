@@ -33,7 +33,7 @@ public class GenerellTidsperiode extends AbstractTidsperiode<GenerellTidsperiode
      * @throws NullPointerException viss <code>kilde</code> er <code>null</code>
      */
     public GenerellTidsperiode(final Tidsperiode<?> kilde) {
-        super(requireNonNull(kilde, () -> "kilde er påkrevd, men var null").fraOgMed(), kilde.tilOgMed());
+        super(requireNonNull(kilde, "kilde er påkrevd, men var null").fraOgMed(), kilde.tilOgMed());
     }
 
     /**

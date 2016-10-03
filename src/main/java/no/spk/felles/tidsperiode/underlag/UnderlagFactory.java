@@ -16,9 +16,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.StreamSupport.stream;
 
 /**
- * {@link UnderlagFactory} representerer algoritma
- * og datasettet som eit periodisert {@link Underlag}
- * blir bygd opp av og frå.
+ * {@link UnderlagFactory} representerer algoritma og datasettet som eit {@link Underlag} blir bygd opp av og frå.
  *
  * @author Tarjei Skorgenes
  */
@@ -33,7 +31,7 @@ public class UnderlagFactory {
      * @throws NullPointerException dersom <code>observasjonsperiode</code> er <code>null</code>
      */
     public UnderlagFactory(final Observasjonsperiode observasjonsperiode) {
-        requireNonNull(observasjonsperiode, () -> "observasjonsperiode er påkrevd, men var null");
+        requireNonNull(observasjonsperiode, "observasjonsperiode er påkrevd, men var null");
         this.grenser = observasjonsperiode;
     }
 
@@ -65,7 +63,7 @@ public class UnderlagFactory {
     public UnderlagFactory addPerioder(Stream<? extends Tidsperiode<?>> perioder) {
         perioder
                 .filter(grenser::overlapper)
-                .collect(() -> this.perioder, ArrayList::add, ArrayList::addAll);
+                .forEach(this.perioder::add);
         return this;
     }
 
@@ -237,7 +235,7 @@ public class UnderlagFactory {
      * @return dagen etter <code>dato</code>
      * @see java.time.LocalDate#plusDays(long)
      */
-    public static LocalDate nesteDag(final LocalDate dato) {
+    private static LocalDate nesteDag(final LocalDate dato) {
         return dato.plusDays(1);
     }
 }

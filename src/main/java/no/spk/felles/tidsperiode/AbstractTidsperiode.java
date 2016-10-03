@@ -1,13 +1,11 @@
 package no.spk.felles.tidsperiode;
 
 import static java.util.Objects.requireNonNull;
+import static no.spk.felles.tidsperiode.Validering.feilVissFraOgMedErEtterTilOgMedDato;
 
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
 import java.util.Optional;
-
-import no.spk.felles.tidsperiode.Tidsperiode;
-import no.spk.felles.tidsperiode.Validering;
 
 public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements Tidsperiode<T> {
     protected final LocalDate fraOgMed;
@@ -28,7 +26,7 @@ public abstract class AbstractTidsperiode<T extends Tidsperiode<T>> implements T
         requireNonNull(fraOgMed, "fra og med-dato er påkrevd, men var null");
         requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null");
         tilOgMed.ifPresent(tilDato -> {
-            Validering.feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilDato);
+            feilVissFraOgMedErEtterTilOgMedDato(fraOgMed, tilDato);
         });
         this.tilOgMed = tilOgMed;
         this.fraOgMed = fraOgMed;

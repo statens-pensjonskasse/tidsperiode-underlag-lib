@@ -2,6 +2,7 @@ package no.spk.felles.tidsperiode.underlag;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
+import static no.spk.felles.tidsperiode.AntallDagar.antallDagarMellom;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -52,9 +53,9 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
     }
 
     private Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed, final Annotasjonar annotasjonar) {
-        super(fraOgMed, of(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
+        super(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
         this.annotasjonar = annotasjonar;
-        this.lengde = AntallDagar.antallDagarMellom(fraOgMed, tilOgMed);
+        this.lengde = antallDagarMellom(fraOgMed, tilOgMed);
     }
 
     /**
@@ -142,7 +143,7 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
 
     @Override
     public String toString() {
-        return "UP[" + fraOgMed + "->" + tilOgMed.map(d -> d.toString()).orElse("") + "]";
+        return "UP[" + fraOgMed + "->" + tilOgMed.map(LocalDate::toString).orElse("") + "]";
     }
 
     /**

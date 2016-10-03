@@ -2,8 +2,6 @@ package no.spk.felles.tidsperiode.underlag;
 
 import java.util.Optional;
 
-import no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException;
-
 /**
  * Rolle-interface som gir tilgang til annotasjonar som objektet har blitt annotert med.
  *

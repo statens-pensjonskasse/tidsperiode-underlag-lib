@@ -20,9 +20,8 @@ import no.spk.felles.tidsperiode.AbstractTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
- * {@link Observasjonsperiode} representerer
- * nedre grense for frå og med-datoen og øvre grense for til og med-datoen til eit
- * {@link Underlag}.
+ * {@link Observasjonsperiode} representerer nedre grense for frå og med-datoen og øvre grense for til og med-datoen
+ * til underlagsperiodene som inngår i eit {@link Underlag}.
  * <p>
  * Hovedintensjonen ved dette konseptet er å kunne avgrense størrelsen fram i tid på underlaget i situasjonar der
  * ei eller fleire av input-periodene til underlaget er løpande og dermed er varig evig langt inn i framtida.
@@ -38,7 +37,7 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
      * @throws NullPointerException dersom nokon av datoane er <code>null</code>
      */
     public Observasjonsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        super(fraOgMed, ofNullable(requireNonNull(tilOgMed, () -> "til og med-dato er påkrevd, men var null")));
+        super(fraOgMed, ofNullable(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
     }
 
     /**
@@ -68,7 +67,6 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
      * @param periode perioda som alle dagane i den den nye observasjonsperioda skal overlappe
      * @return ei ny observasjonsperiode der alle dagane blir overlapparav <code>periode</code>,
      * {@link Optional#empty()} dersom periodene ikkje overlappar kvarandre
-     * @since 1.1.2
      */
     public Optional<Observasjonsperiode> intersect(final Tidsperiode<?> periode) {
         if (!overlapper(periode)) {

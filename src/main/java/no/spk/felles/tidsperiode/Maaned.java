@@ -29,8 +29,8 @@ public class Maaned extends AbstractTidsperiode<Maaned> {
     public Maaned(final Aarstall aar, final Month maaned) {
         super(
                 dato(
-                        requireNonNull(aar, () -> "årstall er påkrevd, men var null"),
-                        requireNonNull(maaned, () -> "måned er påkrevd, men var null")
+                        requireNonNull(aar, "årstall er påkrevd, men var null"),
+                        requireNonNull(maaned, "måned er påkrevd, men var null")
                 ).with(firstDayOfMonth()),
                 of(dato(aar, maaned).with(lastDayOfMonth()))
         );

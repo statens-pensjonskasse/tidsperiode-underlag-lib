@@ -66,7 +66,6 @@ public interface Tidsperiode<T extends Tidsperiode<T>> {
      * @return <code>&lt; 0</code> dersom perioda <code>a</code> blir sortert før periode <code>b</code>,
      * <code>0</code> dersom perioda <code>a</code> er lik periode <code>b</code>,
      * <code>&gt; 0</code> dersom perioda <code>a</code> blir sortert etter periode <code>b</code>
-     * @since 1.1.2
      */
     static int compare(final Tidsperiode<?> a, final Tidsperiode<?> b) {
         final int resultat = a.fraOgMed().compareTo(b.fraOgMed());

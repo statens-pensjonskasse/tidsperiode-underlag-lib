@@ -20,7 +20,7 @@ public interface HarKoblingar {
      * eller ikkje frå bruksmønster til bruksmønster.
      * <p>
      * Av ytelsesmessige årsaker verifiserer ikkje underlagsperioda at <code>kobling</code> faktisk overlappar
-     * underlagsperioda, det er opp til klienten å handheve denne kontrakta.
+     * underlagsperioda, det er opp til oppbygginga av underlaget og underlagsperiodene å handheve denne kontrakta.
      *
      * @param kobling ei tidsperiode som underlagsperioda skal koblast opp mot
      */
