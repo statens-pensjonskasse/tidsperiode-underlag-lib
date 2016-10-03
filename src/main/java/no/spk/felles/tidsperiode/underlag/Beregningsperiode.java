@@ -1,8 +1,5 @@
 package no.spk.felles.tidsperiode.underlag;
 
-import java.time.LocalDate;
-
-import no.spk.felles.tidsperiode.AntallDagar;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
@@ -35,14 +32,4 @@ public interface Beregningsperiode<T extends Tidsperiode<T>> extends Tidsperiode
      *                                            av den angitte typa som er gyldig innanfor beregningsperioda
      */
     <T> T beregn(Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException;
-
-    /**
-     * Lengda på perioda angitt i antall kalendardagar.
-     * <br>
-     * Lengda inkluderer frå og med- og til og med-datoane + alle dagar mellom dei to.
-     *
-     * @return antall dagar tidsperioda overlappar
-     * @see AntallDagar#antallDagarMellom(LocalDate, LocalDate)
-     */
-    AntallDagar lengde();
 }
