@@ -5,27 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
 
-import org.assertj.core.api.AbstractComparableAssert;
 import org.assertj.core.api.AbstractListAssert;
 
 public class Assertions {
-    /**
-     * Opprettar ein ny assertion som opererer på periodas unike identifikator.
-     *
-     * @param periode underlagsperioda UUIDen skal hentast frå
-     * @return ein ny assert med UUIDen til perioda
-     * @see Underlagsperiode#id()
-     */
-    public static AbstractComparableAssert<?, UUID> assertUUID(final Underlagsperiode periode) {
-        return assertThat(periode.id()).as("unik ID for periode " + periode);
-    }
-
     /**
      * Opprettar ein ny assertion som opererer på samlinga av alle koblingar av angitt type frå underlagsperioda.
      *

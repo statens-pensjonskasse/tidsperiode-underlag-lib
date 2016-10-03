@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -37,8 +36,6 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
     private final Annotasjonar annotasjonar;
     private final AntallDagar lengde;
 
-    private final UUID uuid = UUID.randomUUID();
-
     /**
      * Konstruerer ei ny underlagsperiode som har ein frå og med- og ein til og med-dato ulik <code>null</code>.
      *
@@ -56,18 +53,6 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
         super(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
         this.annotasjonar = annotasjonar;
         this.lengde = antallDagarMellom(fraOgMed, tilOgMed);
-    }
-
-    /**
-     * Globalt unik identifikator for underlagsperiodeinstansen.
-     * <br>
-     * Intensjonen med denne er å gjere det mulig å deduplisere underlagsperiodene som inngår i
-     * fleire observasjonsunderlag.
-     *
-     * @return ein globalt unik identifikator for periodeinstansen
-     */
-    public UUID id() {
-        return uuid;
     }
 
     /**

@@ -2,7 +2,6 @@ package no.spk.felles.tidsperiode.underlag;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static no.spk.felles.tidsperiode.underlag.Assertions.assertUUID;
 import static no.spk.felles.tidsperiode.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,25 +24,7 @@ public class UnderlagsperiodeTest {
     public final ExpectedException e = ExpectedException.none();
 
     /**
-     * Verifiserer at kvar underlagsperiodeinstans får sin eigen unike id.
-     * <br>
-     * Også ved kopiering av perioder skal den nye perioda få ein identifikator som skiller den frå perioda den er
-     * kopiert frå.
-     * <br>
-     * Derimot skal det ikkje genererast meir enn ein unik identifikator ved forsøk på uthenting av id frå
-     * samme periodeinstans.
-     */
-    @Test
-    public void skalGenerereUnikIdentifikatorForAllePerioder() {
-        final Underlagsperiode periode = new Underlagsperiode(dato("2000.01.01"), dato("2000.12.31"));
-        assertUUID(periode).isEqualTo(periode.id());
-        assertUUID(periode).isNotEqualTo(new Underlagsperiode(dato("2000.01.01"), dato("2000.12.31")).id());
-        assertUUID(periode).isNotEqualTo(periode.kopierUtenKoblinger(dato("2000.01.01"), dato("2000.12.31")).id());
-
-    }
-
-    /**
-     * Verifiserer at all tilstand fr<E5> underlagsperioda blir med n<E5>r ein kopi blir bygd.
+     * Verifiserer at all tilstand frå underlagsperioda blir med når ein kopi blir bygd.
      */
     @Test
     public void skalTaMedAlleAnnotasjonarTilUnderlagsperiodaEinKopiererFra() {
