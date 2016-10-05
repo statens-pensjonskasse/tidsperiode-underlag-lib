@@ -121,7 +121,7 @@
                             <artifactId>${project.artifactId}</artifactId>
                             <!-- NB: Ved binært-inkompatible endringar som fører til bump -->
                             <!-- i versjonsnummer på modulen må også den her bumpast opp -->
-                            <version>1.0.0-SNAPSHOT</version> <!-- TODO -->
+                            <version>1.0.0</version> <!-- TODO -->
                         </dependency>
                     </oldVersion>
                     <newVersion>
