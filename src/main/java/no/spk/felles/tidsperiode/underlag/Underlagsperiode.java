@@ -2,7 +2,6 @@ package no.spk.felles.tidsperiode.underlag;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.of;
-import static no.spk.felles.tidsperiode.AntallDagar.antallDagarMellom;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import no.spk.felles.tidsperiode.AbstractTidsperiode;
-import no.spk.felles.tidsperiode.AntallDagar;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 /**
@@ -34,7 +32,6 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
     private final Map<Class<? extends BeregningsRegel<?>>, Object> cache = new HashMap<>();
 
     private final Annotasjonar annotasjonar;
-    private final AntallDagar lengde;
 
     /**
      * Konstruerer ei ny underlagsperiode som har ein frå og med- og ein til og med-dato ulik <code>null</code>.
@@ -52,14 +49,6 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
     private Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed, final Annotasjonar annotasjonar) {
         super(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
         this.annotasjonar = annotasjonar;
-        this.lengde = antallDagarMellom(fraOgMed, tilOgMed);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public AntallDagar lengde() {
-        return lengde;
     }
 
     @SuppressWarnings("unchecked")
@@ -138,9 +127,6 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
      * som nye datoar for kopien.
      * <p>
      * Kopien vil bli generert uten noen kopi av originalens periodekoblinger, kun en kopi av originalens annotasjoner.
-     * <br>
-     * Den nye underlagsperioda vil få tildelt ein ny, globalt unik identifikator, den vil altså ikkje arve eller
-     * gjennbruke identifikatoren til perioda den er kopiert frå.
      *
      * @param fraOgMed kopiens fra og med-dato
      * @param tilOgMed kopiens til og med-dato
