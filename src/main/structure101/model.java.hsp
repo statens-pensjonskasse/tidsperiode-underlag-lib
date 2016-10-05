@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local-project language="java" version="4.2.10130" xml-version="3" flavor="j2se">
+  <property name="parse-archive-in-archive" value="false" />
+  <property name="include-injected-dependency" value="true" />
+  <property name="show-as-module" value="false" />
+  <property name="relative-to" value="const(THIS_FILE)" />
+  <property name="action-set-mod" value="1" />
+  <property name="detail-mode" value="true" />
+  <property name="hide-deprecated" value="false" />
+  <property name="project-excluded" />
+  <property name="show-needs-to-compile" value="false" />
+  <property name="project-type" value="maven" />
+  <property name="hide-externals" value="true" />
+  <classpath>
+    <classpathentry kind="lib" path="../../../target/felles-tidsperiode-underlag-lib-1.0.0-SNAPSHOT.jar" />
+    <classpathentry kind="lib" path="../../../target/test-classes" />
+  </classpath>
+  <pom-root-files>
+    <pom path="../../../pom.xml" />
+  </pom-root-files>
+  <transformations>
+    <transformation in="*" out="{jar}.*" />
+  </transformations>
+  <restructuring>
+    <set version="3" name="Model 1" hiview="Codemap" active="true" todo="false" list="0" />
+  </restructuring>
+  <sourcepaths>
+    <pathentry type="file" path="C:\wses\ws_t\felles-tidsperiode-underlag-lib\src\main\structure101\..\..\..\src\main\java" />
+  </sourcepaths>
+  <grid-set sep="." version="4.2.10130">
+    <grid name="tidsperiode" enforce="true" locked="false" strict="false">
+      <row>
+        <cell name="tidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.?" vexpanded="true" visibility="public" drill="true">
+          <grid>
+            <row>
+              <cell name="Aar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Aar" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Maaned" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Maaned" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Aarstall" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Aarstall" vexpanded="false" visibility="public" drill="false" />
+              <cell name="GenerellTidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.GenerellTidsperiode" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="AbstractTidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.AbstractTidsperiode" vexpanded="false" visibility="public" drill="false" />
+              <cell name="AntallDagar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.AntallDagar" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Tidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Tidsperiode" vexpanded="false" visibility="public" drill="false" />
+              <cell name="Validering" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Validering" vexpanded="false" visibility="public" drill="false" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <description>&lt;empty&gt;</description>
+    </grid>
+    <grid name="underlag og reglar" enforce="true" locked="false" strict="false">
+      <row>
+        <cell name="reglar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.reglar.?" vexpanded="true" visibility="public" drill="true">
+          <grid>
+            <row>
+              <cell name="Regelsett" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.reglar.Regelsett" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Regelperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.reglar.Regelperiode" vexpanded="false" visibility="public" drill="false" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="underlag" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.?" vexpanded="true" visibility="public" drill="true">
+          <grid>
+            <row>
+              <cell name="UnderlagFactory" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.UnderlagFactory" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Underlag" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Underlag" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="UnderlagsperiodeBuilder" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.UnderlagsperiodeBuilder" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Underlagsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Underlagsperiode" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="BeregningsRegel" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.BeregningsRegel" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Beregningsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Beregningsperiode" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="HarAnnotasjonar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.HarAnnotasjonar" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Annoterbar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Annoterbar" vexpanded="false" visibility="public" drill="false" />
+              <cell name="HarKoblingar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.HarKoblingar" vexpanded="false" visibility="public" drill="false" />
+              <cell name="Observasjonsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Observasjonsperiode" vexpanded="false" visibility="public" drill="false" />
+              <cell name="PaakrevdAnnotasjonManglarException" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException" vexpanded="false" visibility="public" drill="false" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <description>&lt;empty&gt;</description>
+    </grid>
+    <grid name="felles-tidsperiode-underlag-lib" enforce="true" locked="false" strict="false">
+      <row>
+        <cell name="underlag og reglar" pattern="" vexpanded="true" visibility="public" drill="false">
+          <grid>
+            <row>
+              <cell name="reglar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.reglar.?" vexpanded="true" visibility="public" drill="true">
+                <grid>
+                  <row>
+                    <cell name="Regelsett" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.reglar.Regelsett" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Regelperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.reglar.Regelperiode" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                </grid>
+              </cell>
+            </row>
+            <row>
+              <cell name="underlag" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.?" vexpanded="true" visibility="public" drill="true">
+                <grid>
+                  <row>
+                    <cell name="UnderlagFactory" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.UnderlagFactory" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Underlag" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Underlag" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="UnderlagsperiodeBuilder" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.UnderlagsperiodeBuilder" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Underlagsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Underlagsperiode" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="BeregningsRegel" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.BeregningsRegel" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Beregningsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Beregningsperiode" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="HarAnnotasjonar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.HarAnnotasjonar" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Annoterbar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Annoterbar" vexpanded="false" visibility="public" drill="false" />
+                    <cell name="HarKoblingar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.HarKoblingar" vexpanded="false" visibility="public" drill="false" />
+                    <cell name="Observasjonsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Observasjonsperiode" vexpanded="false" visibility="public" drill="false" />
+                    <cell name="PaakrevdAnnotasjonManglarException" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                </grid>
+              </cell>
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="tidsperiode" pattern="" vexpanded="true" visibility="public" drill="false">
+          <grid>
+            <row>
+              <cell name="tidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.?" vexpanded="true" visibility="public" drill="true">
+                <grid>
+                  <row>
+                    <cell name="Aar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Aar" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Maaned" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Maaned" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Aarstall" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Aarstall" vexpanded="false" visibility="public" drill="false" />
+                    <cell name="GenerellTidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.GenerellTidsperiode" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="AbstractTidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.AbstractTidsperiode" vexpanded="false" visibility="public" drill="false" />
+                    <cell name="AntallDagar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.AntallDagar" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                  <row>
+                    <cell name="Tidsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Tidsperiode" vexpanded="false" visibility="public" drill="false" />
+                    <cell name="Validering" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.Validering" vexpanded="false" visibility="public" drill="false" />
+                  </row>
+                </grid>
+              </cell>
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <description>&lt;empty&gt;</description>
+    </grid>
+    <grid name="underlag" enforce="true" locked="false" strict="false">
+      <row>
+        <cell name="underlag" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.?" vexpanded="true" visibility="public" drill="true">
+          <grid>
+            <row>
+              <cell name="UnderlagFactory" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.UnderlagFactory" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Underlag" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Underlag" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="UnderlagsperiodeBuilder" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.UnderlagsperiodeBuilder" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Underlagsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Underlagsperiode" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="BeregningsRegel" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.BeregningsRegel" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Beregningsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Beregningsperiode" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="HarAnnotasjonar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.HarAnnotasjonar" vexpanded="false" visibility="public" drill="false" />
+            </row>
+            <row>
+              <cell name="Annoterbar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Annoterbar" vexpanded="false" visibility="public" drill="false" />
+              <cell name="HarKoblingar" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.HarKoblingar" vexpanded="false" visibility="public" drill="false" />
+              <cell name="Observasjonsperiode" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.Observasjonsperiode" vexpanded="false" visibility="public" drill="false" />
+              <cell name="PaakrevdAnnotasjonManglarException" pattern="felles-tidsperiode-underlag-lib.felles-tidsperiode-underlag-lib-1_0_0-SNAPSHOT.no.spk.felles.tidsperiode.underlag.PaakrevdAnnotasjonManglarException" vexpanded="false" visibility="public" drill="false" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <description>&lt;empty&gt;</description>
+    </grid>
+  </grid-set>
+</local-project>
+
