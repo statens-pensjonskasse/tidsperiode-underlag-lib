@@ -22,7 +22,7 @@ public class UnderlagsperiodeBuilderTest {
      */
     @Test
     public void skalKopiereAnnotasjonar() {
-        final Integer expected = new Integer(123);
+        final Integer expected = 123;
 
         final UnderlagsperiodeBuilder builder = builder();
         builder.fraOgMed(dato("2007.05.12")).tilOgMed(dato("2009.12.30")).med(expected);
@@ -60,9 +60,9 @@ public class UnderlagsperiodeBuilderTest {
     public void skalAnnoterePeriodaBasertPaaVerdiensType() {
         final Underlagsperiode periode = bygg(
                 builder()
-                        .med(new Integer(0))
+                        .med(0)
         );
-        assertThat(periode.annotasjonFor(Integer.class)).isEqualTo(new Integer(0));
+        assertThat(periode.annotasjonFor(Integer.class)).isEqualTo(0);
     }
 
     /**
@@ -73,7 +73,7 @@ public class UnderlagsperiodeBuilderTest {
     @Test
     public void skalIkkjeAnnoterePeriodeMedVerdiensSuperTyper() {
         final Underlagsperiode periode = bygg(builder()
-                        .med(new Integer(0))
+                        .med(0)
         );
         assertThat(periode.valgfriAnnotasjonFor(Number.class).isPresent()).isFalse();
         assertThat(periode.valgfriAnnotasjonFor(Object.class).isPresent()).isFalse();
