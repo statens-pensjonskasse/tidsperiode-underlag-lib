@@ -27,7 +27,7 @@ public class MaanedIT {
     public static Month[] months = Month.values();
 
     @DataPoints
-    public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(y -> new Aarstall(y)).collect(Collectors.toList()).toArray(new Aarstall[0]);
+    public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(Aarstall::new).collect(Collectors.toList()).toArray(new Aarstall[0]);
 
     @Rule
     public final ExpectedException e = ExpectedException.none();

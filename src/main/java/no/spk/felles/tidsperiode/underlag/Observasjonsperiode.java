@@ -37,7 +37,7 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
      * @throws NullPointerException dersom nokon av datoane er <code>null</code>
      */
     public Observasjonsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        super(fraOgMed, ofNullable(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
+        super(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
     }
 
     /**
