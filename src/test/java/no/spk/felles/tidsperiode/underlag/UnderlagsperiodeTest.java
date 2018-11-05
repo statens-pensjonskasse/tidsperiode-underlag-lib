@@ -5,11 +5,14 @@ import static java.util.Optional.of;
 import static no.spk.felles.tidsperiode.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ConcurrentModificationException;
 import java.util.Optional;
 
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
+import org.assertj.core.api.AbstractIntegerAssert;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -233,11 +236,80 @@ public class UnderlagsperiodeTest {
         new Underlagsperiode(dato("2007.12.31"), null);
     }
 
+    @Test
+    public void skal_kunne_kalle_regler_rekursivt_uten_concurrentModificationException_på_cache() {
+        String expected = "testverdi";
+        assertBeregn(
+                eiPeriode()
+                        .annoter(FoersteRegel.class, new FoersteRegel())
+                        .annoter(AndreRegel.class, new AndreRegel(expected)),
+                FoersteRegel.class
+        )
+                .isEqualTo(expected);
+    }
+
+    @Test
+    public void skal_aldri_kalle_en_regel_mer_enn_en_gang_per_periode_fordi_regelene_er_cachet_og_idempotente() {
+        final Underlagsperiode periode = eiPeriode();
+
+        final TredjeRegel regel = new TredjeRegel();
+        periode.annoter(TredjeRegel.class, regel);
+
+        assertBeregn(periode, TredjeRegel.class).isEqualTo(1);
+        assertBeregn(periode, TredjeRegel.class).isEqualTo(1);
+
+        regel.assertTeller().isEqualTo(1);
+    }
+
+    private <T> AbstractObjectAssert<?, T> assertBeregn(Underlagsperiode periode, Class<? extends BeregningsRegel<T>> regelType) {
+        return assertThat(
+                periode.beregn(regelType)
+        )
+                .as("Resultat av å kalle %s på %s", regelType.getSimpleName(), periode);
+    }
+
     private Underlagsperiode create(final String fra, final String til) {
         return new Underlagsperiode(dato(fra), dato(til));
     }
 
     private Underlagsperiode eiPeriode() {
         return create("2007.01.01", "2007.12.31");
+    }
+
+    private class FoersteRegel implements BeregningsRegel<String> {
+
+
+        @Override
+        public String beregn(Beregningsperiode<?> periode) {
+            return periode.beregn(AndreRegel.class);
+        }
+    }
+
+    private class AndreRegel implements BeregningsRegel<String> {
+
+        private String testverdi;
+
+        public AndreRegel(String testverdi) {
+
+            this.testverdi = testverdi;
+        }
+
+        @Override
+        public String beregn(Beregningsperiode<?> periode) {
+            return testverdi;
+        }
+    }
+
+    private class TredjeRegel implements BeregningsRegel<Integer> {
+        private int teller;
+
+        @Override
+        public Integer beregn(Beregningsperiode<?> periode) {
+            return ++teller;
+        }
+
+        AbstractIntegerAssert<?> assertTeller() {
+            return assertThat(teller).as("antall ganger regelen ble kallet av underlagsperioden");
+        }
     }
 }

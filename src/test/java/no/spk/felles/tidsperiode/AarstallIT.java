@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 @RunWith(Theories.class)
 public class AarstallIT {
     @DataPoints
-    public static Integer[] lotsOfYears = IntStream.rangeClosed(1, 2100).mapToObj(Integer::new).toArray(Integer[]::new);
+    public static Integer[] lotsOfYears = IntStream.rangeClosed(1, 2100).mapToObj(Integer::valueOf).toArray(Integer[]::new);
 
     @Theory
     @Test
