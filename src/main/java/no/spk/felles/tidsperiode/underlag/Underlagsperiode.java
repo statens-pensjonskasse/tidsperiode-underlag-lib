@@ -54,7 +54,10 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
     @SuppressWarnings("unchecked")
     @Override
     public <T> T beregn(final Class<? extends BeregningsRegel<T>> regelType) throws PaakrevdAnnotasjonManglarException {
-        return (T) cache.computeIfAbsent(regelType, type -> annotasjonFor(type).beregn(this));
+        if (!cache.containsKey(regelType)) {
+            cache.put(regelType, annotasjonFor(regelType).beregn(this));
+        }
+        return (T) cache.get(regelType);
     }
 
     @Override
