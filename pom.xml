@@ -14,8 +14,7 @@
     <description>
         Generering av underlag og underlagsperioder for å understøtte bruk og behandling av tidsperiodiserte datasett for følgjande funksjonelle område:
             - Fastsats
-            - Rettighetsberegning
-            - Analyseunderlag opptjening og rettighet
+            - Panda Reserveberegning
     </description>
 
     <scm>

@@ -4,7 +4,7 @@
 
 |                  |      |
 | :---             | :--- |
-| Oppgave          | Generering av underlag og underlagsperioder for å understøtte:<ul><li>Fastsats</li><li>Prognosefakturering av fastsatspremie</li><li>Beregning av riktig årspremie ved avregning av tidligare innbetalt fastsatspremie</li><li>Periodisere gjeldande avtale- og arbeidsgiverinformasjon for å forenkle datakvalitets- og rapporteringsoppgåver</li><li>Rettighetsberegning</li><li>Analyseunderlag opptjening og rettighet</li></ul> |
+| Oppgave          | Generering av underlag og underlagsperioder for å understøtte:<ul><li>Fastsats</li><li>Prognosefakturering av fastsatspremie</li><li>Beregning av riktig årspremie ved avregning av tidligare innbetalt fastsatspremie</li><li>Periodisere gjeldande avtale- og arbeidsgiverinformasjon for å forenkle datakvalitets- og rapporteringsoppgåver</li><li>Panda Reserveberegning</li></ul> |
 | Modulnavn        | felles-tidsperiode-underlag-lib |
 | Versjonskontroll | felles-tidsperiode-underlag-lib (GIT) |
 | Pakke            | <ul><li>no.spk.pensjon.felles.tidsperiode</li><li>no.spk.pensjon.felles.tidsperiode.underlag</li></ul>
