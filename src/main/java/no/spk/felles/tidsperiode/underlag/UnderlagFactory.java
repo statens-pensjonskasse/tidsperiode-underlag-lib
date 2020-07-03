@@ -1,19 +1,26 @@
 package no.spk.felles.tidsperiode.underlag;
 
-import no.spk.felles.tidsperiode.Tidsperiode;
+import static java.time.LocalDate.MAX;
+import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import static java.time.LocalDate.MAX;
-import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.StreamSupport.stream;
+import no.spk.felles.tidsperiode.Tidsperiode;
+import no.spk.felles.tidsperiode.underlag.Observasjonsperiode;
+import no.spk.felles.tidsperiode.underlag.Underlag;
+import no.spk.felles.tidsperiode.underlag.Underlagsperiode;
 
 /**
  * {@link UnderlagFactory} representerer algoritma og datasettet som eit {@link Underlag} blir bygd opp av og frå.
@@ -23,6 +30,8 @@ import static java.util.stream.StreamSupport.stream;
 public class UnderlagFactory {
     private final ArrayList<Tidsperiode<?>> perioder = new ArrayList<>();
     private final Observasjonsperiode grenser;
+
+    private Predicate<Tidsperiode<?>> koblingsfilter = k -> true;
 
     /**
      * Konstruerer ein ny instans som kan generere underlag som er avgrensa til å ligge innanfor observasjonsperioda.
@@ -36,21 +45,21 @@ public class UnderlagFactory {
     }
 
     /**
-     * @see #addPerioder(java.util.stream.Stream)
      * @param perioder som skal legges til underlaget
      * @return dette UnderlagFactory for chaining
+     * @see #addPerioder(java.util.stream.Stream)
      */
     public UnderlagFactory addPerioder(final Tidsperiode<?>... perioder) {
         return addPerioder(asList(perioder));
     }
 
     /**
-     * @see #addPerioder(java.util.stream.Stream)
      * @param perioder som skal legges til underlaget
      * @return dette UnderlagFactory for chaining
+     * @see #addPerioder(java.util.stream.Stream)
      */
     public UnderlagFactory addPerioder(final Iterable<? extends Tidsperiode<?>> perioder) {
-        return addPerioder(stream(perioder.spliterator(), false));
+        return addPerioder(StreamSupport.stream(perioder.spliterator(), false));
     }
 
     /**
@@ -68,6 +77,25 @@ public class UnderlagFactory {
     }
 
     /**
+     * Filtrerer koblingane som skal leggast til på alle {@link Underlagsperiode periodene} som inngår i underlaget
+     * produsert via {@link #perioder}.
+     * <p>
+     * Koblingar som blir filtrert bort vil ikkje bli tilgjengelig for uthenting via {@link Underlagsperiode#koblingarAvType(Class) koblingane}
+     * til underlagsperiodene som blir produsert.
+     * <p>
+     * Koblingane vil framleis bli tatt hensyn til og bidra til sjølve periodiseringa av underlaget.
+     * <p>
+     * Ved fleire kall til metoda vil det kun vere det sist innlagte filteret som blir benytta ved periodisering.
+     *
+     * @param filter eit filter som styrer korvidt koblinga skal leggast til på underlagsperiodene som blir bygd, eller ikkje
+     * @return <code>this</code>
+     */
+    public UnderlagFactory filtrerKoblinger(final Predicate<Tidsperiode<?>> filter) {
+        this.koblingsfilter = requireNonNull(filter, "filter er påkrevd, men var null");
+        return this;
+    }
+
+    /**
      * Konstruerer eit nytt underlag, populert med underlagsperioder mellom alle datoar der input periodene
      * endrar tilstand.
      *
@@ -78,7 +106,7 @@ public class UnderlagFactory {
      * @see #addPerioder(java.util.stream.Stream)
      */
     public Underlag periodiser() {
-        perioder.sort(Comparator.comparing(Tidsperiode::fraOgMed));
+        perioder.sort(comparing(Tidsperiode::fraOgMed));
         return kobleTilOverlappandeTidsperioder(
                 new Underlag(
                         byggUnderlagsperioder(alleDatoerUnderlagesPerioderSkalSplittesPaa(perioder))
@@ -95,8 +123,9 @@ public class UnderlagFactory {
      * @return <code>underlag</code>
      */
     private Underlag kobleTilOverlappandeTidsperioder(final Underlag underlag) {
+        final ArrayList<Tidsperiode<?>> koblingar = filtrerKoblingar();
         for (final Underlagsperiode underlagsperiode : underlag.toList()) {
-            for (final Tidsperiode<?> periode : this.perioder) {
+            for (final Tidsperiode<?> periode : koblingar) {
                 if (periode.tilOgMed().orElse(MAX).isBefore(underlagsperiode.fraOgMed())) {
                     continue;
                 }
@@ -107,6 +136,14 @@ public class UnderlagFactory {
             }
         }
         return underlag;
+    }
+
+    private ArrayList<Tidsperiode<?>> filtrerKoblingar() {
+        return this
+                .perioder
+                .stream()
+                .filter(koblingsfilter)
+                .collect(toCollection(ArrayList::new));
     }
 
     /**

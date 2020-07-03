@@ -4,6 +4,7 @@ import static java.time.LocalDate.now;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.stream.IntStream.range;
 import static no.spk.felles.tidsperiode.Datoar.dato;
 import static no.spk.felles.tidsperiode.underlag.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -12,8 +13,11 @@ import static org.assertj.core.api.Assertions.atIndex;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
+import no.spk.felles.tidsperiode.Tidsperiode;
 import no.spk.felles.tidsperiode.underlag.Assertions.UnderlagAssertion;
 import no.spk.felles.tidsperiode.underlag.Assertions.UnderlagsperiodeAssertion;
 
@@ -64,6 +68,20 @@ public class UnderlagFactoryTest {
                         )
                 )
         ;
+    }
+
+    @Test
+    public void skal_inkludere_filtrere_koblingar_i_periodiseringa_men_ikkje_legge_dei_til_som_koblingar() {
+        final int antallPerioder = 30000;
+        assertPeriodiser(
+                new Observasjonsperiode(LocalDate.MIN, LocalDate.MAX),
+                byggIkkjeOverlappandePerioder(antallPerioder),
+                kobling -> false
+        )
+                .harPerioder(antallPerioder)
+                .allSatisfy(
+                        periode -> periode.manglarKoblingAvType(GenerellTidsperiode.class)
+                );
     }
 
     /**
@@ -308,6 +326,14 @@ public class UnderlagFactoryTest {
     }
 
     private UnderlagAssertion assertPeriodiser(final Observasjonsperiode observasjonsperiode, final GenerellTidsperiode... perioder) {
+        return assertPeriodiser(observasjonsperiode, Stream.of(perioder));
+    }
+
+    private UnderlagAssertion assertPeriodiser(final GenerellTidsperiode... perioder) {
+        return assertPeriodiser(grenser, Stream.of(perioder));
+    }
+
+    private UnderlagAssertion assertPeriodiser(final Observasjonsperiode observasjonsperiode, final Stream<GenerellTidsperiode> perioder) {
         return assertThat(
                 new UnderlagFactory(observasjonsperiode)
                         .addPerioder(perioder)
@@ -315,11 +341,27 @@ public class UnderlagFactoryTest {
         );
     }
 
-    private UnderlagAssertion assertPeriodiser(final GenerellTidsperiode... perioder) {
-        return assertPeriodiser(grenser, perioder);
+    private UnderlagAssertion assertPeriodiser(
+            final Observasjonsperiode observasjonsperiode,
+            final Stream<GenerellTidsperiode> perioder,
+            final Predicate<Tidsperiode<?>> filter
+    ) {
+        return assertThat(
+                new UnderlagFactory(observasjonsperiode)
+                        .addPerioder(perioder)
+                        .filtrerKoblinger(filter)
+                        .periodiser()
+        );
     }
 
     private Observasjonsperiode observasjonsperiode(final String fraOgMed, final String tilOgMed) {
         return new Observasjonsperiode(dato(fraOgMed), dato(tilOgMed));
+    }
+
+    private Stream<GenerellTidsperiode> byggIkkjeOverlappandePerioder(final int antallPerioder) {
+        return range(0, Integer.MAX_VALUE)
+                .mapToObj(dato("1917.01.01")::plusDays)
+                .limit(antallPerioder)
+                .map(dato -> new GenerellTidsperiode(dato, of(dato)));
     }
 }

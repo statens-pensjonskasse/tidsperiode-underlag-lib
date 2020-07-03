@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
 
+import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.ListAssert;
@@ -74,6 +75,14 @@ public class Assertions extends org.assertj.core.api.Assertions {
                     );
             return this;
         }
+
+        UnderlagAssertion allSatisfy(final Consumer<UnderlagsperiodeAssertion> assertion) {
+            actual
+                    .stream()
+                    .map(Assertions::assertThat)
+                    .forEach(assertion);
+            return this;
+        }
     }
 
     static class UnderlagsperiodeAssertion extends ObjectAssert<Underlagsperiode> {
@@ -109,6 +118,15 @@ public class Assertions extends org.assertj.core.api.Assertions {
                                     .collect(toList())
                     )
             );
+            return this;
+        }
+
+        UnderlagsperiodeAssertion manglarKoblingAvType(final Class<GenerellTidsperiode> kobling) {
+            assertThat(
+                    actual.koblingarAvType(kobling)
+            )
+                    .as("koblingar av type %s for %s", kobling, actual)
+                    .isEmpty();
             return this;
         }
 
