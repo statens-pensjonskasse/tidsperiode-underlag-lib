@@ -12,6 +12,7 @@ import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.AbstractIntegerAssert;
+import org.assertj.core.api.AbstractIterableAssert;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.Test;
 
@@ -64,10 +65,15 @@ public class UnderlagsperiodeTest {
         final Underlagsperiode kilde = eiPeriode();
         kilde.kobleTil(kobling);
 
-        final Underlagsperiode kopi = kilde.kopierUtenKoblinger(dato("1900.01.01"), dato("2999.01.01"));
-        assertThat(kopi.koblingAvType(GenerellTidsperiode.class))
-                .as("kobling av type GenerellTidsperiode på den kopierte perioda")
-                .isEqualTo(empty());
+        assertThat(
+                kilde
+                        .kopierUtenKoblinger(
+                                dato("1900.01.01"),
+                                dato("2999.01.01")
+                        )
+        )
+                .harKoblingarAvType(GenerellTidsperiode.class, AbstractIterableAssert::isEmpty)
+        ;
     }
 
     /**
@@ -164,10 +170,11 @@ public class UnderlagsperiodeTest {
                     periode.koblingAvType(GenerellTidsperiode.class);
                 }
         )
-                .isInstanceOf(IllegalStateException.class);
-//        .hasMessageContaining("Underlagsperioda er kobla til meir enn ei tidsperiode av type");
-//        .hasMessageContaining(GenerellTidsperiode.class.getSimpleName());
-//        .hasMessageContaining("vi forventa berre 1 kobling av denne typen");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Underlagsperioda er kobla til meir enn ei tidsperiode av type")
+                .hasMessageContaining(GenerellTidsperiode.class.getSimpleName())
+                .hasMessageContaining("vi forventa berre 1 kobling av denne typen")
+        ;
     }
 
     /**

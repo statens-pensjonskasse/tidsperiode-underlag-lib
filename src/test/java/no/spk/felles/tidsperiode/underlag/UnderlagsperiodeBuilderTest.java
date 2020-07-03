@@ -95,12 +95,9 @@ public class UnderlagsperiodeBuilderTest {
      */
     @Test
     public void skalIkkjeAnnoterePeriodeMedVerdiensSuperTyper() {
-        final Underlagsperiode periode = bygg(
+        assertThat(
                 builder()
                         .med(0)
-        );
-        assertThat(
-                periode
         )
                 .annotasjon(Integer.class, AbstractOptionalAssert::isPresent)
                 .annotasjon(Number.class, AbstractOptionalAssert::isEmpty)
@@ -110,9 +107,5 @@ public class UnderlagsperiodeBuilderTest {
 
     private static UnderlagsperiodeBuilder builder() {
         return new UnderlagsperiodeBuilder().fraOgMed(dato("2001.01.01")).tilOgMed(dato("2001.12.31"));
-    }
-
-    private static Underlagsperiode bygg(final UnderlagsperiodeBuilder builder) {
-        return builder.bygg();
     }
 }
