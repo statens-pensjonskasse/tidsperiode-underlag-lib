@@ -10,12 +10,11 @@
 
     <groupId>no.spk.felles</groupId>
     <artifactId>felles-tidsperiode-underlag-lib</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>
         Generering av underlag og underlagsperioder for å understøtte bruk og behandling av tidsperiodiserte datasett for følgjande funksjonelle område:
             - Fastsats
-            - Rettighetsberegning
-            - Analyseunderlag opptjening og rettighet
+            - Panda Reserveberegning
     </description>
 
     <scm>
@@ -28,18 +27,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>2.22.1</maven-failsafe-plugin.version>
-        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-    </properties>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
+        <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
+   </properties>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doclint>none</doclint>
+                    <quiet>true</quiet>
+                    <source>1.8</source>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -152,15 +156,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <dependencies>
-                    <!-- Overstyrer versjon av ASM for java 11-kompabilitet.
-                    Kan fjernes når plugin blir oppgradert med støtte for java 11 -->
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>7.0</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <id>analyze</id>
@@ -236,7 +231,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -251,7 +246,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>external.atlassian.jgitflow</groupId>
@@ -261,7 +256,7 @@
                 <plugin>
                     <groupId>com.github.siom79.japicmp</groupId>
                     <artifactId>japicmp-maven-plugin</artifactId>
-                    <version>0.13.0</version>
+                     <version>0.14.3</version>
                     <dependencies>
                         <!-- Jaxb-versjon overstyrt fordi 0.13.0 av plugin bruker 2.2.7 som gir "An illegal reflective access" warning-->
                         <!-- Kan fjernes ved senere plugin versjon -->
@@ -290,7 +285,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M2</version>
+                    <version>3.0.0-M3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -310,12 +305,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.7.1</version>
+                    <version>3.9.1</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.5</version>
+                    <version>4.0.0</version>
                 </plugin>
             </plugins>
 
@@ -338,19 +333,13 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.0.0</version>
+                <version>3.16.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <artifactId>hamcrest-core</artifactId>
-                <groupId>org.hamcrest</groupId>
-                <version>1.3</version>
+                <version>4.13</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
