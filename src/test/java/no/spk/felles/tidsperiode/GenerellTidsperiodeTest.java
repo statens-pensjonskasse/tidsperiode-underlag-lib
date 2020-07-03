@@ -1,9 +1,15 @@
 package no.spk.felles.tidsperiode;
 
-import org.assertj.core.api.AbstractBooleanAssert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static java.time.LocalDate.now;
+import static java.util.Arrays.asList;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+import static no.spk.felles.tidsperiode.Assertions.assertFraOgMed;
+import static no.spk.felles.tidsperiode.Assertions.assertTilOgMed;
+import static no.spk.felles.tidsperiode.Datoar.dato;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -11,15 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import static java.time.LocalDate.now;
-import static java.util.Arrays.asList;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
-import static no.spk.felles.tidsperiode.Datoar.dato;
-import static no.spk.felles.tidsperiode.Assertions.assertFraOgMed;
-import static no.spk.felles.tidsperiode.Assertions.assertTilOgMed;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.AbstractBooleanAssert;
+import org.junit.Test;
 
 /**
  * Enheitstestar for {@link GenerellTidsperiode}.
@@ -28,9 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SuppressWarnings("rawtypes")
 public class GenerellTidsperiodeTest {
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
-
     protected BiFunction<LocalDate, Optional<LocalDate>, Tidsperiode> factory;
 
     private final Comparator<Tidsperiode<?>> sortering = Tidsperiode::compare;
@@ -158,36 +154,39 @@ public class GenerellTidsperiodeTest {
 
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtanKilde() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("kilde er påkrevd");
-        e.expectMessage("men var null");
-        new GenerellTidsperiode(null);
+        assertThatCode(() -> new GenerellTidsperiode(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("kilde er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
     }
 
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtenFraOgMedDato() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("fra og med-dato er påkrevd");
-        e.expectMessage("men var null");
-        create(null, of(now()));
+        assertThatCode(() -> create(null, of(now())))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("fra og med-dato er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
+
     }
 
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("til og med-dato er påkrevd");
-        e.expectMessage("men var null");
-
-        create(now(), null);
+        assertThatCode(() -> create(now(), null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("til og med-dato er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
     }
 
     @Test
     public void skalIkkjeKunneOpprettUnderlagsperiodeMedFraOgMedDatoEtterTilOgMedDato() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("fra og med-dato kan ikkje vere etter til og med-dato");
-        e.expectMessage("2005-12-30 er etter 2005-01-01");
-
-        create("2005.12.30", "2005.01.01");
+        assertThatCode(() -> create("2005.12.30", "2005.01.01"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("fra og med-dato kan ikkje vere etter til og med-dato")
+                .hasMessageContaining("2005-12-30 er etter 2005-01-01")
+        ;
     }
 
     @Test
@@ -195,7 +194,8 @@ public class GenerellTidsperiodeTest {
         assertOverlapper(
                 create("2001.01.01", "2001.12.31"),
                 create("2001.01.01", "2001.01.01")
-        ).isTrue();
+        )
+                .isTrue();
 
     }
 

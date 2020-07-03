@@ -5,25 +5,23 @@ import static java.time.Month.DECEMBER;
 import static java.time.Month.JANUARY;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
-import static java.util.Arrays.asList;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.assertj.core.api.AbstractBooleanAssert;
-import org.assertj.core.api.AbstractListAssert;
-import org.junit.Rule;
+import org.assertj.core.api.ListAssert;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 /**
@@ -35,20 +33,19 @@ import org.junit.runner.RunWith;
 @SuppressWarnings("rawtypes")
 public class AarIT {
     @DataPoints
-    public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(y -> new Aarstall(y)).collect(toList()).toArray(new Aarstall[0]);
-
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
+    public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(Aarstall::new).collect(toList()).toArray(new Aarstall[0]);
 
     /**
      * Verifiserer at årstall er påkrevd ved konstruksjon av nye år.
      */
     @Test
     public void skalKreveAarstallVedKonstruksjon() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("årstall er påkrevd, men var null");
-
-        new Aar(null);
+        assertThatCode(
+                () -> new Aar(null)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("årstall er påkrevd, men var null")
+        ;
     }
 
     /**
@@ -64,7 +61,8 @@ public class AarIT {
                         .mapToObj(d -> ofYearDay(aarstall.toYear().getValue(), d))
                         .filter(d -> !aar.overlapper(d))
                         .toArray()
-        ).as("datoar innanfor år " + aarstall + " som året ikke overlapper")
+        )
+                .as("datoar innanfor år " + aarstall + " som året ikke overlapper")
                 .isEmpty();
     }
 
@@ -81,14 +79,15 @@ public class AarIT {
                 IntStream
                         .rangeClosed(1, 365)
                         .mapToObj(dagIAaret ->
-                                        Stream.of(
-                                                ofYearDay(forrige.toYear().getValue(), dagIAaret),
-                                                ofYearDay(neste.toYear().getValue(), dagIAaret))
+                                Stream.of(
+                                        ofYearDay(forrige.toYear().getValue(), dagIAaret),
+                                        ofYearDay(neste.toYear().getValue(), dagIAaret))
                         )
                         .flatMap(datoer -> datoer)
                         .filter(aar::overlapper)
                         .toArray()
-        ).as("datoar utanfor år " + aarstall + " som året overlapper")
+        )
+                .as("datoar utanfor år " + aarstall + " som året overlapper")
                 .isEmpty();
     }
 
@@ -107,18 +106,19 @@ public class AarIT {
                         .map(d -> new GenerellTidsperiode(d, of(d)))
                         .filter(p -> !aar.overlapper(p))
                         .toArray()
-        ).as("perioder innenfor år " + aarstall + " som året ikke overlapper")
+        )
+                .as("perioder innenfor år " + aarstall + " som året ikke overlapper")
                 .isEmpty();
 
         assertThat(
-                asList(
+                Arrays.stream(
                         Month.values()
                 )
-                        .stream()
                         .map(m -> new Maaned(aarstall, m))
                         .filter(p -> !aar.overlapper(p))
                         .toArray()
-        ).as("perioder innenfor år " + aarstall + " som året ikke overlapper")
+        )
+                .as("perioder innenfor år " + aarstall + " som året ikke overlapper")
                 .isEmpty();
 
         assertThat(aar.overlapper(aar)).as("overlapper aaret seg selv?").isTrue();
@@ -140,7 +140,8 @@ public class AarIT {
                         .map(datoForrigeAar -> new GenerellTidsperiode(datoForrigeAar, of(datoForrigeAar.plusDays(200))))
                         .filter(periode -> !aar.overlapper(periode))
                         .toArray()
-        ).as("200 dagers perioder som startar før og sluttar i år " + aarstall + " men som året ikke overlapper")
+        )
+                .as("200 dagers perioder som startar før og sluttar i år " + aarstall + " men som året ikke overlapper")
                 .isEmpty();
 
         assertThat(aar.overlapper(new GenerellTidsperiode(forrige.atEndOfYear(), of(forrige.atEndOfYear().plusDays(1)))))
@@ -164,7 +165,8 @@ public class AarIT {
                         .map(datoNesteAar -> new GenerellTidsperiode(datoNesteAar.minusDays(200), of(datoNesteAar)))
                         .filter(periode -> !aar.overlapper(periode))
                         .toArray()
-        ).as("200 dagers perioder som startar i og sluttar etter år " + aarstall + " men som året ikke overlapper")
+        )
+                .as("200 dagers perioder som startar i og sluttar etter år " + aarstall + " men som året ikke overlapper")
                 .isEmpty();
 
         assertThat(aar.overlapper(new GenerellTidsperiode(aarstall.atEndOfYear(), of(neste.atStartOfYear()))))
@@ -262,7 +264,7 @@ public class AarIT {
         assertAar(aar).hasSize(12);
     }
 
-    private static AbstractListAssert<?, ? extends List<? extends Maaned>, Maaned> assertAar(final Aarstall aar) {
+    private static ListAssert<Maaned> assertAar(final Aarstall aar) {
         return assertThat(new Aar(aar).maaneder().collect(toList())).as("måneder i år " + aar);
     }
 

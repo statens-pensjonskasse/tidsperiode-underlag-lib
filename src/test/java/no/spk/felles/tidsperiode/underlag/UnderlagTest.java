@@ -1,19 +1,18 @@
 package no.spk.felles.tidsperiode.underlag;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static no.spk.felles.tidsperiode.Datoar.dato;
-import static org.assertj.core.api.Assertions.assertThat;
+import static no.spk.felles.tidsperiode.underlag.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.offset;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import org.junit.Test;
 
 /**
  * Enheitstestar for {@link Underlag}.
@@ -21,9 +20,6 @@ import static org.assertj.core.api.Assertions.offset;
  * @author Tarjei Skorgenes
  */
 public class UnderlagTest {
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
-
     /**
      * Verifiserer at underlaget blir annotert med alle annotasjonar som kilda er annotert med.
      */
@@ -96,9 +92,14 @@ public class UnderlagTest {
      */
     @Test
     public void skalFeileVissAnnotasjonstypeErOptional() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("Annotasjonar av type Optional er ikkje støtta, viss du vil legge til ein valgfri annotasjon må den registrerast under verdiens egen type");
-        eitTomtUnderlag().annoter(Optional.class, empty());
+        assertThatCode(
+                () ->
+                        eitTomtUnderlag()
+                                .annoter(Optional.class, empty())
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Annotasjonar av type Optional er ikkje støtta, viss du vil legge til ein valgfri annotasjon må den registrerast under verdiens egen type")
+        ;
     }
 
     /**
@@ -121,11 +122,15 @@ public class UnderlagTest {
      */
     @Test
     public void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
-        e.expect(PaakrevdAnnotasjonManglarException.class);
-        e.expectMessage("U[] manglar ein påkrevd annotasjon av type");
-        e.expectMessage(Integer.class.getSimpleName());
-
-        eitTomtUnderlag().annotasjonFor(Integer.class);
+        assertThatCode(
+                () ->
+                        eitTomtUnderlag()
+                                .annotasjonFor(Integer.class)
+        )
+                .isInstanceOf(PaakrevdAnnotasjonManglarException.class)
+                .hasMessageContaining("U[] manglar ein påkrevd annotasjon av type")
+                .hasMessageContaining(Integer.class.getSimpleName())
+        ;
     }
 
     /**
@@ -144,17 +149,21 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneKonstruereUnderlagMedOverlappandeUnderlagsperioder() {
-        e.expect(AssertionError.class);
-        e.expectMessage("Eit underlag kan ikkje inneholde underlagsperioder som overlappar kvarandre");
-        e.expectMessage("2015-01-15->2015-12-31");
-        e.expectMessage("2015-01-15->2015-01-31");
-        e.expectMessage("2015-02-01->2015-02-28");
-        create(
-                periode().fraOgMed(dato("2015.01.01")).tilOgMed(dato("2015.01.14")),
-                periode().fraOgMed(dato("2015.01.15")).tilOgMed(dato("2015.01.31")),
-                periode().fraOgMed(dato("2015.01.15")).tilOgMed(dato("2015.12.31")),
-                periode().fraOgMed(dato("2015.02.01")).tilOgMed(dato("2015.02.28"))
-        );
+        assertThatCode(
+                () ->
+                        underlag(
+                                periode().fraOgMed(dato("2015.01.01")).tilOgMed(dato("2015.01.14")),
+                                periode().fraOgMed(dato("2015.01.15")).tilOgMed(dato("2015.01.31")),
+                                periode().fraOgMed(dato("2015.01.15")).tilOgMed(dato("2015.12.31")),
+                                periode().fraOgMed(dato("2015.02.01")).tilOgMed(dato("2015.02.28"))
+                        )
+        )
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("Eit underlag kan ikkje inneholde underlagsperioder som overlappar kvarandre")
+                .hasMessageContaining("2015-01-15->2015-12-31")
+                .hasMessageContaining("2015-01-15->2015-01-31")
+                .hasMessageContaining("2015-02-01->2015-02-28")
+        ;
     }
 
     /**
@@ -162,12 +171,17 @@ public class UnderlagTest {
      */
     @Test
     public void skalInneholdeUnderlagsperioderIKronologiskRekkefoelge() {
-        e.expect(AssertionError.class);
-        e.expectMessage("underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge");
-        final Underlagsperiode b = periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.08.14")).bygg();
-        final Underlagsperiode c = periode().fraOgMed(dato("2000.08.15")).tilOgMed(dato("2000.12.31")).bygg();
-        final Underlagsperiode a = periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.02.29")).bygg();
-        new Underlag(Stream.of(c, a, b));
+        assertThatCode(
+                () ->
+                        underlag(
+                                periode().fraOgMed(dato("2000.08.15")).tilOgMed(dato("2000.12.31")),
+                                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.02.29")),
+                                periode().fraOgMed(dato("2000.03.01")).tilOgMed(dato("2000.08.14"))
+                        )
+        )
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("underlaget krever at underlagsperiodene er sortert i kronologisk rekkefølge")
+        ;
     }
 
     /**
@@ -176,16 +190,19 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneKonstruereUnderlagMedTidsgapMellomUnderlagsperiodene() {
-        e.expect(AssertionError.class);
-        e.expectMessage("kan ikkje inneholde tidsgap");
-        e.expectMessage("31 dagar tidsgap mellom");
-        e.expectMessage("2000-01-01->2000-04-30");
-        e.expectMessage("2000-06-01->2000-12-31");
-
-        create(
-                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")),
-                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.12.31"))
-        );
+        assertThatCode(
+                () ->
+                        underlag(
+                                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")),
+                                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.12.31"))
+                        )
+        )
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("kan ikkje inneholde tidsgap")
+                .hasMessageContaining("31 dagar tidsgap mellom")
+                .hasMessageContaining("2000-01-01->2000-04-30")
+                .hasMessageContaining("2000-06-01->2000-12-31")
+        ;
     }
 
     /**
@@ -195,14 +212,17 @@ public class UnderlagTest {
      */
     @Test
     public void skalIkkjeKunneAvgrenseUnderlagSlikAtDetOppstaarTidsgapMellomUnderlagsperiodene() {
-        e.expect(AssertionError.class);
-
-        final Underlag uavgrensa = create(
-                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(2),
-                periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(3),
-                periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.12.31")).med(2)
-        );
-        uavgrensa.restrict(p -> p.annotasjonFor(Integer.class) == 2);
+        assertThatCode(
+                () -> {
+                    final Underlag uavgrensa = underlag(
+                            periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(2),
+                            periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.05.31")).med(3),
+                            periode().fraOgMed(dato("2000.06.01")).tilOgMed(dato("2000.12.31")).med(2)
+                    );
+                    uavgrensa.restrict(p -> p.annotasjonFor(Integer.class) == 2);
+                }
+        )
+                .isInstanceOf(AssertionError.class);
     }
 
     /**
@@ -211,7 +231,7 @@ public class UnderlagTest {
      */
     @Test
     public void skalFjerneAlleUoenskaUnderlagsperioderVedAvgrensing() {
-        final Underlag uavgrensa = create(
+        final Underlag uavgrensa = underlag(
                 periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(2),
                 periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.12.31")).med(3)
         );
@@ -228,17 +248,18 @@ public class UnderlagTest {
     /**
      * Verifiserer at {@link Underlag#last()} returnerer den kronologisk siste underlagsperioda i underlaget.
      */
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void skalReturnereKronologiskSistePeriodeFraUnderlaget() {
-        final Optional<Underlagsperiode> sistePeriode = create(
-                periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")),
-                periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.12.31"))
-        ).last();
         assertThat(
-                sistePeriode
-                        .map(Underlagsperiode::fraOgMed)
-        ).as("fra og med-dato for underlagsperiode " + sistePeriode)
-                .isEqualTo(of(dato("2000.02.01")));
+                underlag(
+                        periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")),
+                        periode().fraOgMed(dato("2000.02.01")).tilOgMed(dato("2000.12.31"))
+                )
+                        .last()
+                        .get()
+        )
+                .harFraOgMed("2000.02.01");
     }
 
     /**
@@ -253,8 +274,8 @@ public class UnderlagTest {
         return new UnderlagsperiodeBuilder();
     }
 
-    private Underlag create(UnderlagsperiodeBuilder... perioder) {
-        return new Underlag(asList(perioder).stream().map(UnderlagsperiodeBuilder::bygg));
+    private Underlag underlag(UnderlagsperiodeBuilder... perioder) {
+        return new Underlag(Arrays.stream(perioder).map(UnderlagsperiodeBuilder::bygg));
     }
 
     private static Underlag eitTomtUnderlag() {

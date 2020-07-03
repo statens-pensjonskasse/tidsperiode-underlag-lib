@@ -1,21 +1,16 @@
 package no.spk.felles.tidsperiode.underlag;
 
 import static java.util.Optional.empty;
-import static no.spk.felles.tidsperiode.underlag.Assertions.assertKoblingarAvType;
 import static no.spk.felles.tidsperiode.Datoar.dato;
-import static org.assertj.core.api.Assertions.assertThat;
+import static no.spk.felles.tidsperiode.underlag.Assertions.assertThat;
 
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
-import org.junit.Rule;
+import org.assertj.core.api.AbstractOptionalAssert;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class UnderlagsperiodeBuilderTest {
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
-
     /**
      * Verifiserer at alle annotasjonane som er lagt til på den opprinnelige builderen, blir kopiert
      * over til den nye builderen.
@@ -24,24 +19,34 @@ public class UnderlagsperiodeBuilderTest {
     public void skalKopiereAnnotasjonar() {
         final Integer expected = 123;
 
-        final UnderlagsperiodeBuilder builder = builder();
-        builder.fraOgMed(dato("2007.05.12")).tilOgMed(dato("2009.12.30")).med(expected);
-
-        assertThat(builder.kopi().bygg().annotasjonFor(Integer.class)).isSameAs(expected);
+        assertThat(
+                builder()
+                        .fraOgMed(dato("2007.05.12"))
+                        .tilOgMed(dato("2009.12.30"))
+                        .med(expected)
+                        .kopi()
+        )
+                .harAnnotasjon(Integer.class, expected);
     }
 
     @Test
     public void skalKopiereKoblingar() {
         final Tidsperiode<?> expected = new GenerellTidsperiode(dato("1950.01.01"), empty());
 
-        final UnderlagsperiodeBuilder builder = builder();
-        builder.fraOgMed(dato("2007.05.12")).tilOgMed(dato("2009.12.30"))
-                .medKobling(expected);
+        assertThat(
+                builder()
+                        .fraOgMed(dato("2007.05.12"))
+                        .tilOgMed(dato("2009.12.30"))
+                        .medKobling(expected)
 
-        assertThat(builder.kopi().bygg().koblingAvType(GenerellTidsperiode.class).get()).isSameAs(expected);
+                        .kopi()
+        )
+                .harKoblingAvType(
+                        GenerellTidsperiode.class,
+                        kobling -> assertThat(kobling).isSameAs(expected)
+                );
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void skalIkkjeDeleSamlingVedKopieringAvKoblingar() {
         final UnderlagsperiodeBuilder builder = builder().fraOgMed(dato("2007.05.12")).tilOgMed(dato("2009.12.31"));
@@ -50,19 +55,37 @@ public class UnderlagsperiodeBuilderTest {
         builder.medKobling(a);
 
         final UnderlagsperiodeBuilder kopi = builder.kopi();
-        assertKoblingarAvType(kopi.bygg(), GenerellTidsperiode.class).hasSize(1).contains(a);
+        assertThat(
+                kopi
+        )
+                .harKoblingarAvType(
+                        GenerellTidsperiode.class,
+                        actual ->
+                                actual
+                                        .hasSize(1)
+                                        .contains(a)
+                );
 
         builder.medKobling(new GenerellTidsperiode(dato("1990.01.01"), empty()));
-        assertKoblingarAvType(kopi.bygg(), GenerellTidsperiode.class).hasSize(1).contains(a);
+        assertThat(
+                kopi
+        )
+                .harKoblingarAvType(
+                        GenerellTidsperiode.class,
+                        actual ->
+                                actual
+                                        .hasSize(1)
+                                        .contains(a)
+                );
     }
 
     @Test
     public void skalAnnoterePeriodaBasertPaaVerdiensType() {
-        final Underlagsperiode periode = bygg(
+        assertThat(
                 builder()
                         .med(0)
-        );
-        assertThat(periode.annotasjonFor(Integer.class)).isEqualTo(0);
+        )
+                .harAnnotasjon(Integer.class, 0);
     }
 
     /**
@@ -72,11 +95,17 @@ public class UnderlagsperiodeBuilderTest {
      */
     @Test
     public void skalIkkjeAnnoterePeriodeMedVerdiensSuperTyper() {
-        final Underlagsperiode periode = bygg(builder()
+        final Underlagsperiode periode = bygg(
+                builder()
                         .med(0)
         );
-        assertThat(periode.valgfriAnnotasjonFor(Number.class).isPresent()).isFalse();
-        assertThat(periode.valgfriAnnotasjonFor(Object.class).isPresent()).isFalse();
+        assertThat(
+                periode
+        )
+                .annotasjon(Integer.class, AbstractOptionalAssert::isPresent)
+                .annotasjon(Number.class, AbstractOptionalAssert::isEmpty)
+                .annotasjon(Object.class, AbstractOptionalAssert::isEmpty)
+        ;
     }
 
     private static UnderlagsperiodeBuilder builder() {

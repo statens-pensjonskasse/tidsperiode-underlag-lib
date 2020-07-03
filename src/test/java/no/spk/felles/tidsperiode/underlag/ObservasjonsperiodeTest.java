@@ -3,22 +3,20 @@ package no.spk.felles.tidsperiode.underlag;
 import static java.time.LocalDate.now;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.stream.Collectors.toList;
 import static no.spk.felles.tidsperiode.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import no.spk.felles.tidsperiode.Datoar;
 import no.spk.felles.tidsperiode.Aarstall;
+import no.spk.felles.tidsperiode.Datoar;
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.OptionalAssert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Enheitstestar for {@link Observasjonsperiode}.
@@ -26,23 +24,26 @@ import org.junit.rules.ExpectedException;
  * @author Tarjei Skorgenes
  */
 public class ObservasjonsperiodeTest {
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
-
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtenFraOgMedDato() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("fra og med-dato er påkrevd");
-        e.expectMessage("men var null");
-        new Observasjonsperiode(null, now());
+        assertThatCode(
+                () -> new Observasjonsperiode(null, now())
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("fra og med-dato er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
     }
 
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("til og med-dato er påkrevd");
-        e.expectMessage("men var null");
-        new Observasjonsperiode(now(), null);
+        assertThatCode(
+                () -> new Observasjonsperiode(now(), null)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("til og med-dato er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
     }
 
     @Test
@@ -53,9 +54,18 @@ public class ObservasjonsperiodeTest {
                 periode
                         .overlappendeAar()
                         .stream()
-                        .flatMap(aar -> aar.maaneder())
-                        .collect(toList())
-        ).hasSize(12);
+        )
+                .hasSize(1)
+                .satisfies(
+                        overlappendeÅr ->
+                                assertThat(
+                                        overlappendeÅr.stream()
+                                )
+                                        .allSatisfy(
+                                                årstall -> assertThat(årstall.maaneder()).hasSize(12)
+                                        )
+                );
+        ;
     }
 
     @Test

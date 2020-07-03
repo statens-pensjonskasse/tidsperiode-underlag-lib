@@ -1,27 +1,27 @@
 package no.spk.felles.tidsperiode;
 
-import static no.spk.felles.tidsperiode.Datoar.dato;
 import static no.spk.felles.tidsperiode.AntallDagar.antallDagar;
 import static no.spk.felles.tidsperiode.AntallDagar.antallDagarMellom;
+import static no.spk.felles.tidsperiode.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class AntallDagarTest {
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
-
     /**
      * Vi skal aldri kunne ha tidsperioder som er kortare enn 1 dag, verifiser at vi feilar viss det blir forsøkt
      * brukt som verdi for antall dagar.
      */
     @Test
     public void skalIkkjeTillateAntallDagarLik0() {
-        expectIllegalArgumentException();
-        e.expectMessage("0");
-        new AntallDagar(0);
+        assertThatCode(
+                () -> new AntallDagar(0)
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("antall dagar kan ikkje vere kortare enn 1 dag")
+                .hasMessageContaining("0")
+        ;
     }
 
     /**
@@ -30,9 +30,13 @@ public class AntallDagarTest {
      */
     @Test
     public void skalIkkjeTillateAntallDagarMindreEnn0() {
-        expectIllegalArgumentException();
-        e.expectMessage("-1");
-        new AntallDagar(-1);
+        assertThatCode(
+                () -> new AntallDagar(-1)
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("antall dagar kan ikkje vere kortare enn 1 dag")
+                .hasMessageContaining("-1")
+        ;
     }
 
     @Test
@@ -90,9 +94,12 @@ public class AntallDagarTest {
      */
     @Test
     public void skalIkkjeStoetteFraOgMedDatoLikNull() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("frå og med-dato må vere ulik null");
-        antallDagarMellom(null, dato("2005.01.01"));
+        assertThatCode(
+                () -> antallDagarMellom(null, dato("2005.01.01"))
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("frå og med-dato må vere ulik null")
+        ;
     }
 
     /**
@@ -100,10 +107,13 @@ public class AntallDagarTest {
      */
     @Test
     public void skalIkkjeStoetteTilOgMedDatoLikNull() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("til og med-dato må vere ulik null");
-        e.expectMessage("løpande perioder er ikkje støtta");
-        antallDagarMellom(dato("2005.01.01"), null);
+        assertThatCode(
+                () -> antallDagarMellom(dato("2005.01.01"), null)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("til og med-dato må vere ulik null")
+                .hasMessageContaining("løpande perioder er ikkje støtta")
+        ;
     }
 
     /**
@@ -117,15 +127,12 @@ public class AntallDagarTest {
 
     @Test
     public void skalFeileVissFraOgMedDatoErStoerreEnnTilOgMedDato() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("fra og med-dato kan ikkje vere etter til og med-dato");
-        e.expectMessage("2000-09-10 er etter 2000-09-09");
-
-        antallDagarMellom(dato("2000.09.10"), dato("2000.09.09"));
-    }
-
-    private void expectIllegalArgumentException() {
-        e.expect(IllegalArgumentException.class);
-        e.expectMessage("antall dagar kan ikkje vere kortare enn 1 dag");
+        assertThatCode(
+                () -> antallDagarMellom(dato("2000.09.10"), dato("2000.09.09"))
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("fra og med-dato kan ikkje vere etter til og med-dato")
+                .hasMessageContaining("2000-09-10 er etter 2000-09-09")
+        ;
     }
 }

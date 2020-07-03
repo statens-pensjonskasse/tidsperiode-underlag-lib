@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 /**
  * Enheitstestar for {@link Maaned}.
@@ -29,21 +30,24 @@ public class MaanedIT {
     @DataPoints
     public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(Aarstall::new).collect(Collectors.toList()).toArray(new Aarstall[0]);
 
-    @Rule
-    public final ExpectedException e = ExpectedException.none();
-
     @Test
     public void skalKreveAarstallVedKonstruksjon() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("årstall er påkrevd, men var null");
-        new Maaned(null, Month.AUGUST);
+        assertThatCode(
+                () -> new Maaned(null, Month.AUGUST)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("årstall er påkrevd, men var null")
+        ;
     }
 
     @Test
     public void skalKreveMaanedVedKonstruksjon() {
-        e.expect(NullPointerException.class);
-        e.expectMessage("måned er påkrevd, men var null");
-        new Maaned(new Aarstall(1917), null);
+        assertThatCode(
+                () -> new Maaned(new Aarstall(1917), null)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("måned er påkrevd, men var null")
+        ;
     }
 
     /**
