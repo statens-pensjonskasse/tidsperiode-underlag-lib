@@ -7,7 +7,7 @@
    </parent>
    <groupId>no.spk.felles</groupId>
    <artifactId>felles-tidsperiode-underlag-lib</artifactId>
-   <version>1.5.59-SNAPSHOT</version>
+   <version>1.5.59</version>
    <description>        Generering av underlag og underlagsperioder for å understøtte bruk og behandling av tidsperiodiserte datasett for følgjande funksjonelle område:            - Fastsats            - Panda Reserveberegning    </description>
    <scm>
       <connection>scm:git:http://git.spk.no/scm/fellesjava/felles-tidsperiode-underlag-lib.git</connection>
