@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import no.spk.felles.tidsperiode.Datoar;
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 import no.spk.felles.tidsperiode.underlag.Assertions.UnderlagAssertion;
@@ -23,6 +24,7 @@ import no.spk.felles.tidsperiode.underlag.Assertions.UnderlagsperiodeAssertion;
 
 import org.assertj.core.api.ListAssert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -168,6 +170,24 @@ public class UnderlagFactoryTest {
                 .harPerioder(2)
                 .periode(atIndex(0), periode -> periode.harFraOgMed("2003.07.13").harTilOgMed("2009.12.31"))
                 .periode(atIndex(1), periode -> periode.harFraOgMed("2010.01.01").harTilOgMed("2012.06.30"))
+        ;
+    }
+
+    /**
+     * Verifiserer at underlaget blir bygd opp med løpende underlagsperiode til sist hvis observasjonsprioden er løpende
+     */
+    @Test
+    @Ignore("Gjøre underlagene løpende")
+    public void skal_byggeopp_underlagsperiodene_med_løpende_underlagsperiode_til_sist_for_løpende_observasjonsperioder() {
+        assertPeriodiser(
+                observasjonsperiode("2003.07.13", løpende()),
+                periode(dato("2003.07.13"), of(dato("2009.12.31"))),
+                periode(dato("2010.01.01"), of(dato("2012.06.30")))
+        )
+                .harPerioder(3)
+                .periode(atIndex(0), periode -> periode.harFraOgMed("2003.07.13").harTilOgMed("2009.12.31"))
+                .periode(atIndex(1), periode -> periode.harFraOgMed("2010.01.01").harTilOgMed("2012.06.30"))
+                .periode(atIndex(2), periode -> periode.harFraOgMed("2012.07.01").erLøpende())
         ;
     }
 
@@ -358,10 +378,18 @@ public class UnderlagFactoryTest {
         return new Observasjonsperiode(dato(fraOgMed), dato(tilOgMed));
     }
 
+    private Observasjonsperiode observasjonsperiode(final String fraOgMed, final Optional<String> tilOgMed) {
+        return new Observasjonsperiode(dato(fraOgMed), tilOgMed.map(Datoar::dato));
+    }
+
     private Stream<GenerellTidsperiode> byggIkkjeOverlappandePerioder(final int antallPerioder) {
         return range(0, Integer.MAX_VALUE)
                 .mapToObj(dato("1917.01.01")::plusDays)
                 .limit(antallPerioder)
                 .map(dato -> new GenerellTidsperiode(dato, of(dato)));
+    }
+
+    private Optional<String> løpende() {
+        return Optional.empty();
     }
 }

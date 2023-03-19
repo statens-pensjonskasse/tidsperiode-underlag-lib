@@ -166,5 +166,12 @@ public class Assertions extends org.assertj.core.api.Assertions {
                     .contains(expected);
             return this;
         }
+
+        UnderlagsperiodeAssertion erLøpende() {
+            assertThat(actual.tilOgMed())
+                    .as("<%s>.tilOgMed()", actual)
+                    .isEmpty();
+            return this;
+        }
     }
 }

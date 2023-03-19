@@ -5,7 +5,6 @@ import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,14 +12,10 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
-import no.spk.felles.tidsperiode.underlag.Observasjonsperiode;
-import no.spk.felles.tidsperiode.underlag.Underlag;
-import no.spk.felles.tidsperiode.underlag.Underlagsperiode;
 
 /**
  * {@link UnderlagFactory} representerer algoritma og datasettet som eit {@link Underlag} blir bygd opp av og frå.
