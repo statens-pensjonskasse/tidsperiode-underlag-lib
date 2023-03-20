@@ -43,11 +43,24 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
      * @throws IllegalArgumentException dersom fra og med-dato er etter til og med-dato
      */
     public Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
+        this(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")), new Annotasjonar());
+    }
+
+       /**
+     * Konstruerer ei ny underlagsperiode som har ein frå og med- og ein til og med-dato ulik <code>null</code>.
+     *
+     * @param fraOgMed frå og med-dato for underlagsperioda
+     * @param tilOgMed til og med-dato for underlagsperioda
+     * @throws NullPointerException     viss <code>fraOgMed</code> eller <code>tilOgMed</code> er
+     *                                  <code>null</code>
+     * @throws IllegalArgumentException dersom fra og med-dato er etter til og med-dato
+     */
+    public Underlagsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         this(fraOgMed, tilOgMed, new Annotasjonar());
     }
 
-    private Underlagsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed, final Annotasjonar annotasjonar) {
-        super(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
+    private Underlagsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed, final Annotasjonar annotasjonar) {
+        super(fraOgMed, tilOgMed);
         this.annotasjonar = annotasjonar;
     }
 

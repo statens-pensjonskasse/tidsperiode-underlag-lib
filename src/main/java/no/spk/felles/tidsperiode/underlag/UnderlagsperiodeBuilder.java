@@ -20,7 +20,7 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
 
     private LocalDate fraOgMed;
 
-    private LocalDate tilOgMed;
+    private Optional<LocalDate> tilOgMed;
 
     /**
      * Konstruerer ein ny builder med tom tilstand.
@@ -81,6 +81,17 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
      * @return <code>this</code>
      */
     public UnderlagsperiodeBuilder tilOgMed(final LocalDate dato) {
+        tilOgMed = of(dato);
+        return this;
+    }
+
+    /**
+     * Til og med-datoen som underlagsperioder bygd av builderen skal benytte.
+     *
+     * @param dato den nye til og med-datoen
+     * @return <code>this</code>
+     */
+    public UnderlagsperiodeBuilder tilOgMed(final Optional<LocalDate> dato) {
         tilOgMed = dato;
         return this;
     }
@@ -185,6 +196,6 @@ public class UnderlagsperiodeBuilder implements Annoterbar<UnderlagsperiodeBuild
 
     @Override
     public Optional<LocalDate> tilOgMed() {
-        return of(tilOgMed);
+        return tilOgMed;
     }
 }

@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toCollection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
@@ -162,6 +163,9 @@ public class UnderlagFactory {
             }
             fraOgMed = nextDate;
         }
+        if(grenser.tilOgMed().isEmpty()) {
+            nyePerioder.add(new Underlagsperiode(fraOgMed, Optional.empty()));
+        }
         return nyePerioder.stream();
     }
 
@@ -194,9 +198,6 @@ public class UnderlagFactory {
      * Ved oppsplitting av underlaget så er det ikkje ønskelig å ende opp med underlagsperioder som har enten frå og med-
      * eller til og med-dato som ligg utanfor observasjonsperioda som underlaget skal avgrensast til.
      * <p>
-     * Tilsvarande, løpande/aktive tidsperioder (dvs utan til og med-dato) må på ein eller anna måte avgrensast sidan eit
-     * underlag ikkje skal kunne vere løpande.
-     * <p>
      * For å sikre desse betingelsane blir derfor alle datoar returnert av denne metoda avgrensa til å tidligast starte
      * samme dag som observsjonsperiodas frå og med-dato.
      * <p>
@@ -217,9 +218,10 @@ public class UnderlagFactory {
      */
     private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<Tidsperiode<?>> input) {
         return input.stream()
-                .flatMap(p -> Stream.of(
-                        p.fraOgMed(),
-                        nesteDag(p.tilOgMed().orElse(grenser.tilOgMed().get()))
+                .flatMap(p -> Stream.concat(
+                        Stream.of(p.fraOgMed()),
+                        p.tilOgMed().or(grenser::tilOgMed)
+                                .map(UnderlagFactory::nesteDag).stream()
                 ))
                 .map(this::avgrensTilNedreGrense)
                 .map(this::avgrensTilOevreGrense)
@@ -241,7 +243,11 @@ public class UnderlagFactory {
      * ellers blir dagen etter observasjonsperiodas til og med-dato returnert
      */
     private LocalDate avgrensTilOevreGrense(final LocalDate dato) {
-        return dato.isAfter(grenser.tilOgMed().get()) ? nesteDag(grenser.tilOgMed().get()) : dato;
+        return grenser
+                .tilOgMed()
+                .filter(dato::isAfter)
+                .map(UnderlagFactory::nesteDag)
+                .orElse(dato);
     }
 
     /**

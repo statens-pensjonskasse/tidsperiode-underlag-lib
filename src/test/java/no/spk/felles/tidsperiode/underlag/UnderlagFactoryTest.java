@@ -24,7 +24,6 @@ import no.spk.felles.tidsperiode.underlag.Assertions.UnderlagsperiodeAssertion;
 
 import org.assertj.core.api.ListAssert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -174,15 +173,33 @@ public class UnderlagFactoryTest {
     }
 
     /**
-     * Verifiserer at underlaget blir bygd opp med løpende underlagsperiode til sist hvis observasjonsprioden er løpende
+     * Verifiserer at underlaget blir bygd opp når observasjonsprioden er løpende også uten noen løpende perioder i koblingene
      */
     @Test
-    @Ignore("Gjøre underlagene løpende")
-    public void skal_byggeopp_underlagsperiodene_med_løpende_underlagsperiode_til_sist_for_løpende_observasjonsperioder() {
+    public void skal_byggeopp_underlagsperiodene_for_løpende_observasjonsperioder() {
         assertPeriodiser(
                 observasjonsperiode("2003.07.13", løpende()),
                 periode(dato("2003.07.13"), of(dato("2009.12.31"))),
                 periode(dato("2010.01.01"), of(dato("2012.06.30")))
+        )
+                .harPerioder(3)
+                .periode(atIndex(0), periode -> periode.harFraOgMed("2003.07.13").harTilOgMed("2009.12.31"))
+                .periode(atIndex(1), periode -> periode.harFraOgMed("2010.01.01").harTilOgMed("2012.06.30"))
+                .periode(atIndex(2), periode -> periode.harFraOgMed("2012.07.01").erLøpende())
+        ;
+    }
+
+    /**
+     * Verifiserer at underlaget blir bygd opp med løpende underlagsperiode til sist hvis observasjonsprioden er løpende
+     * når en av de koblede periodene er løpende
+     */
+    @Test
+    public void skal_byggeopp_underlagsperiodene_med_løpende_underlagsperiode_til_sist_for_løpende_observasjonsperioder() {
+        assertPeriodiser(
+                observasjonsperiode("2000.01.01", løpende()),
+                periode(dato("2003.07.13"), of(dato("2009.12.31"))),
+                periode(dato("2010.01.01"), of(dato("2012.06.30"))),
+                periode(dato("2012.07.01"), empty())
         )
                 .harPerioder(3)
                 .periode(atIndex(0), periode -> periode.harFraOgMed("2003.07.13").harTilOgMed("2009.12.31"))
