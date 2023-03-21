@@ -102,7 +102,7 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
         if (!(obj instanceof final Observasjonsperiode other)) {
             return false;
         }
-        return Objects.equals(fraOgMed(), other.fraOgMed()) && Objects.equals(tilOgMed().orElse(MAX), other.tilOgMed().orElse(MAX));
+        return Objects.equals(fraOgMed(), other.fraOgMed()) && Objects.equals(tilOgMed(), other.tilOgMed());
     }
 
     @Override

@@ -35,6 +35,32 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
+    public void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
+        final LocalDate til_og_med = null;
+
+        assertThatCode(
+                () -> new Observasjonsperiode(now(), til_og_med)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("til og med-dato er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
+    }
+
+    @Test
+    public void skalIkkjeKunneKonstruerePeriodeUtenOptionalTilOgMedDato() {
+        final Optional<LocalDate> til_og_med = null;
+
+        assertThatCode(
+                () -> new Observasjonsperiode(now(), til_og_med)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("til og med-dato er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
+    }
+
+    @Test
     public void skalReturnereAarSomInneheld12MaanedarSjoelvOmObservasjonsperiodaKunDekkerDelarAvAaret() {
         final Observasjonsperiode periode = observasjonsperiode("2005.08.15", "2005.12.31");
         assertThat(periode.overlappendeAar()).hasSize(1);
