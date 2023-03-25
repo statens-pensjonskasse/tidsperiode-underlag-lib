@@ -1,15 +1,16 @@
 package no.spk.felles.tidsperiode.underlag;
 
 import static java.time.LocalDate.MAX;
+import static java.time.LocalDate.MIN;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toCollection;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
@@ -36,8 +37,16 @@ public class UnderlagFactory {
      * @throws NullPointerException dersom <code>observasjonsperiode</code> er <code>null</code>
      */
     public UnderlagFactory(final Observasjonsperiode observasjonsperiode) {
-        requireNonNull(observasjonsperiode, "observasjonsperiode er påkrevd, men var null");
-        this.grenser = observasjonsperiode;
+        this.grenser = requireNonNull(observasjonsperiode, "observasjonsperiode er påkrevd, men var null");
+    }
+
+    /**
+     * Konstruerer ein ny instans som kan generere underlag som ikke er avgrensa i tid
+     *
+     * @throws NullPointerException dersom <code>observasjonsperiode</code> er <code>null</code>
+     */
+    public UnderlagFactory() {
+        this(new Observasjonsperiode(MIN, empty()));
     }
 
     /**
@@ -164,7 +173,7 @@ public class UnderlagFactory {
             fraOgMed = nextDate;
         }
         if(grenser.tilOgMed().isEmpty()) {
-            nyePerioder.add(new Underlagsperiode(fraOgMed, Optional.empty()));
+            nyePerioder.add(new Underlagsperiode(fraOgMed, empty()));
         }
         return nyePerioder.stream();
     }
