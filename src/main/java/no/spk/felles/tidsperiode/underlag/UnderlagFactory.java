@@ -41,9 +41,7 @@ public class UnderlagFactory {
     }
 
     /**
-     * Konstruerer ein ny instans som kan generere underlag som ikke er avgrensa i tid
-     *
-     * @throws NullPointerException dersom <code>observasjonsperiode</code> er <code>null</code>
+     * Konstruerer ein ny instans som kan generere underlag som ikkje er avgrensa i tid
      */
     public UnderlagFactory() {
         this(new Observasjonsperiode(MIN, empty()));
