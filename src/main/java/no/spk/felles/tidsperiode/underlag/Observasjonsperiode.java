@@ -29,7 +29,7 @@ import no.spk.felles.tidsperiode.Tidsperiode;
  */
 public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsperiode> {
     /**
-     * Konstruerer ei ny grenser.
+     * Konstruerer en ny observerasjonsperiode.
      *
      * @param fraOgMed nedre grense for frå og med-dato til første underlagsperiode i eit underlag
      * @param tilOgMed øvre grense for til og med-dato til siste underlagsperiode i eit underlag
@@ -40,7 +40,7 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
     }
 
     /**
-     * Konstruerer ei ny grenser.
+     * Konstruerer en ny observerasjonsperiode.
      *
      * @param fraOgMed nedre grense for frå og med-dato til første underlagsperiode i eit underlag
      * @param tilOgMed øvre grense for til og med-dato til siste underlagsperiode i eit underlag
