@@ -3,11 +3,12 @@ import no.spk.jenkins.pipeline.ci.config.CIPipelineConfig
 
 ciPipeline {
     config = CIPipelineConfig.get()
-            .useMaven(jdkVersion: 11)                           // Maven-prosjekt med Java 11
+            .useMaven()                                         // Maven-prosjekt
             .withPublish(branches: 'feature/')                  // Publiser SNAPSHOT-pakker fra feature-branches
             .withRelease(branch: 'master')                      // Publiser release-pakker fra master-branch
             .withVersionStrategy(strategy: 'semver_patch')      // Bumper versjon basert på conventionalcommits.org med fallback til patch
             .withGitTaggingStrategy(semantic: 'master')         // Versjonering baserer seg på baster-branch
             .withEmailNotifications()                           // Send e-post til siste comitter ved feil
             .withSlackNotifications(channels: 'appark-ci')      // Send varsling om brekt-bygg til Slack
+            .withJenkinsTools(jdk: 'jdk-latest11')              // Bruk java 11
 }
