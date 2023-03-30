@@ -63,7 +63,8 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
         return IntStream
                 .rangeClosed(
                         fraOgMed().getYear(),
-                        tilOgMed().get().getYear()
+                        tilOgMed().orElseThrow(() -> new IllegalStateException("Å lage Aar for en periode uten ende støttes ikke."))
+                                .getYear()
                 )
                 .mapToObj(Aarstall::new)
                 .map(Aar::new)

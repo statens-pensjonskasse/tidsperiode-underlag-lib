@@ -96,7 +96,7 @@ public class Underlagsperiode extends AbstractTidsperiode<Underlagsperiode>
     @Override
     public <T> T annotasjonFor(final Class<T> type) throws PaakrevdAnnotasjonManglarException {
         final Optional<T> resultat = annotasjonar.lookup(type);
-        if (!resultat.isPresent()) {
+        if (resultat.isEmpty()) {
             throw new PaakrevdAnnotasjonManglarException(this, type);
         }
         return resultat.get();

@@ -83,6 +83,18 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
+    public void skal_ikke_kunne_hente_ut_overlappende_år_for_en_løpende_observasjonsperiode() {
+        final Observasjonsperiode periode = observasjonsperiode("2005.08.15", empty());
+
+        assertThatCode(
+                periode::overlappendeAar
+        )
+                .as("Utlisting av alle år for en løpende periode")
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Å lage Aar for en periode uten ende støttes ikke.");
+    }
+
+    @Test
     public void skalGenerereNyObservasjonsperiodeSomKunInneheldDaganeSomDeiToPeriodeneOverlappar() {
         final Observasjonsperiode observasjonsperiode = observasjonsperiode(
                 "2000.01.01",
@@ -160,6 +172,6 @@ public class ObservasjonsperiodeTest {
     }
 
     private Optional<String> løpende() {
-        return Optional.empty();
+        return empty();
     }
 }
