@@ -2,15 +2,15 @@
 
 ## 1. Moduldokumentasjon
 
-|                  |      |
-| :---             | :--- |
+|                  |                                                                                                                                                                                                                                                                                                                                                                                         |
+| :---             |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Oppgave          | Generering av underlag og underlagsperioder for å understøtte:<ul><li>Fastsats</li><li>Prognosefakturering av fastsatspremie</li><li>Beregning av riktig årspremie ved avregning av tidligare innbetalt fastsatspremie</li><li>Periodisere gjeldande avtale- og arbeidsgiverinformasjon for å forenkle datakvalitets- og rapporteringsoppgåver</li><li>Panda Reserveberegning</li></ul> |
-| Modulnavn        | felles-tidsperiode-underlag-lib |
-| Versjonskontroll | felles-tidsperiode-underlag-lib (GIT) |
-| Pakke            | <ul><li>no.spk.pensjon.felles.tidsperiode</li><li>no.spk.pensjon.felles.tidsperiode.underlag</li></ul>
-| Hovedklasser     | <ul><li>no.spk.pensjon.felles.tidsperiode.Tidsperiode</li><li>no.spk.pensjon.felles.tidsperiode.underlag.Underlag</li><li>no.spk.pensjon.felles.tidsperiode.underlag.UnderlagFactory</li></ul> |
-| Versjonering     | Sjå [Fellesmodul - felles-tidsperiode-underlag-lib - Endringshandtering](dokumentasjon/Endringshandtering.md) |
-| Branchingmodel   | Gitflow-variant (develop == klar for neste release, master == forrige release) |
+| Modulnavn        | felles-tidsperiode-underlag-lib                                                                                                                                                                                                                                                                                                                                                         |
+| Versjonskontroll | felles-tidsperiode-underlag-lib (GIT)                                                                                                                                                                                                                                                                                                                                                   |
+| Pakke            | <ul><li>no.spk.pensjon.felles.tidsperiode</li><li>no.spk.pensjon.felles.tidsperiode.underlag</li></ul>                                                                                                                                                                                                                                                                                  
+| Hovedklasser     | <ul><li>no.spk.pensjon.felles.tidsperiode.Tidsperiode</li><li>no.spk.pensjon.felles.tidsperiode.underlag.Underlag</li><li>no.spk.pensjon.felles.tidsperiode.underlag.UnderlagFactory</li></ul>                                                                                                                                                                                          |
+| Versjonering     | Sjå [Fellesmodul - felles-tidsperiode-underlag-lib - Endringshandtering](dokumentasjon/Endringshandtering.md)                                                                                                                                                                                                                                                                           |
+| Branchingmodel   | JPL fra Master (feature == større feature, master == nåtilstand, tag fra master == release)                                                                                                                                                                                                                                                                                             |
 
 ## 2. Bakgrunn
 
@@ -392,13 +392,13 @@ _Eksempel: Beregningar for kvar underlagsperiode basert på annotasjonar og bere
 
 ## 6. Oppsett av utviklingsmiljø
 
-- Verifiser at du har java 8 installert og satt opp som default java for shellet du brukar når du skal bygge modulen
+- Verifiser at du har java 17 installert og satt opp som default java for shellet du brukar når du skal bygge modulen
 
 
     $ echo $JAVA_HOME
-    C:\apps\jdk.1.8.0_XX
+    C:\apps\jdk.1.17.0_XX
     $ java -version
-    java version "1.8.0_XX"
+    java version "1.17.0_XX"
 - Sjekk ut modulen via GIT:
 
 

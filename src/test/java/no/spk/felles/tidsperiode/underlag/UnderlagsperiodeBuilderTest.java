@@ -4,6 +4,9 @@ import static java.util.Optional.empty;
 import static no.spk.felles.tidsperiode.Datoar.dato;
 import static no.spk.felles.tidsperiode.underlag.Assertions.assertThat;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
@@ -45,6 +48,26 @@ public class UnderlagsperiodeBuilderTest {
                         GenerellTidsperiode.class,
                         kobling -> assertThat(kobling).isSameAs(expected)
                 );
+    }
+
+    @Test
+    public void skal_kopiere_annotasjonar_og_koblingar_også_med_løpende_perioder() {
+        final Tidsperiode<?> expectedPeriode = new GenerellTidsperiode(dato("1950.01.01"), empty());
+        final Integer expected = 123;
+
+        assertThat(
+                builder()
+                        .fraOgMed(dato("2007.05.12"))
+                        .tilOgMed(løpende())
+                        .medKobling(expectedPeriode)
+                        .med(expected)
+                        .kopi()
+        )
+                .harKoblingAvType(
+                        GenerellTidsperiode.class,
+                        kobling -> assertThat(kobling).isSameAs(expectedPeriode)
+                )
+                .harAnnotasjon(Integer.class, expected);
     }
 
     @Test
@@ -107,5 +130,9 @@ public class UnderlagsperiodeBuilderTest {
 
     private static UnderlagsperiodeBuilder builder() {
         return new UnderlagsperiodeBuilder().fraOgMed(dato("2001.01.01")).tilOgMed(dato("2001.12.31"));
+    }
+
+    private Optional<LocalDate> løpende() {
+        return Optional.empty();
     }
 }

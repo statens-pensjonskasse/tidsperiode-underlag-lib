@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import no.spk.felles.tidsperiode.Aarstall;
 import no.spk.felles.tidsperiode.Datoar;
 import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
@@ -37,8 +36,23 @@ public class ObservasjonsperiodeTest {
 
     @Test
     public void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
+        final LocalDate til_og_med = null;
+
         assertThatCode(
-                () -> new Observasjonsperiode(now(), null)
+                () -> new Observasjonsperiode(now(), til_og_med)
+        )
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("til og med-dato er påkrevd")
+                .hasMessageContaining("men var null")
+        ;
+    }
+
+    @Test
+    public void skalIkkjeKunneKonstruerePeriodeUtenOptionalTilOgMedDato() {
+        final Optional<LocalDate> til_og_med = null;
+
+        assertThatCode(
+                () -> new Observasjonsperiode(now(), til_og_med)
         )
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("til og med-dato er påkrevd")
@@ -69,14 +83,26 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
+    public void skal_ikke_kunne_hente_ut_overlappende_år_for_en_løpende_observasjonsperiode() {
+        final Observasjonsperiode periode = observasjonsperiode("2005.08.15", empty());
+
+        assertThatCode(
+                periode::overlappendeAar
+        )
+                .as("Utlisting av alle år for en løpende periode")
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Å lage Aar for en periode uten ende støttes ikke.");
+    }
+
+    @Test
     public void skalGenerereNyObservasjonsperiodeSomKunInneheldDaganeSomDeiToPeriodeneOverlappar() {
-        final Observasjonsperiode observasjonsperiode = new Observasjonsperiode(
-                new Aarstall(2000).atStartOfYear(),
-                new Aarstall(2000).atEndOfYear()
+        final Observasjonsperiode observasjonsperiode = observasjonsperiode(
+                "2000.01.01",
+                "2000.12.31"
         );
 
         assertIntersect(observasjonsperiode, "1999.01.01", of("1999.12.31")).isEqualTo(empty());
-        assertIntersect(observasjonsperiode, "1999.01.01", empty()).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.12.31")));
+        assertIntersect(observasjonsperiode, "1999.01.01", løpende()).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.12.31")));
 
         assertIntersect(observasjonsperiode, "1999.01.01", of("2000.01.01")).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.01.01")));
         assertIntersect(observasjonsperiode, "1999.01.01", of("2000.01.02")).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.01.02")));
@@ -92,7 +118,7 @@ public class ObservasjonsperiodeTest {
         assertIntersect(observasjonsperiode, "2000.01.01", of("2000.12.30")).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.12.30")));
         assertIntersect(observasjonsperiode, "2000.01.01", of("2000.12.31")).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.12.31")));
         assertIntersect(observasjonsperiode, "2000.01.01", of("2001.01.01")).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.12.31")));
-        assertIntersect(observasjonsperiode, "2000.01.01", empty()).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.12.31")));
+        assertIntersect(observasjonsperiode, "2000.01.01", løpende()).isEqualTo(of(observasjonsperiode("2000.01.01", "2000.12.31")));
 
         assertIntersect(observasjonsperiode, "2000.06.01", of("2000.06.01")).isEqualTo(of(observasjonsperiode("2000.06.01", "2000.06.01")));
         assertIntersect(observasjonsperiode, "2000.06.01", of("2000.10.01")).isEqualTo(of(observasjonsperiode("2000.06.01", "2000.10.01")));
@@ -100,18 +126,34 @@ public class ObservasjonsperiodeTest {
         assertIntersect(observasjonsperiode, "2000.06.01", of("2000.12.30")).isEqualTo(of(observasjonsperiode("2000.06.01", "2000.12.30")));
         assertIntersect(observasjonsperiode, "2000.06.01", of("2000.12.31")).isEqualTo(of(observasjonsperiode("2000.06.01", "2000.12.31")));
         assertIntersect(observasjonsperiode, "2000.06.01", of("2001.01.01")).isEqualTo(of(observasjonsperiode("2000.06.01", "2000.12.31")));
-        assertIntersect(observasjonsperiode, "2000.06.01", empty()).isEqualTo(of(observasjonsperiode("2000.06.01", "2000.12.31")));
+        assertIntersect(observasjonsperiode, "2000.06.01", løpende()).isEqualTo(of(observasjonsperiode("2000.06.01", "2000.12.31")));
 
         assertIntersect(observasjonsperiode, "2000.12.31", of("2000.12.31")).isEqualTo(of(observasjonsperiode("2000.12.31", "2000.12.31")));
         assertIntersect(observasjonsperiode, "2000.12.31", of("2001.01.01")).isEqualTo(of(observasjonsperiode("2000.12.31", "2000.12.31")));
         assertIntersect(observasjonsperiode, "2000.12.31", empty()).isEqualTo(of(observasjonsperiode("2000.12.31", "2000.12.31")));
 
         assertIntersect(observasjonsperiode, "2001.01.01", of("2001.12.31")).isEqualTo(empty());
-        assertIntersect(observasjonsperiode, "2001.01.01", empty()).isEqualTo(empty());
+        assertIntersect(observasjonsperiode, "2001.01.01", løpende()).isEqualTo(empty());
+    }
+
+    @Test
+    public void skalGenerereNyObservasjonsperiodeSomKunInneheldDaganeSomDeiToPeriodeneOverlapparForLøpendeObservasjonsperiode() {
+        final Observasjonsperiode observasjonsperiode = observasjonsperiode(
+                "2000.01.01",
+                løpende()
+        );
+
+        assertIntersect(observasjonsperiode, "1999.01.01", of("1999.12.31")).isEqualTo(empty());
+        assertIntersect(observasjonsperiode, "2001.01.01", of("2001.12.31")).isEqualTo(of(observasjonsperiode("2001.01.01", "2001.12.31")));
+        assertIntersect(observasjonsperiode, "2001.01.01", løpende()).isEqualTo(of(observasjonsperiode("2001.01.01", løpende())));
+        assertIntersect(observasjonsperiode, "1999.01.01", løpende()).isEqualTo(of(observasjonsperiode));
     }
 
     private static OptionalAssert<Observasjonsperiode> assertIntersect(
-            final Observasjonsperiode observasjonsperiode, final String fraOgMed, final Optional<String> tilOgMed) {
+            final Observasjonsperiode observasjonsperiode,
+            final String fraOgMed,
+            final Optional<String> tilOgMed
+    ) {
         final Tidsperiode<?> other = periode(dato(fraOgMed), tilOgMed.map(Datoar::dato));
         return assertThat(observasjonsperiode.intersect(other))
                 .as("overlappande periode for " + observasjonsperiode + " og " + other);
@@ -121,7 +163,15 @@ public class ObservasjonsperiodeTest {
         return new Observasjonsperiode(dato(fraOgMed), dato(tilogMed));
     }
 
+    private static Observasjonsperiode observasjonsperiode(final String fraOgMed, final Optional<String> tilogMed) {
+        return new Observasjonsperiode(dato(fraOgMed), tilogMed.map(Datoar::dato));
+    }
+
     private static Tidsperiode<?> periode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
         return new GenerellTidsperiode(fraOgMed, tilOgMed);
+    }
+
+    private Optional<String> løpende() {
+        return empty();
     }
 }

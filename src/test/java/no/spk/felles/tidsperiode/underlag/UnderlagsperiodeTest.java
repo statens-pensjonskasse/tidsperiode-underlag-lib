@@ -242,21 +242,6 @@ public class UnderlagsperiodeTest {
         ;
     }
 
-    /**
-     * Verifiserer at underlagsperiodene handhevar at til og med-dato ikkje kan vere løpande, dette for å sikre
-     * at post-conditionen til oppbygginga av underlaget (som seier at eit underlag alltid skal representere ei lukka
-     * tidsperiode) blir handheva.
-     */
-    @Test
-    public void skalIkkjeKunneOpprettUnderlagsPerioderMedTilOgMedDatoLikNull() {
-        assertThatCode(
-                () -> new Underlagsperiode(dato("2007.12.31"), null)
-        )
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("til og med-dato er påkrevd")
-                .hasMessageContaining("var null");
-    }
-
     @Test
     public void skal_kunne_kalle_regler_rekursivt_uten_concurrentModificationException_på_cache() {
         String expected = "testverdi";

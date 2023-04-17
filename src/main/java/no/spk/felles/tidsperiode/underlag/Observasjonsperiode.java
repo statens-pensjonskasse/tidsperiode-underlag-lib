@@ -4,7 +4,6 @@ import static java.time.LocalDate.MAX;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -30,14 +29,25 @@ import no.spk.felles.tidsperiode.Tidsperiode;
  */
 public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsperiode> {
     /**
-     * Konstruerer ei ny grenser.
+     * Konstruerer en ny observerasjonsperiode.
      *
      * @param fraOgMed nedre grense for frå og med-dato til første underlagsperiode i eit underlag
      * @param tilOgMed øvre grense for til og med-dato til siste underlagsperiode i eit underlag
      * @throws NullPointerException dersom nokon av datoane er <code>null</code>
      */
     public Observasjonsperiode(final LocalDate fraOgMed, final LocalDate tilOgMed) {
-        super(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
+        this(fraOgMed, of(requireNonNull(tilOgMed, "til og med-dato er påkrevd, men var null")));
+    }
+
+    /**
+     * Konstruerer en ny observerasjonsperiode.
+     *
+     * @param fraOgMed nedre grense for frå og med-dato til første underlagsperiode i eit underlag
+     * @param tilOgMed øvre grense for til og med-dato til siste underlagsperiode i eit underlag
+     * @throws NullPointerException dersom nokon av datoane er <code>null</code>
+     */
+    public Observasjonsperiode(final LocalDate fraOgMed, final Optional<LocalDate> tilOgMed) {
+        super(fraOgMed, tilOgMed);
     }
 
     /**
@@ -53,7 +63,8 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
         return IntStream
                 .rangeClosed(
                         fraOgMed().getYear(),
-                        tilOgMed().get().getYear()
+                        tilOgMed().orElseThrow(() -> new IllegalStateException("Å lage Aar for en periode uten ende støttes ikke."))
+                                .getYear()
                 )
                 .mapToObj(Aarstall::new)
                 .map(Aar::new)
@@ -73,7 +84,7 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
             return empty();
         }
         final LocalDate fraOgMed = periode.fraOgMed();
-        final LocalDate tilOgMed = periode.tilOgMed().orElse(MAX);
+        final Optional<LocalDate> tilOgMed = periode.tilOgMed();
         return of(
                 new Observasjonsperiode(
                         avgrensFraOgMedDato(fraOgMed),
@@ -84,21 +95,20 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
 
     @Override
     public int hashCode() {
-        return Objects.hash(fraOgMed(), tilOgMed().get());
+        return Objects.hash(fraOgMed(), tilOgMed().orElse(MAX));
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof Observasjonsperiode)) {
+        if (!(obj instanceof final Observasjonsperiode other)) {
             return false;
         }
-        final Observasjonsperiode other = (Observasjonsperiode) obj;
         return Objects.equals(fraOgMed(), other.fraOgMed()) && Objects.equals(tilOgMed(), other.tilOgMed());
     }
 
     @Override
     public String toString() {
-        return "observasjonsperiode [" + fraOgMed() + "->" + tilOgMed().get() + "]";
+        return "observasjonsperiode [" + fraOgMed() + "->" + tilOgMed().map(Objects::toString).orElse("<løpende>") + "]";
     }
 
     private LocalDate avgrensFraOgMedDato(final LocalDate other) {
@@ -108,10 +118,10 @@ public final class Observasjonsperiode extends AbstractTidsperiode<Observasjonsp
                 .get();
     }
 
-    private LocalDate avgrensTilOgMedDato(final LocalDate other) {
-        return Stream.of(other, tilOgMed().get())
+    private Optional<LocalDate> avgrensTilOgMedDato(final Optional<LocalDate> other) {
+        return Stream.of(other, tilOgMed())
+                .flatMap(Optional::stream)
                 .filter(this::overlapper)
-                .min(LocalDate::compareTo)
-                .get();
+                .min(LocalDate::compareTo);
     }
 }

@@ -1,11 +1,12 @@
 package no.spk.felles.tidsperiode.underlag;
 
 import static java.time.LocalDate.MAX;
+import static java.time.LocalDate.MIN;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,14 +14,10 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import no.spk.felles.tidsperiode.Tidsperiode;
-import no.spk.felles.tidsperiode.underlag.Observasjonsperiode;
-import no.spk.felles.tidsperiode.underlag.Underlag;
-import no.spk.felles.tidsperiode.underlag.Underlagsperiode;
 
 /**
  * {@link UnderlagFactory} representerer algoritma og datasettet som eit {@link Underlag} blir bygd opp av og frå.
@@ -40,8 +37,14 @@ public class UnderlagFactory {
      * @throws NullPointerException dersom <code>observasjonsperiode</code> er <code>null</code>
      */
     public UnderlagFactory(final Observasjonsperiode observasjonsperiode) {
-        requireNonNull(observasjonsperiode, "observasjonsperiode er påkrevd, men var null");
-        this.grenser = observasjonsperiode;
+        this.grenser = requireNonNull(observasjonsperiode, "observasjonsperiode er påkrevd, men var null");
+    }
+
+    /**
+     * Konstruerer ein ny instans som kan generere underlag som ikkje er avgrensa i tid
+     */
+    public UnderlagFactory() {
+        this(new Observasjonsperiode(MIN, empty()));
     }
 
     /**
@@ -167,6 +170,9 @@ public class UnderlagFactory {
             }
             fraOgMed = nextDate;
         }
+        if(grenser.tilOgMed().isEmpty()) {
+            nyePerioder.add(new Underlagsperiode(fraOgMed, empty()));
+        }
         return nyePerioder.stream();
     }
 
@@ -199,9 +205,6 @@ public class UnderlagFactory {
      * Ved oppsplitting av underlaget så er det ikkje ønskelig å ende opp med underlagsperioder som har enten frå og med-
      * eller til og med-dato som ligg utanfor observasjonsperioda som underlaget skal avgrensast til.
      * <p>
-     * Tilsvarande, løpande/aktive tidsperioder (dvs utan til og med-dato) må på ein eller anna måte avgrensast sidan eit
-     * underlag ikkje skal kunne vere løpande.
-     * <p>
      * For å sikre desse betingelsane blir derfor alle datoar returnert av denne metoda avgrensa til å tidligast starte
      * samme dag som observsjonsperiodas frå og med-dato.
      * <p>
@@ -222,9 +225,10 @@ public class UnderlagFactory {
      */
     private SortedSet<LocalDate> alleDatoerUnderlagesPerioderSkalSplittesPaa(final List<Tidsperiode<?>> input) {
         return input.stream()
-                .flatMap(p -> Stream.of(
-                        p.fraOgMed(),
-                        nesteDag(p.tilOgMed().orElse(grenser.tilOgMed().get()))
+                .flatMap(p -> Stream.concat(
+                        Stream.of(p.fraOgMed()),
+                        p.tilOgMed().or(grenser::tilOgMed)
+                                .map(UnderlagFactory::nesteDag).stream()
                 ))
                 .map(this::avgrensTilNedreGrense)
                 .map(this::avgrensTilOevreGrense)
@@ -246,7 +250,11 @@ public class UnderlagFactory {
      * ellers blir dagen etter observasjonsperiodas til og med-dato returnert
      */
     private LocalDate avgrensTilOevreGrense(final LocalDate dato) {
-        return dato.isAfter(grenser.tilOgMed().get()) ? nesteDag(grenser.tilOgMed().get()) : dato;
+        return grenser
+                .tilOgMed()
+                .filter(dato::isAfter)
+                .map(UnderlagFactory::nesteDag)
+                .orElse(dato);
     }
 
     /**
