@@ -170,10 +170,23 @@ public class UnderlagFactory {
             }
             fraOgMed = nextDate;
         }
-        if(grenser.tilOgMed().isEmpty() && fraOgMed != null) {
+        if (fraOgMed != null && grenserErLøpende() && perioderErLøpende()) {
             nyePerioder.add(new Underlagsperiode(fraOgMed, empty()));
         }
         return nyePerioder.stream();
+    }
+
+    private boolean grenserErLøpende() {
+        return grenser.tilOgMed().isEmpty();
+    }
+
+    private boolean perioderErLøpende() {
+        return perioder
+                .stream()
+                .anyMatch(
+                        periode ->
+                                periode.tilOgMed().isEmpty()
+                );
     }
 
     /**
