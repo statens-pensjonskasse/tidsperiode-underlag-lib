@@ -170,7 +170,7 @@ public class UnderlagFactory {
             }
             fraOgMed = nextDate;
         }
-        if(grenser.tilOgMed().isEmpty()) {
+        if(grenser.tilOgMed().isEmpty() && fraOgMed != null) {
             nyePerioder.add(new Underlagsperiode(fraOgMed, empty()));
         }
         return nyePerioder.stream();

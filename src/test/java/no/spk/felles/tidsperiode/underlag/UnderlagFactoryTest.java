@@ -101,6 +101,17 @@ public class UnderlagFactoryTest {
     }
 
     /**
+     * Verifiserer at dersom ingen tidsperioder blir brukt som input til periodiseringa av underlag
+     * uten en observasjonsperiode så blir et tomt underlag generert, dvs det er en normal
+     * situasjon som ikke skal medføre noen exception.
+     */
+    @Test
+    public void skalIkkeFeileUtenPerioderOgUtenObservasjonsperiode() {
+        assertPeriodiserUtenObservasjon()
+                .harPerioder(0);
+    }
+
+    /**
      * Verifiserer at perioder som ligg utanfor observasjonsperioda, dvs ikkje oerlappar den med minst ein dag,
      * ikkje får sine frå og med- og til og med-datoar brukt i forbindelse med periodiseringa av underlaget.
      */
