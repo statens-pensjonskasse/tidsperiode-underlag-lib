@@ -193,10 +193,9 @@ public class UnderlagFactoryTest {
                 periode(dato("2003.07.13"), of(dato("2009.12.31"))),
                 periode(dato("2010.01.01"), of(dato("2012.06.30")))
         )
-                .harPerioder(3)
+                .harPerioder(2)
                 .periode(atIndex(0), periode -> periode.harFraOgMed("2003.07.13").harTilOgMed("2009.12.31"))
                 .periode(atIndex(1), periode -> periode.harFraOgMed("2010.01.01").harTilOgMed("2012.06.30"))
-                .periode(atIndex(2), periode -> periode.harFraOgMed("2012.07.01").erLøpende())
         ;
     }
 
@@ -228,10 +227,9 @@ public class UnderlagFactoryTest {
                 periode(dato("2003.07.13"), of(dato("2009.12.31"))),
                 periode(dato("2010.01.01"), of(dato("2012.06.30")))
         )
-                .harPerioder(3)
+                .harPerioder(2)
                 .periode(atIndex(0), periode -> periode.harFraOgMed("2003.07.13").harTilOgMed("2009.12.31"))
                 .periode(atIndex(1), periode -> periode.harFraOgMed("2010.01.01").harTilOgMed("2012.06.30"))
-                .periode(atIndex(2), periode -> periode.harFraOgMed("2012.07.01").erLøpende())
         ;
     }
 
