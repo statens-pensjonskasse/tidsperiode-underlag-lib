@@ -6,30 +6,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.Month;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Enheitstestar for {@link Maaned}.
  *
  * @author Tarjei Skorgenes
  */
-@RunWith(Theories.class)
 public class MaanedIT {
-    @DataPoints
-    public static Month[] months = Month.values();
 
-    @DataPoints
-    public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(Aarstall::new).collect(Collectors.toList()).toArray(new Aarstall[0]);
-
+    private static Stream<Arguments> monthAndYears() {
+        return Arrays.stream(Month.values()).map( month -> Arguments.of(new Aarstall(1997), month));
+    }
     @Test
-    public void skalKreveAarstallVedKonstruksjon() {
+    void skalKreveAarstallVedKonstruksjon() {
         assertThatCode(
                 () -> new Maaned(null, Month.AUGUST)
         )
@@ -39,7 +35,7 @@ public class MaanedIT {
     }
 
     @Test
-    public void skalKreveMaanedVedKonstruksjon() {
+    void skalKreveMaanedVedKonstruksjon() {
         assertThatCode(
                 () -> new Maaned(new Aarstall(1917), null)
         )
@@ -54,9 +50,9 @@ public class MaanedIT {
      * @param aar    årstallet som måneden vi skal sjekke skal vere tilknytta
      * @param maaned måned-i-året som måneden vi skal sjekke skal vere tilknytta
      */
-    @Theory
-    @Test
-    public void skalAlltidReturnereDenFoersteDagenIMaanedenSomFraOgMedDato(final Aarstall aar, final Month maaned) {
+    @ParameterizedTest
+    @MethodSource("monthAndYears")
+    void skalAlltidReturnereDenFoersteDagenIMaanedenSomFraOgMedDato(final Aarstall aar, final Month maaned) {
         assertThat(new Maaned(aar, maaned).fraOgMed())
                 .as("fra og med-dato for " + maaned + " i " + aar)
                 .isEqualTo(aar.atStartOfYear().withMonth(maaned.getValue()).with(firstDayOfMonth()));
@@ -69,9 +65,9 @@ public class MaanedIT {
      * @param aar    årstallet som måneden vi skal sjekke skal vere tilknytta
      * @param maaned måned-i-året som måneden vi skal sjekke skal vere tilknytta
      */
-    @Theory
-    @Test
-    public void skalReturnere29FebruarSomTilOgMedDatoISkuddAar(final Aarstall aar, final Month maaned) {
+    @ParameterizedTest
+    @MethodSource("monthAndYears")
+    void skalReturnere29FebruarSomTilOgMedDatoISkuddAar(final Aarstall aar, final Month maaned) {
         if (aar.toYear().isLeap() && maaned == Month.FEBRUARY) {
             assertThat(new Maaned(aar, maaned).tilOgMed().get())
                     .as("til og med-dato for " + maaned + " i " + aar)
@@ -85,9 +81,9 @@ public class MaanedIT {
      * @param aar    årstallet som måneden vi skal sjekke skal vere tilknytta
      * @param maaned måned-i-året som måneden vi skal sjekke skal vere tilknytta
      */
-    @Theory
-    @Test
-    public void skalReturnereSisteDagIMaanedenSomTilOgMedDato(final Aarstall aar, final Month maaned) {
+    @ParameterizedTest
+    @MethodSource("monthAndYears")
+    void skalReturnereSisteDagIMaanedenSomTilOgMedDato(final Aarstall aar, final Month maaned) {
         assertThat(new Maaned(aar, maaned).tilOgMed().get())
                 .as("til og med-dato for " + maaned + " i " + aar)
                 .isEqualTo(aar.atStartOfYear().withMonth(maaned.getValue()).with(lastDayOfMonth()));

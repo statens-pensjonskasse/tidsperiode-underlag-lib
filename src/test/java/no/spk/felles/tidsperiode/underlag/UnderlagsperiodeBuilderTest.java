@@ -11,15 +11,15 @@ import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.AbstractOptionalAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class UnderlagsperiodeBuilderTest {
+class UnderlagsperiodeBuilderTest {
     /**
      * Verifiserer at alle annotasjonane som er lagt til på den opprinnelige builderen, blir kopiert
      * over til den nye builderen.
      */
     @Test
-    public void skalKopiereAnnotasjonar() {
+    void skalKopiereAnnotasjonar() {
         final Integer expected = 123;
 
         assertThat(
@@ -33,7 +33,7 @@ public class UnderlagsperiodeBuilderTest {
     }
 
     @Test
-    public void skalKopiereKoblingar() {
+    void skalKopiereKoblingar() {
         final Tidsperiode<?> expected = new GenerellTidsperiode(dato("1950.01.01"), empty());
 
         assertThat(
@@ -51,7 +51,7 @@ public class UnderlagsperiodeBuilderTest {
     }
 
     @Test
-    public void skal_kopiere_annotasjonar_og_koblingar_også_med_løpende_perioder() {
+    void skal_kopiere_annotasjonar_og_koblingar_også_med_løpende_perioder() {
         final Tidsperiode<?> expectedPeriode = new GenerellTidsperiode(dato("1950.01.01"), empty());
         final Integer expected = 123;
 
@@ -71,7 +71,7 @@ public class UnderlagsperiodeBuilderTest {
     }
 
     @Test
-    public void skalIkkjeDeleSamlingVedKopieringAvKoblingar() {
+    void skalIkkjeDeleSamlingVedKopieringAvKoblingar() {
         final UnderlagsperiodeBuilder builder = builder().fraOgMed(dato("2007.05.12")).tilOgMed(dato("2009.12.31"));
 
         final GenerellTidsperiode a = new GenerellTidsperiode(dato("1950.01.01"), empty());
@@ -103,7 +103,7 @@ public class UnderlagsperiodeBuilderTest {
     }
 
     @Test
-    public void skalAnnoterePeriodaBasertPaaVerdiensType() {
+    void skalAnnoterePeriodaBasertPaaVerdiensType() {
         assertThat(
                 builder()
                         .med(0)
@@ -117,7 +117,7 @@ public class UnderlagsperiodeBuilderTest {
      * superklasser som verdien implementerer eller arvar frå, direkte eller indirekte.
      */
     @Test
-    public void skalIkkjeAnnoterePeriodeMedVerdiensSuperTyper() {
+    void skalIkkjeAnnoterePeriodeMedVerdiensSuperTyper() {
         assertThat(
                 builder()
                         .med(0)

@@ -18,28 +18,23 @@ import java.util.stream.Stream;
 
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.ListAssert;
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 /**
  * Enheitstestar for {@link Aar}.
  *
  * @author Tarjei Skorgenes
  */
-@RunWith(Theories.class)
 @SuppressWarnings("rawtypes")
 public class AarIT {
-    @DataPoints
-    public static Aarstall[] years = IntStream.rangeClosed(1917, 2099).mapToObj(Aarstall::new).collect(toList()).toArray(new Aarstall[0]);
 
     /**
      * Verifiserer at årstall er påkrevd ved konstruksjon av nye år.
      */
-    @Test
-    public void skalKreveAarstallVedKonstruksjon() {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalKreveAarstallVedKonstruksjon() {
         assertThatCode(
                 () -> new Aar(null)
         )
@@ -51,9 +46,9 @@ public class AarIT {
     /**
      * Verifiserer at året overlappar alltid datoar som ligg innanfor året.
      */
-    @Theory
-    @Test
-    public void skalAlltidOverlappeDatoarInnanforAaret(final Aarstall aarstall) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalAlltidOverlappeDatoarInnanforAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
         assertThat(
                 IntStream
@@ -69,9 +64,9 @@ public class AarIT {
     /**
      * Verifiserer at året aldri overlappar datoar som ligg utanfor året.
      */
-    @Theory
-    @Test
-    public void skalIkkjeOverlappeDatoarUtanforAaret(final Aarstall aarstall) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalIkkjeOverlappeDatoarUtanforAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
         final Aarstall forrige = aarstall.forrige();
         final Aarstall neste = aarstall.neste();
@@ -94,9 +89,9 @@ public class AarIT {
     /**
      * Verifiserer at året overlappar perioder som ligg 100% innanfor året.
      */
-    @Theory
-    @Test
-    public void skalOverlappePerioderSomLiggHeiltInnanforAaret(final Aarstall aarstall) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalOverlappePerioderSomLiggHeiltInnanforAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
 
         assertThat(
@@ -127,9 +122,9 @@ public class AarIT {
     /**
      * Verifiserer at året overlappar perioder som ligg delvis innanfor året.
      */
-    @Theory
-    @Test
-    public void skalOverlappePerioderSomLiggDelvisInnanforStartenAvAaret(final Aarstall aarstall) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalOverlappePerioderSomLiggDelvisInnanforStartenAvAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
 
         final Aarstall forrige = aarstall.forrige();
@@ -152,9 +147,9 @@ public class AarIT {
     /**
      * Verifiserer at året overlappar perioder som ligg delvis innanfor året.
      */
-    @Theory
-    @Test
-    public void skalOverlappePerioderSomLiggDelvisInnanforSluttenAvAaret(final Aarstall aarstall) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalOverlappePerioderSomLiggDelvisInnanforSluttenAvAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
 
         final Aarstall neste = aarstall.neste();
@@ -177,9 +172,9 @@ public class AarIT {
     /**
      * Verifiserer at året aldri overlappar perioder som ligg utanfor året.
      */
-    @Theory
-    @Test
-    public void skalAldriOverlappePerioderFørAaret(final Aarstall aarstall) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalAldriOverlappePerioderFørAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
 
         final Aarstall forrige = aarstall.forrige();
@@ -204,9 +199,9 @@ public class AarIT {
     /**
      * Verifiserer at året aldri overlappar perioder som ligg utanfor året.
      */
-    @Theory
-    @Test
-    public void skalAldriOverlappePerioderEtterAaret(final Aarstall aarstall) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalAldriOverlappePerioderEtterAaret(final Aarstall aarstall) {
         final Aar aar = new Aar(aarstall);
 
         final Aarstall neste = aarstall.neste();
@@ -230,9 +225,9 @@ public class AarIT {
     /**
      * Verifiserer at årets fra og med-dato alltid er lik 1. januar.
      */
-    @Theory
-    @Test
-    public void skalBruke1JanuarSomFraOgMedDatoKvartAar(final Aarstall aar) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalBruke1JanuarSomFraOgMedDatoKvartAar(final Aarstall aar) {
         assertThat(new Aar(aar).fraOgMed())
                 .as("fra og med-dato for år " + aar)
                 .isEqualTo(
@@ -243,9 +238,9 @@ public class AarIT {
     /**
      * Verifiserer at årets fra og med-dato alltid er lik 31. desember.
      */
-    @Theory
-    @Test
-    public void skalBruke31DesemberSomTilOgMedDatoKvartAar(final Aarstall aar) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalBruke31DesemberSomTilOgMedDatoKvartAar(final Aarstall aar) {
         assertThat(new Aar(aar).tilOgMed())
                 .as("til og med-dato for år " + aar)
                 .isEqualTo(
@@ -258,9 +253,9 @@ public class AarIT {
     /**
      * Verifiserer at alle årstall skal inneholde 12 månedar.
      */
-    @Theory
-    @Test
-    public void skalInneholde12Maanedar(final Aarstall aar) {
+    @ParameterizedTest
+    @ArgumentsSource(AarstallProvider.class)
+    void skalInneholde12Maanedar(final Aarstall aar) {
         assertAar(aar).hasSize(12);
     }
 

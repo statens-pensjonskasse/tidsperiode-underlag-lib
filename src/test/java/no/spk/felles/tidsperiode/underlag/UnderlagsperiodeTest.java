@@ -14,19 +14,19 @@ import no.spk.felles.tidsperiode.Tidsperiode;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractIterableAssert;
 import org.assertj.core.api.AbstractObjectAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enheitstestar for {@link Underlagsperiode}
  *
  * @author Tarjei Skorgenes
  */
-public class UnderlagsperiodeTest {
+class UnderlagsperiodeTest {
     /**
      * Verifiserer at all tilstand frå underlagsperioda blir med når ein kopi blir bygd.
      */
     @Test
-    public void skalTaMedAlleAnnotasjonarTilUnderlagsperiodaEinKopiererFra() {
+    void skalTaMedAlleAnnotasjonarTilUnderlagsperiodaEinKopiererFra() {
         final Underlagsperiode kilde = create("2000.01.01", "2014.12.31");
         kilde.annoter(Object.class, new Object());
         kilde.annoter(String.class, "Hello World!");
@@ -42,7 +42,7 @@ public class UnderlagsperiodeTest {
      * Verifiserer at den kopierte underlagsperioda ikkje beheld datoane til perioda kopien blir danna frå.
      */
     @Test
-    public void skalIkkjeTaMedFraOgMedOgTilOgMedDatoTilUnderlagsperiodaEinKopiererFra() {
+    void skalIkkjeTaMedFraOgMedOgTilOgMedDatoTilUnderlagsperiodaEinKopiererFra() {
         assertThat(
                 eiPeriode()
                         .kopierUtenKoblinger(
@@ -59,7 +59,7 @@ public class UnderlagsperiodeTest {
      * den nye periode når ein lagar ein kopi.
      */
     @Test
-    public void skalIkkjeTaMedKoblingarFraUnderlagsperiodaEinKopiererFra() {
+    void skalIkkjeTaMedKoblingarFraUnderlagsperiodaEinKopiererFra() {
         final GenerellTidsperiode kobling = new GenerellTidsperiode(dato("1917.01.01"), empty());
 
         final Underlagsperiode kilde = eiPeriode();
@@ -82,7 +82,7 @@ public class UnderlagsperiodeTest {
      * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
      */
     @Test
-    public void skalEkspandereOptionalSinVerdiVedRegistreringAvAnnotasjon() {
+    void skalEkspandereOptionalSinVerdiVedRegistreringAvAnnotasjon() {
         final Integer expected = 1;
 
         final Underlagsperiode periode = eiPeriode();
@@ -96,7 +96,7 @@ public class UnderlagsperiodeTest {
      * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
      */
     @Test
-    public void skalIkkjeRegistrereEinVerdiVissVerdiErEinTomOptional() {
+    void skalIkkjeRegistrereEinVerdiVissVerdiErEinTomOptional() {
         final Underlagsperiode periode = eiPeriode();
         periode.annoter(Integer.class, empty());
         assertThat(periode.valgfriAnnotasjonFor(Integer.class).isPresent()).isFalse();
@@ -108,7 +108,7 @@ public class UnderlagsperiodeTest {
      * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
      */
     @Test
-    public void skalFeileVissAnnotasjonstypeErOptional() {
+    void skalFeileVissAnnotasjonstypeErOptional() {
         assertThatCode(
                 () ->
                         eiPeriode()
@@ -126,7 +126,7 @@ public class UnderlagsperiodeTest {
      * men der periodetypen som blir slått opp har eit djupt type-hierarki.
      */
     @Test
-    public void skalKunSlaaOppKoblingarBasertPaKoblingasHovedtype() {
+    void skalKunSlaaOppKoblingarBasertPaKoblingasHovedtype() {
         final Underlagsperiode periode = eiPeriode();
         periode.kobleTil(new GenerellTidsperiode(periode.fraOgMed(), empty()));
 
@@ -137,7 +137,7 @@ public class UnderlagsperiodeTest {
      * Verifiserer at uthenting av periodekobling returnerer korrekt tilkobla tidsperiode.
      */
     @Test
-    public void skalReturnereTidsperiodeAvDenOenskaTypen() {
+    void skalReturnereTidsperiodeAvDenOenskaTypen() {
         final Underlagsperiode periode = eiPeriode();
 
         final GenerellTidsperiode kobling = new GenerellTidsperiode(periode.fraOgMed(), empty());
@@ -152,7 +152,7 @@ public class UnderlagsperiodeTest {
      */
     @SuppressWarnings("unchecked")
     @Test
-    public void skalIkkjeFeileDersomUnderlagsperiodaIkkjeErKoblaTilMinstEiTidsperiodeAvDenOenskaTypen() {
+    void skalIkkjeFeileDersomUnderlagsperiodaIkkjeErKoblaTilMinstEiTidsperiodeAvDenOenskaTypen() {
         assertThat(eiPeriode().koblingAvType(Tidsperiode.class)).isEqualTo(empty());
     }
 
@@ -161,7 +161,7 @@ public class UnderlagsperiodeTest {
      * tidsperiode av den ønska typen.
      */
     @Test
-    public void skalFeileDersomUnderlagsperiodaErTilkoblaMeirEnnEiTidsperiodeAvDenOenskaTypen() {
+    void skalFeileDersomUnderlagsperiodaErTilkoblaMeirEnnEiTidsperiodeAvDenOenskaTypen() {
         assertThatCode(
                 () -> {
                     final Underlagsperiode periode = eiPeriode();
@@ -182,7 +182,7 @@ public class UnderlagsperiodeTest {
      * annotasjonen.
      */
     @Test
-    public void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonSomIkkjeEksistererPaaPerioda() {
+    void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonSomIkkjeEksistererPaaPerioda() {
         assertThat(
                 eiPeriode().valgfriAnnotasjonFor(Object.class)
         )
@@ -193,7 +193,7 @@ public class UnderlagsperiodeTest {
      * Verifiserer at oppslag av valgfri annotasjon fungerer når perioda har ein verdi for annotasjonen.
      */
     @Test
-    public void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
+    void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
         final Object verdi = "valgfrie annotasjonar fungerer fint";
 
         final Underlagsperiode periode = eiPeriode();
@@ -208,7 +208,7 @@ public class UnderlagsperiodeTest {
      * ein exception dersom perioda ikkje er annotert med den ønska typen annotasjon.
      */
     @Test
-    public void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
+    void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
         final Underlagsperiode periode = create("2005.01.01", "2005.12.31");
 
         assertThatCode(
@@ -227,12 +227,12 @@ public class UnderlagsperiodeTest {
      * feilar og returnerer ein tom verdi dersom perioda ikkje er annotert med den ønska typen annotasjon.
      */
     @Test
-    public void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
+    void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
         assertThat(create("2005.02.02", "2005.03.03").valgfriAnnotasjonFor(Long.class)).isEqualTo(empty());
     }
 
     @Test
-    public void skalIkkjeKunneOpprettUnderlagsPerioderMedFraOgMedDatoLikNull() {
+    void skalIkkjeKunneOpprettUnderlagsPerioderMedFraOgMedDatoLikNull() {
         assertThatCode(
                 () -> new Underlagsperiode(null, dato("2007.12.31"))
         )
@@ -243,7 +243,7 @@ public class UnderlagsperiodeTest {
     }
 
     @Test
-    public void skal_kunne_kalle_regler_rekursivt_uten_concurrentModificationException_på_cache() {
+    void skal_kunne_kalle_regler_rekursivt_uten_concurrentModificationException_på_cache() {
         String expected = "testverdi";
         assertBeregn(
                 eiPeriode()
@@ -255,7 +255,7 @@ public class UnderlagsperiodeTest {
     }
 
     @Test
-    public void skal_aldri_kalle_en_regel_mer_enn_en_gang_per_periode_fordi_regelene_er_cachet_og_idempotente() {
+    void skal_aldri_kalle_en_regel_mer_enn_en_gang_per_periode_fordi_regelene_er_cachet_og_idempotente() {
         final Underlagsperiode periode = eiPeriode();
 
         final TredjeRegel regel = new TredjeRegel();

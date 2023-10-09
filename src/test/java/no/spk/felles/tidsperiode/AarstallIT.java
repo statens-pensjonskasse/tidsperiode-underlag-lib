@@ -5,47 +5,45 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Year;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Enheitstestar for {@link Aarstall}
  *
  * @author Tarjei Skorgenes
  */
-@RunWith(Theories.class)
 public class AarstallIT {
-    @DataPoints
     public static Integer[] lotsOfYears = IntStream.rangeClosed(1, 2100).mapToObj(Integer::valueOf).toArray(Integer[]::new);
 
-    @Theory
-    @Test
-    public void skalVereLikOgHaSammeHashcodeSomAnnaInstansMedSammeVerdi(final Integer aar) {
+    @ParameterizedTest
+    @MethodSource("range")
+    void skalVereLikOgHaSammeHashcodeSomAnnaInstansMedSammeVerdi(final Integer aar) {
         assertThat(new Aarstall(aar)).isEqualTo(new Aarstall(aar));
         assertThat(new Aarstall(aar).hashCode()).isEqualTo(new Aarstall(aar).hashCode());
     }
 
-    @Theory
-    @Test
-    public void skalVereLikSegSjoelv(final Integer aarstall) {
+    @ParameterizedTest
+    @MethodSource("range")
+    void skalVereLikSegSjoelv(final Integer aarstall) {
         final Aarstall self = new Aarstall(aarstall);
         assertThat(self).isEqualTo(self);
         assertThat(self.hashCode()).isEqualTo(self.hashCode());
     }
 
-    @Theory
-    @Test
-    public void skalVereLikAnnaInstansMedSammeVerdi(final Integer aarstall) {
+    @ParameterizedTest
+    @MethodSource("range")
+    void skalVereLikAnnaInstansMedSammeVerdi(final Integer aarstall) {
         assertThat(new Aarstall(aarstall)).isEqualTo(new Aarstall(aarstall));
     }
 
-    @Theory
-    @Test
-    public void skalVereUlikAlleMuligeAndreObjekt(final Integer aarstall) {
+    @ParameterizedTest
+    @MethodSource("range")
+    void skalVereUlikAlleMuligeAndreObjekt(final Integer aarstall) {
         final Aarstall verdi = new Aarstall(aarstall);
         assertThat(verdi).isNotEqualTo(null);
         assertThat(verdi).isNotEqualTo(new Object());
@@ -54,9 +52,9 @@ public class AarstallIT {
         assertThat(verdi).isNotEqualTo(new Aarstall(aarstall - 1));
     }
 
-    @Theory
-    @Test
-    public void skalReturnereDatoLik1JanuarIAaret(final Integer aarstall) {
+    @ParameterizedTest
+    @MethodSource("range")
+    void skalReturnereDatoLik1JanuarIAaret(final Integer aarstall) {
         assertThat(new Aarstall(aarstall).atStartOfYear())
                 .isEqualTo(
                         Year.of(aarstall)
@@ -64,9 +62,9 @@ public class AarstallIT {
                 );
     }
 
-    @Theory
-    @Test
-    public void skalReturnereDatoLik31DesemberIAaret(final Integer aarstall) {
+    @ParameterizedTest
+    @MethodSource("range")
+    void skalReturnereDatoLik31DesemberIAaret(final Integer aarstall) {
         assertThat(new Aarstall(aarstall).atEndOfYear())
                 .isEqualTo(
                         Year.of(aarstall)
@@ -75,9 +73,9 @@ public class AarstallIT {
                 );
     }
 
-    @Theory
-    @Test
-    public void skalInneholdeKorrektAntallDagar(final Integer aarstall) {
+    @ParameterizedTest
+    @MethodSource("range")
+    void skalInneholdeKorrektAntallDagar(final Integer aarstall) {
         assertThat(new Aarstall(aarstall).lengde())
                 .as("antall dagar i år " + aarstall)
                 .isEqualTo(
@@ -85,5 +83,8 @@ public class AarstallIT {
                                 Year.of(aarstall).length())
                 )
         ;
+    }
+    static Stream<Integer> range() {
+        return IntStream.range(1, 2100).boxed();
     }
 }
