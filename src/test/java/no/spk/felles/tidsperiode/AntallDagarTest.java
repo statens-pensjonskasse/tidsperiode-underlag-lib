@@ -6,15 +6,15 @@ import static no.spk.felles.tidsperiode.Datoar.dato;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class AntallDagarTest {
+class AntallDagarTest {
     /**
      * Vi skal aldri kunne ha tidsperioder som er kortare enn 1 dag, verifiser at vi feilar viss det blir forsøkt
      * brukt som verdi for antall dagar.
      */
     @Test
-    public void skalIkkjeTillateAntallDagarLik0() {
+    void skalIkkjeTillateAntallDagarLik0() {
         assertThatCode(
                 () -> new AntallDagar(0)
         )
@@ -29,7 +29,7 @@ public class AntallDagarTest {
      * brukt som verdi for antall dagar.
      */
     @Test
-    public void skalIkkjeTillateAntallDagarMindreEnn0() {
+    void skalIkkjeTillateAntallDagarMindreEnn0() {
         assertThatCode(
                 () -> new AntallDagar(-1)
         )
@@ -40,30 +40,30 @@ public class AntallDagarTest {
     }
 
     @Test
-    public void skalVereLikSammeInstans() {
+    void skalVereLikSammeInstans() {
         // NB: Ikkje inline den her, det stride mot intensjonen i testen
         final AntallDagar me = new AntallDagar(1);
         assertThat(me).isEqualTo(me);
     }
 
     @Test
-    public void skalVereLikAnnanInstansMedSammeVerdi() {
+    void skalVereLikAnnanInstansMedSammeVerdi() {
         // NB: Ikkje trekk ut verdien til ein variabel her, det stride mot intensjonen i testen
         assertThat(new AntallDagar(2)).isEqualTo(new AntallDagar(2));
     }
 
     @Test
-    public void skalVereUlikNull() {
+    void skalVereUlikNull() {
         assertThat(new AntallDagar(3)).isNotEqualTo(null);
     }
 
     @Test
-    public void skalVereUlikAnnanType() {
+    void skalVereUlikAnnanType() {
         assertThat(new AntallDagar(4)).isNotEqualTo(new Object());
     }
 
     @Test
-    public void skalVereUlikSammeTypeMedAnnanVerdi() {
+    void skalVereUlikSammeTypeMedAnnanVerdi() {
         assertThat(new AntallDagar(365)).isNotEqualTo(new AntallDagar(366));
     }
 
@@ -72,7 +72,7 @@ public class AntallDagarTest {
      * i henhold til {@link Object#equals(Object)} returnerer samme hashcode.
      */
     @Test
-    public void skalHaSammeHashCodeForForskjelligeInstansarMedSammeVerdi() {
+    void skalHaSammeHashCodeForForskjelligeInstansarMedSammeVerdi() {
         // NB: Ikkje trekk ut verdien til ein variabel her, det stride mot intensjonen i testen
         assertThat(new AntallDagar(123).hashCode()).isEqualTo(new AntallDagar(123).hashCode());
     }
@@ -83,7 +83,7 @@ public class AntallDagarTest {
      * innanfor samme køyring av JVMen.
      */
     @Test
-    public void skalReturnereSammeHashCodeForKvartKall() {
+    void skalReturnereSammeHashCodeForKvartKall() {
         // NB: Ikkje inline den her, det stride mot intensjonen i testen
         final AntallDagar antall = new AntallDagar(123);
         assertThat(antall.hashCode()).isEqualTo(antall.hashCode());
@@ -93,7 +93,7 @@ public class AntallDagarTest {
      * Antall dagar kan ikkje beregnast viss ein ikkje veit kva som er startdatoen for perioda ein skal telle dagar i.
      */
     @Test
-    public void skalIkkjeStoetteFraOgMedDatoLikNull() {
+    void skalIkkjeStoetteFraOgMedDatoLikNull() {
         assertThatCode(
                 () -> antallDagarMellom(null, dato("2005.01.01"))
         )
@@ -106,7 +106,7 @@ public class AntallDagarTest {
      * Antall dagar skal kun kunne beregnast for lukka tidsperioder, løpande tidsperioder skal ikkje vere støtta.
      */
     @Test
-    public void skalIkkjeStoetteTilOgMedDatoLikNull() {
+    void skalIkkjeStoetteTilOgMedDatoLikNull() {
         assertThatCode(
                 () -> antallDagarMellom(dato("2005.01.01"), null)
         )
@@ -121,12 +121,12 @@ public class AntallDagarTest {
      * i tidsperioder ein skal måle antall dagar i.
      */
     @Test
-    public void skalBeregneLengdeLik1DagForPerioderMedLikFraOgMedOgTilOgMedDato() {
+    void skalBeregneLengdeLik1DagForPerioderMedLikFraOgMedOgTilOgMedDato() {
         assertThat(antallDagarMellom(dato("2003.01.01"), dato("2003.01.01"))).isEqualTo(antallDagar(1));
     }
 
     @Test
-    public void skalFeileVissFraOgMedDatoErStoerreEnnTilOgMedDato() {
+    void skalFeileVissFraOgMedDatoErStoerreEnnTilOgMedDato() {
         assertThatCode(
                 () -> antallDagarMellom(dato("2000.09.10"), dato("2000.09.09"))
         )

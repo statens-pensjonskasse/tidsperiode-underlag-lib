@@ -12,19 +12,19 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enheitstestar for {@link Underlag}.
  *
  * @author Tarjei Skorgenes
  */
-public class UnderlagTest {
+class UnderlagTest {
     /**
      * Verifiserer at underlaget blir annotert med alle annotasjonar som kilda er annotert med.
      */
     @Test
-    public void skalAnnotereUnderlagMedAlleAnnotasjonarSomKildaErAnnotertMed() {
+    void skalAnnotereUnderlagMedAlleAnnotasjonarSomKildaErAnnotertMed() {
         final String tekst = "Hello World";
         final double flyttall = 1d;
         final long langtTall = Long.MAX_VALUE;
@@ -51,7 +51,7 @@ public class UnderlagTest {
      * lenger inngår i underlaget.
      */
     @Test
-    public void skalInkludereAnnotasjonarVedAvgrensingAvunderlag() {
+    void skalInkludereAnnotasjonarVedAvgrensingAvunderlag() {
         final Integer expected = 1282678961;
 
         final Underlag old = eitTomtUnderlag();
@@ -65,7 +65,7 @@ public class UnderlagTest {
      * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
      */
     @Test
-    public void skalEkspandereOptionalSinVerdiVedRegistreringAvAnnotasjon() {
+    void skalEkspandereOptionalSinVerdiVedRegistreringAvAnnotasjon() {
         final Integer expected = 1;
 
         final Underlag underlag = eitTomtUnderlag();
@@ -79,7 +79,7 @@ public class UnderlagTest {
      * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
      */
     @Test
-    public void skalIkkjeRegistrereEinVerdiVissVerdiErEinTomOptional() {
+    void skalIkkjeRegistrereEinVerdiVissVerdiErEinTomOptional() {
         final Underlag periode = eitTomtUnderlag();
         periode.annoter(Integer.class, empty());
         assertThat(periode.valgfriAnnotasjonFor(Integer.class).isPresent()).isFalse();
@@ -91,7 +91,7 @@ public class UnderlagTest {
      * kunne ha verdi som den kanskje har {Optional&lt;Optional&lt;Verdi&gt;&gt;).
      */
     @Test
-    public void skalFeileVissAnnotasjonstypeErOptional() {
+    void skalFeileVissAnnotasjonstypeErOptional() {
         assertThatCode(
                 () ->
                         eitTomtUnderlag()
@@ -106,7 +106,7 @@ public class UnderlagTest {
      * Verifiserer at oppslag av valgfri annotasjon fungerer når underlaget har ein verdi for annotasjonen.
      */
     @Test
-    public void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
+    void skalKunneHenteUtVerdiarForValgfrieAnnotasjonar() {
         final Object verdi = "valgfrie annotasjonar fungerer fint";
 
         final Underlag underlag = eitTomtUnderlag();
@@ -121,7 +121,7 @@ public class UnderlagTest {
      * ein exception dersom underlaget ikkje er annotert med den ønska typen annotasjon.
      */
     @Test
-    public void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
+    void skalFeileVedOppslagAvPaakrevdAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
         assertThatCode(
                 () ->
                         eitTomtUnderlag()
@@ -139,7 +139,7 @@ public class UnderlagTest {
      * feilar og returnerer ein tom verdi dersom perioda ikkje er annotert med den ønska typen annotasjon.
      */
     @Test
-    public void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
+    void skalIkkjeFeileVedOppslagAvValgfriAnnotasjonVissPeriodeIkkjeHarBlittAnnotertMedDenAktuelleTypen() {
         assertThat(eitTomtUnderlag().valgfriAnnotasjonFor(Long.class)).isEqualTo(empty());
     }
 
@@ -148,7 +148,7 @@ public class UnderlagTest {
      * av dei andre underlagsperiodene i underlaget.
      */
     @Test
-    public void skalIkkjeKunneKonstruereUnderlagMedOverlappandeUnderlagsperioder() {
+    void skalIkkjeKunneKonstruereUnderlagMedOverlappandeUnderlagsperioder() {
         assertThatCode(
                 () ->
                         underlag(
@@ -170,7 +170,7 @@ public class UnderlagTest {
      * Verifiserer at underlaget validerer at underlagsperiodene blir sendt inn i kronologisk rekkefølge.
      */
     @Test
-    public void skalInneholdeUnderlagsperioderIKronologiskRekkefoelge() {
+    void skalInneholdeUnderlagsperioderIKronologiskRekkefoelge() {
         assertThatCode(
                 () ->
                         underlag(
@@ -189,7 +189,7 @@ public class UnderlagTest {
      * underlagsperiodene.
      */
     @Test
-    public void skalIkkjeKunneKonstruereUnderlagMedTidsgapMellomUnderlagsperiodene() {
+    void skalIkkjeKunneKonstruereUnderlagMedTidsgapMellomUnderlagsperiodene() {
         assertThatCode(
                 () ->
                         underlag(
@@ -211,7 +211,7 @@ public class UnderlagTest {
      * uønska underlagsperioder.
      */
     @Test
-    public void skalIkkjeKunneAvgrenseUnderlagSlikAtDetOppstaarTidsgapMellomUnderlagsperiodene() {
+    void skalIkkjeKunneAvgrenseUnderlagSlikAtDetOppstaarTidsgapMellomUnderlagsperiodene() {
         assertThatCode(
                 () -> {
                     final Underlag uavgrensa = underlag(
@@ -230,7 +230,7 @@ public class UnderlagTest {
      * det nye underlaget
      */
     @Test
-    public void skalFjerneAlleUoenskaUnderlagsperioderVedAvgrensing() {
+    void skalFjerneAlleUoenskaUnderlagsperioderVedAvgrensing() {
         final Underlag uavgrensa = underlag(
                 periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.04.30")).med(2),
                 periode().fraOgMed(dato("2000.05.01")).tilOgMed(dato("2000.12.31")).med(3)
@@ -250,7 +250,7 @@ public class UnderlagTest {
      */
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
-    public void skalReturnereKronologiskSistePeriodeFraUnderlaget() {
+    void skalReturnereKronologiskSistePeriodeFraUnderlaget() {
         assertThat(
                 underlag(
                         periode().fraOgMed(dato("2000.01.01")).tilOgMed(dato("2000.01.31")),
@@ -266,7 +266,7 @@ public class UnderlagTest {
      * Verifiserer at {@link Underlag#last()} returnerer ein tom verdi dersom underlaget er tomt.
      */
     @Test
-    public void skalReturnereEmptyDersomUnderlagetIkkjeInneheldNokonUnderlagsperiode() {
+    void skalReturnereEmptyDersomUnderlagetIkkjeInneheldNokonUnderlagsperiode() {
         assertThat(eitTomtUnderlag().last()).isEqualTo(Optional.empty());
     }
 

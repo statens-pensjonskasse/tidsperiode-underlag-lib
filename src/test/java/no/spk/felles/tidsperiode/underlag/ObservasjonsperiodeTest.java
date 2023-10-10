@@ -15,16 +15,16 @@ import no.spk.felles.tidsperiode.GenerellTidsperiode;
 import no.spk.felles.tidsperiode.Tidsperiode;
 
 import org.assertj.core.api.OptionalAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enheitstestar for {@link Observasjonsperiode}.
  *
  * @author Tarjei Skorgenes
  */
-public class ObservasjonsperiodeTest {
+class ObservasjonsperiodeTest {
     @Test
-    public void skalIkkjeKunneKonstruerePeriodeUtenFraOgMedDato() {
+    void skalIkkjeKunneKonstruerePeriodeUtenFraOgMedDato() {
         assertThatCode(
                 () -> new Observasjonsperiode(null, now())
         )
@@ -35,7 +35,7 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
-    public void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
+    void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
         final LocalDate til_og_med = null;
 
         assertThatCode(
@@ -48,7 +48,7 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
-    public void skalIkkjeKunneKonstruerePeriodeUtenOptionalTilOgMedDato() {
+    void skalIkkjeKunneKonstruerePeriodeUtenOptionalTilOgMedDato() {
         final Optional<LocalDate> til_og_med = null;
 
         assertThatCode(
@@ -61,7 +61,7 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
-    public void skalReturnereAarSomInneheld12MaanedarSjoelvOmObservasjonsperiodaKunDekkerDelarAvAaret() {
+    void skalReturnereAarSomInneheld12MaanedarSjoelvOmObservasjonsperiodaKunDekkerDelarAvAaret() {
         final Observasjonsperiode periode = observasjonsperiode("2005.08.15", "2005.12.31");
         assertThat(periode.overlappendeAar()).hasSize(1);
         assertThat(
@@ -83,7 +83,7 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
-    public void skal_ikke_kunne_hente_ut_overlappende_år_for_en_løpende_observasjonsperiode() {
+    void skal_ikke_kunne_hente_ut_overlappende_år_for_en_løpende_observasjonsperiode() {
         final Observasjonsperiode periode = observasjonsperiode("2005.08.15", empty());
 
         assertThatCode(
@@ -95,7 +95,7 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
-    public void skalGenerereNyObservasjonsperiodeSomKunInneheldDaganeSomDeiToPeriodeneOverlappar() {
+    void skalGenerereNyObservasjonsperiodeSomKunInneheldDaganeSomDeiToPeriodeneOverlappar() {
         final Observasjonsperiode observasjonsperiode = observasjonsperiode(
                 "2000.01.01",
                 "2000.12.31"
@@ -137,7 +137,7 @@ public class ObservasjonsperiodeTest {
     }
 
     @Test
-    public void skalGenerereNyObservasjonsperiodeSomKunInneheldDaganeSomDeiToPeriodeneOverlapparForLøpendeObservasjonsperiode() {
+    void skalGenerereNyObservasjonsperiodeSomKunInneheldDaganeSomDeiToPeriodeneOverlapparForLøpendeObservasjonsperiode() {
         final Observasjonsperiode observasjonsperiode = observasjonsperiode(
                 "2000.01.01",
                 løpende()

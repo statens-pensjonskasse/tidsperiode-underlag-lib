@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.assertj.core.api.AbstractBooleanAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enheitstestar for {@link GenerellTidsperiode}.
@@ -36,7 +36,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalVereUlikeDersomFraaOgMedDatoaneErUlike() {
+    void skalVereUlikeDersomFraaOgMedDatoaneErUlike() {
         assertThat(
                 sortering.compare(
                         create("2004.01.01", "2005.01.02"),
@@ -53,7 +53,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalVereUlikeDersomFraaOgMedDatoaneErLikeMenTilOgMedDatoaneErUlike() {
+    void skalVereUlikeDersomFraaOgMedDatoaneErLikeMenTilOgMedDatoaneErUlike() {
         assertThat(
                 sortering.compare(
                         create("2004.01.01", "2005.01.02"),
@@ -84,7 +84,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalVereLikeDersomBaadeFraaOgMedOgTilOgMedDatoaneErLike() {
+    void skalVereLikeDersomBaadeFraaOgMedOgTilOgMedDatoaneErLike() {
         assertThat(
                 sortering.compare(
                         create(dato("2004.01.01"), empty()),
@@ -104,7 +104,7 @@ public class GenerellTidsperiodeTest {
      * Verifiserer at tidsperioder med samme frå og med- og til og med-dato er like
      */
     @Test
-    public void skalVereLikeVissFraOgMedOgTilOgMedDatoHarLikVerdi() {
+    void skalVereLikeVissFraOgMedOgTilOgMedDatoHarLikVerdi() {
         assertThat(create(dato("1987.06.23"), empty()))
                 .isEqualTo(create(dato("1987.06.23"), empty()));
         assertThat(create(dato("1987.06.23"), of(dato("2011.09.01"))))
@@ -115,7 +115,7 @@ public class GenerellTidsperiodeTest {
      * Verifiserer at tidsperioder med forskjellig frå og med- eller til og med-dato er ulike
      */
     @Test
-    public void skalVereULikeVissFraOgMedEllerTilOgMedDatoHarUlikVerdi() {
+    void skalVereULikeVissFraOgMedEllerTilOgMedDatoHarUlikVerdi() {
         // Frå og med ulik
         final LocalDate fraOgMed = dato("1987.06.23");
         final LocalDate tilOgMed = dato("2011.09.01");
@@ -133,7 +133,7 @@ public class GenerellTidsperiodeTest {
      * Verifiserer at hashcode på to perioder som er like, har samme verdi.
      */
     @Test
-    public void skalHaLikHashCodeVissPeriodeneErLike() {
+    void skalHaLikHashCodeVissPeriodeneErLike() {
         assertThat(create("2000.01.01", "2012.04.30").hashCode())
                 .isEqualTo(create("2000.01.01", "2012.04.30").hashCode());
     }
@@ -142,7 +142,7 @@ public class GenerellTidsperiodeTest {
      * Verifiserer at frå og med- og til og med-dato blir kopiert frå andre tidsperioder.
      */
     @Test
-    public void skalKopiereFraOgMedOgTilOgMedDatoFraAnnaTidsperiodeVedKonstruksjon() {
+    void skalKopiereFraOgMedOgTilOgMedDatoFraAnnaTidsperiodeVedKonstruksjon() {
         final GenerellTidsperiode lukka = new GenerellTidsperiode(new GenerellTidsperiode(dato("2000.01.01"), of(dato("2012.12.15"))));
         assertFraOgMed(lukka).isEqualTo(dato("2000.01.01"));
         assertTilOgMed(lukka).isEqualTo(of(dato("2012.12.15")));
@@ -153,7 +153,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalIkkjeKunneKonstruerePeriodeUtanKilde() {
+    void skalIkkjeKunneKonstruerePeriodeUtanKilde() {
         assertThatCode(() -> new GenerellTidsperiode(null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("kilde er påkrevd")
@@ -162,7 +162,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalIkkjeKunneKonstruerePeriodeUtenFraOgMedDato() {
+    void skalIkkjeKunneKonstruerePeriodeUtenFraOgMedDato() {
         assertThatCode(() -> create(null, of(now())))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("fra og med-dato er påkrevd")
@@ -172,7 +172,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
+    void skalIkkjeKunneKonstruerePeriodeUtenTilOgMedDato() {
         assertThatCode(() -> create(now(), null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("til og med-dato er påkrevd")
@@ -181,7 +181,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalIkkjeKunneOpprettUnderlagsperiodeMedFraOgMedDatoEtterTilOgMedDato() {
+    void skalIkkjeKunneOpprettUnderlagsperiodeMedFraOgMedDatoEtterTilOgMedDato() {
         assertThatCode(() -> create("2005.12.30", "2005.01.01"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("fra og med-dato kan ikkje vere etter til og med-dato")
@@ -190,7 +190,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalIndikereAtOverlappandePerioderOverlappar() {
+    void skalIndikereAtOverlappandePerioderOverlappar() {
         assertOverlapper(
                 create("2001.01.01", "2001.12.31"),
                 create("2001.01.01", "2001.01.01")
@@ -200,7 +200,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalOverlapperPerioderSomOverlapparITid() {
+    void skalOverlapperPerioderSomOverlapparITid() {
         Tidsperiode primaer = create("2001.01.01", "2001.12.31");
         List<Tidsperiode> skalOverlappe = asList(
                 create("2000.01.01", "2001.06.30"),
@@ -216,7 +216,7 @@ public class GenerellTidsperiodeTest {
     }
 
     @Test
-    public void skalIkkjeOverlapperPerioderSomIkkjeOverlapparITid() {
+    void skalIkkjeOverlapperPerioderSomIkkjeOverlapparITid() {
         Tidsperiode primaer = create("2001.01.01", "2001.12.31");
         List<Tidsperiode> skalIkkjeOverlappe = asList(
                 create("2000.01.01", "2000.12.31"),

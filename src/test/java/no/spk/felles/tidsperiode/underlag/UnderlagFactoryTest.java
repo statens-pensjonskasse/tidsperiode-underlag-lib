@@ -23,19 +23,19 @@ import no.spk.felles.tidsperiode.underlag.Assertions.UnderlagAssertion;
 import no.spk.felles.tidsperiode.underlag.Assertions.UnderlagsperiodeAssertion;
 
 import org.assertj.core.api.ListAssert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enheitstestar for UnderlagFactory.
  *
  * @author Tarjei Skorgenes
  */
-public class UnderlagFactoryTest {
+class UnderlagFactoryTest {
     private Observasjonsperiode grenser;
 
-    @Before
-    public void _before() {
+    @BeforeEach
+    void _before() {
         grenser = new Observasjonsperiode(dato("1970.01.01"), now().with(lastDayOfYear()));
     }
 
@@ -44,7 +44,7 @@ public class UnderlagFactoryTest {
      * alle overlappande tidsperioder brukt ved periodiseringa av underlaget.
      */
     @Test
-    public void skalKobleUnderlagsperiodeOppMotOverlappandeTidsperioder() {
+    void skalKobleUnderlagsperiodeOppMotOverlappandeTidsperioder() {
         final GenerellTidsperiode a = periode(dato("2005.08.15"), of(dato("2012.06.30")));
         final GenerellTidsperiode b = periode(dato("2005.08.15"), empty());
         final GenerellTidsperiode c = periode(dato("2005.01.01"), empty());
@@ -72,7 +72,7 @@ public class UnderlagFactoryTest {
     }
 
     @Test
-    public void skal_inkludere_filtrere_koblingar_i_periodiseringa_men_ikkje_legge_dei_til_som_koblingar() {
+    void skal_inkludere_filtrere_koblingar_i_periodiseringa_men_ikkje_legge_dei_til_som_koblingar() {
         final int antallPerioder = 30000;
         assertPeriodiser(
                 new Observasjonsperiode(LocalDate.MIN, LocalDate.MAX),
@@ -91,7 +91,7 @@ public class UnderlagFactoryTest {
      * situasjon som ikkje skal medføre nokon exception.
      */
     @Test
-    public void skalIkkjeFeileVissAllePerioderLiggUtanforObservasjonsperioda() {
+    void skalIkkjeFeileVissAllePerioderLiggUtanforObservasjonsperioda() {
         assertPeriodiser(
                 observasjonsperiode("2014.01.01", "2014.12.31"),
                 periode(dato("2005.08.15"), of(dato("2012.06.30"))),
@@ -106,7 +106,7 @@ public class UnderlagFactoryTest {
      * situasjon som ikke skal medføre noen exception.
      */
     @Test
-    public void skalIkkeFeileUtenPerioderOgUtenObservasjonsperiode() {
+    void skalIkkeFeileUtenPerioderOgUtenObservasjonsperiode() {
         assertPeriodiserUtenObservasjon()
                 .harPerioder(0);
     }
@@ -116,7 +116,7 @@ public class UnderlagFactoryTest {
      * ikkje får sine frå og med- og til og med-datoar brukt i forbindelse med periodiseringa av underlaget.
      */
     @Test
-    public void skalIkkjeSplittePaaInputPerioderSomLiggUtanforObservasjonsperioda() {
+    void skalIkkjeSplittePaaInputPerioderSomLiggUtanforObservasjonsperioda() {
         assertPeriodiser(
                 observasjonsperiode("2014.01.01", "2014.12.31"),
                 periode(dato("2005.08.15"), of(dato("2012.06.30"))),
@@ -133,7 +133,7 @@ public class UnderlagFactoryTest {
      * for kvar frå og med-dato frå alle stillingsforholdperiodene.
      */
     @Test
-    public void skalLageUnderlagsperiodeForKvarStillingsendring() {
+    void skalLageUnderlagsperiodeForKvarStillingsendring() {
         assertPeriodiser(
                 periode(dato("2005.01.01"), of(dato("2011.12.31"))),
                 periode(dato("2012.01.01"), of(dato("2012.06.30")))
@@ -157,7 +157,7 @@ public class UnderlagFactoryTest {
      * etter sin til og med-dato.
      */
     @Test
-    public void skalKunSplittePaaUnikeEndringsdatoar() {
+    void skalKunSplittePaaUnikeEndringsdatoar() {
         assertPeriodiser(
                 periode(dato("2001.01.01"), empty()),
                 periode(dato("2001.01.01"), empty())
@@ -172,7 +172,7 @@ public class UnderlagFactoryTest {
      * blir lagt inn i underlaget blir lagt inn i ei anna rekkefølge.
      */
     @Test
-    public void skalByggeOppUnderlagsperiodeneIKronologiskRekkefoelgeSjoelvOmInputPeriodeneKanVereIAnnaRekkefoelge() {
+    void skalByggeOppUnderlagsperiodeneIKronologiskRekkefoelgeSjoelvOmInputPeriodeneKanVereIAnnaRekkefoelge() {
         assertPeriodiser(
                 periode(dato("2010.01.01"), of(dato("2012.06.30"))),
                 periode(dato("2003.07.13"), of(dato("2009.12.31")))
@@ -187,7 +187,7 @@ public class UnderlagFactoryTest {
      * Verifiserer at underlaget blir bygd opp når observasjonsprioden er løpende også uten noen løpende perioder i koblingene
      */
     @Test
-    public void skal_byggeopp_underlagsperiodene_for_løpende_observasjonsperiode() {
+    void skal_byggeopp_underlagsperiodene_for_løpende_observasjonsperiode() {
         assertPeriodiser(
                 observasjonsperiode("2003.07.13", løpende()),
                 periode(dato("2003.07.13"), of(dato("2009.12.31"))),
@@ -204,7 +204,7 @@ public class UnderlagFactoryTest {
      * når en av de koblede periodene er løpende
      */
     @Test
-    public void skal_byggeopp_underlagsperiodene_med_løpende_underlagsperiode_til_sist_for_løpende_observasjonsperiode() {
+    void skal_byggeopp_underlagsperiodene_med_løpende_underlagsperiode_til_sist_for_løpende_observasjonsperiode() {
         assertPeriodiser(
                 observasjonsperiode("2000.01.01", løpende()),
                 periode(dato("2003.07.13"), of(dato("2009.12.31"))),
@@ -222,7 +222,7 @@ public class UnderlagFactoryTest {
      * Verifiserer at underlaget blir bygd opp uten observasjonspriode
      */
     @Test
-    public void skal_byggeopp_underlagsperiodene_uten_observasjonsperiode() {
+    void skal_byggeopp_underlagsperiodene_uten_observasjonsperiode() {
         assertPeriodiserUtenObservasjon(
                 periode(dato("2003.07.13"), of(dato("2009.12.31"))),
                 periode(dato("2010.01.01"), of(dato("2012.06.30")))
@@ -237,7 +237,7 @@ public class UnderlagFactoryTest {
      * Verifiserer at underlaget blir bygd opp med løpende underlagsperiode til sist også tuen observasjonspriode
      */
     @Test
-    public void skal_byggeopp_underlagsperiodene_med_løpende_underlagsperiode_til_sist_uten_observasjonsperiode() {
+    void skal_byggeopp_underlagsperiodene_med_løpende_underlagsperiode_til_sist_uten_observasjonsperiode() {
         assertPeriodiserUtenObservasjon(
                 periode(dato("2003.07.13"), of(dato("2009.12.31"))),
                 periode(dato("2010.01.01"), of(dato("2012.06.30"))),
@@ -251,7 +251,7 @@ public class UnderlagFactoryTest {
     }
 
     @Test
-    public void skalByggePeriodeSomErEinDagLang() {
+    void skalByggePeriodeSomErEinDagLang() {
         final String expected = "2001.01.01";
         assertPeriodiser(
                 periode(dato(expected), of(dato(expected)))
@@ -267,7 +267,7 @@ public class UnderlagFactoryTest {
      * viss den kronologisk siste tidsperioda brukt for å bygge opp underlaget, er løpande.
      */
     @Test
-    public void skalAvslutteSisteUnderlagsperiodaPaaSisteDagIObservasjonsperiodaVissSisteTidsperiodeErLoepande() {
+    void skalAvslutteSisteUnderlagsperiodaPaaSisteDagIObservasjonsperiodaVissSisteTidsperiodeErLoepande() {
         assertPeriodiser(
                 observasjonsperiode("2004.01.01", "2004.03.31"),
                 periode(dato("2004.02.29"), empty())
@@ -287,7 +287,7 @@ public class UnderlagFactoryTest {
      * </pre>
      */
     @Test
-    public void skalAvslutteSisteUnderlagsperiodaPaaSisteDagIObservasjonsperiodaVissSisteTidsperiodesErAvsluttaSeinare() {
+    void skalAvslutteSisteUnderlagsperiodaPaaSisteDagIObservasjonsperiodaVissSisteTidsperiodesErAvsluttaSeinare() {
         assertPeriodiser(
                 observasjonsperiode("2004.01.01", "2008.02.28"),
                 periode(dato("2004.02.29"), of(dato("2012.06.01")))
@@ -306,7 +306,7 @@ public class UnderlagFactoryTest {
      * splittast på denne dagen så ein endar opp med ei en-dag lang underlagsperiode som siste periode i underlaget.
      */
     @Test
-    public void skalHandtereGrenseverdiarVedAvgrensingAvOevredatoGrenseKorrekt() {
+    void skalHandtereGrenseverdiarVedAvgrensingAvOevredatoGrenseKorrekt() {
         final String expected = "2008.02.28";
 
         assertPeriodiser(
@@ -341,7 +341,7 @@ public class UnderlagFactoryTest {
      * </pre>
      */
     @Test
-    public void skalStartFoersteUnderlagsperiodaPaaFoersteDagIObservasjonsperiodaVissFoersteTidsperiodesStartarTidligare() {
+    void skalStartFoersteUnderlagsperiodaPaaFoersteDagIObservasjonsperiodaVissFoersteTidsperiodesStartarTidligare() {
         final String expected = "2004.01.01";
         assertPeriodiser(
                 observasjonsperiode(expected, "2008.02.28"),
@@ -360,7 +360,7 @@ public class UnderlagFactoryTest {
      * datoar å splitte på innanfor observasjonsperioda dersom den har overlappande tidsperioder som input.
      */
     @Test
-    public void skalKonstruereUnderlagMedKunEiUnderlagsperiodeVissInputPeriodeneOverlapparMenFraOgMedOgTilOgMedDatoaneAlleLiggUtanforObservasjonsperioda() {
+    void skalKonstruereUnderlagMedKunEiUnderlagsperiodeVissInputPeriodeneOverlapparMenFraOgMedOgTilOgMedDatoaneAlleLiggUtanforObservasjonsperioda() {
         assertPeriodiser(
                 observasjonsperiode("2001.01.01", "2001.12.31"),
                 periode(dato("2000.01.01"), of(dato("2002.01.01")))
@@ -380,7 +380,7 @@ public class UnderlagFactoryTest {
      * underlagsperiode.
      */
     @Test
-    public void skalKreveEiObservasjonsperiode() {
+    void skalKreveEiObservasjonsperiode() {
         assertThatCode(
                 () -> new UnderlagFactory(null)
         )
