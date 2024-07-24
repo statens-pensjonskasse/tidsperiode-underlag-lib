@@ -12,9 +12,9 @@
     </description>
 
     <scm>
-        <connection>scm:git:http://git.spk.no/scm/fellesjava/felles-tidsperiode-underlag-lib.git</connection>
+        <connection>scm:git:https://git.spk.no/scm/fellesjava/felles-tidsperiode-underlag-lib.git</connection>
         <developerConnection>scm:git:ssh://git@git.spk.no:7999/fellesjava/felles-tidsperiode-underlag-lib.git</developerConnection>
-        <url>http://git.spk.no/projects/FELLESJAVA/repos/felles-tidsperiode-underlag-lib/browse</url>
+        <url>https://git.spk.no/projects/FELLESJAVA/repos/felles-tidsperiode-underlag-lib/browse</url>
     </scm>
 
     <properties>
