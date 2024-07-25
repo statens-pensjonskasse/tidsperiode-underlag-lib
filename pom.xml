@@ -235,4 +235,16 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>spk-releases</id>
+            <url>http://nexus/content/repositories/spk-releases</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>spk-snapshots</id>
+            <url>http://nexus/content/repositories/spk-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
