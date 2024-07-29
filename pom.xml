@@ -4,7 +4,7 @@
 
     <groupId>no.spk.felles</groupId>
     <artifactId>felles-tidsperiode-underlag-lib</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2-SNAPSHOT</version>
     <description>
         Generering av underlag og underlagsperioder for å understøtte bruk og behandling av tidsperiodiserte datasett for følgjande funksjonelle område:
             - Fastsats
