@@ -22,8 +22,8 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <junit-jupiter.version>5.11.3</junit-jupiter.version>
-        <assertj-core.version>3.26.3</assertj-core.version>
+        <junit-jupiter.version>5.11.4</junit-jupiter.version>
+        <assertj-core.version>3.27.1</assertj-core.version>
         <japicmp-maven-plugin.version>0.23.0</japicmp-maven-plugin.version>
 
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
@@ -32,7 +32,7 @@
         <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
         <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
         <extra-enforcer-rules.version>1.9.0</extra-enforcer-rules.version>
     </properties>
 
