@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>no.spk.felles</groupId>
-    <artifactId>felles-tidsperiode-underlag-lib</artifactId>
-    <version>2.1.2-SNAPSHOT</version>
+    <groupId>no.spk</groupId>
+    <artifactId>tidsperiode-underlag-lib</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
     <description>
         Generering av underlag og underlagsperioder for å understøtte bruk og behandling av tidsperiodiserte datasett for følgjande funksjonelle område:
-            - Fastsats
-            - Panda Reserveberegning
+        - Fastsats
+        - Panda Reserveberegning
     </description>
 
     <scm>
-        <connection>scm:git:https://git.spk.no/scm/fellesjava/felles-tidsperiode-underlag-lib.git</connection>
-        <developerConnection>scm:git:ssh://git@git.spk.no:7999/fellesjava/felles-tidsperiode-underlag-lib.git</developerConnection>
-        <url>https://git.spk.no/projects/FELLESJAVA/repos/felles-tidsperiode-underlag-lib/browse</url>
+        <connection>scm:git:git@github.com:statens-pensjonskasse/panda-tidsperiode-underlag-lib.git</connection>
+        <developerConnection>scm:git:git@github.com:statens-pensjonskasse/panda-tidsperiode-underlag-lib.git</developerConnection>
+        <url>https://github.com/statens-pensjonskasse/panda-tidsperiode-underlag-lib</url>
     </scm>
 
     <properties>
@@ -24,7 +25,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit-jupiter.version>5.11.4</junit-jupiter.version>
         <assertj-core.version>3.27.1</assertj-core.version>
-        <japicmp-maven-plugin.version>0.23.0</japicmp-maven-plugin.version>
 
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
@@ -75,47 +75,6 @@
                         <include>**/*AT.class</include>
                     </includes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.siom79.japicmp</groupId>
-                <artifactId>japicmp-maven-plugin</artifactId>
-                <version>${japicmp-maven-plugin.version}</version>
-                <configuration>
-                    <oldVersion>
-                        <dependency>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <!-- NB: Ved binært-inkompatible endringar som fører til bump -->
-                            <!-- i versjonsnummer på modulen må også den her bumpast opp -->
-                            <version>1.0.0</version> <!-- TODO -->
-                        </dependency>
-                    </oldVersion>
-                    <newVersion>
-                        <file>
-                            <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
-                        </file>
-                    </newVersion>
-                    <parameter>
-                        <accessModifier>protected</accessModifier>
-                        <breakBuildOnModifications>false</breakBuildOnModifications>
-                        <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
-                        <onlyBinaryIncompatible>true</onlyBinaryIncompatible>
-                        <includeSynthetic>false</includeSynthetic>
-                        <ignoreMissingClasses>false</ignoreMissingClasses>
-                        <skipPomModules>true</skipPomModules>
-                        <noAnnotations>false</noAnnotations>
-                        <ignoreNonResolvableArtifacts>false</ignoreNonResolvableArtifacts>
-                    </parameter>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-binary-compatibility</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>cmp</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -238,13 +197,12 @@
 
     <distributionManagement>
         <repository>
-            <id>spk-releases</id>
-            <url>https://nexus.spk.no/content/repositories/spk-releases</url>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/statens-pensjonskasse/panda-tidsperiode-underlag-lib</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
-
-        <snapshotRepository>
-            <id>spk-snapshots</id>
-            <url>https://nexus.spk.no/content/repositories/spk-snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 </project>

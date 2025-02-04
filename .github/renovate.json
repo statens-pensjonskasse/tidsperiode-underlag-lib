@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>appark/renovate-preset:appark-monthly"
+    "local>statens-pensjonskasse/renovate-presets-internal:weekly-automerge-non-major"
   ]
 }

@@ -1,0 +1,6 @@
+# Each line is a pattern followed by the owners for matched files
+# Pattern syntax is similar to .gitignore
+# Each owner is prepended with `@` for user or team
+
+# Specify owners for the entire repository
+* @statens-pensjonskasse/team-reserveberegning
