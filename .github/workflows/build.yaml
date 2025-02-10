@@ -11,6 +11,7 @@ jobs:
       packages: write
     secrets: inherit
     with:
+      runner-tag: 'spk-test-runner'
       java-version: 21
 
   notify:
