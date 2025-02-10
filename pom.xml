@@ -13,9 +13,9 @@
     </description>
 
     <scm>
-        <connection>scm:git:git@github.com:statens-pensjonskasse/panda-tidsperiode-underlag-lib.git</connection>
-        <developerConnection>scm:git:git@github.com:statens-pensjonskasse/panda-tidsperiode-underlag-lib.git</developerConnection>
-        <url>https://github.com/statens-pensjonskasse/panda-tidsperiode-underlag-lib</url>
+        <connection>scm:git:git@github.com:statens-pensjonskasse/tidsperiode-underlag-lib.git</connection>
+        <developerConnection>scm:git:git@github.com:statens-pensjonskasse/tidsperiode-underlag-lib.git</developerConnection>
+        <url>https://github.com/statens-pensjonskasse/tidsperiode-underlag-lib</url>
     </scm>
 
     <properties>
@@ -199,7 +199,7 @@
         <repository>
             <id>github</id>
             <name>GitHub OWNER Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/statens-pensjonskasse/panda-tidsperiode-underlag-lib</url>
+            <url>https://maven.pkg.github.com/statens-pensjonskasse/tidsperiode-underlag-lib</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
