@@ -16,7 +16,7 @@ jobs:
   notify:
     needs: build
     runs-on: ubuntu-latest
-    if: always()
+    if: always() && github.branch == 'main'
     steps:
       - uses: actions/checkout@v4 #v4.2.2
       - name: report to slack
