@@ -39,6 +39,47 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <version>0.23.1</version>
+                <configuration>
+                    <oldVersion>
+                        <dependency>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <!-- NB: Ved binært-inkompatible endringar som fører til bump -->
+                            <!-- i versjonsnummer på modulen må også den her bumpast opp -->
+                            <version>1.0.3</version>
+                        </dependency>
+                    </oldVersion>
+                    <newVersion>
+                        <file>
+                            <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
+                        </file>
+                    </newVersion>
+                    <parameter>
+                        <accessModifier>protected</accessModifier>
+                        <breakBuildOnModifications>false</breakBuildOnModifications>
+                        <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
+                        <onlyBinaryIncompatible>true</onlyBinaryIncompatible>
+                        <includeSynthetic>false</includeSynthetic>
+                        <ignoreMissingClasses>false</ignoreMissingClasses>
+                        <skipPomModules>true</skipPomModules>
+                        <noAnnotations>false</noAnnotations>
+                        <ignoreNonResolvableArtifacts>false</ignoreNonResolvableArtifacts>
+                    </parameter>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-binary-compatibility</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>cmp</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>${maven-deploy-plugin.version}</version>
