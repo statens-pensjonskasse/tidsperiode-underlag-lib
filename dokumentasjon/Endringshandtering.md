@@ -1,4 +1,4 @@
-# Fellesmodul - felles-tidsperiode-underlag-lib - Endringshandtering
+# Tidsperiode-underlag-lib - Endringshandtering
 
 <a name="seksjon1"/>
 
@@ -12,7 +12,7 @@
 
 ## 2. Prinsipp for endringshandtering
 
-For felles-tidsperiode-underlag-lib må vi ha eit svært bevist forhold til korvidt endringar vi gjer på API-nivå, 
+For tidsperiode-underlag-lib må vi ha eit svært bevist forhold til korvidt endringar vi gjer på API-nivå, 
 er bakoverkompatible med alle klientane som er tett kobla til tidsperiode- og underlag APIane.
 
 Det blir forventa at alle endringar på modulen skal vere kompatible med følgjande system/applikasjonar/modular:
@@ -27,7 +27,7 @@ Det blir forventa at alle endringar på modulen skal vere kompatible med følgja
 * Analyseunderlag opptjening og rettighet
 
 Ettersom vi ikkje ønskjer eller forventar at alle desse applikasjonane og modulane vil bli oppgradert i samme takt ved 
-endringar i felles-tidsserie-underlag-lib, ønskjer vi å holde felles-tidsperiode-underlag-lib så stabil og uendra som 
+endringar i tidsserie-underlag-lib, ønskjer vi å holde tidsperiode-underlag-lib så stabil og uendra som 
 mulig.
  
 Prinsippa vi følger for å oppnå dette er som følgjer:
@@ -37,7 +37,7 @@ Prinsippa vi følger for å oppnå dette er som følgjer:
 * Vi følgjer open-closed-prinsippet ved at ny funksjonalitet helst bør kunne pluggast inn i eksisterande API 
   framfor å kreve endringar på den.
 * Vi konfererer med og spør alle team som er ansvarlig for applikasjonar og modular som er avhengig av 
-  felles-tidsperiode-underlag-lib, om råd i forkant av at endringar bli innført på modulen.
+  tidsperiode-underlag-lib, om råd i forkant av at endringar bli innført på modulen.
 
 <a name="seksjon3"/>
 
@@ -125,13 +125,13 @@ eller ubevist har brutt bakoverkompatibilitet med første release av gjeldande m
 som illustrert nedanfor:
 
 
-    [INFO] --- maven-source-plugin:2.4:jar (attach-sources) @ felles-tidsperiode-underlag-lib ---
-    [INFO] Building jar: C:\wses\ws_t\felles-tidsperiode-underlag-lib\target\felles-tidsperiode-underlag-lib-2.1.1-SNAPSHOT-sources.jar
+    [INFO] --- maven-source-plugin:2.4:jar (attach-sources) @ tidsperiode-underlag-lib ---
+    [INFO] Building jar: C:\wses\ws_t\tidsperiode-underlag-lib\target\tidsperiode-underlag-lib-2.1.1-SNAPSHOT-sources.jar
     [INFO]
-    [INFO] --- japicmp-maven-plugin:0.6.2:cmp (check-binary-compatibility) @ felles-tidsperiode-underlag-lib ---
-    [INFO] Written file 'C:\wses\ws_t\felles-tidsperiode-underlag-lib\target\japicmp\check-binary-compatibility.diff'.
-    [INFO] Written file 'C:\wses\ws_t\felles-tidsperiode-underlag-lib\target\japicmp\check-binary-compatibility.xml'.
-    [INFO] Written file 'C:\wses\ws_t\felles-tidsperiode-underlag-lib\target\japicmp\check-binary-compatibility.html'.
+    [INFO] --- japicmp-maven-plugin:0.6.2:cmp (check-binary-compatibility) @ tidsperiode-underlag-lib ---
+    [INFO] Written file 'C:\wses\ws_t\tidsperiode-underlag-lib\target\japicmp\check-binary-compatibility.diff'.
+    [INFO] Written file 'C:\wses\ws_t\tidsperiode-underlag-lib\target\japicmp\check-binary-compatibility.xml'.
+    [INFO] Written file 'C:\wses\ws_t\tidsperiode-underlag-lib\target\japicmp\check-binary-compatibility.html'.
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD FAILURE
     [INFO] ------------------------------------------------------------------------
@@ -139,7 +139,7 @@ som illustrert nedanfor:
     [INFO] Finished at: Fri Jan 29 14:50:51 CET 2016
     [INFO] Final Memory: 24M/168M
     [INFO] ------------------------------------------------------------------------
-    [ERROR] Failed to execute goal com.github.siom79.japicmp:japicmp-maven-plugin:0.6.2:cmp (check-binary-compatibility) on project felles-tidsperiode-underlag-lib: Breaking the build because there is at least one modified class: no.spk.felles.tidsperiode.underlag.Underlagsperiode -> [Help 1]
+    [ERROR] Failed to execute goal com.github.siom79.japicmp:japicmp-maven-plugin:0.6.2:cmp (check-binary-compatibility) on project tidsperiode-underlag-lib: Breaking the build because there is at least one modified class: underlag.no.spk.tidsserie.tidsperiode.Underlagsperiode -> [Help 1]
 
 For å rette opp i denne typen feil bør ein derfor gjere om på endringa slik at den bli bakoverkompatibel. F.eks.:
 
