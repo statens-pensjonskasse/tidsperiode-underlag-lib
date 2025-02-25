@@ -6,11 +6,11 @@
 |                  |                                                                                                                                                                                                                                                                                                                                                                                         |
 |:-----------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Oppgave          | Generering av underlag og underlagsperioder for å understøtte:<ul><li>Fastsats</li><li>Prognosefakturering av fastsatspremie</li><li>Beregning av riktig årspremie ved avregning av tidligare innbetalt fastsatspremie</li><li>Periodisere gjeldande avtale- og arbeidsgiverinformasjon for å forenkle datakvalitets- og rapporteringsoppgåver</li><li>Panda Reserveberegning</li></ul> |
-| Modulnavn        | felles-tidsperiode-underlag-lib                                                                                                                                                                                                                                                                                                                                                         |
-| Versjonskontroll | felles-tidsperiode-underlag-lib (GIT)                                                                                                                                                                                                                                                                                                                                                   |
-| Pakke            | <ul><li>no.spk.pensjon.felles.tidsperiode</li><li>no.spk.pensjon.felles.tidsperiode.underlag</li></ul>                                                                                                                                                                                                                                                                                  |
-| Hovedklasser     | <ul><li>no.spk.pensjon.felles.tidsperiode.Tidsperiode</li><li>no.spk.pensjon.felles.tidsperiode.underlag.Underlag</li><li>no.spk.pensjon.felles.tidsperiode.underlag.UnderlagFactory</li></ul>                                                                                                                                                                                          |
-| Versjonering     | Sjå [Fellesmodul - felles-tidsperiode-underlag-lib - Endringshandtering](dokumentasjon/Endringshandtering.md)                                                                                                                                                                                                                                                                           |
+| Modulnavn        | tidsperiode-underlag-lib                                                                                                                                                                                                                                                                                                                                                                |
+| Versjonskontroll | tidsperiode-underlag-lib (GIT)                                                                                                                                                                                                                                                                                                                                                          |
+| Pakke            | <ul><li>no.spk.pensjon.premie.tidsperiode</li><li>no.spk.pensjon.premie.tidsperiode.underlag</li></ul>                                                                                                                                                                                                                                                                                  |
+| Hovedklasser     | <ul><li>no.spk.pensjon.premie.tidsperiode.Tidsperiode</li><li>underlag.no.spk.tidsserie.tidsperiode.Underlag</li><li>underlag.no.spk.tidsserie.tidsperiode.UnderlagFactory</li></ul>                                                                                                                                                                                                          |
+| Versjonering     | Sjå [Tidsperiode-underlag-lib - Endringshandtering](dokumentasjon/Endringshandtering.md)                                                                                                                                                                                                                                                                                                |
 | Branchingmodel   | JPL fra Master (feature == større feature, master == nåtilstand, tag fra master == release)                                                                                                                                                                                                                                                                                             |
 
 ## 2. Bakgrunn
@@ -34,7 +34,7 @@ og aksjonsdato-tidsaksen.
 Registreringsdato-tidsaksen indikerer på kva dato/tidspunkt SPK mottok informasjon frå omverda og lagra det i sine 
 datasystem. Aksjonsdato-tidsaksen indikerer kva dato den mottatte informasjonen blir gyldig/trer i kraft.
 
-Formålet med felles-tidsperiode-underlag-lib er å tilby ein grunnmur for handtering av tidsperiodiserte grunnlagsdata 
+Formålet med tidsperiode-underlag-lib er å tilby ein grunnmur for handtering av tidsperiodiserte grunnlagsdata 
 med fokus på aksjonsdato-tidsaksen:
 
 «Gitt grunnlagsdata henta ut på eit gitt punkt på registreringsdato-tidsaksen, korleis ser grunnlagsdatane ein vil 
@@ -166,15 +166,15 @@ Tidsseriegenereringa er delt opp og organisert i 2 hovedområde:
 | Tidsperiode  |Kjernekonseptet Tidsperiode med eit par SPK-uavhengige, periode eller dato-relaterte støttetyper (År, Årstall, Måned, Generell tidsperiode, Antall dagar)|
 | Underlag     |Kjernekonsept for utrekning og behandling av tidsperiodiserte datasett.<br>Periodiserer på tvers av alle tidsperiodenes endringsdatoar og bygger opp ei finkorna underlag beståande av underlagsperioder som aldri kan overlappe eller ha tidsgap mellom periodene.<br>Sluttresultatet blir at ein kan eliminere eller sterkt redusere behovet for at seinare utrekningsreglar skal måtte forholde seg til tid og datoar ved utrekning av utleda verdiar.|
 
-![Pakkediagram: felles-tidsperiode-underlag-lib](dokumentasjon/felles-tidsperiode-underlag-lib.png)
+![Pakkediagram: tidsperiode-underlag-lib](dokumentasjon/tidsperiode-underlag-lib.png)
 
-_Pakkediagram: felles-tidsperiode-underlag-lib_
+_Pakkediagram: tidsperiode-underlag-lib_
 
 ### 5.1. Tidsperiode
 
-![Pakkediagram: no.spk.felles.tidsperiode](dokumentasjon/tidsperiode.jpeg)
+![Pakkediagram: no.spk.premie.tidsperiode](dokumentasjon/tidsperiode.jpeg)
 
-_Pakkediagram: no.spk.felles.tidsperiode_
+_Pakkediagram: no.spk.premie.tidsperiode_
 
 Det nederste nivået i designet inneheld dei sentrale abstraksjonane som heile periodiseringsdesignet baserer seg på.
 
@@ -211,9 +211,9 @@ grunnlagsdata eller andre verdiar tilknytta seg sjølv.
 
 ### 5.2. Underlag
 
-![Pakkediagram: no.spk.felles.tidsperiode](dokumentasjon/underlag_og_reglar.jpeg)
+![Pakkediagram: no.spk.premie.tidsperiode](dokumentasjon/underlag_og_reglar.jpeg)
 
-_Pakkediagram: no.spk.felles.tidsperiode.underlag_
+_Pakkediagram: no.spk.premie.tidsperiode.underlag_
 
 På nivået over tidsperiode og grunnlagsdata, finn vi underlag.
 
@@ -403,7 +403,7 @@ _Eksempel: Beregningar for kvar underlagsperiode basert på annotasjonar og bere
 - Sjekk ut modulen via GIT:
 
 
-    git clone http://git.spk.no/scm/fellesjava/felles-tidsperiode-underlag-lib.git
+    git clone git@github.com:statens-pensjonskasse/tidsperiode-underlag-lib.git
 - Bygg modulen via Maven:
 
 
@@ -438,5 +438,5 @@ tidligare versjonar. Dersom ein har vore inne og gjort endringar uten å tenke p
 å ha gjort ei endring som bryter bakoverkompatibiliteten fordi ein har renama, fjerna eller endra på metodeparameter 
 og/eller synligheit.
 
-Sjå [Fellesmodul - felles-tidsperiode-underlag-lib - Endringshandtering](dokumentasjon/Endringshandtering.md) for meir 
+Sjå [Tidsperiode-underlag-lib - Endringshandtering](dokumentasjon/Endringshandtering.md) for meir 
 informasjon.

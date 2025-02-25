@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>no.spk</groupId>
+    <groupId>no.spk.tidsserie</groupId>
     <artifactId>tidsperiode-underlag-lib</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <description>
         Generering av underlag og underlagsperioder for å understøtte bruk og behandling av tidsperiodiserte datasett for følgjande funksjonelle område:
         - Fastsats
@@ -38,47 +38,47 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.github.siom79.japicmp</groupId>
-                <artifactId>japicmp-maven-plugin</artifactId>
-                <version>0.23.1</version>
-                <configuration>
-                    <oldVersion>
-                        <dependency>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>${project.artifactId}</artifactId>
-                            <!-- NB: Ved binært-inkompatible endringar som fører til bump -->
-                            <!-- i versjonsnummer på modulen må også den her bumpast opp -->
-                            <version>1.0.3</version>
-                        </dependency>
-                    </oldVersion>
-                    <newVersion>
-                        <file>
-                            <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
-                        </file>
-                    </newVersion>
-                    <parameter>
-                        <accessModifier>protected</accessModifier>
-                        <breakBuildOnModifications>false</breakBuildOnModifications>
-                        <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
-                        <onlyBinaryIncompatible>true</onlyBinaryIncompatible>
-                        <includeSynthetic>false</includeSynthetic>
-                        <ignoreMissingClasses>false</ignoreMissingClasses>
-                        <skipPomModules>true</skipPomModules>
-                        <noAnnotations>false</noAnnotations>
-                        <ignoreNonResolvableArtifacts>false</ignoreNonResolvableArtifacts>
-                    </parameter>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-binary-compatibility</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>cmp</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.github.siom79.japicmp</groupId>-->
+<!--                <artifactId>japicmp-maven-plugin</artifactId>-->
+<!--                <version>0.23.1</version>-->
+<!--                <configuration>-->
+<!--                    <oldVersion>-->
+<!--                        <dependency>-->
+<!--                            <groupId>${project.groupId}</groupId>-->
+<!--                            <artifactId>${project.artifactId}</artifactId>-->
+<!--                            &lt;!&ndash; NB: Ved binært-inkompatible endringar som fører til bump &ndash;&gt;-->
+<!--                            &lt;!&ndash; i versjonsnummer på modulen må også den her bumpast opp &ndash;&gt;-->
+<!--                            <version>1.0.3</version>-->
+<!--                        </dependency>-->
+<!--                    </oldVersion>-->
+<!--                    <newVersion>-->
+<!--                        <file>-->
+<!--                            <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>-->
+<!--                        </file>-->
+<!--                    </newVersion>-->
+<!--                    <parameter>-->
+<!--                        <accessModifier>protected</accessModifier>-->
+<!--                        <breakBuildOnModifications>false</breakBuildOnModifications>-->
+<!--                        <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>-->
+<!--                        <onlyBinaryIncompatible>true</onlyBinaryIncompatible>-->
+<!--                        <includeSynthetic>false</includeSynthetic>-->
+<!--                        <ignoreMissingClasses>false</ignoreMissingClasses>-->
+<!--                        <skipPomModules>true</skipPomModules>-->
+<!--                        <noAnnotations>false</noAnnotations>-->
+<!--                        <ignoreNonResolvableArtifacts>false</ignoreNonResolvableArtifacts>-->
+<!--                    </parameter>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>check-binary-compatibility</id>-->
+<!--                        <phase>verify</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>cmp</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
