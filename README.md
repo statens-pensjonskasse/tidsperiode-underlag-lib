@@ -8,8 +8,8 @@
 | Oppgave          | Generering av underlag og underlagsperioder for å understøtte:<ul><li>Fastsats</li><li>Prognosefakturering av fastsatspremie</li><li>Beregning av riktig årspremie ved avregning av tidligare innbetalt fastsatspremie</li><li>Periodisere gjeldande avtale- og arbeidsgiverinformasjon for å forenkle datakvalitets- og rapporteringsoppgåver</li><li>Panda Reserveberegning</li></ul> |
 | Modulnavn        | tidsperiode-underlag-lib                                                                                                                                                                                                                                                                                                                                                                |
 | Versjonskontroll | tidsperiode-underlag-lib (GIT)                                                                                                                                                                                                                                                                                                                                                          |
-| Pakke            | <ul><li>no.spk.pensjon.premie.tidsperiode</li><li>no.spk.pensjon.premie.tidsperiode.underlag</li></ul>                                                                                                                                                                                                                                                                                  |
-| Hovedklasser     | <ul><li>no.spk.pensjon.premie.tidsperiode.Tidsperiode</li><li>underlag.no.spk.tidsserie.tidsperiode.Underlag</li><li>underlag.no.spk.tidsserie.tidsperiode.UnderlagFactory</li></ul>                                                                                                                                                                                                          |
+| Pakke            | <ul><li>no.spk.tidsserie.tidsperiode</li><li>no.spk.tidsserie.tidsperiode.underlag</li></ul>                                                                                                                                                                                                                                                                                  |
+| Hovedklasser     | <ul><li>no.spk.tidsserie.tidsperiode.Tidsperiode</li><li>underlag.no.spk.tidsserie.tidsperiode.Underlag</li><li>underlag.no.spk.tidsserie.tidsperiode.UnderlagFactory</li></ul>                                                                                                                                                                                                          |
 | Versjonering     | Sjå [Tidsperiode-underlag-lib - Endringshandtering](dokumentasjon/Endringshandtering.md)                                                                                                                                                                                                                                                                                                |
 | Branchingmodel   | JPL fra Master (feature == større feature, master == nåtilstand, tag fra master == release)                                                                                                                                                                                                                                                                                             |
 
@@ -172,9 +172,9 @@ _Pakkediagram: tidsperiode-underlag-lib_
 
 ### 5.1. Tidsperiode
 
-![Pakkediagram: no.spk.premie.tidsperiode](dokumentasjon/tidsperiode.jpeg)
+![Pakkediagram: no.spk.tidsserie.tidsperiode](dokumentasjon/tidsperiode.jpeg)
 
-_Pakkediagram: no.spk.premie.tidsperiode_
+_Pakkediagram: no.spk.tidsserie.tidsperiode_
 
 Det nederste nivået i designet inneheld dei sentrale abstraksjonane som heile periodiseringsdesignet baserer seg på.
 
@@ -211,9 +211,9 @@ grunnlagsdata eller andre verdiar tilknytta seg sjølv.
 
 ### 5.2. Underlag
 
-![Pakkediagram: no.spk.premie.tidsperiode](dokumentasjon/underlag_og_reglar.jpeg)
+![Pakkediagram: no.spk.tidsserie.tidsperiode](dokumentasjon/underlag_og_reglar.jpeg)
 
-_Pakkediagram: no.spk.premie.tidsperiode.underlag_
+_Pakkediagram: no.spk.tidsserie.tidsperiode.underlag_
 
 På nivået over tidsperiode og grunnlagsdata, finn vi underlag.
 
