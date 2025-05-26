@@ -5,7 +5,7 @@
 
     <groupId>no.spk.tidsserie</groupId>
     <artifactId>tidsperiode-underlag-lib</artifactId>
-    <version>3.0.9</version>
+    <version>3.0.10-SNAPSHOT</version>
     <description>
         Generering av underlag og underlagsperioder for å understøtte bruk og behandling av tidsperiodiserte datasett for følgjande funksjonelle område:
         - Fastsats
