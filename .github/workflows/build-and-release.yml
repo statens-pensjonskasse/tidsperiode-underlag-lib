@@ -1,0 +1,111 @@
+name: Release from [release] commits (Maven)
+
+on:
+  push:
+    branches: [ "main" ]  # endre ved behov
+
+permissions:
+  contents: write  # kreves for å pushe tag og opprette release
+
+jobs:
+  release:
+    if: contains(github.event.head_commit.message, '[release]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn -B verify
+
+      - name: Read version from pom.xml
+        id: ver
+        run: |
+          # Leser prosjektversjon fra rot-pom
+          RAW_VER=$(mvn -q -N help:evaluate -Dexpression=project.version -DforceStdout)
+          echo "Raw version: $RAW_VER"
+          if [[ "$RAW_VER" != *"-SNAPSHOT" ]]; then
+            echo "Pom-versjonen må være X.Y.Z-SNAPSHOT (fant: $RAW_VER)"; exit 1
+          fi
+          REL_VER="${RAW_VER%-SNAPSHOT}"   # strip -SNAPSHOT -> X.Y.Z
+          echo "Release version: $REL_VER"
+          echo "RAW_VERSION=$RAW_VER" >> $GITHUB_OUTPUT
+          echo "RELEASE_VERSION=$REL_VER" >> $GITHUB_OUTPUT
+
+      - name: Set Maven version to release (X.Y.Z)
+        run: |
+          mvn -B versions:set -DnewVersion=${{ steps.ver.outputs.RELEASE_VERSION }} -DgenerateBackupPoms=false
+
+      - name: Commit release versjon
+        run: |
+          git commit -m"chore(release): Release av versjon ${{ steps.ver.outputs.RELEASE_VERSION }} [skip actions]"
+
+      - name: Build with Maven
+        run: mvn -B -DskipTests clean package
+
+      - name: Push endring av release versjon
+        run: |
+          git push
+
+      - name: Collect build files
+        run: |
+          mkdir -p dist
+          shopt -s globstar || true
+          cp **/target/* dist/ 2>/dev/null
+          ls -lah dist
+
+      - name: Create and push tag vX.Y.Z (if not exists)
+        run: |
+          TAG="v${{ steps.ver.outputs.RELEASE_VERSION }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG finnes lokalt."
+          fi
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+            echo "Tag $TAG finnes allerede på origin, hopper over push."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.RELEASE_VERSION }}
+          name: v${{ steps.ver.outputs.RELEASE_VERSION }}
+          generate_release_notes: true
+          files: dist/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sett Maven versjon til neste snapshot (X.Y.Z+1-SNAPSHOT)
+        id: next
+        run: |
+          REL="${{ steps.ver.outputs.RELEASE_VERSION }}"
+          # Øker patch-versjonen (1.2.3 → 1.2.4-SNAPSHOT)
+          IFS='.' read -r MAJ MIN PAT <<< "$REL"
+          NEXT_PATCH=$((PAT + 1))
+          NEXT_VER="${MAJ}.${MIN}.${NEXT_PATCH}-SNAPSHOT"
+          echo "Neste versjon: $NEXT_VER"
+          mvn -B versions:set -DnewVersion=$NEXT_VER -DgenerateBackupPoms=false
+          echo "NEXT_VERSION=$NEXT_VER" >> $GITHUB_OUTPUT
+
+      - name: Commit ny snapshot-versjon
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore(snapshot): Bump snapshot-versjon til ${{ steps.next.outputs.NEXT_VERSION }}"
+
+      - name: Push ny snapshot-versjon
+        run: git push
