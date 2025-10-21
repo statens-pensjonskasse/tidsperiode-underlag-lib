@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write  # kreves for å pushe tag og opprette release
+  packages: read
 
 jobs:
   build:
