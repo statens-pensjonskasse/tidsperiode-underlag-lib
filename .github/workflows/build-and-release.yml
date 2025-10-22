@@ -99,8 +99,7 @@ jobs:
         run: |
           mkdir -p dist
           shopt -s globstar || true
-          ls -lah **/target/*
-          cp **/target/* dist/ 2>/dev/null
+          cp **/target/*.* dist/ 2>/dev/null
 
       - name: Create and push tag vX.Y.Z (if not exists)
         run: |
