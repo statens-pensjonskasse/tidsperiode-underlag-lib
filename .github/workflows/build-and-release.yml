@@ -86,6 +86,8 @@ jobs:
 
       - name: Commit release versjon
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m"chore(release): Release av versjon ${{ steps.ver.outputs.RELEASE_VERSION }} [skip actions]"
 
       - name: Build with Maven
@@ -93,8 +95,6 @@ jobs:
 
       - name: Push endring av release versjon
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git push
 
       - name: Collect build files
