@@ -93,6 +93,8 @@ jobs:
 
       - name: Push endring av release versjon
         run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git push
 
       - name: Collect build files
