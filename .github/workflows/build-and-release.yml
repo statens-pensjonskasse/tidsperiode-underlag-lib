@@ -100,7 +100,6 @@ jobs:
           mkdir -p dist
           shopt -s globstar || true
           cp **/target/* dist/ 2>/dev/null
-          ls -lah dist
 
       - name: Create and push tag vX.Y.Z (if not exists)
         run: |
