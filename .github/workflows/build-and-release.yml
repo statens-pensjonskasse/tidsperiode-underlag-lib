@@ -2,7 +2,7 @@ name: Bygging og publisering av release og snapshot
 
 on:
   push:
-    branches: [ "main" ]  # endre ved behov
+    branches: [ "main" ]
 
 permissions:
   contents: write  # kreves for å pushe tag og opprette release
