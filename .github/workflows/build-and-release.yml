@@ -1,4 +1,4 @@
-name: Release from [release] commits (Maven)
+name: Bygging og publisering av release og snapshot
 
 on:
   push:
