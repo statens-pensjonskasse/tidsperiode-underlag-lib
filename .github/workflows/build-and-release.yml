@@ -17,7 +17,7 @@ jobs:
         id: decode
         run: |
           echo "${{ secrets.GH_APP_CREDS_B64 }}" | base64 -d > creds.json
-          cat creds.json | jq .
+          echo "creds=$(cat creds.json | jq .)" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Generate GitHub App token
