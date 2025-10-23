@@ -13,13 +13,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Decode GH App credentials
+        id: decode
+        run: |
+          echo "${{ secrets.GH_APP_CREDS_B64 }}" | base64 -d > creds.json
+          cat creds.json | jq .
+        shell: bash
+
       - name: Generate GitHub App token
         id: generate-token
         uses: electron/github-app-auth-action@v1.1.1
         with:
-          creds: ${{ fromJson( env.GH_APP_CREDS_JSON ) }}
-        env:
-          GH_APP_CREDS_JSON: ${{ fromBase64( secrets.GH_APP_CREDS_B64 ) }}
+          creds: ${{ steps.decode.outputs.creds }}
+
       - name: Checkout
         uses: actions/checkout@v5
         with:
