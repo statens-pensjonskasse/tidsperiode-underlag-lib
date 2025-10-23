@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Generate GitHub App token
+        uses: electron/github-app-auth-action@v1.1.1
+        id: generate-token
+        with:
+          creds: ${{ secrets.GH_APP_CREDS }}
       - name: Checkout
         uses: actions/checkout@v5
         with:
@@ -89,7 +94,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m"chore(release): Release av versjon ${{ steps.ver.outputs.RELEASE_VERSION }} [skip actions]"
+
+      - name: Commit med signatur
+        uses: dsanders11/github-app-commit-action@v1
+        with:
+          message: "chore(release): Release av versjon ${{ steps.ver.outputs.RELEASE_VERSION }} [skip actions]"
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Build with Maven
         run: mvn -B -DskipTests clean package
@@ -147,6 +157,12 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -am "chore(snapshot): Bump snapshot-versjon til ${{ steps.next.outputs.NEXT_VERSION }}"
+
+      - name: Commit med signatur
+        uses: dsanders11/github-app-commit-action@v1
+        with:
+          message: "chore(snapshot): Bump snapshot-versjon til ${{ steps.next.outputs.NEXT_VERSION }}"
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Push ny snapshot-versjon
         run: git push
