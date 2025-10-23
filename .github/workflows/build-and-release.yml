@@ -14,10 +14,12 @@ jobs:
 
     steps:
       - name: Generate GitHub App token
-        uses: electron/github-app-auth-action@v1.1.1
         id: generate-token
+        uses: electron/github-app-auth-action@v1.1.1
         with:
-          creds: ${{ secrets.GH_APP_CREDS }}
+          creds: ${{ fromJson( env.GH_APP_CREDS_JSON ) }}
+        env:
+          GH_APP_CREDS_JSON: ${{ fromBase64( secrets.GH_APP_CREDS_B64 ) }}
       - name: Checkout
         uses: actions/checkout@v5
         with:
