@@ -13,20 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Decode GH App credentials
-        id: decode
-        run: |
-          echo "${{ secrets.GH_APP_CREDS_B64 }}" | base64 -d > creds.json
-          echo 'creds<<EOF' >> $GITHUB_OUTPUT
-          cat creds.json >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Generate GitHub App token
-        id: generate-token
-        uses: electron/github-app-auth-action@v1.1.1
+      - name: Opprett GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
         with:
-          creds: ${{ steps.decode.outputs.creds }}
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
       - name: Checkout
         uses: actions/checkout@v5
@@ -106,10 +98,12 @@ jobs:
           git add .
 
       - name: Commit med signatur
-        uses: dsanders11/github-app-commit-action@v1
+        uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac #v1.5.0
         with:
           message: "chore(release): Release av versjon ${{ steps.ver.outputs.RELEASE_VERSION }} [skip actions]"
           token: ${{ steps.generate-token.outputs.token }}
+          fail-on-no-changes: false
+          ref: ${{ github.head_ref || github.ref }} # for PR-ref
 
       - name: Build with Maven
         run: mvn -B -DskipTests clean package
