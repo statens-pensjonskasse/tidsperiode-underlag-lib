@@ -2,94 +2,74 @@ name: Bygging og publisering av release og snapshot
 
 on:
   push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 permissions:
-  contents: write  # kreves for å pushe tag og opprette release
+  contents: write
+  packages: write
 
 jobs:
-  release:
-    if: contains(github.event.head_commit.message, '[release]')
+  prepare:
     runs-on: ubuntu-latest
-
+    outputs:
+        releasing: ${{ steps.check-release.outputs.releasing }}
     steps:
+      - name: Determine if releasing
+        id: check-release
+        run: |
+          if [[ '${{ github.ref_name }}' != 'main' ]]; then
+            echo "Not on main branch, skipping release"
+            echo "releasing=false">> $GITHUB_OUTPUT
+          
+          elif [[ "${{ github.event.head_commit.message }}" == *"[release]"* ]]; then
+            echo "Release commit detected"
+            echo "releasing=true" >> $GITHUB_OUTPUT
+          
+          else
+            echo "releasing=false" >> $GITHUB_OUTPUT
+          fi
 
+  build:
+    name: Bygg, test og publiser snapshot
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
         with:
-          distribution: temurin
           java-version: '21'
+          distribution: temurin
           cache: maven
 
-      - name: Setup settings.xml for GitHub Packages
+      - name: Check version from pom.xml
         run: |
-          mkdir -p $HOME/.m2
-          cat > $HOME/.m2/settings.xml << EOF
-          <settings>
-            <servers>
-              <server>
-                <id>github</id>
-                <username>${{ github.actor }}</username>
-                <password>${{ secrets.GITHUB_TOKEN }}</password>
-              </server>
-            </servers>
-            <profiles>
-              <profile>
-                <id>with-github</id>
-                <repositories>
-                  <repository>
-                    <id>github</id>
-                    <url>https://maven.pkg.github.com/statens-pensjonskasse/tidsserie</url>
-                    <snapshots>
-                      <enabled>true</enabled>
-                    </snapshots>
-                  </repository>
-                </repositories>
-                <pluginRepositories>
-                  <pluginRepository>
-                    <id>github</id>
-                    <url>https://maven.pkg.github.com/statens-pensjonskasse/tidsserie</url>
-                  </pluginRepository>
-                </pluginRepositories>
-              </profile>
-            </profiles>
-            <activeProfiles>
-              <activeProfile>with-github</activeProfile>
-            </activeProfiles>
-          </settings>
-          EOF
-
-      - name: Build with Maven
-        run: mvn -B verify
-
-      - name: Read version from pom.xml
-        id: ver
-        run: |
-          # Leser prosjektversjon fra rot-pom
-          RAW_VER=$(mvn -q -N help:evaluate -Dexpression=project.version -DforceStdout)
+          RAW_VER=$(./mvnw -q -N help:evaluate -Dexpression=project.version -DforceStdout)
           echo "Raw version: $RAW_VER"
           if [[ "$RAW_VER" != *"-SNAPSHOT" ]]; then
-            echo "Pom-versjonen må være X.Y.Z-SNAPSHOT (fant: $RAW_VER)"; exit 1
+            echo "::error::Pom-versjonen må være X.Y.Z-SNAPSHOT (fant: $RAW_VER)"; exit 1
           fi
-          REL_VER="${RAW_VER%-SNAPSHOT}"   # strip -SNAPSHOT -> X.Y.Z
-          echo "Release version: $REL_VER"
-          echo "RAW_VERSION=$RAW_VER" >> $GITHUB_OUTPUT
-          echo "RELEASE_VERSION=$REL_VER" >> $GITHUB_OUTPUT
 
-      - name: Set Maven version to release (X.Y.Z)
-        run: |
-          mvn -B versions:set -DnewVersion=${{ steps.ver.outputs.RELEASE_VERSION }} -DgenerateBackupPoms=false
+      - name: Bygg og test prosjektet
+        run: ./mvnw -B verify
 
-      - name: Commit release versjon
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
+      - name: Publiser Snapshot til GitHub Packages
+        if: ${{ needs.prepare.outputs.releasing  == 'false' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./mvnw -B deploy -DskipTests
+
+  release:
+    needs: [prepare, build]
+    if: ${{ needs.prepare.outputs.releasing  == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GH CLI
+        uses: dev-hanz-ops/install-gh-cli-action@af38ce09b1ec248aeb08eea2b16bbecea9e059f8 # v0.2.1
+        with:
+          gh-cli-version: 2.82.1 # renovate: github-releases=cli/cli
 
       - name: Opprett GitHub App Token
         id: app-token
@@ -98,147 +78,75 @@ jobs:
           app-id: ${{ secrets.GH_APP_ID }}
           private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
 
-      - name: Commit med signatur
+      - name: Calculate new tag for versioning
+        id: calculate-version
+        uses: paulhatch/semantic-version@a8f8f59fd7f0625188492e945240f12d7ad2dca3 #v5.4.0
+        with:
+          tag_prefix: ""
+          search_commit_body: false
+          version_format: '${major}.${minor}.${patch}'
+          major_pattern: '/(\!: |BREAKING CHANGE)/'
+          minor_pattern: '/^(feat|feature)/'
+
+      - name: Set Maven release version (X.Y.Z)
+        run: |
+         ./mvnw -B versions:set -DnewVersion=${{ steps.calculate-version.outputs.version }} -DgenerateBackupPoms=false
+
+      - name: Commit og Push med signatur
         uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac #v1.5.0
         with:
-          message: "chore(release): Release av versjon ${{ steps.ver.outputs.RELEASE_VERSION }} [skip actions]"
+          message: "chore(release): Release av versjon ${{ steps.calculate-version.outputs.version }} [skip actions]"
           token: ${{ steps.app-token.outputs.token }}
           fail-on-no-changes: false
-          ref: ${{ github.head_ref || github.ref }} # for PR-ref
 
-      - name: Build with Maven
-        run: mvn -B -DskipTests clean package
+      - name: Publish with Maven
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: ./mvnw -B deploy -DskipTests
 
-      - name: Push endring av release versjon
+      - name: Set start tag for generating notes
+        id: set-start-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          git push
-
-      - name: Collect build files
-        run: |
-          mkdir -p dist
-          shopt -s globstar || true
-          cp **/target/*.* dist/ 2>/dev/null
-
-      - name: Create and push tag vX.Y.Z (if not exists)
-        run: |
-          TAG="v${{ steps.ver.outputs.RELEASE_VERSION }}"
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG finnes lokalt."
-          fi
-          if git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
-            echo "Tag $TAG finnes allerede på origin, hopper over push."
+          set -x
+          if [[ -z "${{ inputs.notes-start-tag }}" ]]; then
+            set +e # Fail silently if no releases are found
+            LATEST_TAG_OR_ERROR=$(gh api repos/${{github.repository}}/releases/latest --jq .tag_name 2>/dev/null)
+            LATEST_TAG=$(if [[ $? = 0 ]]; then echo "$LATEST_TAG_OR_ERROR"; else echo "none"; fi)
+            echo "notes-start-tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag "$TAG"
-            git push origin "$TAG"
+            echo "notes-start-tag=$inputs.notes-start-tag" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.ver.outputs.RELEASE_VERSION }}
-          name: v${{ steps.ver.outputs.RELEASE_VERSION }}
-          generate_release_notes: true
-          files: dist/*.jar
+      - name: Create Github Release ${{ inputs.tag }} with generated notes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Sett Maven versjon til neste snapshot (X.Y.Z+1-SNAPSHOT)
-        id: next
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          REL="${{ steps.ver.outputs.RELEASE_VERSION }}"
-          # Øker patch-versjonen (1.2.3 → 1.2.4-SNAPSHOT)
-          IFS='.' read -r MAJ MIN PAT <<< "$REL"
-          NEXT_PATCH=$((PAT + 1))
-          NEXT_VER="${MAJ}.${MIN}.${NEXT_PATCH}-SNAPSHOT"
-          echo "Neste versjon: $NEXT_VER"
-          mvn -B versions:set -DnewVersion=$NEXT_VER -DgenerateBackupPoms=false
-          echo "NEXT_VERSION=$NEXT_VER" >> $GITHUB_OUTPUT
+          if [[ "${{ steps.set-start-tag.outputs.notes-start-tag }}" == "none" ]]; then
+            gh release create ${{ inputs.tag }} --generate-notes
+          else
+            gh release create ${{ inputs.tag }} --generate-notes --notes-start-tag ${{ steps.set-start-tag.outputs.notes-start-tag }}
+          fi
 
-      - name: Commit ny snapshot-versjon
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -am "chore(snapshot): Bump snapshot-versjon til ${{ steps.next.outputs.NEXT_VERSION }}"
-
-      - name: Commit med signatur
-        uses: dsanders11/github-app-commit-action@v1
+      - name: Determine next snapshot version
+        id: bump-semver
+        uses: actions-ecosystem/action-bump-semver@34e334551143a5301f38c830e44a22273c6ff5c5 #v1.0.0
         with:
-          message: "chore(snapshot): Bump snapshot-versjon til ${{ steps.next.outputs.NEXT_VERSION }}"
+          current_version: ${{ steps.calculate-version.outputs.version }}
+          level: patch
+
+      - name: Update pom to snapshot version
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          ./mvnw -B versions:set -DnewVersion="${{ steps.bump-semver.outputs.new_version }}-SNAPSHOT" -DprocessAllModules=true -DgenerateBackupPoms=false
+          git ls-files --others --exclude-standard --cached -- '*.xml' | grep 'pom.xml$' | grep -v '/target/' | xargs git add
+
+      - name: Commit and push snapshot version
+        uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac #v1.5.0
+        with:
+          message: "chore(snapshot): Bump snapshot-versjon til ${{ steps.bump-semver.outputs.new_version }}-SNAPSHOT"
           token: ${{ steps.app-token.outputs.token }}
-
-      - name: Push ny snapshot-versjon
-        run: git push
-  build:
-    if: ${{ !contains(github.event.head_commit.message, '[skip actions]') && !contains(github.event.head_commit.message, '[release]') }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-          cache: maven
-
-      - name: Setup settings.xml for GitHub Packages
-        run: |
-          mkdir -p $HOME/.m2
-          cat > $HOME/.m2/settings.xml << EOF
-          <settings>
-            <servers>
-              <server>
-                <id>github</id>
-                <username>${{ github.actor }}</username>
-                <password>${{ secrets.GITHUB_TOKEN }}</password>
-              </server>
-            </servers>
-            <profiles>
-              <profile>
-                <id>with-github</id>
-                <repositories>
-                  <repository>
-                    <id>github</id>
-                    <url>https://maven.pkg.github.com/statens-pensjonskasse/tidsserie</url>
-                    <snapshots>
-                      <enabled>true</enabled>
-                    </snapshots>
-                  </repository>
-                </repositories>
-                <pluginRepositories>
-                  <pluginRepository>
-                    <id>github</id>
-                    <url>https://maven.pkg.github.com/statens-pensjonskasse/tidsserie</url>
-                  </pluginRepository>
-                </pluginRepositories>
-              </profile>
-            </profiles>
-            <activeProfiles>
-              <activeProfile>with-github</activeProfile>
-            </activeProfiles>
-          </settings>
-          EOF
-
-      - name: Build with Maven
-        run: mvn -B verify
-
-      - name: Collect build files
-        run: |
-          mkdir -p dist
-          shopt -s globstar || true
-          cp **/target/*.* dist/ 2>/dev/null
-
-      - name: Upload build artifacts (snapshot)
-        uses: actions/upload-artifact@v4
-        with:
-          name: snapshot-build
-          path: dist/
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
