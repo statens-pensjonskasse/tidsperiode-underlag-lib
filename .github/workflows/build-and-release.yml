@@ -53,6 +53,8 @@ jobs:
           fi
 
       - name: Bygg og test prosjektet
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: ./mvnw -B verify
 
       - name: Publiser Snapshot til GitHub Packages
