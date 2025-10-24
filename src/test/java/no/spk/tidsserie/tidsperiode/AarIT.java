@@ -44,7 +44,7 @@ public class AarIT {
     }
 
     /**
-     * Verifiserer at året overlappar alltid datoar som ligg innanfor året.
+     * Verifiserer at året alltid overlapper datoer som ligger innenfor året.
      */
     @ParameterizedTest
     @ArgumentsSource(AarstallProvider.class)
