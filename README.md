@@ -393,13 +393,13 @@ _Eksempel: Beregningar for kvar underlagsperiode basert på annotasjonar og bere
 
 ## 6. Oppsett av utviklingsmiljø
 
-- Verifiser at du har java 17 installert og satt opp som default java for shellet du brukar når du skal bygge modulen
+- Verifiser at du har java 21 installert og satt opp som default java for shellet du brukar når du skal bygge modulen
 
 
     $ echo $JAVA_HOME
-    C:\apps\jdk.1.17.0_XX
+    C:\apps\jdk.1.21.0_XX
     $ java -version
-    java version "1.17.0_XX"
+    java version "1.21.0_XX"
 - Sjekk ut modulen via GIT:
 
 
