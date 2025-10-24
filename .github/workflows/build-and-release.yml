@@ -66,6 +66,18 @@ jobs:
     if: ${{ needs.prepare.outputs.releasing  == 'true' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: maven
+
       - name: Install GH CLI
         uses: dev-hanz-ops/install-gh-cli-action@af38ce09b1ec248aeb08eea2b16bbecea9e059f8 # v0.2.1
         with:
@@ -90,7 +102,8 @@ jobs:
 
       - name: Set Maven release version (X.Y.Z)
         run: |
-         ./mvnw -B versions:set -DnewVersion=${{ steps.calculate-version.outputs.version }} -DgenerateBackupPoms=false
+          ./mvnw -B versions:set -DnewVersion=${{ steps.calculate-version.outputs.version }} -DgenerateBackupPoms=false
+          git ls-files --others --exclude-standard --cached -- '*.xml' | grep 'pom.xml$' | grep -v '/target/' | xargs git add
 
       - name: Commit og Push med signatur
         uses: dsanders11/github-app-commit-action@43de6da2f4d927e997c0784c7a0b61bd19ad6aac #v1.5.0
