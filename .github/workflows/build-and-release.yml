@@ -4,13 +4,10 @@ on:
   push:
   workflow_dispatch:
 
-permissions:
-  contents: write
-  packages: write
-
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
         releasing: ${{ steps.check-release.outputs.releasing }}
     steps:
@@ -33,6 +30,8 @@ jobs:
     name: Bygg, test og publiser snapshot
     needs: prepare
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -67,6 +66,9 @@ jobs:
     needs: [prepare, build]
     if: ${{ needs.prepare.outputs.releasing  == 'true' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -135,15 +137,15 @@ jobs:
             echo "notes-start-tag=$inputs.notes-start-tag" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create Github Release ${{ inputs.tag }} with generated notes
+      - name: Create Github Release with generated notes
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           if [[ "${{ steps.set-start-tag.outputs.notes-start-tag }}" == "none" ]]; then
-            gh release create ${{ inputs.tag }} --generate-notes
+            gh release create ${{ steps.calculate-version.outputs.version }}  --generate-notes
           else
-            gh release create ${{ inputs.tag }} --generate-notes --notes-start-tag ${{ steps.set-start-tag.outputs.notes-start-tag }}
+            gh release create ${{ steps.calculate-version.outputs.version }}  --generate-notes --notes-start-tag ${{ steps.set-start-tag.outputs.notes-start-tag }}
           fi
 
       - name: Determine next snapshot version
