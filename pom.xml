@@ -33,7 +33,7 @@
         <maven-dependency-plugin.version>3.10.0</maven-dependency-plugin.version>
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
-        <extra-enforcer-rules.version>1.11.0</extra-enforcer-rules.version>
+        <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
     </properties>
 
     <build>
