@@ -27,10 +27,10 @@
         <assertj-core.version>3.27.7</assertj-core.version>
 
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
-        <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
+        <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-        <maven-dependency-plugin.version>3.10.0</maven-dependency-plugin.version>
+        <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <extra-enforcer-rules.version>1.12.0</extra-enforcer-rules.version>
@@ -41,7 +41,7 @@
             <plugin>
                 <groupId>com.github.siom79.japicmp</groupId>
                 <artifactId>japicmp-maven-plugin</artifactId>
-                <version>0.26.0</version>
+                <version>0.26.1</version>
                 <configuration>
                     <oldVersion>
                         <dependency>
